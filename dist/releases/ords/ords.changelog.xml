@@ -5,4 +5,5 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
 <include file="admin/ords.sql" relativeToChangelogFile="true"/>
+<include file="dev_schema/ords.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
