@@ -1,0 +1,387 @@
+Migrate Your Application to SQLcl Projects
+Introduction
+Before starting development on the Departments feature, you need to migrate your application to use SQLcl's project feature.
+
+This lab will guide you through the process of integrating SQLcl Projects into your existing application. By adopting this approach, you’ll benefit from better database versioning and the ability to deploy database and application changes simultaneously.
+
+Application Migration
+
+Estimated Lab Time: 15 minutes
+
+Objectives
+Practice and apply SQLcl project commands through hands-on exploration
+Experience and understand the benefits of database CICD
+Successfully migrate the HR Application to SQLcl Projects
+Synchronize DEV_USER and PROD_USER
+Prerequisites
+Completion of previous labs
+Basic understanding of Git
+Collapse All Tasks
+Task 1: Understand Environments and Database CICD Challenges
+Environments Overview
+Database CI/CD ensures synchronization between two databases, allowing you to deploy changes from a source database to a target database and keep them in sync.
+
+Source and Target database
+
+From this lab, you will work with these two environments:
+
+Development (Dev):
+
+Where you create and fix database changes.
+Production (Prod):
+
+Where you deploy stable and reliable database updates.
+Our goal in the current and next labs is to successfully deploy the “Departments” and “Analytics” features to the Prod environment.
+Dev vs Prod environment
+
+In this workshop, we will use:
+
+DEV_USER schema to represent the development/source database (environment).
+PROD_USER schema to represent the production/target database (environment).
+Note: There are often other environments involved in the development lifecycle (Test, pre-prod, …) but this workshop just those two ones above that we need.
+Challenges of Traditional Database Deployments
+In traditional database deployments, especially in a manual process, several challenges arise:
+
+Manual Interventions: Prone to errors and time-consuming.
+No Automation: Slows down deployments and adds inconsistencies.
+High Error Risks: Bugs and data issues can disrupt production.
+Our Goal:
+
+Use SQLcl's project command to:
+
+Create your local database application work environments
+Track changes and create database install and upgrade scripts
+Automate and ensure consistent deployments
+Task 2: Project Initialization
+Connecting to DEV_USER via SQLcl:
+
+Setup "TNS_ADMIN" :
+
+We are connecting to an Autonomous Database, so we set TNS_ADMIN to /wallet to tell SQLcl where to find the wallet and network configuration files for secure connection.
+
+Copy
+export TNS_ADMIN=/wallet
+Connect to the DEV_USER schema using :
+
+Copy
+sql dev_user/$DBPASSWORD@"$DBCONNECTION"
+Connect to DEV_USER
+Tip: You can clear your screen anytime you want by using clear screen command or just its short format cle scr:
+Copy
+cle scr
+Project Initialization:
+
+Make sure you are in the application folder before running project commands
+
+Check the current working dir
+
+Initialize git
+
+Copy
+!git init --initial-branch main
+Note: We use a bang or exclamation mark (!) at the beginning of hosted commands (non-SQLcl commands) to run them within SQLcl.
+Add and commit
+
+Before committing to Git, make sure to configure your user identity. Run the following commands to set your name and email address, which Git uses to track your commits:
+
+Copy
+!git config --global user.name "Your Name"
+!git config --global user.email "your.email@example.com"
+Copy
+!git add --all
+Copy
+!git commit -m "Initial commit"
+First commit
+
+Tip: Press Tab to view completions, then keep pressing Tab or use the arrow keys to navigate. Press Enter when you find the desired option.
+Use tab for completion
+Initialize project
+
+Copy
+project init -name HrManager -schemas DEV_USER -verbose
+Run project init command
+
+The project init command creates a specific folder structure, setting up the necessary directories and files for managing your database objects and changes within your current directory. If you add the -makeroot flag to your init command, a folder with the project name will be created under your current directory and will hold all the project files and folders.
+
+Note: Use help project for more info
+Copy
+help project
+Help project
+
+Project Structure:
+
+SQLcl Project feature use a specific folder structure to manage database objects and changes.
+
+Key folders include:
+
+.dbtools: contains project configuration files, filters, and formatting rules. It's a hidden folder.
+src: stores exported objects from the database, organized by schema and object type.
+dist: contains the distributable for each release.
+Copy
+──.dbtools
+│   ├── filters
+│   │   └── project.filters
+│   ├── project.config.json
+│   └── project.sqlformat.xml
+├── dist
+│   └── install.sql
+└── src
+    └── database
+List all, to see the generated project folders
+List all dirs
+
+Note: The project init command creates a src folder. However, since the application already has a src folder, SQLcl Projects merges its newly created src folder with the existing one. As a result, the database project folder will be located inside src, ensuring seamless integration.
+Add and commit
+
+Copy
+!git branch
+Copy
+!git status
+Copy
+!git add --all
+Copy
+!git status
+Copy
+!git commit -m "Add project files"
+Commit project files
+
+Note: You can click the image if it is not visible for you.
+Create a new git branch and switch to it
+
+Copy
+!git checkout -b SQLcl-Projects-Migration
+Copy
+!git branch
+Copy
+!git status
+Checkout first branch
+
+Note: You can choose the name you want for your branch. It doesn’t have to match this one.
+Task 3: Set Project Configuration
+Since the source and target databases use different schemas, we need to set emitSchema to false in project.config.json (inside .dbtools). By default, this setting is true, meaning exported DDL includes fully qualified object names in the format schema.object (e.g., dev_user.departments). Disabling it ensures objects are created without schema prefixes in the target database.
+
+You will use the project config command to view and edit this configuration item.
+
+Copy
+project config -list -name export.setTransform.emitSchema
+Copy
+project config set -name export.setTransform.emitSchema -value false -verbose
+Set emitSchema to false
+
+Task 4: Export from the Source Environment
+For exporting, we have two options:
+
+Export the entire schema, including all its objects, using the -schemas option, which accepts a list of schemas to export (in our case, just one: "DEV_USER").
+
+Export specific objects using the -objects option.
+
+Project export options
+
+Note: Use help project export for more details on the export command.
+Copy
+help project export
+In this task, you will export the DEV_USER schema.
+
+But before proceeding, we need to add a filter in .dbtools/filters/project.filters to exclude the auto-generated objects that were not our proper stuff.
+
+Notes: Project filters are used to filter out objects that will be exported or exclude specific ones.
+Open the filters configuration file
+
+Copy
+!vi .dbtools/filters/project.filters
+Project filters
+
+Insert this line "not (object_name like 'DBTOOLS$%')," as the following:
+
+Press Esc + I to enter insert mode
+
+Copy and paste this line in the location shown in the image below
+
+Copy
+not (object_name like 'DBTOOLS$%'),
+Insert filters
+
+Press Esc, then type :wq to save and exit
+
+Now, we are ready to export our schema cleanly.
+
+Export the DEV_USER schema to the application folder
+
+Run the following command to export objects from the schemas defined during project init. The specified schema is used by default, so you don’t need to specify it again.
+
+Copy
+project export -verbose
+Run project export command
+
+Note: To export a different schema, provide it explicitly in the project export command.
+This command exports database objects into your repository.
+
+Find the exported schema folder and its database object files inside the database folder under src.
+
+Database folder location
+
+Double click on the 'employees.sql' to see its content.
+
+Employees.sql file content
+
+Now, we export our objects to have them included in our project folders.
+
+Task 5: Project Stage
+You need to add and commit changes before stage
+
+Copy
+!git status
+Copy
+!git add --all
+Copy
+!git status
+Copy
+!git commit -m "Export dev_user schema"
+Add and commit changes
+
+By default, the dist folder is ignored in many React projects because it contains generated build files. However, you need to track it in Git by removing dist in the .gitignore file.
+
+Open .gitignore, search for dist, and remove the line if it's present. If you don't find it there, you can skip this step and move on to step 3.
+
+Note: Make sure you are in the application folder /home/oracle/assets/workshops/sqlcl-projects-react-app
+Copy
+vi .gitignore
+Save the file.
+
+Execute the following command to stage the changes for release
+
+Copy
+project stage -verbose
+Run project stage
+
+This command generates Liquibase changelogs for all source (src) and custom SQL files by comparing the current branch (SQLcl-Projects-Migration) to the base branch (main). It creates a structured folder (dist/releases/next/) for staged files and allows adding custom changesets with SQL and SQLcl commands.
+
+Add and commit the files
+
+Copy
+!git status
+Copy
+!git add --all
+Copy
+!git status
+Copy
+!git commit -m "Add stage files"
+Commit project stage files
+
+Merge to main branch
+
+This is typically done via a Merge Request or Pull Request, depending on your Git provider. However, since this is a local repository, you can merge directly into the main branch.
+
+Copy
+!git checkout main
+Copy
+!git merge SQLcl-Projects-Migration
+Merge SQLcl-Projects-Migration branch with main 
+
+Task 6: Generate Release 1.0.0
+Once your changes are merged to the main branch, execute the following command to create a first release
+
+Copy
+project release -version 1.0.0 -verbose
+Run project release
+
+This command renames the contents of dist/releases/next to the specified version number and then creates a new next folder under dist.
+
+Add the changed files and commit:
+
+Copy
+!git add --all
+Copy
+!git commit -m "Release 1.0.0"
+Commit release file changes
+
+Task 7: Generate Deployable Artifact
+Before generating the artifact, you need to establish a new database baseline by syncing the two environments (schemas). We need to do this because the employees table already exists in the target environment and is in the same state as the source. So we need just to sync them. If your target environment was empty during migration, you don't need to do that and just skip this step.
+
+Open the dist/install.sql file
+
+Open install.sql file
+
+Go to line 17 and replace lb update with lb changelog-sync (liquibase commands)
+
+Replace lb update with lb changelog-sync
+
+Save the install.sql file by pressing Cmd + S on Mac or Ctrl + S on Windows/Linux.
+
+Add and commit
+
+Copy
+!git add --all
+Git add the installer file
+
+Copy
+!git commit -m "updated installer to do a changelog-sync"
+The project gen-artifact command can be used to generate an artifact for your database changes. This artifact can then be easily deployed to different environments.
+
+Copy
+project gen-artifact -verbose
+Run project gen-artifact command
+
+Returning to the application folder, you will find a new folder named artifact, which contains the generated zip artifact.
+
+Note: The artifact is created with the provided name to the project at the moment of its initialization , as the default name, in case no specific name was specified using the -name option with the project gen-artifact command.
+Navigate to the artifact folder
+
+In the next task, we will learn how to deploy these changes to the production environment using SQLcl's project command and explore advanced CICD concepts.
+
+Task 8: Deploy to Target Environment
+Connect to the Production Database:
+
+Establish a connection to the production database using SQLcl.
+
+Use the connect command with the PROD_USER credentials.
+
+Copy
+connect PROD_USER/[PASSWORD]
+Connect to prod schema
+
+Deploy to Production:
+
+Execute the following command to deploy the changes to the production database:
+
+Copy
+project deploy -file artifact/HrManager-1.0.0.zip  -verbose
+Note: If it returns the help when pasting this command in SQLcl, try typing it manually. Use tab for completion.
+Run project deploy command
+
+This command applies the changes defined in the release artifact to the production database without recreating existing schema objects.
+
+When you check the schema tables, you'll notice two new tables. These are Liquibase tables used for tracking database changes.
+
+Copy
+tables
+Show prod tables
+
+SQLcl Liquibase
+
+SQLcl Liquibase is the engine behind the SQLcl Project feature, executing the liquibase update command in the background. It compares the source and target databases, applying necessary changes only if differences exist.
+
+During the first deployment using the project deploy command, Liquibase creates two key tables:
+
+DATABASECHANGELOG – Tracks executed changesets, including timestamps and checksums.
+
+DATABASECHANGELOGLOCK – Prevents concurrent deployments.
+
+Before applying changes, Liquibase checks database changelog to see if a changeset has already been executed. If not, it processes them in the order defined in the changelog file.
+
+Liquibase workflow
+
+Well done! Migration completed successfully.
+
+Now, it's time for some code changes! Let’s jump into the next lab and kickstart our application development to bring the departments feature to life!
+
+You may now proceed to the next lab
+
+Learn More
+Oracle SQLcl Doc
+Oracle SQLcl Project & CI/CD Docs
+Oracle SQLcl Liquibase Docs
+Video overview and demonstration for SQLcl Projects
+Acknowledgements
+Author - Fatima AOURGA & Abdelilah AIT HAMOU, Junior Members of The Technical Staff, Database Tooling, SQLcl developers
+Created By/Date - Fatima AOURGA & Abdelilah AIT HAMOU, Software Developers, February 2025

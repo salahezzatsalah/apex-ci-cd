@@ -1,0 +1,235 @@
+CI/CD for Database Deployments
+Introduction
+Since the table is missing in PROD, the next step is to synchronize the two environments. Traditionally, this would mean manually applying changes to the production database, a process prone to errors and inconsistencies. However, with SQLcl's project command, we can automate this process, making database changes faster, safer, and more reliable. This is where CI/CD principles come into play, bringing the same efficiency and consistency of modern application deployment pipelines to database management.
+
+Database cicd logo
+
+Focus on the Process
+
+Remember, the main goal of this workshop is to understand the principles of database development and deployment using project command in SQLcl and CI/CD practices, regardless of the technology used in the application.
+
+Estimated Lab Time: 15 minutes
+
+Objectives
+Utilize SQLcl to manage and deploy database changes.
+Deploy database changes to the production environment and verify application functionality.
+Practice and apply SQLcl's project commands.
+Gain hands-on experience with database CI/CD and understand its benefits.
+Prerequisites
+Completion of previous labs
+Basic understanding of Git
+Collapse All Tasks
+Task 1: Export Database Changes (project export)
+First, you have to be connect to DEV_USER in SQLcl and make sure you are in the application folder
+/home/assets/assets/workshops/sqlcl-projects-react-app.
+
+Copy
+sql dev_user/$DBPASSWORD@"$DBCONNECTION"
+Copy
+cd /home/assets/assets/workshops/sqlcl-projects-react-app
+Note: You must be in the project folder (in your case sqlcl-projects-react-app is your project/application folder) to execute project commands; otherwise, an error will occur.
+Before exporting, create a new git branch from main branch and switch to it for this feature:
+
+Copy
+!git branch
+Copy
+!git checkout -b Ticket-1-Departments
+Create and checkout to the departments feature branch
+
+Export Database Objects:
+
+Execute the following command to export the departments table database object to the application folder:
+
+Copy
+project export -objects DEPARTMENTS -verbose
+Run project export command
+
+Find the exported departments table inside the database folder under src/database/dev_user/tables.
+
+Database folder location
+
+Double click on the 'departments.sql' to see its content.
+
+Departments.sql file content
+
+Task 2: Stage Changes (project stage)
+Stage Changes:
+
+Add and commit changes before stage
+
+Copy
+!git status
+Copy
+!git add --all
+Copy
+!git status
+Copy
+!git commit -m "Export departments table"
+Add and commit changes
+
+Execute the following command to stage the changes for release
+
+Copy
+project stage -verbose
+Run project stage command
+
+Add custom scripts
+
+You can add custom scripts using the add-custom sub-command of the stage command.
+
+Add the custom file to the stage
+
+Copy
+project stage add-custom -file-name dept-data.sql -verbose
+Run project stage add-custom
+
+This will create a custom sql file in the dist/_custom folder.
+
+Navigate to the scripts folder
+
+Navigate to scripts folder
+
+Copy the insert statements from departments_table.sql
+
+Copy the inserts
+
+Locate the newly created dept_data.sql file
+
+The file can be found at:
+
+sqlcl-projects-react-app/dist/releases/next/changes/Ticket-1-Departments/_custom/dept-data.sql
+
+Custom file location
+
+Open the dept-data.sql file and paste the insert statements
+
+Double-click the file and paste the copied inserts inside and save it (Command + S or Ctrl + S).
+
+Insert data in the custom script
+
+Important: Add the COMMIT statement at the end of the dept-data.sql file.
+
+Copy
+COMMIT
+Add and commit:
+
+Copy
+!git add --all
+Copy
+!git commit -m "Add stage files"
+Commit stage files
+
+Merge to main branch:
+
+Copy
+!git checkout main
+Copy
+!git merge Ticket-1-Departments
+Merge branch with main 
+
+Task 3: Release Changes (project release)
+Once your changes are merged into the main branch, execute the following command to create a second release:
+
+Copy
+project release -version 2.0.0 -verbose
+Run project release command
+
+Add and commit
+
+Copy
+!git add --all
+Copy
+!git commit -m "Release 2.0.0"
+Task 4: Generate Deployable Artifact (project gen-artifact)
+Before generating the artifact, you need to return the install.sql file to its initial state containing lb update.
+
+Open the dist/install.sql file
+
+Open install.sql file
+
+Go to line 17 and replace lb changelog-sync with lb update
+
+Replace lb changelog-sync with lb update
+
+Save the install.sql file by pressing Cmd + S on Mac or Ctrl + S on Windows/Linux.
+
+Add and commit.
+
+Copy
+!git add --all
+Copy
+!git status
+Git add the installer file
+
+Copy
+!git commit -m "updated installer to do an update"
+Run project gen-artifact
+
+Copy
+project gen-artifact -verbose
+Run project gen-artifact command
+
+If you go back to the artifact folder, you will find a new artifact generated.
+
+Navigate to the artifact folder
+
+Task 5: Deploying to Production (project deploy)
+Connect to the Production Database:
+
+Establish a connection to the production database using SQLcl.
+
+Use the connect command with the PROD_USER credentials.
+
+Copy
+connect PROD_USER/[PASSWORD]
+Connect to PROD_USER
+
+Deploy Changes to Production:
+
+Execute the following command to deploy the changes to the production database:
+
+Copy
+project deploy -file artifact/HrManager-2.0.0.zip  -verbose
+Run project deploy command
+
+This command applies the changes defined in the release artifact to the production database without recreating existing schema objects.
+
+If you check now you find the departments table in the PROD_USER. But what are the other tables ?
+
+Find departments table in PROD_USER
+
+Enable REST Endpoints
+
+To expose the Departments table in PROD_USER as a REST endpoint, follow the same steps you performed for DEV_USER in Lab 2 → Task 3.
+
+Open Database Actions
+Connect as PROD_USER
+Locate the Departments table, right-click on it.
+Select REST, then click Enable.
+
+
+Run the Production Application:
+
+Restart the application using the production environment variables.
+Verify that the "Departments" feature is functioning correctly in the production environment.
+Perform thorough testing to ensure that all aspects of the feature are working as expected.
+
+
+The department section should look like this:
+
+Departments data appearing in the app
+
+You did it! You have successfully implemented and deployed the "Departments" feature and released the version 2 of the application using SQLcl and CICD practices. You have gained valuable experience in managing database changes, automating deployments, and working with a CICD pipeline.
+
+After you gain this some experience, it's time for some challenges! Head to the next lab and take your skills to the next level!
+
+You may now proceed to the next lab
+
+Learn More
+Oracle SQLcl Doc
+Oracle SQLcl Project & CI/CD Docs
+Oracle SQLcl Liquibase Docs
+Video overview and demonstration for SQLcl Projects
+Acknowledgements
+Author - Fatima AOURGA & Abdelilah AIT HAMOU, Junior Members of The Technical Staff, Database Tooling, SQLcl developers
+Created By/Date - Fatima AOURGA & Abdelilah AIT HAMOU, Software Developers, February 2025

@@ -1,0 +1,241 @@
+Get Started
+Introduction
+In this lab, you will be introduced to the environment, tools, and resources you’ll be working with throughout the workshop. You’ll also configure and run the necessary components to launch the HR Management application.
+
+You have been provided with access to an Oracle Database Actions (aka Oracle SQL Developer Web), as well as a Jupyter Lab.
+
+ORDS, SQLcl, Database Actions
+
+Estimated Lab Time: 15 minutes
+
+Objectives
+In this lab, you will:
+
+Get to know your workshop environment
+Sign in to Database Actions as the DEV_USER user
+Log in to jupyterLab
+Start-up the HR Management react application
+Prerequisites
+Access to a LiveLabs-provided sandbox environment
+Access to Database Actions
+Beginner-level experience in javascript, HTML, and Integrated Developer Environments
+Collapse All Tasks
+Task 1: Get To Know Your Workshop Environment
+Before diving into the workshop, take a moment to familiarize yourself with the tools and resources available.
+
+Accessing Your Workshop Tools
+
+You have been provided various URLs. One for accessing Database Actions, and another one for accessing a Jupyter lab. First, navigate to Database Actions using the provided URL. You can find these details by clicking View Login Info near the top of the Workshop outline.
+
+Workshop view Login info
+
+Workshop Credentials
+
+You’ve been provided with the necessary details for this workshop:
+
+JupyterLab: Click the provided URL to access JupyterLab.
+ORDS Users: The list of users we’ll be working with during the workshop.
+Password: A single password used for JupyterLab and all ORDS users.
+SQL Developer Web (Database Actions): Click the provided URL to access Database Actions.
+Reservation info
+
+Task 2: Sign in Oracle Database Actions
+Click the SQL Developer Web URL in the Reservation information to access it.
+
+Reservation info
+
+Several users have been created for you, including a new DEV_USER user. Its schema has already been REST-enabled, meaning you will be able to Sign in to Database Actions.
+
+Note: Depending on your lab configuration, you may be redirected to a SQL Developer Web Sign-in screen rather than the Oracle REST Data Services "landing page." In such cases, simply Sign in with the DEV_USER user's credentials.
+To Sign in, click the Go button under the SQL Developer Web card.
+
+ORDS Signin
+
+Once the Sign-in screen appears, enter the following credentials, and click the Sign-in button:
+
+        Username: DEV_USER         Password: [Can be found in your Reservation details - see image in Step 1 for reference]
+
+The Database Actions Launchpad will appear. Navigate to the Development category, then click SQL. A blank SQL Worksheet will appear.
+
+A new SQL Worksheet.
+
+NOTE: If this is your first time visiting the SQL Worksheet, a guided tour will appear. You may continue with the tour, or click the X (as seen in the image) to exit the tour.
+You'll notice an Employees table has already been created for you. This table has also been pre-populated with data.
+
+To view a sample of the table's data copy and paste the following SQL statement into the SQL Worksheet and click then Run Statement icon.
+
+Copy
+SELECT * FROM EMPLOYEES FETCH FIRST 5 ROWS ONLY;
+You will see results similar to the following image:
+
+Reviewing the results
+
+You may notice the varied data types in this table. To take a closer look at how this EMPLOYEES table is structured, right-click on the EMPLOYEES table, then select Edit.... When the Table Properties slider appears, click DDL, then select the Create tab.
+
+Note the data types:
+
+Reviewing the DEV_USER table ddl
+
+Note: ORDS APIs will be able to handle all of these various data types and send them to your application.
+Task 3: Enable REST Endpoints Using ORDS
+To interact with the EMPLOYEES table from your application, you need to enable a REST endpoint. This will allow you to fetch and post data directly to the database using standard HTTP requests.
+
+Oracle REST Data Services (ORDS) provides a simple and efficient way to expose database objects as RESTful services. Instead of building custom APIs from scratch, ORDS allows you to instantly enable REST access to your tables with minimal effort and eliminate the need for complex backend development while ensuring secure and scalable database access.
+
+In this task, you will use ORDS to enable a REST endpoint for the Departments table, making it accessible through standard HTTP requests, simplifying data integration and allowing your application to interact with the database smoothly.
+
+Open Oracle Database Actions
+
+Connect as DEV_USER
+
+Select Tables, right-click on EMPLOYEES, choose REST, and then click Enable
+Enable ORDS Endpoint For EMPLOYEES Table
+
+Click Enable at the bottom right
+REST Enable Object
+
+The EMPLOYEES table is REST enabled now
+EMPLOYEES REST Enabled
+
+Note: The icon next to the table name indicates that the table is REST-enabled.
+Click the hamburger menu at the top of Oracle Database Actions, then select REST.
+
+Navigating to the REST using hamburger
+
+In the Workshop's Object panel, you will see a single AUTOREST. Click it.
+
+Click AUTOREST
+
+There, you will find all the REST-enabled objects for the user along with their corresponding endpoints. Since this user only has the EMPLOYEES table REST-enabled, it will be the only one displayed.
+
+Once you are satisfied, return to the Reservation information for this workshop.
+
+View Login info
+
+Task 4: Open Jupyter Lab
+Using the URL you were provided, log in to your Jupyter lab. It is recommended you open the Juptyer Lab in a new tab or window.
+
+Jupyter lab URI
+
+Use the same password from the previous task.
+
+Jupyter password
+
+Once logged in, you may see several directories. Navigate (i.e., double or single-click on the directory) to the workshops directory, then to the sqlcl-projects-react-app directory. This last directory is the folder containing the application you will use and work with throughout this workshop. Take a moment to locate it, explore its contents, and get familiar with its structure.
+
+Navigating to SQLcl Projects react app directory.
+
+Task 5: Prepare Your Application Environment Variables
+In this task, you will navigate back to JupyterLab and locate the sqlcl-projects-react-app directory once again.
+
+Next, you will modify the .env file, which is located in your application's root directory (sqlcl-projects-react-app). This file contains essential configuration variables required at runtime.
+
+Note: The .env file is hidden by default because filenames that begin with a dot (.) are not displayed in the folder structure.
+Click on the triangle icon or More below for more insights.
+
+More
+
+Open the terminal
+Open jupyter terminal
+
+Tip: You can reduce the font size by pressing Ctrl + Minus (-) on Windows/Linux or Command (⌘) + Minus (-) on Mac.
+Edit the .env file with:
+
+Copy
+vi .env
+Open .env file
+
+Press Esc + I to enter insert mode.
+
+Navigate to the placeholders. Replace [THE PLACEHOLDER] with your instance links in the following variables:
+
+Copy
+VITE_API_URL=http://[Your Lab's IP]:5500/api/connection
+VITE_BASE_URL=http://[ORDS LINK]:8181/ords/
+VITE_DB_USERNAME=dev_user
+VITE_API_URL: The base URL for your API connection, replace placeholder with your jupyter IP address.
+
+VITE_BASE_URL: The base URL for your ORDS REST service. You can obtain this URL using either of these methods:
+
+Method 1: Use your terminal and run the following command:
+
+Copy
+echo $ORDSURL
+Get the ords link
+
+Method 2: Retrieve the URL from SQL Developer Web:
+
+Access SQL Developer Web using the link provided in the login info page
+Log in with username "dev_user" and the Database Password (found in the login info page)
+Copy the URL from your browser's address bar
+Remove the final "dev_user/_sdw/" portion from the URL
+Get the ords link from ORDS 
+VITE_DB_USERNAME: The database username which should be in lowercase.
+
+Important! If you find VITE_DB_USERNAME (dev_user) in uppercase, make sure to convert it to lowercase. This value is used in the ORDS endpoints within the application, and it must be lowercase for the endpoints to function correctly.
+
+Open the environment variable file
+
+Press Esc, then type :wq to save and exit.
+
+Note: In a React app using Vite, the VITE_ prefix in environment variables is a Vite requirement to expose them to your front-end code.
+More
+Task 6: Start Your React Application
+From the Jupyter Launcher, open a new Terminal.
+
+Launching a new terminal.
+
+Note: If a new Launcher window is not present, you can click the Blue Box (the box with the + inside) to open a new Launcher. Then you may open a new Terminal.
+Verify you are in the correct directory by:
+
+Print the current working directory
+
+Tip: You can clear your terminal screen using clear command.
+Copy
+clear
+Next, issue the following command:
+
+Copy
+npm run dev
+Run the application
+
+The React development server will start up.
+
+Your application will be available on port 5000. However, you will need to open the application in a new tab. Modify the URL, so you are using the one provided to you for this lab plus port 5000.
+
+Copy correct portion of url for the app
+
+Navigating to the correct address plus port 5000.
+Open in a new tab or window.
+
+Navigate to the new tab and combine the lab's URI with port 5000. Accept any warnings and your application will load.
+
+Click continue if a warning alert appears
+
+The HR application will load. Scroll right left or up down to see all the infos.
+
+HR application up and running.
+
+You can switch from the light mode to dark mode
+
+Light mode vs dark mode
+
+Check the Update Records page.
+
+Update records page
+
+Move to the Departments page.
+
+Departments page
+
+Uh-oh! The departments page is missing! But here’s your chance to build it. Let’s dive into the next labs and bring this feature to life!
+
+You may now proceed to the next lab
+
+Learn More
+Oracle REST Data Services (ORDS) Doc
+Oracle Database Actions (SQL Developer Web) Doc
+Vite guide
+Acknowledgements
+Author - Fatima AOURGA & Abdelilah AIT HAMOU, Junior Members of The Technical Staff, Database Tooling, SQLcl developers
+Created By/Date - Fatima AOURGA & Abdelilah AIT HAMOU, Software Developers, February 2025

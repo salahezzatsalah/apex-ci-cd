@@ -1,0 +1,435 @@
+# Oracle APEX CI/CD — Complete Detailed Roadmap
+**Team:** 4 Developers | **Git:** GitHub | **DB:** Oracle Autonomous Database (OCI)
+
+---
+
+> [!IMPORTANT]
+> This roadmap is split into tasks for the **Admin** (team lead, does setup once) and **Each Developer** (does their own local setup). Follow phases in order.
+
+---
+
+## PHASE 1: Create the Database + DEV/PROD Schemas
+**Who does this:** Admin (once only)
+
+### Step 2.1 — Create an Autonomous Database
+1. On your Oracle Cloud home screen, look at the top-left corner.
+2. Click the **Hamburger menu icon** (the three horizontal lines ☰).
+3. In the left side menu that slides out, scroll down and look for the section called **"Oracle Database"**.
+4. Click on **"Oracle Database"** to expand the sub-menu.
+5. Click on **"Autonomous Database"**.
+6. You are now on the Autonomous Databases list page.
+7. Click the blue **"Create Autonomous Database"** button near the top.
+
+### Step 2.2 — Fill in the Database Creation Form
+1. **Compartment:** Leave it on the default root compartment (your tenancy name).
+2. **Display name:** Click the field and type: `APEX-CICD-DB`
+3. **Database name:** Click the field, clear it, and type: `APEXCICDDB`
+4. **Workload type:** Look for the row of icons. Click on the box that says **"APEX"** (it says "Built for Oracle APEX application development"). It should become highlighted with a blue border.
+5. **Deployment type:** Make sure **"Serverless"** is selected (it should be by default).
+6. **Always Free:** Look for the toggle switch labelled "Always Free". Click it so it turns **green/ON**. *(This ensures you pay nothing!)*
+7. **Database version:** Leave as default (19c or 23ai).
+
+### Step 2.3 — Set the ADMIN Password
+1. Scroll down to the section titled **"Create administrator credentials"**.
+2. In the **"Password"** field, type a strong password. Example rules:
+   - Minimum 12 characters
+   - At least 1 uppercase letter (e.g., A)
+   - At least 1 lowercase letter (e.g., a)
+   - At least 1 number (e.g., 1)
+   - At least 1 special character (e.g., !)
+   - Example: `MyAdmin_Pass1!`
+3. In the **"Confirm password"** field, type the exact same password again.
+4. 📝 **Write this password down somewhere safe. You will need it many times!**
+
+### Step 2.4 — Finish and Create
+1. Scroll all the way down to the bottom of the page.
+2. Leave **"Network access"** as **"Secure access from everywhere"** (default).
+3. Leave all other settings at their defaults.
+4. Look for the blue **"Create Autonomous Database"** button at the very bottom right.
+5. Click it.
+6. The page will refresh and show your database with an **orange square icon** next to the name. This means it is being built (Provisioning).
+7. Wait approximately **2-3 minutes** until the square icon turns **green**. This means your database is **Available** and ready!
+
+### Step 2.5 — Open the SQL Worksheet (Database Actions)
+1. Your database details page is now showing. Look at the row of buttons near the top.
+2. Click the button that says **"Database actions"**. A dropdown menu will appear.
+3. In the dropdown, click **"SQL"**.
+4. A new browser tab will open with a white SQL worksheet where you can type SQL commands.
+5. If a "welcome tour" popup appears, click the **"X"** in the top right of that popup to close it.
+
+### Step 2.6 — Create DEV and PROD User Schemas
+1. In the SQL worksheet, you will see a large white text area.
+2. Click inside that text area and paste the following SQL:
+
+```sql
+-- Create the DEV (development) schema
+CREATE USER DEV_USER IDENTIFIED BY "DevPass_2024!";
+GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO DEV_USER;
+
+-- Create the PROD (production) schema
+CREATE USER PROD_USER IDENTIFIED BY "ProdPass_2024!";
+GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO PROD_USER;
+
+-- REST-enable both schemas so APEX and ORDS can use them
+BEGIN
+    ORDS_ADMIN.ENABLE_SCHEMA(
+        p_enabled             => TRUE,
+        p_schema              => 'DEV_USER',
+        p_url_mapping_type    => 'BASE_PATH',
+        p_url_mapping_pattern => 'dev_user',
+        p_auto_rest_auth      => FALSE
+    );
+    ORDS_ADMIN.ENABLE_SCHEMA(
+        p_enabled             => TRUE,
+        p_schema              => 'PROD_USER',
+        p_url_mapping_type    => 'BASE_PATH',
+        p_url_mapping_pattern => 'prod_user',
+        p_auto_rest_auth      => FALSE
+    );
+    COMMIT;
+END;
+/
+```
+
+3. Look at the toolbar above the white text area. Find the green **"Run Script"** button (it looks like a small green "Play" triangle with lines). Click it.
+4. At the bottom of the page, a results panel will appear. Look for the text **"PL/SQL procedure successfully completed"**. This means everything worked!
+
+### Step 2.7 — Import Your Existing APEX Application into DEV
+1. Go back to the browser tab showing your OCI database details page.
+2. Click the **"Database actions"** button again.
+3. This time, click **"APEX"** in the dropdown.
+4. A new tab will open showing the APEX Administration Services login screen.
+5. In the **"Password"** field, type your ADMIN database password.
+6. Click the **"Sign In to Administration"** button.
+7. You are now inside APEX Administration.
+8. Click the **"Create Workspace"** button.
+9. Fill in:
+   - **Database User:** Click the dropdown and select **"DEV_USER"** (we created this in the previous step).
+   - **Workspace Name:** Type `DEV_WORKSPACE`
+   - **Admin Username:** Type `DEV_ADMIN`
+   - **Admin Password:** Type a password for this workspace admin user.
+   - **Email:** Type your email address.
+10. Click the **"Create Workspace"** button.
+11. You will see a success message. Click the link that says **"Click here to log in to DEV_WORKSPACE"**.
+12. Log in with username `DEV_ADMIN` and the password you just set.
+13. Once inside the workspace, click the large **"App Builder"** icon.
+14. Click the **"Import"** button.
+15. Click the **"Choose File"** button and select your existing APEX application `.sql` export file from your computer.
+16. Click **"Next"** → **"Next"** → **"Install Application"**.
+17. ✅ Your APEX application is now live in the DEV environment!
+
+### Step 2.8 — Download the Database Wallet
+1. Go back to the browser tab showing your OCI database details page.
+2. Look at the row of buttons near the top of the page.
+3. Click the button that says **"Database connection"**.
+4. A panel will slide out from the right side of the screen.
+5. Under **"Wallet type"**, make sure **"Instance Wallet"** is selected.
+6. Click the **"Download wallet"** button.
+7. A dialog box will appear asking you to set a password for the wallet zip file.
+   - **Password:** Type your ADMIN database password (keep it consistent!).
+   - **Confirm Password:** Type it again.
+8. Click the **"Download"** button.
+9. A `.zip` file (named something like `Wallet_APEXCICDDB.zip`) will download to your computer.
+10. On your Windows computer, create a new folder: `C:\Wallet`
+11. Right-click the downloaded `.zip` file → click **"Extract All..."** → type `C:\Wallet` as the destination → click **"Extract"**.
+12. ✅ The wallet folder should now contain files like `cwallet.sso`, `tnsnames.ora`, `sqlnet.ora`.
+13. **Share the original `.zip` file with all 4 developers** (via email, Teams, or upload to GitHub as a secure file — do NOT commit it to the public repo!).
+
+---
+
+## PHASE 3: Set Up GitHub Repository
+**Who does this:** Admin (once only)
+
+### Step 3.1 — Create a GitHub Account (if you don't have one)
+1. Go to: **`https://github.com`**
+2. Click the **"Sign up"** button (top right).
+3. Follow the steps to create a free account.
+
+### Step 3.2 — Create a New Private Repository
+1. After logging in to GitHub, look at the top-right corner.
+2. Click the **"+"** icon next to your profile picture.
+3. In the dropdown, click **"New repository"**.
+4. Fill in the form:
+   - **Repository name:** Type `apex-cicd-project`
+   - **Description:** Type `Oracle APEX CI/CD Project with SQLcl`
+   - **Visibility:** Click the **"Private"** radio button. *(Important: keeps your database code safe!)*
+   - **Initialize this repository:** Check the box next to **"Add a README file"**.
+5. Click the green **"Create repository"** button at the bottom.
+6. ✅ Your GitHub repository is created! You will be taken to the repository home page.
+
+### Step 3.3 — Protect the Main Branch (Admin Approval Gate)
+This is what forces developers to get your approval before their code goes to production.
+
+1. On your repository page, click the **"Settings"** tab (the gear icon, last tab in the row at the top).
+2. In the left sidebar, look for the **"Code and automation"** section. Click on **"Branches"**.
+3. On the right side, click the **"Add branch protection rule"** button.
+4. In the **"Branch name pattern"** field, type: `main`
+5. Below the field, you will see a list of checkboxes. Switch ON the following:
+   - ✅ Check **"Require a pull request before merging"**.
+   - ✅ Check **"Require approvals"** and set the number to **1**.
+   - ✅ Check **"Dismiss stale pull request approvals when new commits are pushed"**.
+   - ✅ Check **"Do not allow bypassing the above settings"**.
+6. Scroll to the bottom of the page. Click the green **"Create"** button.
+7. ✅ Now, NOBODY (not even you!) can push code directly to `main` without a reviewed and approved Pull Request.
+
+### Step 3.4 — Invite the 4 Developers to the Repository
+1. In your repository, click the **"Settings"** tab again.
+2. In the left sidebar, click **"Collaborators"** (under "Access").
+3. Click the green **"Add people"** button.
+4. A search box will appear. Type the **GitHub username or email** of Developer 1.
+5. Click on their name when it appears in the search results.
+6. Click the green **"Add [username] to this repository"** button.
+7. Repeat steps 3-6 for all 4 developers.
+8. Each developer will receive an email invitation. They must click **"Accept invitation"** in that email.
+
+---
+
+## PHASE 4: Developer Local Setup
+**Who does this:** Every developer (once only, on their own PC)
+
+### Step 4.1 — Confirm Your Tools Are Installed
+Open a new PowerShell terminal on your Windows computer and run these checks:
+
+```powershell
+# Check Java (should show version 17 or higher)
+java -version
+
+# Check SQLcl (should show version number)
+sql -V
+
+# Check Git (should show version number)
+git --version
+```
+
+If any of these fail, refer to the earlier installation steps in the conversation history.
+
+### Step 4.2 — Extract Your Database Wallet
+1. The Admin should have shared a `.zip` wallet file with you.
+2. On your computer, open File Explorer.
+3. Navigate to `C:\` (your main C drive).
+4. Right-click in an empty area → **"New"** → **"Folder"**.
+5. Name the new folder: `Wallet`
+6. Find the wallet `.zip` file the admin shared (e.g., in your Downloads).
+7. Right-click the `.zip` file → **"Extract All..."**.
+8. In the destination box, type: `C:\Wallet`
+9. Click the **"Extract"** button.
+10. ✅ You should see files inside `C:\Wallet` like `tnsnames.ora`, `cwallet.sso`, etc.
+
+### Step 4.3 — Find Your Connection Name
+1. Open File Explorer and navigate to `C:\Wallet`.
+2. Find the file named **`tnsnames.ora`** and open it with Notepad (right-click → Open with → Notepad).
+3. You will see lines like:
+   ```
+   apexcicddb_tp = (DESCRIPTION = ...)
+   apexcicddb_low = (DESCRIPTION = ...)
+   apexcicddb_high = (DESCRIPTION = ...)
+   ```
+4. 📝 Write down the connection name ending in `_tp` (e.g. `apexcicddb_tp`). This is what you will use to connect.
+
+### Step 4.4 — Clone the GitHub Repository
+1. Open PowerShell on your computer.
+2. Navigate to where you want your project folder to live:
+   ```powershell
+   cd C:\Users\YourName\Desktop
+   ```
+3. Clone the repository (get your URL from GitHub → your repo → click the green **"Code"** button → copy the HTTPS URL):
+   ```powershell
+   git clone https://github.com/YourOrg/apex-cicd-project.git
+   ```
+4. Navigate into the newly created project folder:
+   ```powershell
+   cd apex-cicd-project
+   ```
+
+### Step 4.5 — Set Up Git Identity on Your Computer
+```powershell
+git config --global user.name "Your Full Name"
+git config --global user.email "your.email@company.com"
+```
+
+### Step 4.6 — Connect to the Database from Your Local PC
+```powershell
+# Step 1: Tell SQLcl where your wallet files are
+$env:TNS_ADMIN = "C:\Wallet"
+
+# Step 2: Connect to the DEV schema (replace 'apexcicddb_tp' with your actual connection name from Step 4.3)
+sql DEV_USER/"DevPass_2024!"@apexcicddb_tp
+```
+
+You will see output ending with `SQL>`. This means you are successfully connected to the cloud database from your local computer!
+
+---
+
+## PHASE 5: Daily Developer Workflow
+**Who does this:** Every developer, every time they work on a new task
+
+### Every new task starts here:
+
+**Step 1 — Always start from the latest code**
+```powershell
+# Make sure you are in your project folder first
+cd C:\Users\YourName\Desktop\apex-cicd-project
+
+# Switch to main branch
+git checkout main
+
+# Download the latest changes from GitHub
+git pull origin main
+```
+
+**Step 2 — Create your own private branch for this task**
+```powershell
+# Replace "your-name-task" with something descriptive
+git checkout -b feature/ahmed-add-reports-table
+```
+
+**Step 3 — Connect to DEV and make your database changes**
+```powershell
+$env:TNS_ADMIN = "C:\Wallet"
+sql DEV_USER/"DevPass_2024!"@apexcicddb_tp
+```
+Now, inside SQLcl (`SQL>` prompt), navigate to your project folder and make your changes (create tables, views, insert data, etc.)
+
+**Step 4 — Export only your changed objects**
+```sql
+-- Export a specific table you created or modified
+project export -objects MY_NEW_TABLE -verbose
+
+-- OR export everything
+project export -verbose
+```
+
+**Step 5 — Stage your changes**
+```sql
+-- Add and commit first (inside SQLcl, use ! prefix for git commands)
+!git add --all
+!git commit -m "Add my new table and data"
+
+-- Then stage
+project stage -verbose
+```
+
+**Step 6 — (Optional) Add custom data INSERT scripts**
+If you also want to insert data into production:
+```sql
+project stage add-custom -file-name my-data.sql -verbose
+```
+Then open the file at `dist/releases/next/changes/your-branch/_custom/my-data.sql` and paste your INSERT statements followed by `COMMIT;`.
+
+**Step 7 — Commit everything and push to GitHub**
+```sql
+!git add --all
+!git commit -m "Stage files for feature/ahmed-add-reports-table"
+```
+Then in your regular PowerShell (outside SQLcl):
+```powershell
+git push origin feature/ahmed-add-reports-table
+```
+
+**Step 8 — Open a Pull Request on GitHub**
+1. Go to **`https://github.com/YourOrg/apex-cicd-project`** in your browser.
+2. GitHub will display a **yellow notification banner** at the top that says: *"Your branch had recent pushes. Compare & pull request."*
+3. Click the green **"Compare & pull request"** button.
+4. On the new page:
+   - **Title:** Write a short, clear title (e.g., `Add reports table and data for DEV`)
+   - **Description:** Write a clear explanation of what you changed and why.
+5. On the right side, look for the **"Reviewers"** section. Click the gear icon next to it.
+6. Search for and select the **Admin's GitHub username** as the reviewer.
+7. Click the green **"Create pull request"** button.
+8. ✅ **Wait!** The Admin will now receive an email notification to review your code.
+
+---
+
+## PHASE 6: Admin Review & Deploy to Production
+**Who does this:** Admin only
+
+### When a developer submits a Pull Request:
+
+**Step 1 — Review the Code on GitHub**
+1. You will receive an email from GitHub saying a Pull Request is waiting for review.
+2. Click the link in the email (or go to your GitHub repo and click the **"Pull requests"** tab).
+3. Click on the Pull Request title to open it.
+4. Click the **"Files changed"** tab to see exactly what the developer changed.
+5. Review every `.sql` file carefully:
+   - Are the table names correct?
+   - Is the SQL syntax valid?
+   - Does the data look appropriate?
+
+**Step 2 — Approve or Request Changes**
+- **If everything looks good:**
+  1. Click the green **"Review changes"** button (top right of the Files changed tab).
+  2. Select **"Approve"** radio button.
+  3. Type a short approval message (e.g., `Looks good, approved!`).
+  4. Click **"Submit review"**.
+  5. Now click the green **"Merge pull request"** button.
+  6. Click **"Confirm merge"**.
+  7. ✅ The code is now merged into the `main` branch.
+- **If you need changes:**
+  1. Click **"Review changes"** → select **"Request changes"**.
+  2. Write your comments explaining what needs to be fixed.
+  3. Click **"Submit review"**.
+  4. The developer will be notified to fix and re-push.
+
+**Step 3 — Deploy to Production (After Merge)**
+Open PowerShell on your computer:
+```powershell
+# Navigate to your local project folder
+cd C:\Users\Admin\Desktop\apex-cicd-project
+
+# Pull the newly merged code
+git checkout main
+git pull origin main
+
+# Set wallet path and connect to DEV_USER
+$env:TNS_ADMIN = "C:\Wallet"
+sql DEV_USER/"DevPass_2024!"@apexcicddb_tp
+```
+
+Inside SQLcl (`SQL>` prompt):
+```sql
+-- Create the release version
+project release -version 2.0.0 -verbose
+
+-- Commit the release files
+!git add --all
+!git commit -m "Release 2.0.0"
+
+-- Generate the deployable zip artifact
+project gen-artifact -verbose
+
+-- Switch to PROD schema
+connect PROD_USER/"ProdPass_2024!"@apexcicddb_tp
+
+-- Deploy all changes to the Production database!
+project deploy -file artifact/ApexCiCd-2.0.0.zip -verbose
+```
+
+**Step 4 — Verify Production**
+1. Open APEX using your Production workspace.
+2. Check that all new tables/data/features are visible and working correctly.
+3. ✅ **Deployment complete!** The new feature is now live in production.
+
+---
+
+## Summary Checklist
+
+| # | Task | Who | Done? |
+|---|------|-----|-------|
+| 1 | Create OCI free account | Admin | ⬜ |
+| 2 | Create Autonomous Database (APEX type, Always Free) | Admin | ⬜ |
+| 3 | Create DEV_USER + PROD_USER schemas via SQL Worksheet | Admin | ⬜ |
+| 4 | Import existing APEX app into DEV_USER workspace | Admin | ⬜ |
+| 5 | Download wallet zip + extract to C:\Wallet | Admin | ⬜ |
+| 6 | Share wallet zip with all developers | Admin | ⬜ |
+| 7 | Create private GitHub repo `apex-cicd-project` | Admin | ⬜ |
+| 8 | Set branch protection rule on `main` (require 1 approval) | Admin | ⬜ |
+| 9 | Invite all 4 developers to GitHub repo | Admin | ⬜ |
+| 10 | Initialize SQLcl project (`project init`) | Admin | ⬜ |
+| 11 | Push initial project files to GitHub main branch | Admin | ⬜ |
+| 12 | Each developer extracts wallet to `C:\Wallet` | Each Dev | ⬜ |
+| 13 | Each developer clones GitHub repo | Each Dev | ⬜ |
+| 14 | Each developer sets Git identity (name + email) | Each Dev | ⬜ |
+| 15 | Each developer tests local SQLcl connection to DEV | Each Dev | ⬜ |
+| 16 | First feature branch + Pull Request submitted | Dev 1 | ⬜ |
+| 17 | Admin reviews + approves first Pull Request | Admin | ⬜ |
+| 18 | First successful `project deploy` to PROD | Admin | ⬜ |

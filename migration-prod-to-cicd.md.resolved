@@ -1,0 +1,353 @@
+# Migration Guide: Production-Only → Full CI/CD Workflow
+**Scenario:** You already have a live running Oracle APEX project with only a Production database, and you want to safely introduce the full CI/CD workflow (DEV → Review → PROD) without breaking anything.
+
+---
+
+> [!WARNING]
+> Never make changes directly to your PROD database again after completing this migration. All changes must go through DEV first.
+
+---
+
+## The Goal
+
+```
+BEFORE (Current state):
+════════════════════════════════════════
+  Developer 1 ──┐
+  Developer 2 ──┼──► PROD Database (directly — dangerous!)
+  Developer 3 ──┘
+
+AFTER (Target state):
+════════════════════════════════════════
+  Developer 1 ──┐
+  Developer 2 ──┼──► DEV Database ──► Pull Request ──► Admin Approves ──► PROD Database
+  Developer 3 ──┘
+       │                                      │
+  (feature branch)                     (merge to main)
+```
+
+---
+
+## Prerequisites
+
+Before starting, make sure you have:
+- ✅ Access to your OCI Console and can log in as `ADMIN`
+- ✅ SQLcl installed on your local PC (`sql -V` works)
+- ✅ Java 17+ installed (`java -version` works)
+- ✅ Git installed (`git --version` works)
+- ✅ The Database Wallet downloaded and extracted to `C:\Wallet`
+- ✅ A GitHub account and an empty private repository created
+
+---
+
+## STEP 1: Create the DEV Schema
+**Who does this:** Admin | **Where:** Database Actions (SQL Worksheet)
+
+### Step 1.1 — Open Database Actions
+1. Log into your Oracle Cloud Console at: `https://cloud.oracle.com`
+2. Click the **Hamburger menu** (☰) → **Oracle Database** → **Autonomous Database**.
+3. Click on your existing production database name.
+4. Click the **"Database actions"** button → select **"SQL"** from the dropdown.
+5. A new tab opens with the SQL Worksheet. Close any welcome tour pop-up by clicking **"X"**.
+
+### Step 1.2 — Run the DEV Schema Creation Script
+1. Click inside the white SQL text area.
+2. Paste the following SQL:
+
+```sql
+-- Create the new DEV user/schema
+CREATE USER DEV_USER IDENTIFIED BY "DevPass_2024!";
+GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO DEV_USER;
+
+-- REST-enable DEV_USER so APEX and ORDS can use it
+BEGIN
+    ORDS_ADMIN.ENABLE_SCHEMA(
+        p_enabled             => TRUE,
+        p_schema              => 'DEV_USER',
+        p_url_mapping_type    => 'BASE_PATH',
+        p_url_mapping_pattern => 'dev_user',
+        p_auto_rest_auth      => FALSE
+    );
+    COMMIT;
+END;
+/
+```
+
+3. Click the green **"Run Script"** button (▶ icon with lines) in the toolbar.
+4. In the results panel at the bottom, confirm you see:
+   - `User DEV_USER created.`
+   - `PL/SQL procedure successfully completed.`
+5. ✅ Your DEV schema is ready.
+
+---
+
+## STEP 2: Copy Your PROD Tables into DEV
+**Who does this:** Admin | **Where:** Database Actions (SQL Worksheet)
+
+> [!NOTE]
+> This copies both the **table structure AND the existing data** so DEV starts as a perfect mirror of PROD.
+
+### Step 2.1 — Find Out What Tables Exist in PROD
+Run this query to list all your production tables (replace `PROD_USER` with your actual schema name):
+
+```sql
+SELECT TABLE_NAME FROM ALL_TABLES WHERE OWNER = 'PROD_USER' ORDER BY TABLE_NAME;
+```
+
+Write down all the table names from the results.
+
+### Step 2.2 — Copy Each Table from PROD to DEV
+For every table in your list, run a command like this:
+
+```sql
+-- Template: CREATE TABLE DEV_USER.<TABLE_NAME> AS SELECT * FROM PROD_USER.<TABLE_NAME>;
+
+-- Examples (replace with your actual table names):
+CREATE TABLE DEV_USER.EMPLOYEES       AS SELECT * FROM PROD_USER.EMPLOYEES;
+CREATE TABLE DEV_USER.DEPARTMENTS     AS SELECT * FROM PROD_USER.DEPARTMENTS;
+CREATE TABLE DEV_USER.CUSTOMERS       AS SELECT * FROM PROD_USER.CUSTOMERS;
+CREATE TABLE DEV_USER.ORDERS          AS SELECT * FROM PROD_USER.ORDERS;
+-- ... repeat for every table
+```
+
+### Step 2.3 — Verify the Copy
+Run this to confirm the data was copied correctly:
+
+```sql
+-- Check row counts match between DEV and PROD
+SELECT 'EMPLOYEES' AS TABLE_NAME,
+       (SELECT COUNT(*) FROM PROD_USER.EMPLOYEES) AS PROD_COUNT,
+       (SELECT COUNT(*) FROM DEV_USER.EMPLOYEES)  AS DEV_COUNT
+FROM DUAL;
+-- Expected: PROD_COUNT and DEV_COUNT should be equal
+```
+
+---
+
+## STEP 3: Clone Your APEX App into DEV Workspace
+**Who does this:** Admin | **Where:** APEX Administration
+
+### Step 3.1 — Export the App from PROD Workspace
+1. Go back to your database details page in OCI.
+2. Click **"Database actions"** → **"APEX"**.
+3. Log in to **APEX Administration Services** using your ADMIN database password.
+4. In the workspace list, find your existing **PROD workspace** and click **"Sign In"** next to it.
+5. You are now inside your PROD workspace.
+6. Click the **"App Builder"** large icon on the home screen.
+7. Find your application in the list and click on it.
+8. Click the **"Export / Import"** button (or look for the **"Export"** option in the top actions menu).
+9. Click **"Export"** in the dialog that appears.
+10. Leave all export options as defaults and click **"Export"**.
+11. A `.sql` file will download to your computer (e.g., `fXXX.sql`). Note where it was saved.
+
+### Step 3.2 — Create a New DEV Workspace
+1. Click the **Oracle APEX** logo at the top to go back to APEX Administration.
+2. Click the **"Manage Workspaces"** dropdown → **"Create Workspace"**.
+3. Fill in the form:
+   - **Database User:** Click the magnifying glass icon and select **`DEV_USER`** from the list.
+   - **Workspace Name:** Type `DEV_WORKSPACE`
+   - **Admin Username:** Type `DEV_ADMIN`
+   - **Admin Password:** Create a password and write it down.
+   - **Email:** Type your email address.
+4. Click the **"Create Workspace"** button at the bottom.
+5. Click the link that says **"Click here to log in to DEV_WORKSPACE"**.
+
+### Step 3.3 — Import the App into DEV Workspace
+1. You are now inside `DEV_WORKSPACE`. Click the **"App Builder"** icon.
+2. Click the **"Import"** button (top right of the App Builder page).
+3. Click the **"Choose File"** button and select the `.sql` export file you downloaded in Step 3.1.
+4. Click the **"Next"** button.
+5. On the next screen, click **"Next"** again (leave defaults).
+6. Click **"Install Application"**.
+7. ✅ Your APEX app now exists in both DEV and PROD, perfectly in sync!
+
+---
+
+## STEP 4: Initialize the SQLcl Project (Take PROD Baseline)
+**Who does this:** Admin | **Where:** Local PC (PowerShell + SQLcl)
+
+> [!IMPORTANT]
+> This takes a "snapshot" of your PROD database as the official starting point for the CI/CD system. This tells SQLcl/Liquibase what already exists so it never tries to recreate it.
+
+### Step 4.1 — Set Up Your Local Project Folder
+Open PowerShell on your local PC:
+
+```powershell
+# Navigate to where you want your project to live
+cd C:\Users\YourName\Desktop
+
+# Create the project folder
+mkdir apex-cicd-project
+cd apex-cicd-project
+```
+
+### Step 4.2 — Initialize Git
+```powershell
+git init --initial-branch main
+git config --global user.name "Your Full Name"
+git config --global user.email "your.email@company.com"
+git commit --allow-empty -m "Initial empty commit"
+```
+
+### Step 4.3 — Connect to DEV_USER via SQLcl
+```powershell
+# Tell SQLcl where the wallet is
+$env:TNS_ADMIN = "C:\Wallet"
+
+# Connect to dev_user (check C:\Wallet\tnsnames.ora for your exact connection name)
+sql DEV_USER/"DevPass_2024!"@your_db_name_tp
+```
+
+Your prompt will change to `SQL>` when connected.
+
+### Step 4.4 — Initialize the SQLcl Project
+Inside the `SQL>` prompt:
+
+```sql
+-- Make sure you are in your project folder
+cd C:\Users\YourName\Desktop\apex-cicd-project
+
+-- Initialize the SQLcl project
+project init -name MyProject -schemas DEV_USER -verbose
+
+-- CRITICAL: Disable schema prefix (allows DEV code to run on PROD schema)
+project config set -name export.setTransform.emitSchema -value false -verbose
+```
+
+### Step 4.5 — Export the Current DEV State as the Baseline
+```sql
+-- Export all objects from DEV_USER
+project export -verbose
+
+-- Commit the exported files
+!git add --all
+!git commit -m "Baseline: initial export of DEV_USER schema"
+```
+
+### Step 4.6 — Stage and Mark as Release 1.0.0
+```sql
+-- Stage the changes
+project stage -verbose
+
+-- Commit stage files
+!git add --all
+!git commit -m "Stage baseline for Release 1.0.0"
+
+-- Create the first release (this is your current PROD state)
+project release -version 1.0.0 -verbose
+
+-- Commit the release
+!git add --all
+!git commit -m "Release 1.0.0 - PROD baseline snapshot"
+```
+
+### Step 4.7 — Sync the Baseline with PROD (One-Time Only!)
+This tells Liquibase that all these objects already exist in PROD. This is the SAME step from [lab1.txt](file:///c:/Users/Ezzat/Desktop/apex-ci-cd/lab1.txt) where you replace `lb update` with `lb changelog-sync`.
+
+```sql
+-- Open the install.sql file
+!notepad dist\install.sql
+```
+
+In Notepad, find the line that says:
+```
+lb update
+```
+Change it to:
+```
+lb changelog-sync
+```
+Save and close Notepad. Back in SQLcl:
+
+```sql
+-- Generate and deploy the baseline artifact to PROD
+project gen-artifact -verbose
+
+-- Switch to PROD
+connect PROD_USER/"ProdPass"@your_db_name_tp
+
+-- Run changelog-sync (this does NOT change PROD, just registers the baseline)
+project deploy -file artifact/MyProject-1.0.0.zip -verbose
+```
+
+✅ PROD is now registered. Liquibase knows not to re-create anything that already exists.
+
+### Step 4.8 — Restore install.sql Back to Normal
+```sql
+connect DEV_USER/"DevPass_2024!"@your_db_name_tp
+!notepad dist\install.sql
+```
+Change `lb changelog-sync` back to `lb update`. Save and commit:
+
+```sql
+!git add --all
+!git commit -m "Restore install.sql to lb update for future deployments"
+```
+
+---
+
+## STEP 5: Push Everything to GitHub
+**Who does this:** Admin | **Where:** Local PC (PowerShell)
+
+Exit SQLcl (type `exit`) and run in PowerShell:
+
+```powershell
+# Add your GitHub repository as the remote origin
+# (get this URL from GitHub → your repo → green "Code" button → copy HTTPS URL)
+git remote add origin https://github.com/YourOrg/apex-cicd-project.git
+
+# Push the main branch with all baseline files
+git push -u origin main
+```
+
+Go to GitHub and confirm you can see all the project files in the repository.
+
+---
+
+## STEP 6: Share Wallet and Onboard Developers
+**Who does this:** Admin
+
+1. Share the wallet `.zip` file with all developers (via secure email or Teams).
+2. Share the PROD and DEV passwords securely (use a password manager like 1Password or LastPass).
+3. Each developer should follow **Phase 4 of the main roadmap** to set up their local environment.
+4. Make sure the **branch protection rule** is active on GitHub (no direct pushes to `main`).
+
+---
+
+## New Team Rules (Effective Immediately!)
+
+| ❌ OLD WAY — Stop doing this | ✅ NEW WAY — Do this instead |
+|---|---|
+| Connect directly to PROD and run SQL | Always make changes in DEV first |
+| Manually apply changes to PROD | Use `project deploy` only after review |
+| No review before going to production | Every change needs a Pull Request + approval |
+| One shared database for everyone | Each developer works in DEV, PROD is protected |
+| No history of what changed | Every change is tracked in Git with a commit message |
+
+---
+
+## Migration Checklist
+
+| # | Task | Who | Done? |
+|---|------|-----|-------|
+| 1 | Open Database Actions SQL Worksheet as ADMIN | Admin | ⬜ |
+| 2 | Run script to create `DEV_USER` schema | Admin | ⬜ |
+| 3 | Query `ALL_TABLES` to list all PROD tables | Admin | ⬜ |
+| 4 | Run `CREATE TABLE DEV_USER.X AS SELECT * FROM PROD_USER.X` for each table | Admin | ⬜ |
+| 5 | Verify row counts match between DEV and PROD | Admin | ⬜ |
+| 6 | Export APEX app from PROD workspace | Admin | ⬜ |
+| 7 | Create new `DEV_WORKSPACE` in APEX linked to `DEV_USER` | Admin | ⬜ |
+| 8 | Import APEX app into DEV workspace | Admin | ⬜ |
+| 9 | Create local project folder and initialize Git | Admin | ⬜ |
+| 10 | Connect to `DEV_USER` via local SQLcl | Admin | ⬜ |
+| 11 | Run `project init` to initialize SQLcl project | Admin | ⬜ |
+| 12 | Run `project export` to capture baseline snapshot | Admin | ⬜ |
+| 13 | Stage and create Release 1.0.0 | Admin | ⬜ |
+| 14 | Edit `install.sql`: change `lb update` to `lb changelog-sync` | Admin | ⬜ |
+| 15 | Generate artifact and deploy baseline to PROD (changelog-sync only) | Admin | ⬜ |
+| 16 | Restore `install.sql` back to `lb update` | Admin | ⬜ |
+| 17 | Push all files to GitHub main branch | Admin | ⬜ |
+| 18 | Share wallet and credentials securely with developers | Admin | ⬜ |
+| 19 | Each developer sets up their local environment | Each Dev | ⬜ |
+| 20 | First test Pull Request submitted and approved | Team | ⬜ |
+| 21 | First `project deploy` to PROD after approval | Admin | ⬜ |
