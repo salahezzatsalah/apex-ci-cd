@@ -1,0 +1,1391 @@
+---
+# ====== Page: Fast Track Services Catalog ===================
+id: 452
+identification: 
+  name: Fast Track Services Catalog
+  alias: FAST-TRACK-SERVICES-CATALOG
+  title: كتالوج خدمات المسار السريع
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: filters =====================================
+  id: 17940471127926552591
+  identification: 
+    name: filters
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 19665308944175189072
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 20529652299208203890
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 19665308944175189072
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20529653532714203902
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تكويد خدمة جديدة ============================
+    id: 16641180122005946514
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تكويد خدمة جديدة
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:453:&SESSION.::&DEBUG.:RP,453::'
+        page: 453 # Fast Track Service Registration Form
+        clear-cache: RP,453
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20529652599787203893
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: اعدة ظبط ======================================
+      id: 17760973328814301159
+      identification: 
+        type: Menu Entry
+        label: اعدة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:452:&SESSION.::&DEBUG.:RP,74::'
+          page: 452 # Fast Track Services Catalog
+          clear-cache: RP,74
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث =========================================
+      id: 20529653305694203900
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:452:&SESSION.::&DEBUG.:RP,::'
+          page: 452 # Fast Track Services Catalog
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Fast Track Services =========================
+  id: 20983239417671268407
+  identification: 
+    name: Fast Track Services
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          c.SERVICE_ID,
+          c.SERVICE_NAME,
+      
+          (SELECT p.PRICE || ' ' || p.CURRENCY_CODE
+           FROM FAST_TRACK_SERVICE_PRICES p
+           WHERE p.SERVICE_ID = c.SERVICE_ID
+           ORDER BY ABS(TRUNC(p.EFFECTIVE_DATE) - TRUNC(SYSDATE)) ASC
+           FETCH FIRST 1 ROW ONLY
+          ) AS CURRENT_PRICE,
+      
+      
+          (SELECT TO_CHAR(ROUND(p.PRICE * r.EXCHANGE_RATE, 2)) || ' EGP'
+           FROM FAST_TRACK_SERVICE_PRICES p
+           JOIN CURRENCY_RATES r
+             ON r.CURRENCY_CODE = p.CURRENCY_CODE
+           WHERE p.SERVICE_ID = c.SERVICE_ID
+             AND r.RATE_DATE = (SELECT MAX(RATE_DATE) 
+                                FROM CURRENCY_RATES
+                                WHERE CURRENCY_CODE = p.CURRENCY_CODE)
+           ORDER BY ABS(TRUNC(p.EFFECTIVE_DATE) - TRUNC(SYSDATE)) ASC
+           FETCH FIRST 1 ROW ONLY
+          ) AS PRICE_EGP,
+      
+          -- تاريخ السعر
+          (SELECT TO_CHAR(p.EFFECTIVE_DATE,'DD-MON-YYYY')
+           FROM FAST_TRACK_SERVICE_PRICES p
+           WHERE p.SERVICE_ID = c.SERVICE_ID
+           ORDER BY ABS(TRUNC(p.EFFECTIVE_DATE) - TRUNC(SYSDATE)) ASC
+           FETCH FIRST 1 ROW ONLY
+          ) AS PRICE_EFFECTIVE_DATE
+      
+      FROM FAST_TRACK_SERVICE_CATALOG c
+      WHERE c.ACTIVE = 'Y'
+      ;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - car-content-row
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: '&SERVICE_ID.'
+      title: |
+        &SERVICE_NAME.
+        
+      description: |
+        &SERVICE_DESC.
+        &CURRENT_PRICE.
+        
+        
+      miscellaneous: '&PRICE_EGP.'
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: CURRENT_PRICE ===============================
+    id: 194084990248499753
+    identification: 
+      name: CURRENT_PRICE
+
+    layout: 
+      sequence: 370
+
+    source: 
+      type: Database Column
+      database-column: CURRENT_PRICE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRICE_EFFECTIVE_DATE ========================
+    id: 194085152674499754
+    identification: 
+      name: PRICE_EFFECTIVE_DATE
+
+    layout: 
+      sequence: 380
+
+    source: 
+      type: Database Column
+      database-column: PRICE_EFFECTIVE_DATE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRICE_EGP ===================================
+    id: 194085489590499757
+    identification: 
+      name: PRICE_EGP
+
+    layout: 
+      sequence: 390
+
+    source: 
+      type: Database Column
+      database-column: PRICE_EGP
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SERVICE_ID ==================================
+    id: 281137351297921365
+    identification: 
+      name: SERVICE_ID
+
+    layout: 
+      sequence: 310
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SERVICE_NAME ================================
+    id: 281137543275921367
+    identification: 
+      name: SERVICE_NAME
+
+    layout: 
+      sequence: 320
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14744637267668268664
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    menus: 
+    - # ====== Menu: اضافة تسعيرة ==================================
+      id: 343936155571797880
+      identification: 
+        type: Menu Entry
+        label: اضافة تسعيرة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:143:&SESSION.::&DEBUG.:143:P143_HOTEL_ID:&HOTEL_ID.'
+          page: 143
+          clear-cache: 143
+          values: 
+            p143_hotel_id: '&HOTEL_ID.'
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض ملف نوع السيارة ===========================
+      id: 14744637538368268666
+      identification: 
+        type: Menu Entry
+        label: عرض ملف نوع السيارة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:134:&SESSION.::&DEBUG.:RP,134:P134_ID:&HOTEL_ID.'
+          page: 134
+          clear-cache: RP,134
+          values: 
+            p134_id: '&HOTEL_ID.'
+
+      appearance: 
+        icon: fa-user
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: تعديل (ADMIN) =================================
+      id: 14744637590848268667
+      identification: 
+        type: Menu Entry
+        label: تعديل (ADMIN)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:453:&SESSION.::&DEBUG.:RP,453:P453_SERVICE_ID:&SERVICE_ID.'
+          page: 453 # Fast Track Service Registration Form
+          clear-cache: RP,453
+          values: 
+            p453_service_id: '&SERVICE_ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+  - # ====== Action: Full Row Link ===============================
+    id: 14744638556761268677
+    identification: 
+      position: Full Row Link # 349402277895478545
+
+    layout: 
+      sequence: 30
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:1600:&SESSION.::&DEBUG.:RP,354:P1600_SERVICE_iD:&SERVICE_ID.'
+        page: 1600 # Fast Track Profile Service
+        clear-cache: RP,354
+        values: 
+          p1600_service_id: '&SERVICE_ID.'
+
+- # ====== Region: Faceted Search ==============================
+  id: 21778983039456928177
+  identification: 
+    name: Faceted Search
+    title: إدوات البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: Fast Track Services # 20983239417671268407
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 20
+
+  facets: 
+  - # ====== Facet: P452_HASPIC ==================================
+    id: 319019414142522082
+    identification: 
+      name: P452_HASPIC
+      type: Checkbox Group
+
+    label: 
+      label: يوجد صورة ملف
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Facet: P452_SEATS ===================================
+    id: 355230314743521729
+    identification: 
+      name: P452_SEATS
+      type: Checkbox Group
+
+    label: 
+      label: عدد المقاعد
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: SEATS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Facet: P452_SEARCH ==================================
+    id: 21779054927043928425
+    identification: 
+      name: P452_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P452_STATUS ==================================
+    id: 21779055059092928426
+    identification: 
+      name: P452_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الإتاحة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Facet: P452_CATEGORY ================================
+    id: 24229160953465946847
+    identification: 
+      name: P452_CATEGORY
+      type: Checkbox Group
+
+    label: 
+      label: تصنيف السيارة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES CATEGORIES # 266657472268387203
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CATEGORY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  filters: 
+  - # ====== Filter: P452_HASPIC =================================
+    id: 319019414142522082
+    identification: 
+      name: P452_HASPIC
+      type: Checkbox Group
+
+    label: 
+      label: يوجد صورة ملف
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Filter: P452_SEATS ==================================
+    id: 355230314743521729
+    identification: 
+      name: P452_SEATS
+      type: Checkbox Group
+
+    label: 
+      label: عدد المقاعد
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: SEATS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Filter: P452_SEARCH =================================
+    id: 21779054927043928425
+    identification: 
+      name: P452_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P452_STATUS =================================
+    id: 21779055059092928426
+    identification: 
+      name: P452_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الإتاحة
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Filter: P452_CATEGORY ===============================
+    id: 24229160953465946847
+    identification: 
+      name: P452_CATEGORY
+      type: Checkbox Group
+
+    label: 
+      label: تصنيف السيارة
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES CATEGORIES # 266657472268387203
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CATEGORY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+page-items: 
+- # ====== Page Item: P452_ORDER_BY ============================
+  id: 14744685312798268809
+  identification: 
+    name: P452_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: filters # 17940471127926552591
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:اسم السيارة;CAR_TYPE_NAME,تصنيف السيارة;CATEGORY'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: CAR_TYPE_NAME
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 281111219916893862
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 19665308944175189072
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:450:&SESSION.::&DEBUG.:RP,::'
+      page: 450 # FastTrack Department Home
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 281115122203893867
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Fast Track Services # 20983239417671268407
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 281115660657893869
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Fast Track Services # 20983239417671268407
+
+    execution: 
+      sequence: 10
+      event: DC # 281115122203893867
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 281116194546893869
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21778983039456928177
+
+    execution: 
+      sequence: 20
+      event: DC # 281115122203893867
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog closed ============
+  id: 281116507744893869
+  identification: 
+    name: refresh on dialog closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 19665308944175189072
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 281117096127893870
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Fast Track Services # 20983239417671268407
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog closed # 281116507744893869
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 281117603352893870
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21778983039456928177
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog closed # 281116507744893869
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: create =====================================
+  id: 194085490150499758
+  identification: 
+    name: create
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_blob        BLOB;
+          l_filename    VARCHAR2(255);
+          l_extension   VARCHAR2(20);
+          l_object_name VARCHAR2(400);
+          l_public_url  VARCHAR2(4000);
+      BEGIN
+          -- افترض أن اسم الملف في APEX Temp Files
+          SELECT blob_content, filename
+            INTO l_blob, l_filename
+            FROM apex_application_temp_files
+           WHERE name = :P1_UPLOAD_FILE;  -- عنصر رفع الصورة في الصفحة
+      
+          l_extension   := LOWER(NVL(REGEXP_SUBSTR(l_filename, '\.[[:alnum:]]+$'), '.jpg'));
+          l_object_name := 'SERVICE_IMAGES/' || :P1_SERVICE_ID || l_extension;
+      
+          -- ضبط الـ bucket
+          drive_crud_api.set_bucket(app_config.g_default_bucket);
+      
+          -- رفع الصورة
+          drive_crud_api.upload_file(
+              p_parent_name => 'SERVICE_IMAGES',
+              p_filename    => :P1_SERVICE_ID || l_extension,
+              p_blob        => l_blob
+          );
+      
+          -- إنشاء URL عام للصورة
+          l_public_url := 'https://objectstorage.me-jeddah-1.oraclecloud.com' ||
+                          drive_crud_api.create_par(
+                              p_object_name  => l_object_name,
+                              p_par_name     => 'service-' || :P1_SERVICE_ID || '-par',
+                              p_time_expires => ADD_MONTHS(SYSTIMESTAMP, 12)
+                          );
+      
+          -- تحديث الجدول بالـ URL
+          UPDATE FAST_TRACK_SERVICE_CATALOG
+             SET SERVICE_PIC_URL = l_public_url,
+                 SERVICE_PIC_LASTUPD = SYSTIMESTAMP
+           WHERE SERVICE_ID = :P1_SERVICE_ID;
+      
+          COMMIT;
+      EXCEPTION
+          WHEN OTHERS THEN
+              ROLLBACK;
+              RAISE_APPLICATION_ERROR(-20001, 'Upload failed: ' || SQLERRM);
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: sync roles =================================
+  id: 281114761702893867
+  identification: 
+    name: sync roles
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_members_app_role (
+          p_app_id => :APP_ID);
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Never
+

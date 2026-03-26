@@ -1,0 +1,350 @@
+---
+# ====== Page: Order Details =================================
+id: 255
+identification: 
+  name: Order Details
+  alias: ORDER-DETAILS
+  title: 'تفاصيل الطلب '
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Order Details Region ========================
+  id: 201525421497330171
+  identification: 
+    name: Order Details Region
+    title: تفاصيل الطلب
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html        CLOB := '';
+        l_total       NUMBER := 0;
+        l_currency    VARCHAR2(10);
+        l_items_count NUMBER := 0;
+        l_status_lbl  VARCHAR2(200);
+        l_status_cls  VARCHAR2(100);
+      BEGIN
+        /* ===============================
+           Load order header
+           =============================== */
+        SELECT
+          m.currency_code,
+          NVL(SUM(i.amount_orig),0),
+          s.status_label_ar,
+          s.status_badge_class,
+          COUNT(i.order_item_id)
+        INTO
+          l_currency,
+          l_total,
+          l_status_lbl,
+          l_status_cls,
+          l_items_count
+        FROM main_reservations m
+        JOIN vw_reservation_statuses s
+          ON s.status_code = m.status
+        LEFT JOIN order_items i
+          ON i.main_res_id = m.main_res_id
+         AND NVL(i.is_cancelled,'N')='N'
+        WHERE m.main_res_id = :P255_MAIN_RES_ID
+        GROUP BY m.currency_code, s.status_label_ar, s.status_badge_class;
+      
+        /* ===============================
+           Styles
+           =============================== */
+        l_html := '
+      <style>
+      .order-report{direction:rtl;font-family:Inter,Tahoma,Arial}
+      .section-title{font-weight:900;margin:18px 0 8px}
+      .badge{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:800}
+      
+      table{width:100%;border-collapse:collapse;font-size:13px}
+      th{
+        background:#f9fafb;
+        text-align:right;
+        padding:10px;
+        font-weight:800;
+        border-bottom:1px solid #e5e7eb
+      }
+      td{
+        padding:10px;
+        border-bottom:1px solid #f1f5f9;
+        vertical-align:top
+      }
+      
+      .header-table td{border:none}
+      .header-total{font-size:20px;font-weight:900;color:#f59e0b}
+      
+      .service-title{font-weight:800}
+      .service-sub{font-size:12px;color:#6b7280;margin-top:2px}
+      .service-datetime{font-size:12px;color:#334155;margin-top:4px}
+      
+      tfoot td{
+        font-weight:900;
+        background:#f8fafc
+      }
+      
+      .actions{
+        margin-top:16px;
+        display:flex;
+        gap:10px
+      }
+      .btn{
+        flex:1;
+        padding:12px;
+        border-radius:14px;
+        font-weight:800;
+        text-align:center;
+        text-decoration:none
+      }
+      .btn-outline{border:1px solid #d1d5db;color:#374151}
+      .btn-primary{background:#f59e0b;color:#111827}
+      
+      @media(max-width:640px){
+        table,thead,tbody,tr,td,th{font-size:12px}
+      }
+      </style>
+      
+      <div class="order-report">
+      ';
+      
+        /* ===============================
+           HEADER TABLE
+           =============================== */
+        l_html := l_html || '
+      <table class="header-table">
+        <tr>
+          <td>
+            <div><b>طلب #'||:P255_MAIN_RES_ID||'</b></div>
+            <div style="color:#6b7280;font-size:12px">تقرير تفصيلي للطلب</div>
+          </td>
+          <td style="text-align:left">
+            <span class="badge '||l_status_cls||'">'||l_status_lbl||'</span>
+            <div class="header-total">'||l_total||' '||l_currency||'</div>
+          </td>
+        </tr>
+      </table>';
+      
+        /* ===============================
+           SUMMARY TABLE
+           =============================== */
+        l_html := l_html || '
+      <div class="section-title">ملخص الطلب</div>
+      <table>
+        <tr>
+          <th>عدد العناصر</th>
+          <th>العملة</th>
+          <th>حالة الطلب</th>
+        </tr>
+        <tr>
+          <td>'||l_items_count||'</td>
+          <td>'||l_currency||'</td>
+          <td>'||l_status_lbl||'</td>
+        </tr>
+      </table>';
+      
+        /* ===============================
+           SERVICES TABLE
+           =============================== */
+        l_html := l_html || '
+      <div class="section-title">تفاصيل الخدمات</div>
+      <table>
+        <thead>
+          <tr>
+            <th>الخدمة</th>
+            <th>التفاصيل</th>
+            <th>السعر</th>
+          </tr>
+        </thead>
+        <tbody>';
+      
+        FOR r IN (
+          SELECT
+            i.ref_table,
+            i.amount_orig,
+            i.currency,
+      
+            /* ===== Title ===== */
+            CASE
+              WHEN i.ref_table = 'SUBLEVEL_LIMO_RES' THEN
+                '🚗 '||NVL(ct.CAR_TYPE_NAME,'سيارة')||' — '||
+                CASE
+                  WHEN l.TRIP_TYPE = 'TRANSFER' THEN 'توصيلة'
+                  WHEN l.TRIP_TYPE = 'DAILY' THEN 'يومية'
+                  ELSE 'رحلة'
+                END
+              WHEN i.ref_table = 'SUBLEVEL_FAST_TRACK_RES' THEN
+                '✈️ '||sft.SERVICE_NAME
+              ELSE i.item_type
+            END AS title,
+      
+            /* ===== Details ===== */
+            CASE
+              WHEN i.ref_table = 'SUBLEVEL_LIMO_RES'
+                THEN NVL(l.FROM_LOCATION,'-')||' → '||NVL(l.TO_LOCATION,'-')
+              WHEN i.ref_table = 'SUBLEVEL_FAST_TRACK_RES'
+                THEN ap.AIRPORT_NAME||' (صالة '||ft.TERMINAL_NO||') — ركاب: '||ft.PASSENGERS_NO
+            END AS details,
+      
+            /* ===== Date & Time ===== */
+            CASE
+              WHEN i.ref_table = 'SUBLEVEL_LIMO_RES'
+                THEN TO_CHAR(l.RES_DATE_FROM,'YYYY-MM-DD')||' — '||NVL(l.RES_TIME,'--:--')
+              WHEN i.ref_table = 'SUBLEVEL_FAST_TRACK_RES'
+                THEN TO_CHAR(ft.RES_DATE,'YYYY-MM-DD')||' — '||NVL(ft.RES_TIME,'--:--')
+            END AS service_datetime
+      
+          FROM order_items i
+      
+          LEFT JOIN sublevel_limo_res l
+            ON i.ref_table='SUBLEVEL_LIMO_RES' AND l.SUB_RES_ID=i.ref_id
+          LEFT JOIN LIMO_CAR_TYPES ct
+            ON l.CAT_ITEM_ID=ct.CAR_TYPE_ID
+      
+          LEFT JOIN sublevel_fast_track_res ft
+            ON i.ref_table='SUBLEVEL_FAST_TRACK_RES' AND ft.SUB_RES_ID=i.ref_id
+          LEFT JOIN FAST_TRACK_SERVICE_CATALOG sft ON sft.SERVICE_ID=ft.CAT_ITEM_ID
+          LEFT JOIN AIRPORTS ap ON ap.AIRPORT_ID=ft.AIRPORT_ID
+      
+          WHERE i.main_res_id=:P255_MAIN_RES_ID
+            AND NVL(i.is_cancelled,'N')='N'
+        ) LOOP
+      
+          l_html := l_html || '
+      <tr>
+        <td>
+          <div class="service-title">'||r.title||'</div>
+          <div class="service-datetime">🕒 '||r.service_datetime||'</div>
+        </td>
+        <td>
+          <div class="service-sub">'||NVL(r.details,'')||'</div>
+        </td>
+        <td>'||r.amount_orig||' '||r.currency||'</td>
+      </tr>';
+      
+        END LOOP;
+      
+        l_html := l_html || '
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">الإجمالي</td>
+            <td>'||l_total||' '||l_currency||'</td>
+          </tr>
+        </tfoot>
+      </table>';
+      
+        /* ===============================
+           ACTIONS
+           =============================== */
+        l_html := l_html || '
+      <div class="actions">
+        <a class="btn btn-outline" href="#">عرض الفاتورة</a>
+        <a class="btn btn-primary" href="#">إلغاء الطلب</a>
+      </div>
+      </div>';
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+page-items: 
+- # ====== Page Item: P255_MAIN_RES_ID =========================
+  id: 201525291638330170
+  identification: 
+    name: P255_MAIN_RES_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+

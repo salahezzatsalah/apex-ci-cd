@@ -1,0 +1,689 @@
+---
+# ====== Page: Change Password ===============================
+id: 10015
+identification: 
+  name: Change Password
+  alias: CHANGE-PASSWORD
+  title: تغير كلمة المرور
+
+appearance: 
+  page-mode: Normal
+  page-template: Login
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    $(document).ready(function () {
+        const changeText = function (element, text, color) {
+            element.text(text).css("color", color);
+        };
+    
+        const checkPasswordStrength = function (password) {
+            const conditions = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[$@$!%*#?&]/.test(password),
+            };
+    
+            const passedConditions = Object.values(conditions).filter(Boolean).length;
+    
+            if (passedConditions === 0) {
+                return { message: "كلمة المرور الجديدة فارغة", color: "black", strength: 0 };
+            } else if (passedConditions <= 2) {
+                return { message: "ضعيف جدا", color: "#FF4B47", strength: 1 };
+            } else if (passedConditions === 3 || passedConditions === 4) {
+                return { message: "يمكن أن يكون أقوى", color: "#F9AE35", strength: 2 };
+            } else {
+                return { message: "كلمة مرور قوية", color: "#2DAF7D", strength: 3 };
+            }
+        };
+    
+        $("#P10015_NEW_PASSWORD").keyup(function () {
+            const password = this.value;
+            const pbText = $(".progress-bar_text");
+            const result = checkPasswordStrength(password);
+    
+            // Update progress bar items
+            $(".progress-bar_item").each(function (index) {
+                if (index < result.strength) {
+                    $(this).addClass("active").css("background-color", result.color);
+                } else {
+                    $(this).removeClass("active").css("background-color", "transparent");
+                }
+            });
+    
+            // Update the progress bar text
+            changeText(pbText, result.message, result.color);
+        });
+    });
+
+css: 
+  inline: |
+    .t-Form-itemWrapper:has(.display_only.apex-item-display-only) {
+        flex: 1;
+        border: none;
+    }
+    .t-Login-region {
+        background: rgba(255, 255, 255, 0.3);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(2px);
+        border-radius: 15px;
+        box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .t-Login-body .apex-item-text {
+        background: rgba(255, 255, 255, 50%);
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+    }
+    .t-Login-body input:hover,
+    .t-Login-body input:focus,
+    .t-Login-body input:focus-within {
+        background: rgba(255,255,255, 75%);
+        --a-field-input-state-shadow: 0;
+    }
+    span.apex-item-icon {
+        color: #053242;
+        z-index: 100;
+    }
+    span.apex-item-icon.fa.fa-user {
+        padding-left: 16px;
+    }
+    .progress-bar_wrap {
+        flex: 1;
+        height: 5px;
+        background: #ededed;
+        display: inline-block;
+        vertical-align: middle;
+        overflow: hidden;
+        border-radius: 5px;
+    }
+    .progress-bar_wrap  .progress-bar_item {
+        display: inline-block;
+        height: 100%;
+        width: 33.33%;
+        float: right;
+        visibility: hidden;
+        transition: background-color 0.4s ease-in-out, visisility 0.4s ease-in-out;
+    }
+    .progress-bar_wrap  .active {
+        visibility: visible;
+    }
+    .progress-bar_text {
+        display: inline-block;
+        color: #555;
+        margin-left: 5px;
+        transition: .2s;
+        font-size: 14px;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Change Password =============================
+  id: 265928295932109230
+  identification: 
+    name: Change Password
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Login
+    template-options: 
+    - '#DEFAULT#'
+    - t-Login-region--headerHidden js-removeLandmark
+    - t-Form--slimPadding
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P10015_USERNAME ==========================
+  id: 265928395787109231
+  identification: 
+    name: P10015_USERNAME
+    type: Display Only
+
+  label: 
+    label: اسم المستخدم
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Change Password # 265928295932109230
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-user
+
+  advanced: 
+    css-classes: 
+    - u-textLower
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10015_CURRENT_PASSWORD ==================
+  id: 265928460646109232
+  identification: 
+    name: P10015_CURRENT_PASSWORD
+    type: Password
+
+  label: 
+    label: كلمة المرور الحالية
+    alignment: Left
+
+  settings: 
+    submit-when-enter-pressed: true
+
+  layout: 
+    sequence: 20
+    region: Change Password # 265928295932109230
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-lock-password
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10015_NEW_PASSWORD ======================
+  id: 265928576227109233
+  identification: 
+    name: P10015_NEW_PASSWORD
+    type: Password
+
+  label: 
+    label: كلمة المرور الجديدة
+    alignment: Left
+
+  settings: 
+    submit-when-enter-pressed: true
+
+  layout: 
+    sequence: 30
+    region: Change Password # 265928295932109230
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-lock-password
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    inline-help-text: |
+      <div style="width:100%; display:flex;justify-content: space-between;gap:5px;align-items: center;">
+          <span class="progress-bar_text">كلمة المرور الجديدة فارغة</span>
+          <div class="progress-bar_wrap">
+              <div class="progress-bar_item progress-bar_item-1"></div>
+              <div class="progress-bar_item progress-bar_item-2"></div>
+              <div class="progress-bar_item progress-bar_item-3"></div>
+          </div>
+      </div>
+
+- # ====== Page Item: P10015_CONFIRM_PASSWORD ==================
+  id: 265928635666109234
+  identification: 
+    name: P10015_CONFIRM_PASSWORD
+    type: Password
+
+  label: 
+    label: تاكيد كلمة المرور الجديدة
+    alignment: Left
+
+  settings: 
+    submit-when-enter-pressed: true
+
+  layout: 
+    sequence: 40
+    region: Change Password # 265928295932109230
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-lock-password
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CONFIRM =====================================
+  id: 265928893117109236
+  identification: 
+    button-name: CONFIRM
+    label: تغيير كلمة المرور
+
+  layout: 
+    sequence: 50
+    region: Change Password # 265928295932109230
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--gapTop
+    - t-Button--padBottom
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CANCEL ======================================
+  id: 265928990658109237
+  identification: 
+    button-name: CANCEL
+    label: رجوع الي الصفحة الرئيسية
+
+  layout: 
+    sequence: 60
+    region: Change Password # 265928295932109230
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:1::'
+      page: 1 # home
+      clear-cache: 1
+
+    warn-on-unsaved-changes: Do Not Check
+
+validations: 
+- # ====== Validation: Current Password is valid ===============
+  id: 265929044787109238
+  identification: 
+    name: Current Password is valid
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Function Body (returning Boolean)
+    language: PL/SQL
+    pl/sql-function-body: |
+      DECLARE
+          v_current_pwd   varchar2(4000);
+      BEGIN
+          SELECT password_hash
+          INTO v_current_pwd
+          FROM bs_employees
+          WHERE upper(username) = upper(:P10015_USERNAME);
+      
+          IF v_current_pwd = security_pkg.get_hashing(p_text => :P10015_CURRENT_PASSWORD) THEN
+              return true;
+          ELSE
+              return false;
+          END IF;
+      
+      END;
+    always-execute: false
+
+  error: 
+    error-message: كلمة المرور الحالية غير صحيحة.
+    display-location: Inline with Field and in Notification
+    associated-item: P10015_CURRENT_PASSWORD # 265928460646109232
+
+- # ====== Validation: New Password is valid ===================
+  id: 265929144137109239
+  identification: 
+    name: New Password is valid
+
+  execution: 
+    sequence: 20
+
+  validation: 
+    type: Function Body (returning Boolean)
+    language: PL/SQL
+    pl/sql-function-body: |
+      BEGIN
+          IF LENGTH(:P10015_NEW_PASSWORD) < 4 THEN
+              RETURN FALSE;
+          END IF;
+      
+          RETURN TRUE;
+      END;
+    always-execute: false
+
+  error: 
+    error-message: يجب أن تتكون كلمة المرور الخاصة بك من 8 أحرف على الأقل ويجب أن تحتوي على حرف كبير واحد على الأقل وحرف صغير واحد ورقم واحد وحرف خاص واحد على الأقل.
+    display-location: Inline with Field and in Notification
+    associated-item: P10015_NEW_PASSWORD # 265928576227109233
+
+- # ====== Validation: Confirm Password is valid ===============
+  id: 265929258338109240
+  identification: 
+    name: Confirm Password is valid
+
+  execution: 
+    sequence: 30
+
+  validation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':P10015_NEW_PASSWORD = :P10015_CONFIRM_PASSWORD'
+    always-execute: false
+
+  error: 
+    error-message: تاكيد كلمة المرور لا يتطابق مع كلمة المرور الجديدة.
+    display-location: Inline with Field and in Notification
+    associated-item: P10015_CONFIRM_PASSWORD # 265928635666109234
+
+processes: 
+- # ====== Process: Change Password ============================
+  id: 265929357326109241
+  identification: 
+    name: Change Password
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+          UPDATE BS_EMPLOYEES
+          SET PASSWORD_HASH = :P10015_NEW_PASSWORD
+          WHERE upper(username) = upper(:P10015_USERNAME);
+      END;
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: تم تغيير كلمة المرور الخاصة بك بنجاح.
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Set Username Cookie ========================
+  id: 265943021482310125
+  identification: 
+    name: Set Username Cookie
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: APEX_AUTHENTICATION
+    procedure-or-function: SEND_LOGIN_USERNAME_COOKIE
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  parameters: 
+  - # ====== Parameter: p_username ===============================
+    id: 265929591583109243
+    identification: 
+      name: p_username
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: 'lower( :P10015_USERNAME )'
+
+    advanced: 
+      display-sequence: 10
+
+- # ====== Process: Login ======================================
+  id: 265943373740311268
+  identification: 
+    name: Login
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: APEX_AUTHENTICATION
+    procedure-or-function: LOGIN
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  parameters: 
+  - # ====== Parameter: p_username ===============================
+    id: 265929831211109246
+    identification: 
+      name: p_username
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P10015_USERNAME
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_password ===============================
+    id: 265929970143109247
+    identification: 
+      name: p_password
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P10015_NEW_PASSWORD
+
+    advanced: 
+      display-sequence: 20
+
+- # ====== Process: Clear Page(s) Cache ========================
+  id: 265943634202312053
+  identification: 
+    name: Clear Page(s) Cache
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear all Items on the Current Page
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+

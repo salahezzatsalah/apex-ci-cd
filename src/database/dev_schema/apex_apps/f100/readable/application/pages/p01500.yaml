@@ -1,0 +1,2130 @@
+---
+# ====== Page: FT-Sub-Level-Reservation Form =================
+id: 1500
+identification: 
+  name: FT-Sub-Level-Reservation Form
+  alias: FT-SUB-LEVEL-RESERVATION-FORM
+  title: استمارة حجز مسار سريع
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Passenger_Info ==============================
+  id: 177083213380573197
+  identification: 
+    name: Passenger_Info
+    title: بيانات الركاب
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE 
+          l_html CLOB := ''; 
+          l_count NUMBER := NVL(:P1500_PASSENGERS_NO, 0); 
+          l_name_idx NUMBER := 1;  -- index للأسماء
+          l_nat_idx NUMBER := 1;   -- index للجنسيات
+      BEGIN 
+          IF l_count > 0 THEN 
+              l_html := '<div class="passengers-container">';
+              
+              FOR i IN 1..l_count LOOP 
+                  l_html := l_html || 
+                      '<div class="passenger-row" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">' ||
+                      '<h4>الركاب ' || i || '</h4>' ||
+                      '<div class="row">' ||
+                      '<div class="col col-6">' ||
+                      '<label for="P_NAME_'||i||'">الاسم <span style="color:red;">*</span></label>' ||
+                      apex_item.text( 
+                          p_idx => 1,  -- كل الأسماء في g_f01
+                          p_value => NULL, 
+                          p_size => 30,
+                          p_maxlength => 200,
+                          p_attributes => 'id="P_NAME_'||i||'" class="apex-item-text" placeholder="ادخل اسم الراكب"' 
+                      ) || 
+                      '</div>' ||
+                      '<div class="col col-6">' ||
+                      '<label for="P_NAT_'||i||'">الجنسية <span style="color:red;">*</span></label>' ||
+                      apex_item.text( 
+                          p_idx => 2,  -- كل الجنسيات في g_f02
+                          p_value => NULL, 
+                          p_size => 30,
+                          p_maxlength => 100,
+                          p_attributes => 'id="P_NAT_'||i||'" class="apex-item-text" placeholder="ادخل جنسية الراكب"' 
+                      ) || 
+                      '</div>' ||
+                      '</div>' ||
+                      '</div>'; 
+              END LOOP; 
+              
+              l_html := l_html || '</div>'; 
+          END IF; 
+          
+          RETURN l_html; 
+      END;
+    page-items-to-submit: 
+    - P1500_PASSENGERS_NO
+
+  layout: 
+    sequence: 110
+    parent-region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Buttons =====================================
+  id: 192304906793203089
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: FT-Sub-Level-Reservation Form ===============
+  id: 192346074758501281
+  identification: 
+    name: FT-Sub-Level-Reservation Form
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Reservation Details =========================
+  id: 196007454026942192
+  identification: 
+    name: Reservation Details
+    title: بيانات الحجز
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Financial Details ===========================
+  id: 196007543710942193
+  identification: 
+    name: Financial Details
+    title: البيانات المالية
+    type: Static Content
+
+  layout: 
+    sequence: 60
+    parent-region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P1500_SUB_RES_ID =========================
+  id: 192285631160202987
+  identification: 
+    name: P1500_SUB_RES_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_MAIN_RES_ID ========================
+  id: 192286016572202998
+  identification: 
+    name: P1500_MAIN_RES_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_CAT_ITEM_ID ========================
+  id: 192286764658203015
+  identification: 
+    name: P1500_CAT_ITEM_ID
+    type: Select One
+
+  label: 
+    label: نرع الخدمة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 40
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 50
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: FAST TRACK SERVICE LIST # 281238947486638512
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_RES_DATE ===========================
+  id: 192287186997203017
+  identification: 
+    name: P1500_RES_DATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ الوصول
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 10
+    region: Reservation Details # 196007454026942192
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_RES_TIME ===========================
+  id: 192287492980203018
+  identification: 
+    name: P1500_RES_TIME
+    type: ClockPicker
+
+  label: 
+    label: ساعة الوصول
+    alignment: Left
+
+  settings: 
+    placement: Bottom
+    align: Left
+    autoclose: True
+    12h-mode: False
+    done-button-text: Done
+    show-clock-button: No
+    suppress-mobile-keyboards: No
+    logging: False
+
+  layout: 
+    sequence: 10
+    region: Reservation Details # 196007454026942192
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 5
+
+  advanced: 
+    custom-attributes: 
+    - type="time"
+    - 'min="00:00"'
+    - 'max="23:59"'
+    - step="60"
+    - class="apex-item-text"
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_AIRPORT_ID =========================
+  id: 192287954064203020
+  identification: 
+    name: P1500_AIRPORT_ID
+    type: Select One
+
+  label: 
+    label: تنفيذ في مطار
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 10
+    region: Reservation Details # 196007454026942192
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 30
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      select 
+      AIRPORT_NAME || ' - ' || AIRPORT_CODE as DISPLAY, 
+      AIRPORT_ID as RETURN from airports
+      where IS_ACTIVE = 'Y'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_TERMINAL_NO ========================
+  id: 192288297586203021
+  identification: 
+    name: P1500_TERMINAL_NO
+    type: Text Field
+
+  label: 
+    label: رقم الصالة - اختياري
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Reservation Details # 196007454026942192
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_TICKET_URL =========================
+  id: 192288708739203023
+  identification: 
+    name: P1500_TICKET_URL
+    type: File Upload
+
+  label: 
+    label: صورة التذكرة
+    alignment: Left
+
+  display: 
+    display-as: Inline Dropzone
+    capture-using: NONE
+
+  storage:: 
+    type: Table APEX_APPLICATION_TEMP_FILES
+    purge-file-at: End of Session
+    allow-multiple-files: true
+    maximum-file-size: 100000
+
+  layout: 
+    sequence: 160
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_PASSENGERS_NO ======================
+  id: 192289122705203025
+  identification: 
+    name: P1500_PASSENGERS_NO
+    type: Number Field
+
+  label: 
+    label: عدد الافراد
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 20
+    region: Reservation Details # 196007454026942192
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: 1
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_PASSENGERS_INFO ====================
+  id: 192289532311203026
+  identification: 
+    name: P1500_PASSENGERS_INFO
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 130
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: CLOB
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_CURRENCY ===========================
+  id: 192289966589203028
+  identification: 
+    name: P1500_CURRENCY
+    type: Select One
+
+  label: 
+    label: عملة الحجز
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 10
+    region: Financial Details # 196007543710942193
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: USD
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_SERVICE_CLASS ======================
+  id: 192290346773203029
+  identification: 
+    name: P1500_SERVICE_CLASS
+    type: Radio Group
+
+  label: 
+    label: تصنيف الخدمة
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: Reservation Details # 196007454026942192
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--indicatorAsterisk
+    - t-Form-fieldContainer--large
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--slimPadding
+    - t-Form-fieldContainer--boldDisplay
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:استقبال;WELCOME,توديع;DEPARTURE'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_PRICE_PER_PERSON ===================
+  id: 192290745153203031
+  identification: 
+    name: P1500_PRICE_PER_PERSON
+    type: Number Field
+
+  label: 
+    label: سعر الفرد
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 10
+    region: Financial Details # 196007543710942193
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_TOTAL_AMOUNT =======================
+  id: 192291095058203032
+  identification: 
+    name: P1500_TOTAL_AMOUNT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 140
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_STATUS =============================
+  id: 192291537357203034
+  identification: 
+    name: P1500_STATUS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 150
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_SIGNAGE_DETAILS ====================
+  id: 192291921423203036
+  identification: 
+    name: P1500_SIGNAGE_DETAILS
+    type: Text Field
+
+  label: 
+    label: لافتة الاستقبال
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 120
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+
+  validation: 
+    value-required: true
+    maximum-length: 300
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_NOTES ==============================
+  id: 192292704190203039
+  identification: 
+    name: P1500_NOTES
+    type: Textarea
+
+  label: 
+    label: ملاحظات
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 170
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 1000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_CREATED ============================
+  id: 192293525807203042
+  identification: 
+    name: P1500_CREATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 180
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_CREATED_BY =========================
+  id: 192294296098203047
+  identification: 
+    name: P1500_CREATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 190
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_UPDATED ============================
+  id: 192294783367203049
+  identification: 
+    name: P1500_UPDATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 200
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_UPDATED_BY =========================
+  id: 192295583186203052
+  identification: 
+    name: P1500_UPDATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 210
+    region: FT-Sub-Level-Reservation Form # 192346074758501281
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_EXCHANGE_RATE ======================
+  id: 192296295471203055
+  identification: 
+    name: P1500_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 10
+    region: Financial Details # 196007543710942193
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990D00
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1500_CUSTOMER_ID ========================
+  id: 192345932900501280
+  identification: 
+    name: P1500_CUSTOMER_ID
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 192305320885203091
+  identification: 
+    button-name: CANCEL
+    label: اغلاق
+
+  layout: 
+    sequence: 10
+    region: Buttons # 192304906793203089
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 192306763787203100
+  identification: 
+    button-name: DELETE
+    label: حذف الحجز
+
+  layout: 
+    sequence: 20
+    region: Buttons # 192304906793203089
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1500_SUB_RES_ID
+
+- # ====== Button: SAVE ========================================
+  id: 192307126791203101
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 192304906793203089
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1500_SUB_RES_ID
+
+- # ====== Button: CREATE ======================================
+  id: 192307531217203102
+  identification: 
+    button-name: CREATE
+    label: إضافة الحجز
+
+  layout: 
+    sequence: 40
+    region: Buttons # 192304906793203089
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P1500_SUB_RES_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: refreshlayout =======================
+  id: 177083334391573198
+  identification: 
+    name: refreshlayout
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1500_PASSENGERS_NO
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 177083414454573199
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Passenger_Info # 177083213380573197
+
+    execution: 
+      sequence: 10
+      event: refreshlayout # 177083334391573198
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 192305473273203091
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 192305320885203091
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 192306277734203097
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 192305473273203091
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: ShowRates ===========================
+  id: 196006723181942185
+  identification: 
+    name: ShowRates
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1500_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P1500_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 196006865527942186
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1500_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 196006723181942185
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 196006926854942187
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1500_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 196006723181942185
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: RefreshCols =========================
+  id: 196007035272942188
+  identification: 
+    name: RefreshCols
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1500_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 196007189281942189
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P1500_CURRENCY
+        
+      items-to-submit: 
+      - P1500_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1500_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: RefreshCols # 196007035272942188
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+validations: 
+- # ====== Validation: P1500_CREATED must be timestamp =========
+  id: 192294027798203046
+  identification: 
+    name: P1500_CREATED must be timestamp
+
+  execution: 
+    sequence: 190
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P1500_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P1500_CREATED # 192293525807203042
+
+- # ====== Validation: P1500_UPDATED must be timestamp =========
+  id: 192295247444203051
+  identification: 
+    name: P1500_UPDATED must be timestamp
+
+  execution: 
+    sequence: 210
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P1500_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P1500_UPDATED # 192294783367203049
+
+processes: 
+- # ====== Process: Close Dialog ===============================
+  id: 192308752737203109
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
+- # ====== Process: Create Fast Track ==========================
+  id: 192342927770501250
+  identification: 
+    name: Create Fast Track
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: FT_RESERVATION_PKG
+    procedure-or-function: CREATE_FAST_TRACK_RES
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: تم إضافة الحجز بنجاح
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 192307531217203102
+
+  parameters: 
+  - # ====== Parameter: p_main_res_id ============================
+    id: 192342993148501251
+    identification: 
+      name: p_main_res_id
+
+    parameter: 
+      direction: In/Out
+      data-type: VARCHAR2
+      ignore-output: false
+
+    value: 
+      item: P1500_MAIN_RES_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_res_time ===============================
+    id: 192343362779501254
+    identification: 
+      name: p_res_time
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_RES_TIME
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_terminal_no ============================
+    id: 192343579124501256
+    identification: 
+      name: p_terminal_no
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_TERMINAL_NO
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_passengers_no ==========================
+    id: 192343694885501258
+    identification: 
+      name: p_passengers_no
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_PASSENGERS_NO
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_passengers_info ========================
+    id: 192343803689501259
+    identification: 
+      name: p_passengers_info
+
+    parameter: 
+      direction: In
+      data-type: CLOB
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_PASSENGERS_INFO
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_currency ===============================
+    id: 192343973212501260
+    identification: 
+      name: p_currency
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_CURRENCY
+
+    advanced: 
+      display-sequence: 120
+
+  - # ====== Parameter: p_price_per_person =======================
+    id: 192344183912501262
+    identification: 
+      name: p_price_per_person
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_PRICE_PER_PERSON
+
+    advanced: 
+      display-sequence: 140
+
+  - # ====== Parameter: p_signage_details ========================
+    id: 192344233258501263
+    identification: 
+      name: p_signage_details
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_SIGNAGE_DETAILS
+
+    advanced: 
+      display-sequence: 150
+
+  - # ====== Parameter: p_notes ==================================
+    id: 192344392866501265
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_NOTES
+
+    advanced: 
+      display-sequence: 160
+
+  - # ====== Parameter: p_exchange_rate ==========================
+    id: 192344722687501268
+    identification: 
+      name: p_exchange_rate
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_EXCHANGE_RATE
+
+    advanced: 
+      display-sequence: 130
+
+  - # ====== Parameter: o_result =================================
+    id: 192345086500501271
+    identification: 
+      name: o_result
+
+    parameter: 
+      direction: Out
+      data-type: Custom
+      data-type-name: ft_reservation_pkg.t_result
+
+    advanced: 
+      display-sequence: 180
+
+  - # ====== Parameter: p_customer_id ============================
+    id: 192740637422241764
+    identification: 
+      name: p_customer_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_CUSTOMER_ID
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_status =================================
+    id: 192740711027241765
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P1500_STATUS
+
+    advanced: 
+      display-sequence: 170
+
+  - # ====== Parameter: p_ticket_url =============================
+    id: 193030668839522151
+    identification: 
+      name: p_ticket_url
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_TICKET_URL
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_cat_item_id ============================
+    id: 196006291129942181
+    identification: 
+      name: p_cat_item_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_CAT_ITEM_ID
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_res_date ===============================
+    id: 196006438338942182
+    identification: 
+      name: p_res_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_RES_DATE
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_airport_id =============================
+    id: 196006588326942183
+    identification: 
+      name: p_airport_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_AIRPORT_ID
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_service_class ==========================
+    id: 196006655941942184
+    identification: 
+      name: p_service_class
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P1500_SERVICE_CLASS
+
+    advanced: 
+      display-sequence: 40
+
+- # ====== Process: Building Json PassInfo =====================
+  id: 192740898442241767
+  identification: 
+    name: Building Json PassInfo
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE 
+          l_json CLOB := '['; 
+          l_count NUMBER := NVL(:P1500_PASSENGERS_NO, 0); 
+          l_name VARCHAR2(4000); 
+          l_nat VARCHAR2(4000); 
+          l_first BOOLEAN := TRUE;
+      BEGIN 
+          IF l_count < 1 THEN 
+              :P1500_PASSENGERS_INFO := '[]'; 
+              RETURN; 
+          END IF; 
+          
+          FOR i IN 1..l_count LOOP 
+              BEGIN
+                  IF apex_application.g_f01.EXISTS(i) THEN
+                      l_name := apex_application.g_f01(i);
+                  ELSE
+                      l_name := NULL;
+                  END IF;
+              EXCEPTION
+                  WHEN OTHERS THEN
+                      l_name := NULL;
+              END;
+              
+              BEGIN
+                  IF apex_application.g_f02.EXISTS(i) THEN
+                      l_nat := apex_application.g_f02(i);
+                  ELSE
+                      l_nat := NULL;
+                  END IF;
+              EXCEPTION
+                  WHEN OTHERS THEN
+                      l_nat := NULL;
+              END;
+              
+              IF NOT l_first THEN 
+                  l_json := l_json || ','; 
+              END IF;
+              
+              l_json := l_json || '{' ||
+                  '"passenger_no":' || i || ',' ||
+                  '"name":"' || REPLACE(REPLACE(NVL(l_name, ''), '"', '\"'), CHR(10), '\n') || '",' || 
+                  '"nationality":"' || REPLACE(REPLACE(NVL(l_nat, ''), '"', '\"'), CHR(10), '\n') || '"' ||
+                  '}';
+              
+              l_first := FALSE;
+          END LOOP; 
+          
+          l_json := l_json || ']'; 
+          :P1500_PASSENGERS_INFO := l_json; 
+          
+      END;
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+

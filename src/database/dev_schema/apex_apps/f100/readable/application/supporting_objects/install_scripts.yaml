@@ -1,0 +1,9 @@
+---
+- # ====== Install Script: B.A.D.R Initialize  =================
+  id: 193038791275262678
+  identification: 
+    name: 'B.A.D.R Initialize '
+
+  execution: 
+    sequence: 10
+

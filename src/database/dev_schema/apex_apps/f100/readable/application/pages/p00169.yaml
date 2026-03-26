@@ -1,0 +1,3413 @@
+---
+# ====== Page: Hotel Reservation Form ========================
+id: 169
+identification: 
+  name: Hotel Reservation Form
+  alias: HOTEL-RESERVATION-FORM
+  title: استمارة حجز فندق - نموذج 169
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  execute-when-page-loads: |
+    // $("#P169_HOTEL_ID").on("input", function() {
+    //   let v = this.value.replace(/[^0-9]/g, '').slice(0, 4); // Only allow 4 digits
+    //   let hours = v.slice(0,2);
+    //   let mins = v.slice(2,4);
+    
+    //   // Don't add ":" until there are at least 3 digits
+    //   if (v.length >= 3) {
+    //     this.value = hours + ':' + mins;
+    //   } else {
+    //     this.value = hours + (v.length > 2 ? ':' : '') + mins;
+    //   }
+    
+    //   // Validate and fix invalid hours/minutes
+    //   if (hours.length === 2) {
+    //     let h = parseInt(hours, 10);
+    //     if (h > 23) {
+    //       hours = '23';
+    //       this.value = hours + (mins.length > 0 ? ':' + mins : '');
+    //     }
+    //   }
+    //   if (mins.length === 2) {
+    //     let m = parseInt(mins, 10);
+    //     if (m > 59) {
+    //       mins = '59';
+    //       this.value = hours + ':' + mins;
+    //     }
+    //   }
+    // });
+    
+
+css: 
+  inline: |
+    /* Subtle glowing border or background to draw attention */
+    .attention-effect {
+      box-shadow: 0 0 6px 2px #ffc107cc, 0 0 16px 2px #fffbe8cc;
+      border-radius: 12px;
+      animation: attention-pulse 1.6s infinite;
+    }
+    @keyframes attention-pulse {
+      0%   { box-shadow: 0 0 8px 2px #ffc107cc, 0 0 16px 2px #fffbe8cc; }
+      50%  { box-shadow: 0 0 18px 6px #c1200eaa, 0 0 32px 8px #4c4628aa; }
+      100% { box-shadow: 0 0 8px 2px #ffc107cc, 0 0 16px 2px #fffbe8cc; }
+    }
+    
+    
+      .pushable {
+        background: hsl(340deg 100% 32%);
+        border-radius: 12px;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        outline-offset: 4px;
+      }
+    
+        .front {
+        display: block;
+        padding: 12px 42px;
+        border-radius: 12px;
+        font-size: 1.25rem;
+        background: hsl(345deg 100% 47%);
+        color: white;
+        transform: translateY(-6px);
+      }
+      
+      .pushable:active .front {
+        transform: translateY(-2px);
+      }
+    
+    
+    
+    
+    
+    .room-status-label {
+      font-size: 0.85rem;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .room-description-container {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .room-photo img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    
+    .room-details {
+      font-size: 0.88rem;
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    .room-meta {
+      font-size: 0.88rem;
+      color: #444;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Hotel Reservation Form ======================
+  id: 256618019232935799
+  identification: 
+    name: Hotel Reservation Form
+    title: استمارة حجز فندق - نموذج 169
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTEL_RESERVATIONS
+    include-rowid-column: false
+    page-items-to-submit: 
+    - P169_RESERVATION_ID
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 256636594366935834
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: Rooms =======================================
+  id: 271975690083642134
+  identification: 
+    name: Rooms
+    title: تفاصيل الخدمات
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Hotel Reservation Form # 256618019232935799
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Rooms Details ===============================
+  id: 271976141888642139
+  identification: 
+    name: Rooms Details
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+        r.ROOM_ID AS ROOM_ID,
+      
+        -- Room photo
+        'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/profilephotosapi/hotelrooms/' || r.ROOM_TYPE_ID AS ROOM_PHOTO_URL,
+      
+        -- Room data
+        r.ROOM_NAME AS ROOM_NAME,
+        r.NIGHT_COUNT AS NIGHT_COUNT,
+        TO_CHAR(r.DATE_FROM, 'YYYY-MM-DD') AS DATE_FROM,
+        TO_CHAR(r.DATE_TO, 'YYYY-MM-DD') AS DATE_TO,
+        r.CURRENCY AS CURRENCY,
+        r.CUSTOM_PRICE_PER_NIGHT AS PRICE_PER_NIGHT,
+        r.TOTAL_PRICE AS TOTAL_PRICE,
+        r.TOTAL_EGP AS TOTAL_EGP,
+        r.NET_AMOUNT_EGP AS NET_AMOUNT_EGP,
+      
+        -- Room notes
+        NVL(r.NOTES, '—') AS ROOM_NOTES,
+      
+        -- Room status
+        r.ROOM_STATUS_LABEL AS ROOM_STATUS_LABEL,
+        r.ROOM_STATUS_ICON AS ROOM_STATUS_ICON,
+      
+        -- Reservation meta
+        r.HOTEL_RESERVATION_ID,
+        r.CLIENT_ID,
+        r.CLIENT_NAME,
+        r.RESERVATION_STATUS AS RES_STATUS,
+        r.RESERVATION_CURRENCY,
+        r.RESERVATION_EXCHANGE_RATE,
+      
+        -- Created/Updated
+        r.ROOM_CREATED,
+        r.ROOM_UPDATED
+      
+      FROM VW_HOTEL_RESERVATION_ROOMS_INFO r
+      WHERE r.HOTEL_RESERVATION_ID = :P169_RESERVATION_ID
+      
+    page-items-to-submit: 
+    - P169_RESERVATION_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: Rooms # 271975690083642134
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    static-id: HOTEL_PRODUCTS_REGION
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: |
+        <span class="room-status-label">
+          <i class="fa &ROOM_STATUS_ICON."></i> &ROOM_STATUS_LABEL.
+        </span>
+        
+      title: |
+        <i class="fa6 fa6-bed"></i> &ROOM_NAME.
+        
+      description: |
+        <div class="room-description-container">
+          <div class="room-photo">
+            <img src="&ROOM_PHOTO_URL."
+                 alt="صورة الغرفة"
+                 onerror="this.onerror=null;this.src='#APP_FILES#placeholders/roomnophoto.png'" />
+          </div>
+        
+          <div class="room-details">
+            <div>🛎️ <strong>تاريخ الدخول:</strong> &DATE_FROM.</div>
+            <div>🚪 <strong>تاريخ الخروج:</strong> &DATE_TO.</div>
+            <div>💰 <strong>السعر / ليلة:</strong> &PRICE_PER_NIGHT. &CURRENCY.</div>
+            <div>💵 <strong>الإجمالي:</strong> &TOTAL_PRICE. &CURRENCY.</div>
+          </div>
+        </div>
+        
+      miscellaneous: |
+        <div class="room-meta">
+          <strong>ملاحظات:</strong> &ROOM_NOTES.
+        </div>
+        
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: ROOM_ID =====================================
+    id: 272122294689233877
+    identification: 
+      name: ROOM_ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ROOM_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_PHOTO_URL ==============================
+    id: 272122316812233878
+    identification: 
+      name: ROOM_PHOTO_URL
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: ROOM_PHOTO_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_NAME ===================================
+    id: 272122495106233879
+    identification: 
+      name: ROOM_NAME
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: ROOM_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NIGHT_COUNT =================================
+    id: 272475895561051230
+    identification: 
+      name: NIGHT_COUNT
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: NIGHT_COUNT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DATE_FROM ===================================
+    id: 272475975765051231
+    identification: 
+      name: DATE_FROM
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: DATE_FROM
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DATE_TO =====================================
+    id: 272476063196051232
+    identification: 
+      name: DATE_TO
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: DATE_TO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CURRENCY ====================================
+    id: 272476192001051233
+    identification: 
+      name: CURRENCY
+
+    layout: 
+      sequence: 70
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRICE_PER_NIGHT =============================
+    id: 272476277391051234
+    identification: 
+      name: PRICE_PER_NIGHT
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: PRICE_PER_NIGHT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_PRICE =================================
+    id: 272476329240051235
+    identification: 
+      name: TOTAL_PRICE
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_PRICE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_EGP ===================================
+    id: 272476447849051236
+    identification: 
+      name: TOTAL_EGP
+
+    layout: 
+      sequence: 100
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_EGP
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NET_AMOUNT_EGP ==============================
+    id: 272476561125051237
+    identification: 
+      name: NET_AMOUNT_EGP
+
+    layout: 
+      sequence: 110
+
+    source: 
+      type: Database Column
+      database-column: NET_AMOUNT_EGP
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_NOTES ==================================
+    id: 272476657269051238
+    identification: 
+      name: ROOM_NOTES
+
+    layout: 
+      sequence: 120
+
+    source: 
+      type: Database Column
+      database-column: ROOM_NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_STATUS_LABEL ===========================
+    id: 272476786647051239
+    identification: 
+      name: ROOM_STATUS_LABEL
+
+    layout: 
+      sequence: 130
+
+    source: 
+      type: Database Column
+      database-column: ROOM_STATUS_LABEL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_STATUS_ICON ============================
+    id: 272476901287051240
+    identification: 
+      name: ROOM_STATUS_ICON
+
+    layout: 
+      sequence: 140
+
+    source: 
+      type: Database Column
+      database-column: ROOM_STATUS_ICON
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: HOTEL_RESERVATION_ID ========================
+    id: 272476956560051241
+    identification: 
+      name: HOTEL_RESERVATION_ID
+
+    layout: 
+      sequence: 150
+
+    source: 
+      type: Database Column
+      database-column: HOTEL_RESERVATION_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_ID ===================================
+    id: 272477099687051242
+    identification: 
+      name: CLIENT_ID
+
+    layout: 
+      sequence: 160
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_NAME =================================
+    id: 272477187806051243
+    identification: 
+      name: CLIENT_NAME
+
+    layout: 
+      sequence: 170
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RES_STATUS ==================================
+    id: 272477218750051244
+    identification: 
+      name: RES_STATUS
+
+    layout: 
+      sequence: 180
+
+    source: 
+      type: Database Column
+      database-column: RES_STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_CURRENCY ========================
+    id: 272477335304051245
+    identification: 
+      name: RESERVATION_CURRENCY
+
+    layout: 
+      sequence: 190
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_EXCHANGE_RATE ===================
+    id: 272477433158051246
+    identification: 
+      name: RESERVATION_EXCHANGE_RATE
+
+    layout: 
+      sequence: 200
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_EXCHANGE_RATE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_CREATED ================================
+    id: 272477595373051247
+    identification: 
+      name: ROOM_CREATED
+
+    layout: 
+      sequence: 210
+
+    source: 
+      type: Database Column
+      database-column: ROOM_CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ROOM_UPDATED ================================
+    id: 272477695797051248
+    identification: 
+      name: ROOM_UPDATED
+
+    layout: 
+      sequence: 220
+
+    source: 
+      type: Database Column
+      database-column: ROOM_UPDATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تعديل =======================================
+    id: 272477762443051249
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تعديل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:173:&SESSION.::&DEBUG.:173:P173_ID:&ROOM_ID.'
+        page: 173 # Hotel Room Reservation Form
+        clear-cache: 173
+        values: 
+          p173_id: '&ROOM_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: false
+      show-as-disabled: false
+
+page-items: 
+- # ====== Page Item: P169_RESERVATION_ID ======================
+  id: 256618365064935802
+  identification: 
+    name: P169_RESERVATION_ID
+    type: Display Only
+
+  label: 
+    label: كود الحجز
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: RESERVATION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_CLIENT_ID ===========================
+  id: 256618723628935808
+  identification: 
+    name: P169_CLIENT_ID
+    type: Display Only
+
+  label: 
+    label: ملف العميل
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 40
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: 'fa6-solid fa6-user	'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CRM_CLIENTS.FULL_NAME # 254031009602355585
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: CLIENT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_HOTEL_ID ============================
+  id: 256619196672935811
+  identification: 
+    name: P169_HOTEL_ID
+    type: Select List
+
+  label: 
+    label: ملف الفندق
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 50
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-hotel
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: HOTELS.HOTEL_NAME # 254235913403923900
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: HOTEL_ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_FROM_DATE ===========================
+  id: 256619987089935812
+  identification: 
+    name: P169_FROM_DATE
+    type: Date Picker
+
+  label: 
+    label: <i class="fa6-solid fa6-calendar"></i>  تاريخ الحجز من
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 70
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: FROM_DATE
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_TO_DATE =============================
+  id: 256620358316935812
+  identification: 
+    name: P169_TO_DATE
+    type: Date Picker
+
+  label: 
+    label: '<i class="fa6-solid fa6-calendar"></i>  تاريخ الحجز الي '
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: Item
+    minimum-item: P169_FROM_DATE
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 80
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: TO_DATE
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_NUMBER_OF_GUESTS ====================
+  id: 256621145361935813
+  identification: 
+    name: P169_NUMBER_OF_GUESTS
+    type: Number Field
+
+  label: 
+    label: عدد الافراد
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 60
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 2
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: 'fa6-solid fa6-users	'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: NUMBER_OF_GUESTS
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_CURRENCY ============================
+  id: 256621586584935813
+  identification: 
+    name: P169_CURRENCY
+    type: Select One
+
+  label: 
+    label: عملة الحجز
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 90
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill-wave
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT CURRENCY_CODE
+      FROM V_CURRENCY_DETAILS
+      WHERE IS_DEFAULT_YN = 'Y'
+      FETCH FIRST 1 ROWS ONLY;
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_EXCHANGE_RATE =======================
+  id: 256621912045935814
+  identification: 
+    name: P169_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 100
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-exchange-alt
+    format-mask: FML999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT EXCHANGE_RATE_VALUE
+      FROM V_CURRENCY_DETAILS
+      WHERE CURRENCY_CODE = :P169_CURRENCY
+      
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_TOTAL_INVOICE_AMOUNT ================
+  id: 256622372109935814
+  identification: 
+    name: P169_TOTAL_INVOICE_AMOUNT
+    type: Number Field
+
+  label: 
+    label: Total Invoice Amount
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 170
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: TOTAL_INVOICE_AMOUNT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_TOTAL_AMOUNT_EGP ====================
+  id: 256622713560935815
+  identification: 
+    name: P169_TOTAL_AMOUNT_EGP
+    type: Number Field
+
+  label: 
+    label: Total Amount Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 180
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: TOTAL_AMOUNT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_TOTAL_PAYMENT =======================
+  id: 256623116087935815
+  identification: 
+    name: P169_TOTAL_PAYMENT
+    type: Number Field
+
+  label: 
+    label: Total Payment
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 190
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: TOTAL_PAYMENT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_REMAINING_AMOUNT ====================
+  id: 256623523092935815
+  identification: 
+    name: P169_REMAINING_AMOUNT
+    type: Number Field
+
+  label: 
+    label: Remaining Amount
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 200
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: REMAINING_AMOUNT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_REMAINING_AMOUNT_EGP ================
+  id: 256623958660935816
+  identification: 
+    name: P169_REMAINING_AMOUNT_EGP
+    type: Number Field
+
+  label: 
+    label: Remaining Amount Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 210
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: REMAINING_AMOUNT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_MIN_PAYMENT_REQUIRED ================
+  id: 256624330370935816
+  identification: 
+    name: P169_MIN_PAYMENT_REQUIRED
+    type: Number Field
+
+  label: 
+    label: Min Payment Required
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 220
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: MIN_PAYMENT_REQUIRED
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_MIN_PAYMENT_DEADLINE ================
+  id: 256624704902935816
+  identification: 
+    name: P169_MIN_PAYMENT_DEADLINE
+    type: Date Picker
+
+  label: 
+    label: Min Payment Deadline
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 230
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: MIN_PAYMENT_DEADLINE
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_STATUS ==============================
+  id: 256625156246935817
+  identification: 
+    name: P169_STATUS
+    type: Select List
+
+  label: 
+    label: حالة الحجز
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 130
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-check-to-slot
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: HOTEL_RESERVATION_STATUSES.STATUS_NAME # 256625289846935817
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: PENDINGOPS
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_SALES_REP_ID ========================
+  id: 256625852532935825
+  identification: 
+    name: P169_SALES_REP_ID
+    type: Select List
+
+  label: 
+    label: ممثل المبيعات (Sales Representative)
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 120
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-user-tie
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: SALES_REP_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: NVL(APEX_UTIL.GET_SESSION_STATE('APP_USER_ID'), USER)
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_OPS_REP_ID ==========================
+  id: 256626597277935826
+  identification: 
+    name: P169_OPS_REP_ID
+    type: Select List
+
+  label: 
+    label: مسؤول العمليات
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 140
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-clipboard-user
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+    display-extra-values: false
+    display-null-value: true
+    null-display-value: لم يتم التحديد
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: OPS_REP_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_CREATED =============================
+  id: 256626975144935826
+  identification: 
+    name: P169_CREATED
+    type: Date Picker
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 240
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_CREATED_BY ==========================
+  id: 256627731865935828
+  identification: 
+    name: P169_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 250
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_UPDATED =============================
+  id: 256628125678935828
+  identification: 
+    name: P169_UPDATED
+    type: Date Picker
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 260
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_UPDATED_BY ==========================
+  id: 256628955830935828
+  identification: 
+    name: P169_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 270
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_NOTES ===============================
+  id: 256923380392675836
+  identification: 
+    name: P169_NOTES
+    type: Textarea
+
+  label: 
+    label: <i class="fa6-solid fa6-note-sticky"></i> ملاحظات
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 110
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 400
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_RESERVATION_URL_NAME ================
+  id: 260049381837498962
+  identification: 
+    name: P169_RESERVATION_URL_NAME
+    type: Display Only
+
+  label: 
+    label: رابط الوصول
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 20
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: 'fa6-solid fa6-link	'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: RESERVATION_URL_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_TAGS ================================
+  id: 260049443952498963
+  identification: 
+    name: P169_TAGS
+    type: Combobox
+
+  label: 
+    label: علامات مميزة
+    alignment: Left
+
+  settings: 
+    multi-selection: true
+    maximum-values-in-list: 20
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  multiple-values: 
+    type: Delimited List
+    separator: ','
+
+  layout: 
+    sequence: 150
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-tags
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: select tag d from DEFAULT_TAGS order by display_sequence, tag
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: TAGS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_ARCHIVED_YN =========================
+  id: 260049583922498964
+  identification: 
+    name: P169_ARCHIVED_YN
+    type: Switch
+
+  label: 
+    label: ارشيف
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 2
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: ARCHIVED_YN
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_ARCHIVED_BY =========================
+  id: 260049670048498965
+  identification: 
+    name: P169_ARCHIVED_BY
+    type: Text Field
+
+  label: 
+    label: Archived By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 280
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: ARCHIVED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_ARCHIVED_DATE =======================
+  id: 260049727386498966
+  identification: 
+    name: P169_ARCHIVED_DATE
+    type: Date Picker
+
+  label: 
+    label: Archived Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 290
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: ARCHIVED_DATE
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P169_WORKFLOW_ID =========================
+  id: 264237084864085233
+  identification: 
+    name: P169_WORKFLOW_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 300
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Reservation Form # 256618019232935799
+    column: WORKFLOW_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P169_DIALOG_URL ==========================
+  id: 271976007157642138
+  identification: 
+    name: P169_DIALOG_URL
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 310
+    region: Hotel Reservation Form # 256618019232935799
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 256636986545935835
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 256636594366935834
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 256638305479935838
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 256636594366935834
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+- # ====== Button: SAVE ========================================
+  id: 256638716479935838
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 256636594366935834
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+- # ====== Button: CREATE ======================================
+  id: 256639143925935838
+  identification: 
+    button-name: CREATE
+    label: انشاء كود حجز
+
+  layout: 
+    sequence: 40
+    region: Buttons # 256636594366935834
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P169_RESERVATION_ID
+
+- # ====== Button: AddProduct ==================================
+  id: 271975715527642135
+  identification: 
+    button-name: AddProduct
+    label: اضافة حجز غرفة
+
+  layout: 
+    sequence: 10
+    region: Rooms # 271975690083642134
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+    css-classes: 
+    - pushable
+    - front
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+dynamic-actions: 
+- # ====== Dynamic Action: RefreshRooms ========================
+  id: 256516582346766169
+  identification: 
+    name: RefreshRooms
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P169_HOTEL_ID
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 256516627160766170
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: true
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P169_ROOMS
+
+    execution: 
+      sequence: 10
+      event: RefreshRooms # 256516582346766169
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 256637019073935835
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 256636986545935835
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 256637838264935837
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 256637019073935835
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: ShowHotel ===========================
+  id: 256727328998008042
+  identification: 
+    name: ShowHotel
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P169_CLIENT_ID
+
+  client-side-condition: 
+    type: Item is not null
+    item: P169_CLIENT_ID
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 256727499280008043
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P169_HOTEL_ID
+
+    execution: 
+      sequence: 10
+      event: ShowHotel # 256727328998008042
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 256727536085008044
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P169_HOTEL_ID
+
+    execution: 
+      sequence: 10
+      event: ShowHotel # 256727328998008042
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: ShowDates ===========================
+  id: 256727673567008045
+  identification: 
+    name: ShowDates
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P169_HOTEL_ID
+
+  client-side-condition: 
+    type: Item is not null
+    item: P169_HOTEL_ID
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 256727791873008046
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P169_FROM_DATE
+      - P169_TO_DATE
+      - P169_NUMBER_OF_GUESTS
+
+    execution: 
+      sequence: 10
+      event: ShowDates # 256727673567008045
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 256727828038008047
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P169_FROM_DATE
+      - P169_TO_DATE
+      - P169_NUMBER_OF_GUESTS
+
+    execution: 
+      sequence: 10
+      event: ShowDates # 256727673567008045
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: ShowRooms ===========================
+  id: 256727953929008048
+  identification: 
+    name: ShowRooms
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P169_FROM_DATE
+    - P169_TO_DATE
+
+  client-side-condition: 
+    type: Item is not null
+    item: P169_TO_DATE
+
+- # ====== Dynamic Action: SetCurrency Rates ===================
+  id: 256923118688675834
+  identification: 
+    name: SetCurrency Rates
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P169_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 256923281144675835
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P169_CURRENCY
+        
+      items-to-submit: 
+      - P169_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P169_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: SetCurrency Rates # 256923118688675834
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: open form ===========================
+  id: 271975879359642136
+  identification: 
+    name: open form
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: AddProduct # 271975715527642135
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 271975912659642137
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var purl =    "f?p=&APP_ID.:173:&APP_SESSION.:::173:P173_HOTEL_RESERVATION_ID,P173_HOTEL_ID:&P169_RESERVATION_ID.,&P169_HOTEL_ID.";  
+        apex.navigation.redirect(purl);
+        
+
+    execution: 
+      sequence: 10
+      event: open form # 271975879359642136
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh region ======================
+  id: 272122051527233875
+  identification: 
+    name: refresh region
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: JavaScript Expression
+    javascript-expression: |
+      $(window).on("dialogclose", function(event, ui) {
+        apex.region("HOTEL_PRODUCTS_REGION").refresh();
+      });
+      
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 272122151781233876
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Rooms Details # 271976141888642139
+
+    execution: 
+      sequence: 10
+      event: refresh region # 272122051527233875
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh region from the edit ========
+  id: 272477812823051250
+  identification: 
+    name: refresh region from the edit
+
+  execution: 
+    sequence: 120
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Rooms Details # 271976141888642139
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 272477911798051251
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Rooms Details # 271976141888642139
+
+    execution: 
+      sequence: 10
+      event: refresh region from the edit # 272477812823051250
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: P169_CREATED must be timestamp ==========
+  id: 256627497409935827
+  identification: 
+    name: P169_CREATED must be timestamp
+
+  execution: 
+    sequence: 200
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P169_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P169_CREATED # 256626975144935826
+
+- # ====== Validation: P169_UPDATED must be timestamp ==========
+  id: 256628667445935828
+  identification: 
+    name: P169_UPDATED must be timestamp
+
+  execution: 
+    sequence: 220
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P169_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P169_UPDATED # 256628125678935828
+
+processes: 
+- # ====== Process: Initialize form Hotel Reservation Form =====
+  id: 256639521070935839
+  identification: 
+    name: Initialize form Hotel Reservation Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Hotel Reservation Form # 256618019232935799
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Hotel Reservation Form ========
+  id: 256639905568935839
+  identification: 
+    name: Process form Hotel Reservation Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Hotel Reservation Form # 256618019232935799
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: |
+      تم انشاء كود حجز بنجاح 
+      كود الحجز: &P169_RESERVATION_ID.
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P169_RESERVATION_ID
+
+- # ====== Process: Close Dialog ===============================
+  id: 256640356005935840
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: SAVE,DELETE
+
+- # ====== Process: Process Reservation ========================
+  id: 260913851562517745
+  identification: 
+    name: Process Reservation
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Hotel Reservation Form # 256618019232935799
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: |
+      تم تنفيذ التعديلات
+      
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P169_RESERVATION_ID
+
+- # ====== Process: Start WorkFlow =============================
+  id: 264236879409085231
+  identification: 
+    name: Start WorkFlow
+    type: Workflow
+    execution-chain: None
+
+  settings: 
+    type: Start
+    definition: Hotel Reservation - Booking Request # 262536898224796662
+    details-primary-key-item: P169_RESERVATION_ID
+    workflow-id-item: P169_WORKFLOW_ID
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 256638716479935838
+    type: Item is NULL
+    item: P169_OPS_REP_ID
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  parameters: 
+  - # ====== Parameter: كود الحجز ================================
+    id: 264236963538085232
+    identification: 
+      name: كود الحجز # 262538066005796674
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+
+    value: 
+      type: Item
+      item: P169_RESERVATION_ID
+
+  - # ====== Parameter: مسؤول المبيعات ===========================
+    id: 264570273310489483
+    identification: 
+      name: مسؤول المبيعات # 264237785387085240
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+
+    value: 
+      type: SQL Query (return single value)
+      sql-query: 'select username from bs_employees where id = :P169_SALES_REP_ID'
+

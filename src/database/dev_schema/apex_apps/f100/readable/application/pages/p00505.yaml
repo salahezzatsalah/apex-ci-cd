@@ -1,0 +1,2075 @@
+---
+# ====== Page: Task Document Details =========================
+id: 505
+identification: 
+  name: Task Document Details
+  alias: TASK-DOCUMENT-DETAILS
+  title: تفاصيل مستند مهمة
+  page-group: Projects # 18677231987453823719
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  file-urls: 
+  - '#PRISMJS_DIRECTORY#prism#MIN#.js'
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: No Preview Available ========================
+  id: 29062452595967313598
+  identification: 
+    name: No Preview Available
+    type: Static Content
+
+  source: 
+    html-code: هذا النوع من المستندات لا يمكن عرضة
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P505_FILE_EXTENSION not in ('SQL','PLS','PLSQL','PLB','YAML','JSON','XML','JAVA','PYC','PDF') and
+      :P505_DOCUMENT_IS_IMAGE is null
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Document Details ============================
+  id: 46586311578621884343
+  identification: 
+    name: Document Details
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d.ID,
+             p.reservation_id,
+             (select task_type from res_task_types rt where rt.id = t.task_type_id)||
+                 case when t.task_sub_type_id is not null then ': ' end ||
+                 (select task_type from res_task_types rt where rt.id = t.task_sub_type_id) type,
+             t.id task_id,
+             d.DOCUMENT_FILENAME,
+             d.UPDATED,
+             d.created,
+             --d.doc_description,
+             lower(d.created_by) author,
+             dbms_lob.getlength(d.DOCUMENT_BLOB) doc_size,
+             d.created date_created,
+             substr(d.DOCUMENT_FILENAME,instr(d.DOCUMENT_FILENAME,'.',-1)+1,length(d.DOCUMENT_FILENAME)-instr(d.DOCUMENT_FILENAME,'.',-1)) file_extension
+        from res_task_DOCUMENTS d,
+             reservation_tasks t,
+             hotel_reservations p
+       where d.id = :P505_ID and d.task_id = t.id and t.reservation_id = p.reservation_id
+      
+    page-items-to-submit: 
+    - P505_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-left-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-label--stacked
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 260160059041840535
+    identification: 
+      column-name: RESERVATION_ID
+      type: Plain Text
+
+    heading: 
+      heading: كود الحجز
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TYPE ========================================
+    id: 28669597138069820702
+    identification: 
+      column-name: TYPE
+      type: Link
+
+    heading: 
+      heading: المهمة
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:502:&SESSION.::&DEBUG.:502:P502_TASK_ID:#TASK_ID#'
+        page: 502 # Task Details
+        clear-cache: 502
+        values: 
+          p502_task_id: '#TASK_ID#'
+
+      link-text: '#TYPE#'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TASK_ID =====================================
+    id: 28669597253062820703
+    identification: 
+      column-name: TASK_ID
+      type: Hidden
+
+    layout: 
+      sequence: 160
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 28670376748700869213
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DOCUMENT_FILENAME ===========================
+    id: 28670378372366869214
+    identification: 
+      column-name: DOCUMENT_FILENAME
+      type: Plain Text
+
+    heading: 
+      heading: اسم الملف
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 28670378761786869214
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تحديث
+      alignment: center
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE_SHORT
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 28670379109143869215
+    identification: 
+      column-name: CREATED
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AUTHOR ======================================
+    id: 28670379560407869215
+    identification: 
+      column-name: AUTHOR
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: القائم بالاضافة
+      alignment: center
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DOC_SIZE ====================================
+    id: 28670379919502869215
+    identification: 
+      column-name: DOC_SIZE
+      type: Plain Text
+
+    heading: 
+      heading: حجم المستند
+      alignment: center
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: FILESIZE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATE_CREATED ================================
+    id: 28670380376117869215
+    identification: 
+      column-name: DATE_CREATED
+      type: Hidden
+
+    layout: 
+      sequence: 130
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILE_EXTENSION ==============================
+    id: 28670380757687869216
+    identification: 
+      column-name: FILE_EXTENSION
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 48920022001676043659
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: SQL =========================================
+  id: 49942638912072836803
+  identification: 
+    name: SQL
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-sql">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+    page-items-to-submit: 
+    - P505_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: SQL
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: PDF =========================================
+  id: 49942639000877836804
+  identification: 
+    name: PDF
+    type: Static Content
+
+  source: 
+    html-code: '&P505_PDF_LINK.'
+
+  layout: 
+    sequence: 120
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: pdf_viewer
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P505_FILE_EXTENSION
+    value: PDF
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: YAML ========================================
+  id: 50938539632214364428
+  identification: 
+    name: YAML
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-yaml">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: YAML
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Java ========================================
+  id: 50938539667371364429
+  identification: 
+    name: Java
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-java">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: JAVA
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: JSON ========================================
+  id: 50938539800864364430
+  identification: 
+    name: JSON
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-json">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: JSON
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: XML =========================================
+  id: 50938539922024364431
+  identification: 
+    name: XML
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-xml">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 90
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: XML
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: PL/SQL ======================================
+  id: 50938540038379364432
+  identification: 
+    name: PL/SQL
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-plsql">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: 'PLS:PLSQL:PLB'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Python ======================================
+  id: 50938540069269364433
+  identification: 
+    name: Python
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from res_TASK_DOCUMENTS
+             where id = :P505_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-python">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 110
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P505_FILE_EXTENSION
+    list: PYC
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: &P505_FILE_NAME. ============================
+  id: 52518787499572981774
+  identification: 
+    name: '&P505_FILE_NAME.'
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P505_DOCUMENT_IS_IMAGE
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Document Description ========================
+  id: 53010371968731559145
+  identification: 
+    name: Document Description
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT DOC_description
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID 
+    page-items-to-submit: 
+    - P505_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      SELECT 1
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID 
+         and DOC_description is not null
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: None
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: DOC_DESCRIPTION =============================
+    id: 28670375959068869212
+    identification: 
+      column-name: DOC_DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: تفاصيل المستند
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P505_PREV_PAGE ===========================
+  id: 44706105147113448232
+  identification: 
+    name: P505_PREV_PAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P505_PDF_LINK ============================
+  id: 44706106480719448245
+  identification: 
+    name: P505_PDF_LINK
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P505_DOCUMENT_BLOB =======================
+  id: 48928870734318805851
+  identification: 
+    name: P505_DOCUMENT_BLOB
+    type: Display Image
+
+  label: 
+    label: المستند
+    alignment: Left
+
+  settings: 
+    based-on: BLOB Column returned by SQL statement
+    sql-statement: |
+      SELECT DOCUMENT_BLOB 
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID 
+      
+
+  layout: 
+    sequence: 10
+    region: '&P505_FILE_NAME.' # 52518787499572981774
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P505_DOCUMENT_NAME =======================
+  id: 48928871422618805849
+  identification: 
+    name: P505_DOCUMENT_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P505_NEXT_ID =============================
+  id: 48928871843847805853
+  identification: 
+    name: P505_NEXT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P505_PREV_ID =============================
+  id: 48928871946396805854
+  identification: 
+    name: P505_PREV_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P505_ID ==================================
+  id: 48947670299522004733
+  identification: 
+    name: P505_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P505_FILE_EXTENSION ======================
+  id: 49942654879669836829
+  identification: 
+    name: P505_FILE_EXTENSION
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P505_FILE_NAME ===========================
+  id: 53355181209081336724
+  identification: 
+    name: P505_FILE_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: '&P505_FILE_NAME.' # 52518787499572981774
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P505_DOCUMENT_IS_IMAGE ===================
+  id: 75832749959114625759
+  identification: 
+    name: P505_DOCUMENT_IS_IMAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Document Details # 46586311578621884343
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+buttons: 
+- # ====== Button: Next ========================================
+  id: 28670383901873869219
+  identification: 
+    button-name: Next
+    label: التالي
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 48920022001676043659
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:505:&SESSION.::&DEBUG.:505:P505_ID,P505_PREV_PAGE:&P505_NEXT_ID.,&P505_PREV_PAGE.'
+      page: 505 # Task Document Details
+      clear-cache: 505
+      values: 
+        p505_id: '&P505_NEXT_ID.'
+        p505_prev_page: '&P505_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: Previous ====================================
+  id: 28670384304233869220
+  identification: 
+    button-name: Previous
+    label: السابق
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 48920022001676043659
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-chevron-left
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:505:&SESSION.::&DEBUG.:505:P505_ID,P505_PREV_PAGE:&P505_PREV_ID.,&P505_PREV_PAGE.'
+      page: 505 # Task Document Details
+      clear-cache: 505
+      values: 
+        p505_id: '&P505_PREV_ID.'
+        p505_prev_page: '&P505_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: UP ==========================================
+  id: 28670384771943869220
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 48920022001676043659
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&P505_PREV_PAGE.:&SESSION.::&DEBUG.:::'
+      page: '&P505_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: download ====================================
+  id: 28670385159936869220
+  identification: 
+    button-name: download
+    label: تحميل
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 48920022001676043659
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-download
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: Edit ========================================
+  id: 28670385586185869221
+  identification: 
+    button-name: Edit
+    label: تعديل
+
+  layout: 
+    sequence: 30
+    region: Breadcrumb # 48920022001676043659
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-edit
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:504:&SESSION.::&DEBUG.:504:P504_ID:&P505_ID.'
+      page: 504
+      clear-cache: 504
+      values: 
+        p504_id: '&P505_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Download doc ========================
+  id: 20122406326775957516
+  identification: 
+    name: Download doc
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: download # 28670385159936869220
+
+  actions: 
+  - # ====== Action: Download ====================================
+    id: 20122406482527957517
+    identification: 
+      action: Download
+
+    settings: 
+      multiple-files: false
+      view-file-as: Attachment
+
+    source: 
+      sql-query: |
+        select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE 
+          from RES_TASK_DOCUMENTS 
+         where id = :P505_ID
+
+    execution: 
+      sequence: 10
+      event: Download doc # 20122406326775957516
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Disable Next Button =================
+  id: 28670391825744869227
+  identification: 
+    name: Disable Next Button
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  client-side-condition: 
+    type: Item is null
+    item: P505_NEXT_ID
+
+  actions: 
+  - # ====== Action: Disable =====================================
+    id: 28670392343129869227
+    identification: 
+      action: Disable
+
+    affected-elements: 
+      selection-type: Button
+      button: Next # 28670383901873869219
+
+    execution: 
+      sequence: 10
+      event: Disable Next Button # 28670391825744869227
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: DC ==================================
+  id: 28670392762605869228
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 48920022001676043659
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 28670393206475869228
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Document Details # 46586311578621884343
+
+    execution: 
+      sequence: 10
+      event: DC # 28670392762605869228
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Load PDF ============================
+  id: 28670393691459869229
+  identification: 
+    name: Load PDF
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  server-side-condition: 
+    type: Item = Value
+    item: P505_FILE_EXTENSION
+    value: PDF
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 28670394145633869229
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        $('#pdf_viewer').html('');
+        var url = '&P505_PDF_LINK.';
+        var preview = document.createElement('embed'); 
+        preview.type = "application/pdf";
+        preview.width="100%";
+        preview.height="1000px";
+        preview.src = url;
+        $("#pdf_viewer").append(preview);
+
+    execution: 
+      sequence: 10
+      event: Load PDF # 28670393691459869229
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Disable Previous Button =============
+  id: 28670394537955869229
+  identification: 
+    name: Disable Previous Button
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  client-side-condition: 
+    type: Item is null
+    item: P505_PREV_ID
+
+  actions: 
+  - # ====== Action: Disable =====================================
+    id: 28670395031069869229
+    identification: 
+      action: Disable
+
+    affected-elements: 
+      selection-type: Button
+      button: Previous # 28670384304233869220
+
+    execution: 
+      sequence: 10
+      event: Disable Previous Button # 28670394537955869229
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+computations: 
+- # ====== Computation: P505_PDF_LINK ==========================
+  id: 28670388730573869225
+  identification: 
+    item-name: P505_PDF_LINK
+
+  execution: 
+    sequence: 60
+    point: Before Header
+
+  computation: 
+    type: Function Body
+    language: PL/SQL
+    pl/sql-function-body: |
+      return APEX_PAGE.GET_URL (
+                  p_page      => 505,
+                  p_request   => 'APPLICATION_PROCESS=viewTaskPDF',
+                  p_plain_url => TRUE );
+
+- # ====== Computation: P505_DOCUMENT_NAME =====================
+  id: 28670389172425869225
+  identification: 
+    item-name: P505_DOCUMENT_NAME
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select DOCUMENT_FILENAME
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID
+      
+
+- # ====== Computation: P505_NEXT_ID ===========================
+  id: 28670389581664869225
+  identification: 
+    item-name: P505_NEXT_ID
+
+  execution: 
+    sequence: 30
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT id
+        from RES_TASK_DOCUMENTS d
+       where task_id = (select task_id from RES_TASK_DOCUMENTS d2 where d2.id = :P505_ID) and
+             created < (select created from RES_TASK_DOCUMENTS d2 where d2.id = :P505_ID) and
+                dbms_lob.getlength(DOCUMENT_BLOB) > 0 
+      order by created desc
+      fetch first 1 rows only
+
+- # ====== Computation: P505_PREV_ID ===========================
+  id: 28670389972587869226
+  identification: 
+    item-name: P505_PREV_ID
+
+  execution: 
+    sequence: 40
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT id
+        from res_task_DOCUMENTS d
+       where task_id = (select task_id from res_task_DOCUMENTS d2 where d2.id = :P505_ID) and
+             created > (select created from res_task_DOCUMENTS d2 where d2.id = :P505_ID) and
+                dbms_lob.getlength(DOCUMENT_BLOB) > 0 
+      order by created 
+      fetch first 1 rows only
+
+- # ====== Computation: P505_FILE_EXTENSION ====================
+  id: 28670390345384869226
+  identification: 
+    item-name: P505_FILE_EXTENSION
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select upper(substr(d.DOCUMENT_FILENAME,instr(d.DOCUMENT_FILENAME,'.',-1)+1,length(d.DOCUMENT_FILENAME)-instr(d.DOCUMENT_FILENAME,'.',-1))) ext
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID
+
+- # ====== Computation: P505_FILE_NAME =========================
+  id: 28670390696670869226
+  identification: 
+    item-name: P505_FILE_NAME
+
+  execution: 
+    sequence: 50
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT DOCUMENT_FILENAME
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID 
+
+- # ====== Computation: P505_DOCUMENT_IS_IMAGE =================
+  id: 28670391130147869226
+  identification: 
+    item-name: P505_DOCUMENT_IS_IMAGE
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select 'Y'
+        from RES_TASK_DOCUMENTS d
+       where id = :P505_ID
+      and upper(substr(d.DOCUMENT_FILENAME,instr(d.DOCUMENT_FILENAME,'.',-1)+1,length(d.DOCUMENT_FILENAME)-instr(d.DOCUMENT_FILENAME,'.',-1)))
+       in ('JPG','JPEG','PNG','GIF','AVIF','WEBP')
+      
+

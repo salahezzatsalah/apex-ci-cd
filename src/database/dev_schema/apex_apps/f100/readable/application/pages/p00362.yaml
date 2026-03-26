@@ -1,0 +1,3438 @@
+---
+# ====== Page: Limo Reservations Requests ====================
+id: 362
+identification: 
+  name: Limo Reservations Requests
+  alias: LIMO-RESERVATIONS-REQUESTS
+  title: سجل طلبات الليموزين
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: |
+    $(() => { 
+        apex.actions.add({
+            name: 'favoriteReservation',
+            action: function(event, focusElement, args) {
+                $(event.currentTarget).addClass('js-reservation-to-favorite');
+                apex.item('P23_RESERVATION_TO_FAVORITE').setValue(args.id);
+                return true;
+                }
+        });
+    });
+    console.log("BEFORE triggering action, value is:", apex.item("P23_RESERVATION_TO_FAVORITE").getValue());
+    
+
+css: 
+  inline: |
+    
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    .overline {
+      color: var(--ut-region-text-color, var(--ut-component-text-default-color));
+    }
+    
+    .a-FS-facetsDashboard {
+      --a-fs-chart-grid-gap: 0px;
+      --a-fs-chart-border-width: 0px;
+      --a-fs-chart-shadow: none;
+    }
+    
+    @media (max-width: 768px) {
+      .t-ContentRow-wrap.unassigned {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+    
+      .t-ContentRow-body,
+      .t-ContentRow-misc,
+      .t-ContentRow-actions {
+        width: 100%;
+        max-width: 100%;
+      }
+    
+      .t-ContentRow-misc {
+        order: 2; /* place after main body */
+      }
+    
+      .t-ContentRow-actions {
+        order: 3; /* actions come last */
+      }
+    }
+    
+    
+    .limo-overline {
+      font-size: 1em;
+      color: #030101;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 6px;
+    }
+    
+    .limo-overline .overline-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .limo-overline .label {
+      font-weight: 600;
+      color: #444;
+    }
+    .limo-overline .overline-separator {
+      color: #ccc;
+    }
+    
+    .limo-title.nowrap-wrap {
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping on very small screens if needed */
+      direction: rtl;
+      gap: 10px;
+      font-size: clamp(0.8rem, 2vw, 0.95rem); /* ✅ responsive font size */
+      line-height: 1.4;
+    }
+    
+    .limo-title .title-group {
+      display: inline-flex;
+      align-items: center;
+      background: #f3f6f9;
+      border-radius: 10px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      max-width: 100%;
+      flex-shrink: 1; /* allow shrink within container */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .limo-title i {
+      margin-left: 6px;
+      color: #23598c;
+      font-size: 1em;
+    }
+    
+    .title-label {
+      font-weight: 600;
+      margin-left: 4px;
+      color: #333;
+    }
+    
+    .title-value {
+      color: #111;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    
+    /* Row layout: image + description */
+    .limo-row {
+      display: flex;
+    
+      gap: 1px;
+      align-items: flex-start;
+          margin-top: 10px;
+    
+      max-width: 900px;
+    }
+    
+    .limo-avatar {
+      justify-content: center;
+    }
+    
+    /* Avatar */
+    .limo-avatar img {
+      width: 120px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    
+    
+    
+    /* Description container */
+    .limo-description {
+        flex: 1;
+        font-size: 0.95em;
+        line-height: 1.6;
+        color: #333;
+        direction: rtl;
+        margin-right: 20px;
+    
+        height: 90px;
+    }
+    
+    /* Trip card */
+    .trip-location-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    .location-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .location-name {
+      font-weight: 600;
+      color: #444;
+    }
+    .location-datetime {
+      font-size: 0.85em;
+      color: #888;
+    }
+    .location-arrow svg {
+      fill: #009688;
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Badges */
+    .limo-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .limo-meta .badge {
+      background: #008234;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size:0.85em;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      gap: 4px;
+    }
+    .badge-classification {
+      background: #e0f7fa;
+      color: #00695c;
+    }
+    .badge-triptype {
+      background: #f1f8e9;
+      color: #558b2f;
+    }
+    .badge-days {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    /* Ticket & Signage */
+    .limo-ticket,
+    .limo-signage {
+      font-size: 0.88em;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    .limo-ticket i,
+    .limo-signage i {
+      margin-left: 5px;
+      color: #7d4c18;
+    }
+    
+    .trip-location-card {
+        display: flex
+    ;
+        align-items: right;
+        /* justify-content: space-between; */
+        gap: 10px;
+        /* padding: 10px 16px; */
+        padding-bottom: 10px;
+        /* border: 1px solid #f5b400; */
+        border-radius: 8px;
+        /* background: #fff; */
+        direction: rtl;
+        font-family: 'Cairo', sans-serif;
+        width: fit-content;
+    }
+    
+    .trip-location-card .location-block {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+    
+    .trip-location-card .location-name {
+      font-weight: bold;
+      font-size: 1em;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    
+    .trip-location-card .location-datetime {
+      font-size: 0.9em;
+      color: #555;
+    }
+    
+    .trip-location-card .location-arrow {
+      flex-shrink: 0;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .trip-location-card .location-arrow svg {
+      transform: scaleX(-1); /* Flip for RTL */
+      fill: #999;
+      width: 20px;
+      height: 20px;
+    }
+    
+    
+    
+    
+    
+    .limo-misc {
+      width: 250px;
+      max-width: 250px;
+      padding: 10px 12px;
+      padding-top: 25px;
+      background-color: transparent;
+    
+      font-size: 0.88em;
+      direction: rtl;
+      color: #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      gap: 12px;
+    }
+    
+    /* Group block with same margin/padding rules */
+    .misc-group {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e2e2e2;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    /* Attention group styling */
+    .misc-highlight {
+      border-color: #ffca28;
+      background-color: #fffde7;
+      box-shadow: inset 0 0 0 1px #ffe08244;
+    }
+    
+    /* Row layout */
+    .misc-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.6;
+    }
+    
+    /* Icons */
+    .misc-row i {
+      color: #23598c;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    /* Label */
+    .misc-label {
+      font-weight: 600;
+      color: #444;
+      white-space: nowrap;
+    }
+    
+    /* Value */
+    .misc-value {
+      flex: 1;
+      color: #111;
+      overflow-wrap: break-word;
+    }
+    
+    /* Notes (separated block style) */
+    .misc-notes {
+      background: #fff;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-top: 4px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+    
+    
+    
+    /* ===== Actions Wrapper Alignment ===== */
+    .t-ContentRow-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start; /* default is right in RTL */
+      gap: 8px;
+      direction: rtl;
+      margin-top: 6px;
+    }
+    
+    
+    /* ===== Shared Base Style for All Custom Buttons ===== */
+    .btn-menu,
+    .btn-favorite {
+      background-color: #f3f6f9;
+      border: 1px solid #ccd6e0;
+      color: #23598c;
+      font-size: 0.85em;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* ===== Menu Button (with label) ===== */
+    .btn-menu {
+      padding: 6px 12px;
+      gap: 6px;
+    }
+    
+    .btn-menu:hover {
+      background-color: #e6eef5;
+      border-color: #b0c3d2;
+    }
+    
+    /* ===== Favorite Button (icon-only, round) ===== */
+    .btn-favorite {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      padding: 0;
+    }
+    
+    .btn-favorite:hover {
+      background-color: #ffe9e9;
+      color: #c62828;
+      border-color: #f4c7c7;
+    }
+    
+    /* Icon inside buttons */
+    .btn-menu i,
+    .btn-favorite i {
+      font-size: 1em;
+    }
+    
+    .trip-group-header-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 10px;
+    }
+    
+    .trip-bubble {
+      background-color: #f5f5f5;
+      border-radius: 16px;
+      padding: 5px 10px;
+      font-size: 0.82em;
+      font-weight: 500;
+      color: #2e2e2e;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .bubble-label {
+      margin-left: 4px;
+      color: #616161;
+      font-weight: 600;
+    }
+    
+    .bubble-value {
+      color: #212121;
+    }
+    
+    .unassigned {background-color: rgb(251, 249, 235);}
+    
+    
+    .spaceint {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: transparent; /* Material yellow */
+      border: none;
+        margin: 10px 0;
+    }
+    
+    /* Optional: make it more visible in print (or emulate break zones) */
+    @media print {
+      .spaceint {
+        break-before: always; /* Force page break */
+        height: 1px;
+        background-color: transparent;
+      }
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Content Row =================================
+  id: 10897984521900707655
+  identification: 
+    name: Content Row
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        COUNT(*) OVER (PARTITION BY v.TRIP_DATE_FROM) AS TOTAL_TRIPS,
+        v.RESERVATION_ID,
+        v.CLIENT_ID,
+        v.CLIENT_CODE,
+        v.PRODUCT_ID,
+        v.CLASSIFICATION_TYPE,
+        v.TRIP_DATE_FROM,
+         cl.COUNTRY AS CLIENT_COUNTRY,
+        v.TRIP_DATE_TO,
+      
+        -- True client ID
+        (SELECT client_id 
+         FROM LIMO_RESERVATIONS lr 
+         WHERE lr.RESERVATION_ID = v.RESERVATION_ID) AS client_true_id,
+      
+        -- Car Info
+        v.REQUESTED_CAR,
+        v.CAR_TYPE_ID,
+        v.CAR_PHOTO_URL,
+      
+        -- Trip Info
+        v.PICK_UP_TIME,
+        v.FROM_LOCATION,
+        v.TO_LOCATION,
+        v.TRIP_TYPE,
+        v.NUMBER_OF_DAYS,
+        v.TRIP_NOTES,
+        v.IMPORTANT_NOTES,
+      
+        -- Financial Info
+        v.PRODUCT_PRICE,
+        v.PRODUCT_CURRENCY,
+        v.PRODUCT_EXCHANGE_RATE,
+      
+        -- Reservation Status
+        v.PRODUCT_STATUS,
+        v.STATUS_DESCRIPTION,
+        v.ICON,
+        v.PROGRESS_PCT,
+      
+        -- Favorite Info
+        NVL((
+            SELECT 'نعم'
+            FROM RESERVATION_FAVORITES f
+            WHERE f.RESERVATION_ID = v.RESERVATION_ID
+              AND f.USER_ID = :APP_USER_ID
+        ), 'لا') AS favorite,
+      
+        NVL((
+            SELECT 'fa-heart u-danger-text'
+            FROM RESERVATION_FAVORITES f
+            WHERE f.RESERVATION_ID = v.RESERVATION_ID
+              AND f.USER_ID = :APP_USER_ID
+        ), 'fa-heart-o') AS favorite_icon,
+      
+        -- Audit Info
+        r.SALES_REP_ID,
+        r.OPS_REP_ID,
+        r.CREATED,
+        r.CREATED_BY,
+        r.UPDATED,
+        r.UPDATED_BY,
+        r.NOTES,
+      
+        -- Period tracking
+         TO_CHAR(v.TRIP_DATE_FROM, 'YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_year,
+        TO_CHAR(v.TRIP_DATE_FROM, 'MM', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_month,
+        TO_CHAR(v.TRIP_DATE_FROM, 'DAY / DD/MM/YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS days_filter,
+      
+        -- Driver Assignment Label
+        CASE
+          WHEN NOT EXISTS (
+            SELECT 1
+            FROM LIMO_PRODUCT_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = v.RESERVATION_ID
+              AND a.PRODUCT_ID = v.PRODUCT_ID
+              AND a.DRIVER_STATUS = 'CURRENT'
+          )
+          THEN 'حالة التوزيع:'
+          ELSE 'السائق الحالي:'
+        END AS DRIVER_ASSIGNMENT_LABEL,
+      
+        -- Driver Assignment Status
+        CASE
+          WHEN NOT EXISTS (
+            SELECT 1
+            FROM LIMO_PRODUCT_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = v.RESERVATION_ID
+              AND a.PRODUCT_ID = v.PRODUCT_ID
+              AND a.DRIVER_STATUS = 'CURRENT'
+          )
+          THEN 'في انتظار التوزيع'
+          ELSE
+             (
+              SELECT s.SUPPLIER_NAME
+              FROM LIMO_PRODUCT_ASSIGNMENTS a
+              JOIN SUPPLIERS s ON s.SUPPLIER_ID = a.DRIVER_ID
+              WHERE a.RESERVATION_ID = v.RESERVATION_ID
+                AND a.PRODUCT_ID = v.PRODUCT_ID
+                AND a.DRIVER_STATUS = 'CURRENT'
+              ORDER BY a.CREATED DESC
+              FETCH FIRST 1 ROWS ONLY
+            )
+        END AS DRIVER_ASSIGNMENT_VALUE,
+      
+        -- Assignment Class for Styling
+        CASE
+          WHEN NOT EXISTS (
+            SELECT 1
+            FROM LIMO_PRODUCT_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = v.RESERVATION_ID
+              AND a.PRODUCT_ID = v.PRODUCT_ID
+              AND a.DRIVER_STATUS = 'CURRENT'
+          )
+          THEN 'unassigned'
+          ELSE
+            'assigned' || (
+              SELECT e.USERNAME
+              FROM LIMO_PRODUCT_ASSIGNMENTS a
+              JOIN BS_EMPLOYEES e ON e.ID = a.DRIVER_ID
+              WHERE a.RESERVATION_ID = v.RESERVATION_ID
+                AND a.PRODUCT_ID = v.PRODUCT_ID
+                AND a.DRIVER_STATUS = 'CURRENT'
+              ORDER BY a.CREATED DESC
+              FETCH FIRST 1 ROWS ONLY
+            )
+        END AS ASSIGNMENTCSS,
+      
+        v.SIGNAGE_DETAILS,
+        v.TICKET_NUMBER
+      
+      FROM 
+          VW_LIMO_TRIPS_REPORT v
+          JOIN LIMO_RESERVATIONS r ON v.RESERVATION_ID = r.RESERVATION_ID
+          JOIN CRM_CLIENTS cl ON v.CLIENT_ID = cl.CLIENT_ID
+      
+    page-items-to-submit: 
+    - APP_USER_ID
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P362_ORDER_BY
+      order-bys: 
+      - key: PICK_UP_TIME
+        clause: PICK_UP_TIME
+
+      - key: RESERVATION_ID
+        clause: RESERVATION_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+      css-classes: 
+      - limo-card-display
+
+    settings: 
+      overline: |
+        <div class="limo-overline">
+          <span class="overline-item">
+            <span class="label">كود العميل:</span> &CLIENT_CODE.
+          </span>
+          <span class="overline-separator">|</span>
+          <span class="overline-item">
+            <span class="label">رقم الحجز:</span> &RESERVATION_ID.
+          </span>
+          <span class="overline-separator">|</span>
+          <span class="overline-item">
+            <span class="label">كود الرحلة:</span> &PRODUCT_ID.
+          </span>
+        </div>
+      title: |
+        <div class="limo-title nowrap-wrap">
+          <div class="title-group">
+            <i class="fa6 fa6-user"></i>
+            <span class="title-label">العميل:</span>
+            <span class="title-value">&CLIENT_ID.</span>
+          </div>
+          <div class="title-group">
+            <i class="fa6 fa6-clock"></i>
+            <span class="title-label">الموعد:</span>
+            <span class="title-value">&PICK_UP_TIME.</span>
+          </div>
+        </div>
+        
+      description: |2
+            <!-- Layout: Avatar + Details -->
+        <div class="limo-row">
+          <!-- Right Side: Car Avatar -->
+          <div class="limo-avatar">
+            <img src="&CAR_PHOTO_URL." alt="صورة السيارة"
+                 onerror="this.onerror=null;this.src='#APP_FILES#placeholders/unknown-car.png'" />
+          </div>
+        
+          <!-- Left Side: Description & Metadata -->
+          <div class="limo-description">
+            <!-- Route Info -->
+            <div class="trip-location-card">
+              <div class="location-block">
+                <div class="location-name">&FROM_LOCATION.</div>
+                <div class="location-datetime">&PICK_UP_TIME.</div>
+              </div>
+        
+              <div class="location-arrow">
+                <svg viewBox="0 0 24 24" width="1em" height="1em">
+                  <path d="M9.45 6c.2 0 .39.078.53.22l5 5c.208.206.323.487.32.78a1.1 1.1 0 0 1-.32.78l-5 5a.75.75 0 0 1-1.06 0 .74.74 0 0 1 0-1.06L13.64 12 8.92 7.28a.74.74 0 0 1 0-1.06.73.73 0 0 1 .53-.22z"></path>
+                </svg>
+              </div>
+        
+              <div class="location-block">
+                <div class="location-name">&TO_LOCATION.</div>
+                <div class="location-datetime">&TRIP_DATE_TO.</div>
+              </div>
+            </div>
+        
+            <!-- Trip Meta Info -->
+        
+        
+            <div class="limo-meta">
+              <span class="badge badge-classification">
+                <i class="fa6 fa6-tag"></i> &CLASSIFICATION_TYPE.
+              </span>
+              <span class="badge badge-triptype">
+                <i class="fa6 fa6-car-side"></i> &TRIP_TYPE.
+              </span>
+              <span class="badge badge-days">
+                <i class="fa6 fa6-calendar-day"></i> &NUMBER_OF_DAYS. يوم
+              </span>
+              <span class="badge badge-cartype">
+            <i class="fa6 fa6-car"></i> &REQUESTED_CAR.
+              </span>
+            </div>
+        
+        
+        
+          </div>
+        </div>
+        
+        
+      miscellaneous: |
+        <div class="spaceint"></div>
+        
+        <div class="limo-misc">
+        
+          <!-- Group: Price & Assignment -->
+        <div class="misc-group">
+          <div class="misc-row">
+            <i class="fa6 fa6-money-bill-wave"></i>
+            <span class="misc-label">السعر:</span>
+            <span class="misc-value">&PRODUCT_PRICE. &PRODUCT_CURRENCY.</span>
+          </div>
+          <div class="misc-row">
+            <i class="fa6 fa6-id-card"></i>
+            <span class="misc-label">&DRIVER_ASSIGNMENT_LABEL.</span>
+            <span class="misc-value">&DRIVER_ASSIGNMENT_VALUE.</span>
+          </div>
+        </div>
+        
+        
+          <!-- Group: Ticket + Signage -->
+          {if TICKET_NUMBER/}
+          <div class="misc-group misc-highlight">
+            <div class="misc-row">
+              <i class="fa6 fa6-ticket-alt"></i>
+              <span class="misc-label">رقم التذكرة:</span>
+              <span class="misc-value">&TICKET_NUMBER.</span>
+            </div>
+            {if SIGNAGE_DETAILS/}
+            <div class="misc-row">
+              <i class="fa6 fa6-sign"></i>
+              <span class="misc-label">لافتة الترحيب:</span>
+              <span class="misc-value">&SIGNAGE_DETAILS.</span>
+            </div>
+            {endif/}
+          </div>
+          {endif/}
+        
+          <!-- Notes -->
+          {if TRIP_NOTES/}
+          <div class="misc-row misc-notes">
+            <i class="fa6 fa6-sticky-note"></i>
+            <span class="misc-label">ملاحظات:</span>
+            <span class="misc-value">&TRIP_NOTES.</span>
+          </div>
+          {endif/}
+        
+        </div>
+        
+        
+        
+      display-avatar: false
+      display-badge: false
+      item-css-classes: ASSIGNMENTCSS
+
+    grouping: 
+      title: |
+        <div class="trip-group-header-bubbles">
+          <div class="trip-bubble">
+            <span class="bubble-label">شغل يوم:</span>
+            <span class="bubble-value">&TRIP_DATE_FROM.</span>
+          </div>
+          <div class="trip-bubble">
+            <span class="bubble-label">عدد الرحلات:</span>
+            <span class="bubble-value">&TOTAL_TRIPS.</span>
+          </div>
+        </div>
+        
+
+    appearance: 
+      apply-theme-colors: false
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: true
+
+    pagination: 
+      type: Page
+      entities-per-page: 100
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: REQUESTED_CAR ===============================
+    id: 269568029074683830
+    identification: 
+      name: REQUESTED_CAR
+
+    layout: 
+      sequence: 560
+
+    source: 
+      type: Database Column
+      database-column: REQUESTED_CAR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PICK_UP_TIME ================================
+    id: 269568104124683831
+    identification: 
+      name: PICK_UP_TIME
+
+    layout: 
+      sequence: 570
+
+    source: 
+      type: Database Column
+      database-column: PICK_UP_TIME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FROM_LOCATION ===============================
+    id: 269568250715683832
+    identification: 
+      name: FROM_LOCATION
+
+    layout: 
+      sequence: 580
+
+    source: 
+      type: Database Column
+      database-column: FROM_LOCATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TO_LOCATION =================================
+    id: 269568373288683833
+    identification: 
+      name: TO_LOCATION
+
+    layout: 
+      sequence: 590
+
+    source: 
+      type: Database Column
+      database-column: TO_LOCATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_TYPE ===================================
+    id: 269568473366683834
+    identification: 
+      name: TRIP_TYPE
+
+    layout: 
+      sequence: 600
+
+    source: 
+      type: Database Column
+      database-column: TRIP_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LIMOPRODUCTS TRIP TYPES # 267647733503170392
+      display-extra-values: true
+
+  - # ====== Column: NUMBER_OF_DAYS ==============================
+    id: 269568600275683835
+    identification: 
+      name: NUMBER_OF_DAYS
+
+    layout: 
+      sequence: 610
+
+    source: 
+      type: Database Column
+      database-column: NUMBER_OF_DAYS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_NOTES ==================================
+    id: 269568605884683836
+    identification: 
+      name: TRIP_NOTES
+
+    layout: 
+      sequence: 620
+
+    source: 
+      type: Database Column
+      database-column: TRIP_NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IMPORTANT_NOTES =============================
+    id: 269568731968683837
+    identification: 
+      name: IMPORTANT_NOTES
+
+    layout: 
+      sequence: 630
+
+    source: 
+      type: Database Column
+      database-column: IMPORTANT_NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_PRICE ===============================
+    id: 269568825872683838
+    identification: 
+      name: PRODUCT_PRICE
+
+    layout: 
+      sequence: 640
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_PRICE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_CURRENCY ============================
+    id: 269568985081683839
+    identification: 
+      name: PRODUCT_CURRENCY
+
+    layout: 
+      sequence: 650
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_EXCHANGE_RATE =======================
+    id: 269569064043683840
+    identification: 
+      name: PRODUCT_EXCHANGE_RATE
+
+    layout: 
+      sequence: 660
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_EXCHANGE_RATE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_ID ==================================
+    id: 269569747177683847
+    identification: 
+      name: PRODUCT_ID
+
+    layout: 
+      sequence: 730
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_ID
+      data-type: VARCHAR2
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: true
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CAR_TYPE_ID =================================
+    id: 269570308360683853
+    identification: 
+      name: CAR_TYPE_ID
+
+    layout: 
+      sequence: 790
+
+    source: 
+      type: Database Column
+      database-column: CAR_TYPE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_DATE_FROM ==============================
+    id: 269570409745683854
+    identification: 
+      name: TRIP_DATE_FROM
+
+    layout: 
+      sequence: 1
+
+    source: 
+      type: Database Column
+      database-column: TRIP_DATE_FROM
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: true
+
+  - # ====== Column: CAR_PHOTO_URL ===============================
+    id: 269761841141078637
+    identification: 
+      name: CAR_PHOTO_URL
+
+    layout: 
+      sequence: 800
+
+    source: 
+      type: Database Column
+      database-column: CAR_PHOTO_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLASSIFICATION_TYPE =========================
+    id: 269761958475078638
+    identification: 
+      name: CLASSIFICATION_TYPE
+
+    layout: 
+      sequence: 810
+
+    source: 
+      type: Database Column
+      database-column: CLASSIFICATION_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LIMO RESERVATION REQUEST CLASSIFICATIONS # 267073320409618852
+      display-extra-values: true
+
+  - # ====== Column: CLIENT_CODE =================================
+    id: 269762097385078639
+    identification: 
+      name: CLIENT_CODE
+
+    layout: 
+      sequence: 820
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_DATE_TO ================================
+    id: 269762192546078640
+    identification: 
+      name: TRIP_DATE_TO
+
+    layout: 
+      sequence: 830
+
+    source: 
+      type: Database Column
+      database-column: TRIP_DATE_TO
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 269762231456078641
+    identification: 
+      name: SIGNAGE_DETAILS
+
+    layout: 
+      sequence: 840
+
+    source: 
+      type: Database Column
+      database-column: SIGNAGE_DETAILS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TICKET_NUMBER ===============================
+    id: 269762401525078642
+    identification: 
+      name: TICKET_NUMBER
+
+    layout: 
+      sequence: 850
+
+    source: 
+      type: Database Column
+      database-column: TICKET_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_STATUS ==============================
+    id: 270817081991053642
+    identification: 
+      name: PRODUCT_STATUS
+
+    layout: 
+      sequence: 870
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_MONTH ==================================
+    id: 270817240233053644
+    identification: 
+      name: TRIP_MONTH
+
+    layout: 
+      sequence: 890
+
+    source: 
+      type: Database Column
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DAYS_FILTER =================================
+    id: 270817365983053645
+    identification: 
+      name: DAYS_FILTER
+
+    layout: 
+      sequence: 900
+
+    source: 
+      type: Database Column
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SALES_REP_ID ================================
+    id: 270817465797053646
+    identification: 
+      name: SALES_REP_ID
+
+    layout: 
+      sequence: 910
+
+    source: 
+      type: Database Column
+      database-column: SALES_REP_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: OPS_REP_ID ==================================
+    id: 270817560835053647
+    identification: 
+      name: OPS_REP_ID
+
+    layout: 
+      sequence: 920
+
+    source: 
+      type: Database Column
+      database-column: OPS_REP_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 270817657916053648
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 930
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 270817761213053649
+    identification: 
+      name: CREATED_BY
+
+    layout: 
+      sequence: 940
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED =====================================
+    id: 270817804058053650
+    identification: 
+      name: UPDATED
+
+    layout: 
+      sequence: 950
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 270817920672053651
+    identification: 
+      name: UPDATED_BY
+
+    layout: 
+      sequence: 960
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 270818044648053652
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 970
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS_DESCRIPTION ==========================
+    id: 270818152408053653
+    identification: 
+      name: STATUS_DESCRIPTION
+
+    layout: 
+      sequence: 980
+
+    source: 
+      type: Database Column
+      database-column: STATUS_DESCRIPTION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ICON ========================================
+    id: 270818269724053654
+    identification: 
+      name: ICON
+
+    layout: 
+      sequence: 990
+
+    source: 
+      type: Database Column
+      database-column: ICON
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PROGRESS_PCT ================================
+    id: 270818360338053655
+    identification: 
+      name: PROGRESS_PCT
+
+    layout: 
+      sequence: 1000
+
+    source: 
+      type: Database Column
+      database-column: PROGRESS_PCT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DRIVER_ASSIGNMENT_LABEL =====================
+    id: 270818479458053656
+    identification: 
+      name: DRIVER_ASSIGNMENT_LABEL
+
+    layout: 
+      sequence: 1010
+
+    source: 
+      type: Database Column
+      database-column: DRIVER_ASSIGNMENT_LABEL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DRIVER_ASSIGNMENT_VALUE =====================
+    id: 270818564881053657
+    identification: 
+      name: DRIVER_ASSIGNMENT_VALUE
+
+    layout: 
+      sequence: 1020
+
+    source: 
+      type: Database Column
+      database-column: DRIVER_ASSIGNMENT_VALUE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ASSIGNMENTCSS ===============================
+    id: 270818613599053658
+    identification: 
+      name: ASSIGNMENTCSS
+
+    layout: 
+      sequence: 1030
+
+    source: 
+      type: Database Column
+      database-column: ASSIGNMENTCSS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_TRIPS =================================
+    id: 270818767684053659
+    identification: 
+      name: TOTAL_TRIPS
+
+    layout: 
+      sequence: 1040
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_TRIPS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_TRUE_ID ==============================
+    id: 270818895418053660
+    identification: 
+      name: CLIENT_TRUE_ID
+
+    layout: 
+      sequence: 1050
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_TRUE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FAVORITE ====================================
+    id: 270818972734053661
+    identification: 
+      name: FAVORITE
+
+    layout: 
+      sequence: 1060
+
+    source: 
+      type: Database Column
+      database-column: FAVORITE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FAVORITE_ICON ===============================
+    id: 270819005764053662
+    identification: 
+      name: FAVORITE_ICON
+
+    layout: 
+      sequence: 1070
+
+    source: 
+      type: Database Column
+      database-column: FAVORITE_ICON
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_YEAR ===================================
+    id: 272525032551453944
+    identification: 
+      name: TRIP_YEAR
+
+    layout: 
+      sequence: 1080
+
+    source: 
+      type: Database Column
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_COUNTRY ==============================
+    id: 272525191601453945
+    identification: 
+      name: CLIENT_COUNTRY
+
+    layout: 
+      sequence: 1090
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_COUNTRY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 297479011077345192
+    identification: 
+      name: RESERVATION_ID
+
+    layout: 
+      sequence: 330
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_ID ===================================
+    id: 297479094214345193
+    identification: 
+      name: CLIENT_ID
+
+    layout: 
+      sequence: 340
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CRM_CLIENTS.FULL_NAME # 254031009602355585
+      display-extra-values: true
+
+  actions: 
+  - # ====== Action: Full Row Link ===============================
+    id: 236468863869955591
+    identification: 
+      position: Full Row Link # 349402277895478545
+
+    layout: 
+      sequence: 40
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:6001:&SESSION.::&DEBUG.::P6001_PRODUCT_ID:&PRODUCT_ID.'
+        page: 6001 # Trip Request Details
+        values: 
+          p6001_product_id: '&PRODUCT_ID.'
+
+  - # ====== Action: Favorite Reservation ========================
+    id: 11148360627760673360
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: Favorite Reservation
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to URL
+      target: '#action$favoriteReservation?id=&RESERVATION_ID.'
+
+    appearance: 
+      display-type: Icon
+      icon: '&FAVORITE_ICON.'
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - btn-favorite
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: قائمة الإجرائات =============================
+    id: 11149916734883630036
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: قائمة الإجرائات
+
+    layout: 
+      sequence: 1
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-chevron-down
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - btn-menu
+
+    menus: 
+    - # ====== Menu: توزيع التشغيلة ================================
+      id: 269060106402390077
+      identification: 
+        type: Menu Entry
+        label: توزيع التشغيلة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:363:&SESSION.::&DEBUG.::P363_PRODUCT_ID,P363_RESERVATION_ID:&PRODUCT_ID.,&RESERVATION_ID.'
+          page: 363 # Limo Product Assignment Form
+          values: 
+            p363_product_id: '&PRODUCT_ID.'
+            p363_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-share-nodes
+
+      server-side-condition: 
+        type: Rows returned
+        sql-query: |
+          SELECT 1
+          FROM LIMO_PRODUCTS p
+          WHERE p.PRODUCT_ID = :PRODUCT_ID
+            AND NOT EXISTS (
+              SELECT 1 FROM LIMO_PRODUCT_ASSIGNMENTS a
+              WHERE a.PRODUCT_ID = p.PRODUCT_ID
+            )
+          
+        execute-condition: For Each Row
+
+    - # ====== Menu: تغيير السائق ==================================
+      id: 270246007001186755
+      identification: 
+        type: Menu Entry
+        label: تغيير السائق
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:363:&SESSION.::&DEBUG.::P363_PRODUCT_ID,P363_RESERVATION_ID:&PRODUCT_ID.,&RESERVATION_ID.'
+          page: 363 # Limo Product Assignment Form
+          values: 
+            p363_product_id: '&PRODUCT_ID.'
+            p363_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-right-left
+
+      server-side-condition: 
+        type: Rows returned
+        sql-query: |
+          SELECT 1
+          FROM LIMO_PRODUCTS p
+          WHERE p.PRODUCT_ID = :PRODUCT_ID
+            AND EXISTS (
+              SELECT 1 FROM LIMO_PRODUCT_ASSIGNMENTS a
+              WHERE a.PRODUCT_ID = p.PRODUCT_ID
+            )
+          
+        execute-condition: For Each Row
+
+    - # ====== Menu: تعديل الخدمة ==================================
+      id: 11149916803641630037
+      identification: 
+        type: Menu Entry
+        label: تعديل الخدمة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:359:&SESSION.::&DEBUG.:RP,169:P359_PRODUCT_ID,P359_RESERVATION_ID:&PRODUCT_ID.,&RESERVATION_ID.'
+          page: 359 # Limo Product Reservation Form
+          clear-cache: RP,169
+          values: 
+            p359_product_id: '&PRODUCT_ID.'
+            p359_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: عرض تفاصيل الطلب ==============================
+      id: 11149916969693630039
+      identification: 
+        type: Menu Entry
+        label: عرض تفاصيل الطلب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:3:P3_RESERVATION_ID:&RESERVATION_ID.'
+          page: 3 # Create Identity
+          clear-cache: 3
+          values: 
+            p3_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: نظرة سريعة على الطلب ==========================
+      id: 11723517199186116520
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة على الطلب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:36:&SESSION.::&DEBUG.:RP,36:P36_ID:&RESERVATION_ID.'
+          page: 36
+          clear-cache: RP,36
+          values: 
+            p36_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: Separator =====================================
+      id: 11723517323017116521
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+    - # ====== Menu: سجل التغيرات ==================================
+      id: 12274579949394612929
+      identification: 
+        type: Menu Entry
+        label: سجل التغيرات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:124:&SESSION.::&DEBUG.:RP,124:P124_ID:&ID.'
+          page: 124
+          clear-cache: RP,124
+          values: 
+            p124_id: '&ID.'
+
+      appearance: 
+        icon: fa-clock-o
+
+    - # ====== Menu: عرض ملف العميل ================================
+      id: 13432385426763380739
+      identification: 
+        type: Menu Entry
+        label: عرض ملف العميل
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:97:&SESSION.::&DEBUG.:RP,97:P97_CLIENT_ID:&CLIENT_TRUE_ID.'
+          page: 97
+          clear-cache: RP,97
+          values: 
+            p97_client_id: '&CLIENT_TRUE_ID.'
+
+      appearance: 
+        icon: fa-user
+
+    - # ====== Menu: ارشفة الحجز ===================================
+      id: 15027591011900661532
+      identification: 
+        type: Menu Entry
+        label: ارشفة الحجز
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:47:&SESSION.::&DEBUG.:RP,47:P47_RESERVATION_ID:&RESERVATION_ID.'
+          page: 47
+          clear-cache: RP,47
+          values: 
+            p47_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-remove
+
+  - # ====== Action: Title Link ==================================
+    id: 11149917061813630040
+    identification: 
+      position: Title Link # 348722977165395441
+
+    layout: 
+      sequence: 30
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:360:&SESSION.::&DEBUG.:RP,360:P360_RESERVATION_ID:&RESERVATION_ID.'
+        page: 360 # Limo Reservation Request Details
+        clear-cache: RP,360
+        values: 
+          p360_reservation_id: '&RESERVATION_ID.'
+
+- # ====== Region: Reservation Confirmation Tracker ============
+  id: 15165228390532885435
+  identification: 
+    name: Reservation Confirmation Tracker
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 16029571745565900253
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Reservation Confirmation Tracker # 15165228390532885435
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 16029572979071900265
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 16029572046144900256
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: الغاء الفلاتر =================================
+      id: 11887467065356940321
+      identification: 
+        type: Menu Entry
+        label: الغاء الفلاتر
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,23::'
+          page: 362 # Limo Reservations Requests
+          clear-cache: RP,23
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث اليانات =================================
+      id: 16029572752051900263
+      identification: 
+        type: Menu Entry
+        label: تحديث اليانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,::'
+          page: 362 # Limo Reservations Requests
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Items =======================================
+  id: 40865856214611525032
+  identification: 
+    name: Items
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    - margin-bottom-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Faceted Search ==============================
+  id: 41666251235377928747
+  identification: 
+    name: Faceted Search
+    title: ادوات البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: Content Row # 10897984521900707655
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: Yes
+      total-row-count-label: عدد الطلبات
+      show-charts: Dialog
+      display-chart-for-top-n-values: 10
+
+  facets: 
+  - # ====== Facet: P362_TRIP_DATE_FROM ==========================
+    id: 269761740832078636
+    identification: 
+      name: P362_TRIP_DATE_FROM
+      type: Range
+
+    label: 
+      label: بحث بفترة معينة
+      show-label-for-current-facet: true
+
+    settings: 
+      select-multiple: false
+      manual-entry: false
+
+    layout: 
+      sequence: 100
+
+    appearance: 
+      display: Inline
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: TRIP_DATE_FROM
+      data-type: DATE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P362_MONTH ===================================
+    id: 269763260326078651
+    identification: 
+      name: P362_MONTH
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالشهر
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 12
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      facet: P362_YEAR # 272524988422453943
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_TRIP_DATE ===============================
+    id: 269763450983078653
+    identification: 
+      name: P362_TRIP_DATE
+      type: Checkbox Group
+
+    label: 
+      label: بحث باليوم
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 80
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 31
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      facet: P362_MONTH # 269763260326078651
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_YEAR ====================================
+    id: 272524988422453943
+    identification: 
+      name: P362_YEAR
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالسنة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_COUNTRY =================================
+    id: 272525236190453946
+    identification: 
+      name: P362_COUNTRY
+      type: Checkbox Group
+
+    label: 
+      label: جنسية العميل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: COUNTRIESLIST # 251815092929946311
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CLIENT_COUNTRY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_CARTYPE =================================
+    id: 272525331209453947
+    identification: 
+      name: P362_CARTYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع السيارة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: REQUESTED_CAR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_SALES ===================================
+    id: 272525435573453948
+    identification: 
+      name: P362_SALES
+      type: Checkbox Group
+
+    label: 
+      label: مسؤول المبيعات
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 90
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: SALES_REP_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_DRIVER_ASSIGNMENT_VALUE =================
+    id: 279059319437864279
+    identification: 
+      name: P362_DRIVER_ASSIGNMENT_VALUE
+      type: Checkbox Group
+
+    label: 
+      label: حالة التوزيع
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:تم التوزيع;assigned,لم يتم التوزيع;unassigned'
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: ASSIGNMENTCSS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P362_SEARCH ==================================
+    id: 41666277864895928778
+    identification: 
+      name: P362_SEARCH
+      type: Search
+
+    label: 
+      label: بحث بمفاتيح الكلمات
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): RESERVATION_ID,CLIENT_CODE,CLIENT_ID,CAR_TYPE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  filters: 
+  - # ====== Filter: P362_TRIP_DATE_FROM =========================
+    id: 269761740832078636
+    identification: 
+      name: P362_TRIP_DATE_FROM
+      type: Range
+
+    label: 
+      label: بحث بفترة معينة
+
+    settings: 
+      select-multiple: false
+      manual-entry: false
+
+    layout: 
+      sequence: 100
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TRIP_DATE_FROM
+      data-type: DATE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P362_MONTH ==================================
+    id: 269763260326078651
+    identification: 
+      name: P362_MONTH
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالشهر
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      filter: P362_YEAR # 272524988422453943
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_TRIP_DATE ==============================
+    id: 269763450983078653
+    identification: 
+      name: P362_TRIP_DATE
+      type: Checkbox Group
+
+    label: 
+      label: بحث باليوم
+
+    layout: 
+      sequence: 80
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      filter: P362_MONTH # 269763260326078651
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_YEAR ===================================
+    id: 272524988422453943
+    identification: 
+      name: P362_YEAR
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالسنة
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_COUNTRY ================================
+    id: 272525236190453946
+    identification: 
+      name: P362_COUNTRY
+      type: Checkbox Group
+
+    label: 
+      label: جنسية العميل
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: COUNTRIESLIST # 251815092929946311
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CLIENT_COUNTRY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_CARTYPE ================================
+    id: 272525331209453947
+    identification: 
+      name: P362_CARTYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع السيارة
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: REQUESTED_CAR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_SALES ==================================
+    id: 272525435573453948
+    identification: 
+      name: P362_SALES
+      type: Checkbox Group
+
+    label: 
+      label: مسؤول المبيعات
+
+    layout: 
+      sequence: 90
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: SALES_REP_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_DRIVER_ASSIGNMENT_VALUE ================
+    id: 279059319437864279
+    identification: 
+      name: P362_DRIVER_ASSIGNMENT_VALUE
+      type: Checkbox Group
+
+    label: 
+      label: حالة التوزيع
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:تم التوزيع;assigned,لم يتم التوزيع;unassigned'
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: ASSIGNMENTCSS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P362_SEARCH =================================
+    id: 41666277864895928778
+    identification: 
+      name: P362_SEARCH
+      type: Search
+
+    label: 
+      label: بحث بمفاتيح الكلمات
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): RESERVATION_ID,CLIENT_CODE,CLIENT_ID,CAR_TYPE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+page-items: 
+- # ====== Page Item: P362_INITIATIVE_ID =======================
+  id: 10616806896980993954
+  identification: 
+    name: P362_INITIATIVE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Faceted Search # 41666251235377928747
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P362_RESERVATION_TO_FAVORITE =============
+  id: 12632446469923734543
+  identification: 
+    name: P362_RESERVATION_TO_FAVORITE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Faceted Search # 41666251235377928747
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P362_FOCUS_AREA_ID =======================
+  id: 13714912493581099755
+  identification: 
+    name: P362_FOCUS_AREA_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Faceted Search # 41666251235377928747
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P362_ORDER_BY ============================
+  id: 42179382924373036024
+  identification: 
+    name: P362_ORDER_BY
+    type: Select List
+
+  label: 
+    label: ' '
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Items # 40865856214611525032
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:TRIP_DATE_FROM;TRIP_DATE_FROM,RESERVATION_ID;RESERVATION_ID'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: PICK_UP_TIME
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 269531219137666147
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Reservation Confirmation Tracker # 15165228390532885435
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:RP,::'
+      page: 350 # Limousine Department Home
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 269563889526666181
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Content Row # 10897984521900707655
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 269564331798666184
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Content Row # 10897984521900707655
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog close # 269563889526666181
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 269564870119666184
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Content Row # 10897984521900707655
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog close # 269563889526666181
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: on dialog closed ====================
+  id: 269565260320666185
+  identification: 
+    name: on dialog closed
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Reservation Confirmation Tracker # 15165228390532885435
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 269565773172666185
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Content Row # 10897984521900707655
+
+    execution: 
+      sequence: 10
+      event: on dialog closed # 269565260320666185
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 269566286184666185
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 41666251235377928747
+
+    execution: 
+      sequence: 20
+      event: on dialog closed # 269565260320666185
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Fav Reservation =====================
+  id: 269566684051666185
+  identification: 
+    name: Fav Reservation
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P362_RESERVATION_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 269567190410666186
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        RESERVATION_FAVORITE_TOGGLE(
+            p_reservation_id  => :P362_RESERVATION_TO_FAVORITE, 
+            p_user_id => :APP_USER_ID );
+      items-to-submit: 
+      - P362_RESERVATION_TO_FAVORITE
+      - APP_USER_ID
+
+    execution: 
+      sequence: 10
+      event: Fav Reservation # 269566684051666185
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 269567657592666187
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-reservation-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-reservation-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('تم اضافة الحجز في التفضيلات');
+        }
+        apex.items.P362_RESERVATION_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: Fav Reservation # 269566684051666185
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

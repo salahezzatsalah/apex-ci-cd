@@ -1,0 +1,1250 @@
+---
+# ====== Page: Supplier Images Gallery =======================
+id: 176
+identification: 
+  name: Supplier Images Gallery
+  alias: SUPPLIER-IMAGES-GALLERY
+  title: '&P176_SUPPLIER_NAME.'
+  page-group: Projects # 18677231987453823719
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Images ======================================
+  id: 29317995848077539167
+  identification: 
+    name: Images
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d.ID,
+             d.DOCUMENT_FILENAME,
+             d.document_mimetype,
+             d.document_lastupd,
+             UPDATED,
+             d.created,
+             d.tags,
+             case when length(d.doc_description) > 200
+                  then substr(d.doc_description,1,200)||'...'
+                  else d.doc_description
+                  end doc_description,
+             d.DOCUMENT_BLOB,
+             lower(created_by) author,
+             dbms_lob.getlength(d.DOCUMENT_BLOB) doc_size,
+             apex_util.get_since(created) created_since,
+             d.created date_created,
+             lower(substr(DOCUMENT_FILENAME,instr(DOCUMENT_FILENAME,'.',-1)+1,length(DOCUMENT_FILENAME)-instr(DOCUMENT_FILENAME,'.',-1))) file_extension,
+             to_char(d.created,'YYYY.MM') month_created
+        from SUPPLIERS_DOCUMENTS d
+       where supplier_id = :P176_SUPPLIER_ID and 
+             (
+                 lower(DOCUMENT_FILENAME) like '%.png' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpg' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpeg' or 
+                 lower(DOCUMENT_FILENAME) like '%.gif' or 
+                 lower(DOCUMENT_FILENAME) like '%.tiff' or 
+                 lower(DOCUMENT_FILENAME) like '%.avif' or 
+                 lower(DOCUMENT_FILENAME) like '%.ai' 
+             )
+      order by created desc
+      
+    page-items-to-submit: 
+    - P176_SUPPLIER_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 264115759824299908
+    appearance: 
+      layout: Grid
+      grid-columns: Auto
+
+    card: 
+      primary-key-column-1: ID
+
+    title: 
+      advanced-formatting: false
+      column: DOCUMENT_FILENAME
+
+    subtitle: 
+      advanced-formatting: true
+      html-expression: '&AUTHOR. - &CREATED_SINCE.'
+
+    body: 
+      advanced-formatting: false
+
+    secondary-body: 
+      advanced-formatting: true
+      html-expression: '&DOC_DESCRIPTION.'
+
+    icon-and-badge: 
+      icon-source: No Icon
+
+    media: 
+      advanced-formatting: false
+      source: BLOB Column
+      blob-column: DOCUMENT_BLOB
+      position: Body
+      appearance: Auto
+      sizing: Fit
+
+    blob-attributes: 
+      mime-type-column: DOCUMENT_MIMETYPE
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+    actions: 
+    - # ====== Action: Full Card ===================================
+      id: 264116251521299910
+      identification: 
+        type: Full Card
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:167:&SESSION.::&DEBUG.:RP,167:P167_ID,P167_PREV_PAGE:&ID.,176'
+          page: 167 # Supplier Document Details
+          clear-cache: RP,167
+          values: 
+            p167_id: '&ID.'
+            p167_prev_page: 176
+
+- # ====== Region: Facets ======================================
+  id: 29317996489766539173
+  identification: 
+    name: Facets
+    type: Faceted Search
+
+  source: 
+    filtered-region: Images # 29317995848077539167
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: No
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 10
+
+  facets: 
+  - # ====== Facet: P176_SEARCH ==================================
+    id: 29318006762163539235
+    identification: 
+      name: P176_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P176_FILE_EXTENSION ==========================
+    id: 29318006909167539236
+    identification: 
+      name: P176_FILE_EXTENSION
+      type: Checkbox Group
+
+    label: 
+      label: امتداد الملف
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: FILE_EXTENSION
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P176_AUTHOR ==================================
+    id: 29318006984570539237
+    identification: 
+      name: P176_AUTHOR
+      type: Checkbox Group
+
+    label: 
+      label: القائم بالتسجيل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: AUTHOR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P176_MONTH_CREATED ===========================
+    id: 29318007128642539238
+    identification: 
+      name: P176_MONTH_CREATED
+      type: Checkbox Group
+
+    label: 
+      label: تم تسجيله في شهر
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: MONTH_CREATED
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P176_TAGS ====================================
+    id: 39977690465008088038
+    identification: 
+      name: P176_TAGS
+      type: Checkbox Group
+
+    label: 
+      label: علامات مميزة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TAGS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P176_SEARCH =================================
+    id: 29318006762163539235
+    identification: 
+      name: P176_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P176_FILE_EXTENSION =========================
+    id: 29318006909167539236
+    identification: 
+      name: P176_FILE_EXTENSION
+      type: Checkbox Group
+
+    label: 
+      label: امتداد الملف
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: FILE_EXTENSION
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P176_AUTHOR =================================
+    id: 29318006984570539237
+    identification: 
+      name: P176_AUTHOR
+      type: Checkbox Group
+
+    label: 
+      label: القائم بالتسجيل
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: AUTHOR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P176_MONTH_CREATED ==========================
+    id: 29318007128642539238
+    identification: 
+      name: P176_MONTH_CREATED
+      type: Checkbox Group
+
+    label: 
+      label: تم تسجيله في شهر
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: MONTH_CREATED
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P176_TAGS ===================================
+    id: 39977690465008088038
+    identification: 
+      name: P176_TAGS
+      type: Checkbox Group
+
+    label: 
+      label: علامات مميزة
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TAGS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 30184948176346979932
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Supplier ====================================
+  id: 82356097247744873951
+  identification: 
+    name: Supplier
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          s.SUPPLIER_ID AS id,
+          s.SUPPLIER_NAME AS name,
+          s.PHONE,
+          s.EMAIL,
+          s.ADDRESS,
+          s.CITY || ', ' || (
+            SELECT COUNTRY_NAME || ' (' || REGION || ')'
+            FROM SP_COUNTRIES
+            WHERE ID = s.COUNTRY_ID
+          ) AS location,
+          --
+          CASE 
+            WHEN s.IS_COMPANY = 'Y' THEN 'شركة'
+            ELSE 'فرد'
+          END AS is_company,
+          --
+          (SELECT TYPE_NAME 
+           FROM SUPPLIER_TYPES t 
+           WHERE t.SUPPLIER_TYPE_ID = s.SUPPLIER_TYPE_ID) AS supplier_type,
+          --
+          CASE 
+            WHEN s.IS_COMPANY = 'Y' THEN 
+              'السجل التجاري: ' || NVL(s.COMPANY_REG_NO, 'غير محدد') || 
+              ' - مسؤول التواصل: ' || NVL(s.CONTACT_PERSON, 'غير محدد')
+            ELSE 
+              'الرقم القومي: ' || NVL(s.NATIONAL_ID, 'غير محدد')
+          END AS identity_info,
+          --
+          s.NOTES,
+          TO_CHAR(s.CREATED, 'DD-MM-YYYY') AS created,
+          TO_CHAR(s.UPDATED, 'DD-MM-YYYY') AS updated,
+          --
+          CASE 
+              WHEN s.PROFILE_PHOTO IS NOT NULL AND DBMS_LOB.GETLENGTH(s.PROFILE_PHOTO) > 0 THEN 'نعم'
+              ELSE 'لا'
+          END AS has_profile_photo,
+          s.PHOTO_FILENAME,
+          s.PHOTO_MIMETYPE,
+          --
+          -- Attachments count
+          (
+            SELECT COUNT(*) 
+            FROM SUPPLIERS_DOCUMENTS a 
+            WHERE a.SUPPLIER_ID = s.SUPPLIER_ID
+          ) AS attachments_count
+      FROM SUPPLIERS s
+      WHERE s.SUPPLIER_ID = :P176_SUPPLIER_ID;
+      
+    page-items-to-submit: 
+    - P176_SUPPLIER_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-label--stacked
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: no data found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: NAME ========================================
+    id: 262535540755796649
+    identification: 
+      column-name: NAME
+      type: Plain Text
+
+    heading: 
+      heading: الاسم
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHONE =======================================
+    id: 262535651153796650
+    identification: 
+      column-name: PHONE
+      type: Plain Text
+
+    heading: 
+      heading: رقم الهاتف
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EMAIL =======================================
+    id: 262535791558796651
+    identification: 
+      column-name: EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: البريد الالكتروني
+      alignment: start
+
+    layout: 
+      sequence: 180
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 262536331134796657
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات على الملف
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 262536476341796658
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الانشاء
+      alignment: start
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MM-YYYY HH:MIPM'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTACHMENTS_COUNT ===========================
+    id: 264123341553299920
+    identification: 
+      column-name: ATTACHMENTS_COUNT
+      type: Plain Text
+
+    heading: 
+      heading: عدد المستندات
+      alignment: end
+
+    layout: 
+      sequence: 190
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 264124124782299920
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 264124982965299921
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تحديث
+      alignment: start
+
+    layout: 
+      sequence: 220
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MM-YYYY HH:MIPM'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P176_SUPPLIER_ID =========================
+  id: 29318003273633539218
+  identification: 
+    name: P176_SUPPLIER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Images # 29317995848077539167
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P176_SUPPLIER_NAME =======================
+  id: 29318003473112539220
+  identification: 
+    name: P176_SUPPLIER_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Images # 29317995848077539167
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: add_document ================================
+  id: 264119710594299913
+  identification: 
+    button-name: add_document
+    label: اضافة مستند
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 30184948176346979932
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:174:&SESSION.::&DEBUG.:RR,174:P174_SUPPLIER_ID:&P176_SUPPLIER_ID.'
+      page: 174 # Add Supplier Attachment
+      clear-cache: RR,174
+      values: 
+        p174_supplier_id: '&P176_SUPPLIER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: UP ==========================================
+  id: 264120117389299914
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 30184948176346979932
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:166:P166_ID:&P176_SUPPLIER_ID.'
+      page: 166 # Supplier Details Full Page
+      clear-cache: 166
+      values: 
+        p166_id: '&P176_SUPPLIER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 264126251597299923
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 30184948176346979932
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 264126801735299924
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Images # 29317995848077539167
+
+    execution: 
+      sequence: 10
+      event: DC # 264126251597299923
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264127210342299924
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Facets # 29317996489766539173
+
+    execution: 
+      sequence: 20
+      event: DC # 264126251597299923
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: P176_SUPPLIER_NAME =====================
+  id: 264125905787299923
+  identification: 
+    item-name: P176_SUPPLIER_NAME
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select 
+             'ملف مورد: ' || p.supplier_name type
+        from 
+             suppliers p
+       where p.supplier_id = :P176_SUPPLIER_ID
+

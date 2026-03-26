@@ -1,0 +1,3471 @@
+---
+# ====== Page: Limo-Sub-Level-Reservation Form ===============
+id: 254
+identification: 
+  name: Limo-Sub-Level-Reservation Form
+  alias: LIMO-SUB-LEVEL-RESERVATION-FORM
+  title: استمارة حجز ليموزين
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  execute-when-page-loads: |
+    (function () {
+      // --- 1. دوال المساعدة (الخاصة بجوجل ماب والـ Slots) ---
+      async function waitForGoogle() {
+        for (let i = 0; i < 60; i++) {
+          if (window.google && google.maps && google.maps.importLibrary) return;
+          await new Promise(r => setTimeout(r, 200));
+        }
+        throw new Error("Google Maps JS not ready");
+      }
+    
+      function norm(v) { return String(v || "").trim().toUpperCase(); }
+    
+      async function waitForEl(id, tries = 40, ms = 100) {
+        for (let i = 0; i < tries; i++) {
+          const el = document.getElementById(id);
+          if (el) return el;
+          await new Promise(r => setTimeout(r, ms));
+        }
+        return null;
+      }
+    
+      // --- 2. دالة الـ PAC (جوجل ماب) ---
+      async function mountPAC(slotId, textItem, placeIdItem, placeholder, cfg) {
+        const slot = await waitForEl(slotId, 60, 100);
+        if (!slot) {
+          console.warn("❌ Slot not found:", slotId);
+          return;
+        }
+    
+        await waitForGoogle();
+        const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+    
+        slot.innerHTML = "";
+        const pac = new PlaceAutocompleteElement();
+    
+        if (cfg?.includedPrimaryTypes) pac.includedPrimaryTypes = cfg.includedPrimaryTypes;
+        if (cfg?.includedRegionCodes)  pac.includedRegionCodes  = cfg.includedRegionCodes;
+    
+        pac.placeholder = placeholder || "";
+        pac.style.width = "100%";
+        slot.appendChild(pac);
+    
+        pac.addEventListener("gmp-select", async (e) => {
+          const pred = e.placePrediction;
+          if (!pred) return;
+          const place = pred.toPlace();
+          await place.fetchFields({ fields: ["formattedAddress", "displayName", "id"] });
+          const label = place.formattedAddress || place.displayName || "";
+          const pid   = place.id || pred.placeId || "";
+    
+          apex.item(textItem).setValue(label);
+          apex.item(placeIdItem).setValue(pid);
+        });
+        console.log("✅ Mounted PAC in:", slotId);
+      }
+    
+      // --- 3. دوال الـ Slots (نقل حقول أبكس الـ Hidden) ---
+      function moveItemsToSlots() {
+        const items = ['P273_ARRIVAL_DATE', 'P273_ARRIVAL_TIME', 'P273_PASSENGERS', 'P273_LAGUAGE', 'P273_RETURN_DATE', 'P273_IS_RETURN'];
+        items.forEach(item => {
+            const slot = document.getElementById(item + '_SLOT');
+            const container = document.getElementById(item + '_CONTAINER');
+            if (slot && container) {
+                slot.appendChild(container);
+                container.style.display = 'block';
+                const lb = container.querySelector('.t-Form-labelContainer');
+                if (lb) lb.style.display = 'none';
+            }
+        });
+      }
+    
+      // --- 4. دالة التحكم في السويتش (تاريخ العودة) ---
+      function handleReturnSwitch() {
+        const sw = apex.item("P273_IS_RETURN");
+        const rd = document.getElementById("return-date-wrapper");
+        if (sw && rd) {
+            const toggleRD = () => {
+                const val = String(sw.getValue()).toUpperCase();
+                if (val === 'Y' || val === '1' || val === 'ON' || val === 'YES') {
+                    apex.jQuery(rd).stop(true, true).fadeIn(300);
+                } else {
+                    apex.jQuery(rd).stop(true, true).fadeOut(300);
+                }
+            };
+            toggleRD();
+            apex.jQuery(sw.node).on('change', toggleRD);
+        }
+      }
+    
+      // --- 5. تهيئة الخدمات ---
+      async function mountByService() {
+        const st = norm(apex.item("P273_SERVICETYPE").getValue());
+        console.log("🔎 ServiceType =", st);
+    
+        if (st === "AIRPORT") {
+          await mountPAC("PAC_FROM_SLOT", "P273_AIRPORT_FROM", "P273_FROM_PLACE_ID", "من (مطار داخل مصر)", { includedPrimaryTypes: ["airport"], includedRegionCodes: ["eg"] });
+          await mountPAC("PAC_TO_SLOT", "P273_AIRPORT_TO", "P273_TO_PLACE_ID", "إلى (أي مكان)", {});
+        } else if (st === "TRANSFER") {
+          await mountPAC("PAC_TR_FROM_SLOT", "P273_TR_FROM_LOCATION", "P273_TR_FROM_PLACE_ID", "من", {});
+          await mountPAC("PAC_TR_TO_SLOT", "P273_TR_TO_LOCATION", "P273_TR_TO_PLACE_ID", "إلى", {});
+        }
+      }
+    
+      window.initPACByService = function () {
+        setTimeout(() => { mountByService(); }, 200);
+      };
+    
+      // --- 6. نقطة الانطلاق (Execution) ---
+      apex.jQuery(function () {
+        moveItemsToSlots();    // 1. نقل الحقول للأماكن الجديدة
+        handleReturnSwitch();  // 2. تفعيل السويتش
+        window.initPACByService(); // 3. تفعيل جوجل ماب
+    
+        // التعامل مع تغيير نوع الخدمة
+        try {
+          const node = apex.item("P273_SERVICETYPE").node;
+          apex.jQuery(node).on("change", function () {
+            window.initPACByService();
+          });
+        } catch (e) {}
+    
+        // إعادة التشغيل عند الـ Refresh
+        apex.jQuery(document).on("apexafterrefresh", function () {
+          moveItemsToSlots();
+          window.initPACByService();
+        });
+      });
+    })();
+    
+
+css: 
+  inline: |
+    /* الحاوية الأساسية */
+    .booking-main-wrapper {
+        direction: rtl;
+        padding: 15px;
+        background: transparent !important;
+    }
+    
+    /* --- تنسيق المسار (من وإلى) بنظام الأعمدة --- */
+    .route-section-flex {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .route-visual-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 30px;
+        padding-top: 10px;
+        flex-shrink: 0;
+    }
+    
+    .dot-start { width: 12px; height: 12px; background: #b07d2b; border-radius: 50%; }
+    .dashed-line { flex-grow: 1; border-right: 2px dashed #f29d38; margin: 5px 0; min-height: 45px; }
+    .loc-end { 
+        width: 22px; height: 22px; 
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b07d2b'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    
+    .route-inputs-column { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
+    
+    /* --- تنسيق الـ Grid (حقلين جنب بعض) --- */
+    .details-row-flex {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    .flex-item {
+        flex: 1;
+        min-width: 0; /* بيمنع الحقول إنها تخرج بره الشاشة */
+    }
+    
+    /* الحقول شفافة بحد سفلي فقط */
+    #PAC_FROM_SLOT input, #PAC_TO_SLOT input, 
+    .flex-item div[id*="_SLOT"] {
+        border-bottom: 1.5px solid #eee !important;
+        background: transparent !important;
+        min-height: 40px;
+    }
+    
+    /* تنسيق العناوين (Labels) */
+    .custom-label {
+        display: block;
+        font-size: 13px;
+        color: #888;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    
+    .section-divider { border: 0; border-top: 1px solid #f0f0f0; margin: 25px 0; }
+    
+    /* تظبيط السويتش */
+    .switch-container {
+        max-width: 100px; /* بيخلي السويتش ما ياخدش مساحة كبيرة */
+    }
+    
+    
+    /* إضافة الـ Slots الجديدة للـ Style */
+    #PAC_TR_FROM_SLOT input, #PAC_TR_TO_SLOT input,
+    div[id*="TR_"][id$="_SLOT"] {
+        border-bottom: 1.5px solid #eee !important;
+        background: transparent !important;
+        min-height: 40px;
+    }
+    
+    
+    /* إخفاء الحقول في مكانها الأصلي */
+    .hide-me { 
+        display: none !important; 
+    }
+    
+    /* إجبار الحقل على الظهور فور دخوله جوه الـ Slot */
+    div[id$="_SLOT"] .hide-me, 
+    div[id$="_SLOT"] .t-Form-fieldContainer {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* تنسيق إضافي لضمان ظهور الـ Input نفسه */
+    .flex-item input {
+        display: inline-block !important;
+        width: 100% !important;
+    }
+    
+    
+    /* تنسيق الحاوية لضمان ترتيب الأيقونات فوق الحقول */
+    .booking-main-wrapper { 
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Important Classification ====================
+  id: 409532714093858028
+  identification: 
+    name: Important Classification
+    title: 'بينات تصنيف الرحلة '
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Limo Product Reservation Form # 438982137188168024
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Service Details =============================
+  id: 409532857030858029
+  identification: 
+    name: Service Details
+    title: تفاصيل الخدمة
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: Limo Product Reservation Form # 438982137188168024
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Limo Product Reservation Form ===============
+  id: 438982137188168024
+  identification: 
+    name: Limo Product Reservation Form
+    title: 'حجز سيارة - كود الطلب: &P359_RESERVATION_ID. - نموذج 359'
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 438993992048168046
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P254_RESULTS =============================
+  id: 201399317285641788
+  identification: 
+    name: P254_RESULTS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_RUNTIME_ID ==========================
+  id: 220387438535441853
+  identification: 
+    name: P254_RUNTIME_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 70
+    region: Limo Product Reservation Form # 438982137188168024
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_CUSTOMER_ID =========================
+  id: 336501886716410328
+  identification: 
+    name: P254_CUSTOMER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_MAIN_RES_ID =========================
+  id: 407582949909761736
+  identification: 
+    name: P254_MAIN_RES_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Important Classification # 409532714093858028
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_SUB_RES_ID ==========================
+  id: 407585706330761748
+  identification: 
+    name: P254_SUB_RES_ID
+    type: Display Only
+
+  label: 
+    label: كود الرحلة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: false
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 20
+    region: Important Classification # 409532714093858028
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_CAT_ITEM_ID =========================
+  id: 407585935021761750
+  identification: 
+    name: P254_CAT_ITEM_ID
+    type: Select One
+
+  label: 
+    label: نوع السيارة المطلوبة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 30
+    region: Important Classification # 409532714093858028
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-bus
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CAR TYPES NAMES # 266880751448522438
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select cat_item_id from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_TRIP_TYPE ===========================
+  id: 407586037638761751
+  identification: 
+    name: P254_TRIP_TYPE
+    type: Select One
+
+  label: 
+    label: نوع الرحلة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 30
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-road
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 20
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMOPRODUCTS TRIP TYPES # 267647733503170392
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select trip_type from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_RES_DATE_FROM =======================
+  id: 407586091740761752
+  identification: 
+    name: P254_RES_DATE_FROM
+    type: Date Picker
+
+  label: 
+    label: من تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select res_date_from from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_RES_DATE_TO =========================
+  id: 407586238705761753
+  identification: 
+    name: P254_RES_DATE_TO
+    type: Date Picker
+
+  label: 
+    label: الي تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 60
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select res_date_to from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_RES_TIME ============================
+  id: 407586348187761754
+  identification: 
+    name: P254_RES_TIME
+    type: ClockPicker
+
+  label: 
+    label: ساعة الوصول الى العميل
+    alignment: Left
+
+  settings: 
+    placement: Bottom
+    align: Left
+    autoclose: True
+    12h-mode: False
+    done-button-text: Done
+    show-clock-button: No
+    suppress-mobile-keyboards: No
+    logging: False
+
+  layout: 
+    sequence: 50
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 5
+
+  advanced: 
+    custom-attributes: 
+    - type="time"
+    - 'min="00:00"'
+    - 'max="23:59"'
+    - step="60"
+    - class="apex-item-text"
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select res_time from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_FROM_LOCATION =======================
+  id: 407586400541761755
+  identification: 
+    name: P254_FROM_LOCATION
+    type: Text Field with autocomplete
+
+  label: 
+    label: من موقع
+    alignment: Left
+
+  settings: 
+    fetch-on-type: true
+    use-cache: true
+    maximum-values-in-list: 7
+
+  search: 
+    match-type: Contains & Ignore Case
+    minimum-characters: 2
+
+  layout: 
+    sequence: 100
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-map-location-dot
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 400
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT LOCATION
+        FROM (
+          SELECT DISTINCT FROM_LOCATION AS LOCATION
+            FROM sublevel_limo_res
+           WHERE FROM_LOCATION IS NOT NULL
+          UNION
+          SELECT DISTINCT TO_LOCATION AS LOCATION
+            FROM sublevel_limo_res
+           WHERE TO_LOCATION IS NOT NULL
+        )
+       ORDER BY LOCATION
+      
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_TO_LOCATION =========================
+  id: 407586476025761756
+  identification: 
+    name: P254_TO_LOCATION
+    type: Text Field with autocomplete
+
+  label: 
+    label: الى موقع
+    alignment: Left
+
+  settings: 
+    fetch-on-type: true
+    use-cache: true
+    maximum-values-in-list: 7
+
+  search: 
+    match-type: Contains & Ignore Case
+    minimum-characters: 2
+
+  layout: 
+    sequence: 110
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-map-location-dot
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 400
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT LOCATION
+        FROM (
+          SELECT DISTINCT FROM_LOCATION AS LOCATION
+            FROM sublevel_limo_res
+           WHERE FROM_LOCATION IS NOT NULL
+          UNION
+          SELECT DISTINCT TO_LOCATION AS LOCATION
+            FROM sublevel_limo_res
+           WHERE TO_LOCATION IS NOT NULL
+        )
+       ORDER BY LOCATION
+      
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select to_location from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_TRIP_PRICE ==========================
+  id: 407586609780761757
+  identification: 
+    name: P254_TRIP_PRICE
+    type: Number Field
+
+  label: 
+    label: سعر الرحلة
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 70
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select trip_price from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_STATUS ==============================
+  id: 407586894151761760
+  identification: 
+    name: P254_STATUS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 140
+    region: Service Details # 409532857030858029
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'Select status from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P254_SUB_RES_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_NOTES ===============================
+  id: 408174022240692611
+  identification: 
+    name: P254_NOTES
+    type: Textarea
+
+  label: 
+    label: <i class="fa6-solid fa6-note-sticky"></i> ملاحظات علي الخدمة
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 130
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 1000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select notes from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: true
+    label-1: 'اضافة ملاحظات الطلب الرئيسية '
+    value-1: '&P359_NOTES_MAIN_RESERVATION.'
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_SERVICE_CLASS =======================
+  id: 409539326564858110
+  identification: 
+    name: P254_SERVICE_CLASS
+    type: Select One
+
+  label: 
+    label: تصنيف الرحلة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 50
+    region: Important Classification # 409532714093858028
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--slimPadding
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO RESERVATION REQUEST CLASSIFICATIONS # 267073320409618852
+
+  advanced: 
+    css-classes: 
+    - attention-effect
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select service_class from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_TICKET_NUMBER =======================
+  id: 409539442328858111
+  identification: 
+    name: P254_TICKET_NUMBER
+    type: Text Field
+
+  label: 
+    label: رقم التذكرة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: Upper
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Important Classification # 409532714093858028
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    css-classes: 
+    - attention-effect
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select TICKET_NUMBER from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_SIGNAGE_DETAILS =====================
+  id: 409539539755858112
+  identification: 
+    name: P254_SIGNAGE_DETAILS
+    type: Text Field
+
+  label: 
+    label: بيانات اللافتة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Important Classification # 409532714093858028
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-sign
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 70
+
+  advanced: 
+    css-classes: 
+    - attention-effect
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select SIGNAGE_DETAILS from sublevel_limo_res where SUB_RES_ID = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_CURRENCY ============================
+  id: 438995934953168153
+  identification: 
+    name: P254_CURRENCY
+    type: Select One
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 80
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill-wave
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select CURRENCY from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_EXCHANGE_RATE =======================
+  id: 438996357824168154
+  identification: 
+    name: P254_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 90
+    region: Service Details # 409532857030858029
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return multiple values)
+    sql-query-(return-multiple-values): 'select exchange_rate from sublevel_limo_res where sub_res_id = :P254_SUB_RES_ID'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P254_DEFPRICE ============================
+  id: 444199410512849531
+  identification: 
+    name: P254_DEFPRICE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: Limo Product Reservation Form # 438982137188168024
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P254_DEFCURRENCY =========================
+  id: 444199644413849533
+  identification: 
+    name: P254_DEFCURRENCY
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 60
+    region: Limo Product Reservation Form # 438982137188168024
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P254_ORGININAL_PRICE =====================
+  id: 444199896840849536
+  identification: 
+    name: P254_ORGININAL_PRICE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 50
+    region: Limo Product Reservation Form # 438982137188168024
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 201340787362423369
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 438993992048168046
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 201341123400423373
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 438993992048168046
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P254_PRODUCT_ID is not null and :P254_RESERVATION_ID is not null'
+
+- # ====== Button: SAVE ========================================
+  id: 201341499715423375
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 438993992048168046
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P254_SUB_RES_ID is not null'
+
+- # ====== Button: CREATE ======================================
+  id: 201341944511423376
+  identification: 
+    button-name: CREATE
+    label: اضافة حجز السيارة
+
+  layout: 
+    sequence: 40
+    region: Buttons # 438993992048168046
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P254_SUB_RES_ID is null'
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 201352651339423429
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 201340787362423369
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 201353117106423432
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 201352651339423429
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: ShowRates ===========================
+  id: 201353514445423433
+  identification: 
+    name: ShowRates
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P254_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 201354073546423434
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 201353514445423433
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 201354432447423436
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 201353514445423433
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: RefreshCols =========================
+  id: 201354841347423437
+  identification: 
+    name: RefreshCols
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 201355329640423438
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P254_CURRENCY
+        
+      items-to-submit: 
+      - P254_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_EXCHANGE_RATE
+
+    execution: 
+      sequence: 30
+      event: RefreshCols # 201354841347423437
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Minimum Amount in Currency ==============
+    id: 201355860437423440
+    identification: 
+      name: Set Minimum Amount in Currency
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |
+        CASE 
+          WHEN :P254_CURRENCY != :P254_DEFCURRENCY 
+          THEN ROUND(:P254_DEFPRICE / :P254_EXCHANGE_RATE, 2)
+          ELSE :P254_ORGININAL_PRICE
+        END
+        
+      items-to-submit: 
+      - P254_EXCHANGE_RATE
+      - P254_DEFPRICE
+      - P254_CURRENCY
+      - P254_DEFCURRENCY
+      - P254_ORGININAL_PRICE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_CUSTOM_PRICE_PER_NIGHT
+
+    execution: 
+      sequence: 40
+      event: RefreshCols # 201354841347423437
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: SetNightsCount ======================
+  id: 201356274903423441
+  identification: 
+    name: SetNightsCount
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_DATE_FROM
+    - P254_DATE_TO
+
+  actions: 
+  - # ====== Action: CalculateNights =============================
+    id: 201356719409423443
+    identification: 
+      name: CalculateNights
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |
+        TRUNC(TO_DATE(:P254_DATE_TO, 'DD-MM-YYYY')) - TRUNC(TO_DATE(:P254_DATE_FROM, 'DD-MM-YYYY'))
+        
+      items-to-submit: 
+      - P254_DATE_FROM
+      - P254_DATE_TO
+      escape-special-characters: true
+      suppress-change-event: true
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_NIGHT_COUNT
+
+    execution: 
+      sequence: 10
+      event: SetNightsCount # 201356274903423441
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: ChangeDefaultPrice ==================
+  id: 201357154527423444
+  identification: 
+    name: ChangeDefaultPrice
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_ROOM_TYPE_ID
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 201357661358423445
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_CURRENCY from VW_ALL_ROOM_TYPES where id = :P254_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P254_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_CURRENCY
+
+    execution: 
+      sequence: 10
+      event: ChangeDefaultPrice # 201357154527423444
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 201358184222423447
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_CURRENCY from VW_ALL_ROOM_TYPES where id = :P254_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P254_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_DEFCURRENCY
+
+    execution: 
+      sequence: 20
+      event: ChangeDefaultPrice # 201357154527423444
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 201358634442423448
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_PRICE_NUMERIC from VW_ALL_ROOM_TYPES where id = :P254_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P254_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_CUSTOM_PRICE_PER_NIGHT
+
+    execution: 
+      sequence: 30
+      event: ChangeDefaultPrice # 201357154527423444
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 201359139990423449
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_PRICE_EGP from VW_ALL_ROOM_TYPES where id = :P254_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P254_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_DEFPRICE
+
+    execution: 
+      sequence: 40
+      event: ChangeDefaultPrice # 201357154527423444
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 201359617123423451
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_PRICE_NUMERIC from VW_ALL_ROOM_TYPES where id = :P254_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P254_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_ORGININAL_PRICE
+
+    execution: 
+      sequence: 50
+      event: ChangeDefaultPrice # 201357154527423444
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Refresh =============================
+  id: 201360070179423452
+  identification: 
+    name: Refresh
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Limo Product Reservation Form # 438982137188168024
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 201360498057423454
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: JavaScript Expression
+      javascript-expression: window
+
+    execution: 
+      sequence: 10
+      event: Refresh # 201360070179423452
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show Product ID =====================
+  id: 201360958602423455
+  identification: 
+    name: Show Product ID
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  client-side-condition: 
+    type: Item is null
+    item: P254_SUB_RES_ID
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 201361452029423456
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SUB_RES_ID
+
+    execution: 
+      sequence: 10
+      event: Show Product ID # 201360958602423455
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 201361920939423458
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SUB_RES_ID
+
+    execution: 
+      sequence: 10
+      event: Show Product ID # 201360958602423455
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Show Welcome Fields =================
+  id: 201362329941423459
+  identification: 
+    name: Show Welcome Fields
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_SERVICE_CLASS
+
+  client-side-condition: 
+    type: Item = Value
+    item: P254_SERVICE_CLASS
+    value: WELCOME
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 201362849458423461
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_TICKET_NUMBER
+      - P254_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Show Welcome Fields # 201362329941423459
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 201363316449423462
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_TICKET_NUMBER
+      - P254_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Show Welcome Fields # 201362329941423459
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect ================
+  id: 201363736733423463
+  identification: 
+    name: Add Attention Effect
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_SERVICE_CLASS
+
+  client-side-condition: 
+    type: Item is null
+    item: P254_SERVICE_CLASS
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 201364227570423464
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SERVICE_CLASS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect # 201363736733423463
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Add Class ===================================
+    id: 201364753294423466
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SERVICE_CLASS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect # 201363736733423463
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect Ticket No. =====
+  id: 201365117590423467
+  identification: 
+    name: Add Attention Effect Ticket No.
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_TICKET_NUMBER
+
+  client-side-condition: 
+    type: Item is null
+    item: P254_TICKET_NUMBER
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 201365684841423468
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Ticket No. # 201365117590423467
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Add Class ===================================
+    id: 201366141900423469
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Ticket No. # 201365117590423467
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect Signage Details 
+  id: 201366572293423471
+  identification: 
+    name: Add Attention Effect Signage Details
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_SIGNAGE_DETAILS
+
+  client-side-condition: 
+    type: Item is null
+    item: P254_SIGNAGE_DETAILS
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 201367076568423473
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Signage Details # 201366572293423471
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Add Class ===================================
+    id: 201367505104423474
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Signage Details # 201366572293423471
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: SetValues ===========================
+  id: 201367907203423475
+  identification: 
+    name: SetValues
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P254_SERVICE_CLASS
+
+  client-side-condition: 
+    type: Item = Value
+    item: P254_SERVICE_CLASS
+    value: WELCOME
+
+  actions: 
+  - # ====== Action: Ticket No ===================================
+    id: 201368454985423476
+    identification: 
+      name: Ticket No
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'SELECT TICKET_NUMBER FROM LIMO_RESERVATIONS WHERE RESERVATION_ID = :P254_RESERVATION_ID'
+      items-to-submit: 
+      - P254_MAIN_RES_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: SetValues # 201367907203423475
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Signage =====================================
+    id: 201368926835423478
+    identification: 
+      name: Signage
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: SetValues # 201367907203423475
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Signage =====================================
+    id: 201369483517423479
+    identification: 
+      name: Signage
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'SELECT SIGNAGE_DETAILS FROM LIMO_RESERVATIONS WHERE RESERVATION_ID = :P254_RESERVATION_ID'
+      items-to-submit: 
+      - P254_MAIN_RES_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 20
+      event: SetValues # 201367907203423475
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Ticket No ===================================
+    id: 201369975135423480
+    identification: 
+      name: Ticket No
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P254_TICKET_NUMBER
+
+    execution: 
+      sequence: 20
+      event: SetValues # 201367907203423475
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: Close Dialog ===============================
+  id: 201352194470423427
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
+- # ====== Process: Create Limo Res ============================
+  id: 201395493966641750
+  identification: 
+    name: Create Limo Res
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: L_RESERVATION_PKG
+    procedure-or-function: CREATE_LIMO_RES
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: 'تم إضافة الحجز بنجاح '
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 201341944511423376
+
+  parameters: 
+  - # ====== Parameter: p_from_place_id ==========================
+    id: 185543534899262320
+    identification: 
+      name: p_from_place_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_FROM_LOCATION
+
+    advanced: 
+      display-sequence: 200
+
+  - # ====== Parameter: p_to_place_id ============================
+    id: 185543731897262321
+    identification: 
+      name: p_to_place_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TO_LOCATION
+
+    advanced: 
+      display-sequence: 210
+
+  - # ====== Parameter: p_ticket_url =============================
+    id: 185543833312262322
+    identification: 
+      name: p_ticket_url
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Null
+
+    advanced: 
+      display-sequence: 220
+
+  - # ====== Parameter: p_passengers_no ==========================
+    id: 185543881935262323
+    identification: 
+      name: p_passengers_no
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 230
+
+  - # ====== Parameter: p_luggage_no =============================
+    id: 185544015594262324
+    identification: 
+      name: p_luggage_no
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 240
+
+  - # ====== Parameter: p_request_type ===========================
+    id: 185544063604262325
+    identification: 
+      name: p_request_type
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 250
+
+  - # ====== Parameter: p_source =================================
+    id: 191712512277001014
+    identification: 
+      name: p_source
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Static Value
+      static-value: MANUAL
+
+    advanced: 
+      display-sequence: 260
+
+  - # ====== Parameter: p_sub_res_id =============================
+    id: 201399435375641789
+    identification: 
+      name: p_sub_res_id
+
+    parameter: 
+      direction: In/Out
+      data-type: VARCHAR2
+      ignore-output: false
+
+    value: 
+      item: P254_SUB_RES_ID
+
+    advanced: 
+      display-sequence: 190
+
+  - # ====== Parameter: p_main_res_id ============================
+    id: 201443186500792481
+    identification: 
+      name: p_main_res_id
+
+    parameter: 
+      direction: In/Out
+      data-type: VARCHAR2
+      ignore-output: false
+
+    value: 
+      item: P254_MAIN_RES_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_customer_id ============================
+    id: 201443263278792482
+    identification: 
+      name: p_customer_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_CUSTOMER_ID
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_trip_type ==============================
+    id: 201443343650792483
+    identification: 
+      name: p_trip_type
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TRIP_TYPE
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_from_location ==========================
+    id: 201443453569792484
+    identification: 
+      name: p_from_location
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_FROM_LOCATION
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_to_location ============================
+    id: 201443537453792485
+    identification: 
+      name: p_to_location
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TO_LOCATION
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_currency ===============================
+    id: 201443600740792486
+    identification: 
+      name: p_currency
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_CURRENCY
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_exchange_rate ==========================
+    id: 201443786003792487
+    identification: 
+      name: p_exchange_rate
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_EXCHANGE_RATE
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_ticket_number ==========================
+    id: 201443805737792488
+    identification: 
+      name: p_ticket_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TICKET_NUMBER
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_signage_details ========================
+    id: 201443909370792489
+    identification: 
+      name: p_signage_details
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_SIGNAGE_DETAILS
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_notes ==================================
+    id: 201444050916792490
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_NOTES
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_status =================================
+    id: 201444127026792491
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Static Value
+      static-value: PENDING
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_cat_item_id ============================
+    id: 201444255826792492
+    identification: 
+      name: p_cat_item_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_CAT_ITEM_ID
+
+    advanced: 
+      display-sequence: 120
+
+  - # ====== Parameter: p_res_date_from ==========================
+    id: 201444345727792493
+    identification: 
+      name: p_res_date_from
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_RES_DATE_FROM
+
+    advanced: 
+      display-sequence: 130
+
+  - # ====== Parameter: p_res_date_to ============================
+    id: 201444446764792494
+    identification: 
+      name: p_res_date_to
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_RES_DATE_TO
+
+    advanced: 
+      display-sequence: 140
+
+  - # ====== Parameter: p_res_time ===============================
+    id: 201444573964792495
+    identification: 
+      name: p_res_time
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_RES_TIME
+
+    advanced: 
+      display-sequence: 150
+
+  - # ====== Parameter: p_service_class ==========================
+    id: 201444678314792496
+    identification: 
+      name: p_service_class
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_SERVICE_CLASS
+
+    advanced: 
+      display-sequence: 160
+
+  - # ====== Parameter: p_trip_price =============================
+    id: 201444760538792497
+    identification: 
+      name: p_trip_price
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TRIP_PRICE
+
+    advanced: 
+      display-sequence: 170
+
+  - # ====== Parameter: o_result =================================
+    id: 201444887562792498
+    identification: 
+      name: o_result
+
+    parameter: 
+      direction: Out
+      data-type: Custom
+      data-type-name: l_reservation_pkg.t_result
+
+    advanced: 
+      display-sequence: 180
+
+- # ====== Process: Update Limo Res ============================
+  id: 201525581297330172
+  identification: 
+    name: Update Limo Res
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: L_RESERVATION_PKG
+    procedure-or-function: UPDATE_LIMO_RES
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: تم تعديل الحجز
+
+  error: 
+    display-location: On Error Page
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 201341499715423375
+
+  parameters: 
+  - # ====== Parameter: p_from_place_id ==========================
+    id: 191712597078001015
+    identification: 
+      name: p_from_place_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_FROM_LOCATION
+
+    advanced: 
+      display-sequence: 200
+
+  - # ====== Parameter: p_to_place_id ============================
+    id: 191712726330001016
+    identification: 
+      name: p_to_place_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TO_LOCATION
+
+    advanced: 
+      display-sequence: 210
+
+  - # ====== Parameter: p_ticket_url =============================
+    id: 191712787479001017
+    identification: 
+      name: p_ticket_url
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Null
+
+    advanced: 
+      display-sequence: 220
+
+  - # ====== Parameter: p_source =================================
+    id: 191712910081001018
+    identification: 
+      name: p_source
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Static Value
+      static-value: MANUAL
+
+    advanced: 
+      display-sequence: 230
+
+  - # ====== Parameter: p_passengers_no ==========================
+    id: 191712953817001019
+    identification: 
+      name: p_passengers_no
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 240
+
+  - # ====== Parameter: p_luggage_no =============================
+    id: 191713101281001020
+    identification: 
+      name: p_luggage_no
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 250
+
+  - # ====== Parameter: p_request_type ===========================
+    id: 191713215685001021
+    identification: 
+      name: p_request_type
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 260
+
+  - # ====== Parameter: p_trip_type ==============================
+    id: 201525870655330175
+    identification: 
+      name: p_trip_type
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TRIP_TYPE
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_from_location ==========================
+    id: 201525911156330176
+    identification: 
+      name: p_from_location
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_FROM_LOCATION
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_to_location ============================
+    id: 201526056710330177
+    identification: 
+      name: p_to_location
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TO_LOCATION
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_ticket_number ==========================
+    id: 201526336982330180
+    identification: 
+      name: p_ticket_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TICKET_NUMBER
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_signage_details ========================
+    id: 201526447223330181
+    identification: 
+      name: p_signage_details
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_SIGNAGE_DETAILS
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_notes ==================================
+    id: 201526560514330182
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_NOTES
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_status =================================
+    id: 201526631427330183
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Static Value
+      static-value: PENDING
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_cat_item_id ============================
+    id: 201526767951330184
+    identification: 
+      name: p_cat_item_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_CAT_ITEM_ID
+
+    advanced: 
+      display-sequence: 120
+
+  - # ====== Parameter: p_res_date_from ==========================
+    id: 201526793322330185
+    identification: 
+      name: p_res_date_from
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_RES_DATE_FROM
+
+    advanced: 
+      display-sequence: 130
+
+  - # ====== Parameter: p_res_date_to ============================
+    id: 201526911099330186
+    identification: 
+      name: p_res_date_to
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_RES_DATE_TO
+
+    advanced: 
+      display-sequence: 140
+
+  - # ====== Parameter: p_res_time ===============================
+    id: 201527011883330187
+    identification: 
+      name: p_res_time
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_RES_TIME
+
+    advanced: 
+      display-sequence: 150
+
+  - # ====== Parameter: p_service_class ==========================
+    id: 201527155099330188
+    identification: 
+      name: p_service_class
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_SERVICE_CLASS
+
+    advanced: 
+      display-sequence: 160
+
+  - # ====== Parameter: p_trip_price =============================
+    id: 201527281059330189
+    identification: 
+      name: p_trip_price
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_TRIP_PRICE
+
+    advanced: 
+      display-sequence: 170
+
+  - # ====== Parameter: o_result =================================
+    id: 201527338775330190
+    identification: 
+      name: o_result
+
+    parameter: 
+      direction: Out
+      data-type: Custom
+      data-type-name: l_reservation_pkg.t_result
+
+    advanced: 
+      display-sequence: 180
+
+  - # ====== Parameter: p_sub_res_id =============================
+    id: 201527481443330191
+    identification: 
+      name: p_sub_res_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P254_SUB_RES_ID
+
+    advanced: 
+      display-sequence: 190
+

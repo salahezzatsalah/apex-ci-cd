@@ -1,0 +1,2402 @@
+---
+- # ====== List of Values: FAST_TRACK_TYPES.ASSIGNMENT_TYPE_NAME
+  id: 177092153938527354
+  identification: 
+    name: FAST_TRACK_TYPES.ASSIGNMENT_TYPE_NAME_AR
+
+  subscription: 
+    version-number: 45904649662689
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: TRACK_ASSIGNMENT_TYPES
+    where-clause: IS_ACTIVE = 'Y'
+
+  column-mapping: 
+    return: ASSIGNMENT_TYPE_CODE
+    display: ASSIGNMENT_TYPE_NAME_AR
+    default-sort: ASSIGNMENT_TYPE_NAME_EN
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: PROPERTIES.GROUP_NAME ===============
+  id: 180327848222139244
+  identification: 
+    name: PROPERTIES.GROUP_NAME
+
+  subscription: 
+    version-number: 45582203604440
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: PROPERTIES
+
+  column-mapping: 
+    return: PROPERTY_ID
+    display: GROUP_NAME
+    default-sort: GROUP_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: IAM_TENANTS.TENANT_CODE =============
+  id: 180387526957849219
+  identification: 
+    name: IAM_TENANTS.TENANT_CODE
+
+  subscription: 
+    version-number: 46367582397443
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: IAM_TENANTS
+
+  column-mapping: 
+    return: TENANT_ID
+    display: TENANT_CODE
+    default-sort: TENANT_CODE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: FORMS_LIST_REQUESTR =================
+  id: 180662541192349597
+  identification: 
+    name: FORMS_LIST_REQUESTR
+
+  subscription: 
+    version-number: 45584027795005
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CLIENTANDBROKERS_VIEW
+    where-clause: 'type=:P801_RESREQUESTER'
+
+  column-mapping: 
+    return: ID
+    display: NAME
+    default-sort: Use Order By from Query
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 180663351529312432
+    identification: 
+      column-name: ID
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: NAME ========================================
+    id: 180663726152312431
+    identification: 
+      column-name: NAME
+      show: true
+
+    heading: 
+      heading: Name
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: PHONE_NUMBER ================================
+    id: 180664112820312430
+    identification: 
+      column-name: PHONE_NUMBER
+      show: true
+
+    heading: 
+      heading: Phone Number
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: TYPE ========================================
+    id: 180664484191312429
+    identification: 
+      column-name: TYPE
+      show: false
+
+    heading: 
+      heading: Type
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: APARTMENTRESERVATIONS.RESREQUESTER ==
+  id: 182455792801563840
+  identification: 
+    name: APARTMENTRESERVATIONS.RESREQUESTER
+
+  subscription: 
+    version-number: 45604227474203
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: APARTMENTRESERVATIONS
+
+  column-mapping: 
+    return: RESERVATIONID
+    display: RESREQUESTER
+    default-sort: RESREQUESTER
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: IAM_SECURITY_GROUPS.GROUP_CODE ======
+  id: 183139769712387860
+  identification: 
+    name: IAM_SECURITY_GROUPS.GROUP_CODE
+
+  subscription: 
+    version-number: 46410966232996
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select * from IAM_SECURITY_GROUPS
+
+  column-mapping: 
+    return: GROUP_ID
+    display: GROUP_NAME
+    default-sort: GROUP_CODE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: IAM_IDENTITIES.TENANT_ID ============
+  id: 185555583693309213
+  identification: 
+    name: IAM_IDENTITIES.TENANT_ID
+
+  subscription: 
+    version-number: 46450864852902
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: IAM_IDENTITIES
+
+  column-mapping: 
+    return: IDENTITY_ID
+    display: TENANT_ID
+    default-sort: TENANT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: IAM_IDENTITY_TYPES.TYPE_NAME ========
+  id: 185968908115605527
+  identification: 
+    name: IAM_IDENTITY_TYPES.TYPE_NAME
+
+  subscription: 
+    version-number: 46461024959271
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: IAM_IDENTITY_TYPES
+
+  column-mapping: 
+    return: TYPE_CODE
+    display: TYPE_NAME
+    default-sort: TYPE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: IAM_PARTIES.TENANT_ID ===============
+  id: 185975591132605563
+  identification: 
+    name: IAM_PARTIES.TENANT_ID
+
+  subscription: 
+    version-number: 46461024961612
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: IAM_PARTIES
+
+  column-mapping: 
+    return: PARTY_ID
+    display: TENANT_ID
+    default-sort: TENANT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: MAIN_RESERVATION.CLIENT_ID ==========
+  id: 192286103300203000
+  identification: 
+    name: MAIN_RESERVATION.CLIENT_ID
+
+  subscription: 
+    version-number: 45908299240085
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: MAIN_RESERVATION
+
+  column-mapping: 
+    return: MAIN_RES_ID
+    display: CLIENT_ID
+    default-sort: CLIENT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: RESERVATION_TYPES_LOV ===============
+  id: 192328408470280544
+  identification: 
+    name: RESERVATION_TYPES_LOV
+
+  subscription: 
+    version-number: 45908313316672
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: شقة فندقية ===================================
+    id: 192328673206280550
+    entry: 
+      sequence: 10
+      display: شقة فندقية
+      return: APARTMENT
+
+  - # ====== Entry: فنادق ========================================
+    id: 192328998179280556
+    entry: 
+      sequence: 20
+      display: فنادق
+      return: HOTEL
+
+  - # ====== Entry: ليموزين ======================================
+    id: 192329426891280557
+    entry: 
+      sequence: 30
+      display: ليموزين
+      return: LIMO
+
+  - # ====== Entry: مسار سريع ====================================
+    id: 192329790230280558
+    entry: 
+      sequence: 40
+      display: مسار سريع
+      return: FASTTRACK
+
+- # ====== List of Values: BED_TYPES ===========================
+  id: 194090337307845247
+  identification: 
+    name: BED_TYPES
+
+  subscription: 
+    version-number: 45741131648458
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          beds.BED_TYPE_ID AS return_value,
+          beds.BED_TYPE_NAME || ' - ' ||
+          NVL(beds.ADULT_CAPACITY, 0) || ' بالغ ' ||
+          NVL(beds.CHILD_CAPACITY, 0) || ' طفل' AS display_value
+      FROM ROOM_BED_TYPES beds
+      WHERE beds.STATUS = 'Y'
+      ORDER BY beds.BED_TYPE_NAME;
+      
+
+  column-mapping: 
+    return: RETURN_VALUE
+    display: DISPLAY_VALUE
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: LIMO_PRODUCTS.RESERVATION_ID ========
+  id: 195839548644694905
+  identification: 
+    name: LIMO_PRODUCTS.RESERVATION_ID
+
+  subscription: 
+    version-number: 45925325079737
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_PRODUCTS
+
+  column-mapping: 
+    return: PRODUCT_ID
+    display: RESERVATION_ID
+    default-sort: RESERVATION_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: UNIT_ROOM_LOOKUP.CREATED_BY =========
+  id: 196255421256707361
+  identification: 
+    name: UNIT_ROOM_LOOKUP.CREATED_BY
+
+  subscription: 
+    version-number: 45702750383914
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: UNIT_ROOM_LOOKUP
+
+  column-mapping: 
+    return: LOOKUP_ID
+    display: CREATED_BY
+    default-sort: CREATED_BY
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: BROKERS =============================
+  id: 196414130432289693
+  identification: 
+    name: BROKERS
+
+  subscription: 
+    version-number: 45730554092198
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CLIENTANDBROKERS_VIEW
+    where-clause: 'type=:P236_RESREQUESTER_1'
+
+  column-mapping: 
+    return: ID
+    display: NAME
+    default-sort: Use Order By from Query
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 196414431863289676
+    identification: 
+      column-name: ID
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: NAME ========================================
+    id: 196414785105289673
+    identification: 
+      column-name: NAME
+      show: true
+
+    heading: 
+      heading: Name
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: PHONE_NUMBER ================================
+    id: 196415180586289672
+    identification: 
+      column-name: PHONE_NUMBER
+      show: true
+
+    heading: 
+      heading: Phone Number
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: TYPE ========================================
+    id: 196415578713289671
+    identification: 
+      column-name: TYPE
+      show: false
+
+    heading: 
+      heading: Type
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: DAYS ================================
+  id: 197284608052155210
+  identification: 
+    name: DAYS
+
+  subscription: 
+    version-number: 45705245885820
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTEL_EXCLUDE_DAYS
+
+  column-mapping: 
+    return: DAY_ID
+    display: DAY_NAME_AR
+    default-sort: DAY_NAME_AR
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: UNIT_ROOM_PRICE.CURRENCY ============
+  id: 198635203545529951
+  identification: 
+    name: UNIT_ROOM_PRICE.CURRENCY
+
+  subscription: 
+    version-number: 45714693922347
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: UNIT_ROOM_PRICE
+
+  column-mapping: 
+    return: PRICE_ID
+    display: CURRENCY
+    default-sort: CURRENCY
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: UNIT_ROOM_TYPES.ROOM_NAME ===========
+  id: 198669745152406006
+  identification: 
+    name: UNIT_ROOM_TYPES.ROOM_NAME
+
+  subscription: 
+    version-number: 45714740842359
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: UNIT_ROOM_TYPES
+
+  column-mapping: 
+    return: ROOM_TYPE_ID
+    display: ROOM_NAME
+    default-sort: ROOM_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: CLIENTS.CLIENT_CODE =================
+  id: 213736669568402910
+  identification: 
+    name: CLIENTS.CLIENT_CODE
+
+  subscription: 
+    version-number: 46127319105167
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CLIENTS
+
+  column-mapping: 
+    return: CLIENT_ID
+    display: CLIENT_CODE
+    default-sort: CLIENT_CODE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: CLIENTS_NAMES =======================
+  id: 220957751957360745
+  identification: 
+    name: CLIENTS_NAMES
+
+  subscription: 
+    version-number: 46229934599385
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CLIENTS
+
+  column-mapping: 
+    return: CLIENT_ID
+    display: FULL_NAME
+    default-sort: CLIENT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: DESKTOP THEME STYLES ================
+  id: 230199906417440411
+  identification: 
+    name: DESKTOP THEME STYLES
+
+  subscription: 
+    version-number: 44986765288543
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select s.name d,
+             s.theme_style_id r
+        from apex_application_theme_styles s,
+             apex_application_themes t
+       where s.application_id = :app_id
+         and t.application_id = s.application_id
+         and t.theme_number   = s.theme_number
+         and t.is_current     = 'Yes'
+       order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: USER_THEME_PREFERENCE ===============
+  id: 230200652154440423
+  identification: 
+    name: USER_THEME_PREFERENCE
+
+  subscription: 
+    version-number: 44986765288639
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Allow End Users to choose Theme Style ========
+    id: 230200879794440423
+    entry: 
+      sequence: 1
+      display: Allow End Users to choose Theme Style
+      return: Yes
+
+- # ====== List of Values: COUNTRIESLIST =======================
+  id: 251815092929946311
+  identification: 
+    name: COUNTRIESLIST
+
+  subscription: 
+    version-number: 44948183485635
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_COUNTRIES
+
+  column-mapping: 
+    return: ID
+    display: COUNTRY_NAME_AR
+    default-sort: COUNTRY_NAME_AR
+    sort-direction: Ascending (Nulls Last)
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 278736203627850562
+    identification: 
+      column-name: ID
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: NUMBER
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: COUNTRY_NAME_AR =============================
+    id: 278736429578850564
+    identification: 
+      column-name: COUNTRY_NAME_AR
+      show: true
+
+    heading: 
+      heading: اسم البلد
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: COUNTRY_NAME ================================
+    id: 278736878186850564
+    identification: 
+      column-name: COUNTRY_NAME
+      show: true
+
+    heading: 
+      heading: اسم البلد انجليزي
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: COUNTRY_CODE3 ===============================
+    id: 278737241119850564
+    identification: 
+      column-name: COUNTRY_CODE3
+      show: true
+
+    heading: 
+      heading: كود الدولة
+
+    layout: 
+      sequence: 40
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: EMPLOYEES USERNAMES/NAME LIST =======
+  id: 252530514585761444
+  identification: 
+    name: EMPLOYEES USERNAMES/NAME LIST
+
+  subscription: 
+    version-number: 44701195905649
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select first_name||' '||last_name||' ('||lower(username)||')' d, id r
+      from BS_EMPLOYEES
+      order by 1
+      
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: CRM_CLIENTS.FULL_NAME ===============
+  id: 254031009602355585
+  identification: 
+    name: CRM_CLIENTS.FULL_NAME
+
+  subscription: 
+    version-number: 46066441238427
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select * from clients
+
+  column-mapping: 
+    return: CLIENT_ID
+    display: CLIENT_CODE
+    default-sort: CLIENT_CODE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: HOTELS.HOTEL_NAME ===================
+  id: 254235913403923900
+  identification: 
+    name: HOTELS.HOTEL_NAME
+
+  subscription: 
+    version-number: 44725610928308
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTELS
+
+  column-mapping: 
+    return: HOTEL_ID
+    display: HOTEL_NAME
+    default-sort: HOTEL_NAME
+    sort-direction: Ascending (Nulls Last)
+
+  columns: 
+  - # ====== Column: HOTEL_ID ====================================
+    id: 258098791461665095
+    identification: 
+      column-name: HOTEL_ID
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: NUMBER
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: HOTEL_NAME ==================================
+    id: 258099151955665095
+    identification: 
+      column-name: HOTEL_NAME
+      show: true
+
+    heading: 
+      heading: Hotel Name
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: BEDROOM TYPES OPTIONS ===============
+  id: 254254795555033096
+  identification: 
+    name: BEDROOM TYPES OPTIONS
+
+  subscription: 
+    version-number: 44700946611443
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: BED_TYPES
+
+  column-mapping: 
+    return: BED_TYPE_ID
+    display: BED_TYPE_NAME
+    default-sort: BED_TYPE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+  columns: 
+  - # ====== Column: BED_TYPE_ID =================================
+    id: 254255148496037392
+    identification: 
+      column-name: BED_TYPE_ID
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: NUMBER
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: BED_TYPE_NAME ===============================
+    id: 254255595695037393
+    identification: 
+      column-name: BED_TYPE_NAME
+      show: true
+
+    heading: 
+      heading: النوع
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 254255982803037393
+    identification: 
+      column-name: DESCRIPTION
+      show: true
+
+    heading: 
+      heading: الوصف
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: SUPPLIERS TYPES LIST ================
+  id: 255579230348063661
+  identification: 
+    name: SUPPLIERS TYPES LIST
+
+  subscription: 
+    version-number: 44715461936723
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SUPPLIER_TYPES
+
+  column-mapping: 
+    return: SUPPLIER_TYPE_ID
+    display: TYPE_NAME
+    default-sort: TYPE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: SUPPLIER_STATUSES.STATUS_NAME =======
+  id: 255591319970110892
+  identification: 
+    name: SUPPLIER_STATUSES.STATUS_NAME
+
+  subscription: 
+    version-number: 44715521448456
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SUPPLIER_STATUSES
+
+  column-mapping: 
+    return: STATUS_CODE
+    display: STATUS_NAME
+    default-sort: STATUS_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: SUPPLIERS NAMES =====================
+  id: 255823814764227133
+  identification: 
+    name: SUPPLIERS NAMES
+
+  subscription: 
+    version-number: 44716448087723
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SUPPLIERS
+
+  column-mapping: 
+    return: SUPPLIER_ID
+    display: SUPPLIER_NAME
+    default-sort: SUPPLIER_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: CURRENCIESLIST ======================
+  id: 256545237650959739
+  identification: 
+    name: CURRENCIESLIST
+
+  subscription: 
+    version-number: 44719351544716
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: V_LATEST_CURRENCY_RATES
+
+  column-mapping: 
+    return: CURRENCY_CODE
+    display: CURRENCY_NAME_AR
+    default-sort: Use Order By from Query
+
+  columns: 
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 256547081142019535
+    identification: 
+      column-name: CURRENCY_CODE
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: CURRENCY_NAME_AR ============================
+    id: 256547473245019536
+    identification: 
+      column-name: CURRENCY_NAME_AR
+      show: true
+
+    heading: 
+      heading: العملة (عربي)
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: CURRENCY_NAME_EN ============================
+    id: 256547810252019536
+    identification: 
+      column-name: CURRENCY_NAME_EN
+      show: true
+
+    heading: 
+      heading: العملة (انجليزي)
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 256548214211019536
+    identification: 
+      column-name: EXCHANGE_RATE
+      show: true
+
+    heading: 
+      heading: سعر الصرف الحالي
+
+    layout: 
+      sequence: 40
+
+    source: 
+      data-type: NUMBER
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: RATE_DATE ===================================
+    id: 256548669851019536
+    identification: 
+      column-name: RATE_DATE
+      show: true
+
+    heading: 
+      heading: اخر تحديث
+
+    layout: 
+      sequence: 50
+
+    source: 
+      data-type: DATE
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: SYMBOL ======================================
+    id: 256549091549019537
+    identification: 
+      column-name: SYMBOL
+      show: true
+
+    heading: 
+      heading: علامة العملة
+
+    layout: 
+      sequence: 11
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: HOTEL_RESERVATION_STATUSES.STATUS_NAM
+  id: 256625289846935817
+  identification: 
+    name: HOTEL_RESERVATION_STATUSES.STATUS_NAME
+
+  subscription: 
+    version-number: 44719766370572
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTEL_RESERVATION_STATUSES
+
+  column-mapping: 
+    return: STATUS_CODE
+    display: STATUS_NAME
+    default-sort: STATUS_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: BS_EMPLOYEES.USERNAME ===============
+  id: 256625940367935825
+  identification: 
+    name: BS_EMPLOYEES.USERNAME
+
+  subscription: 
+    version-number: 44719766370617
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: BS_EMPLOYEES
+
+  column-mapping: 
+    return: ID
+    display: USERNAME
+    default-sort: USERNAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: HOTEL_ROOM_TYPES.ROOM_NAME ==========
+  id: 259820820533474138
+  identification: 
+    name: HOTEL_ROOM_TYPES.ROOM_NAME
+
+  subscription: 
+    version-number: 44773407072435
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTEL_ROOM_TYPES
+
+  column-mapping: 
+    return: ROOM_TYPE_ID
+    display: ROOM_NAME
+    default-sort: ROOM_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: ROOMS STATUS OPTIONS ================
+  id: 259840417015516759
+  identification: 
+    name: ROOMS STATUS OPTIONS
+
+  subscription: 
+    version-number: 44773486769555
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTEL_ROOM_STATUSES
+
+  column-mapping: 
+    return: STATUS_CODE
+    display: STATUS_LABEL
+    default-sort: STATUS_LABEL
+    sort-direction: Ascending (Nulls Last)
+    icon: ICON_CLASS
+
+- # ====== List of Values: RESERVED ROOM DESCRIPTION ===========
+  id: 261471904806949073
+  identification: 
+    name: RESERVED ROOM DESCRIPTION
+
+  subscription: 
+    version-number: 44789101006661
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          CASE WHEN room_type_count > 1 
+               THEN room_name || ' (' || rn || ')' 
+               ELSE room_name 
+          END || ' - (' || night_count || ' ليلة)' AS display_value,
+          id AS return_value
+      FROM (
+          SELECT 
+              R.ID,
+              RT.ROOM_NAME,
+              R.ROOM_TYPE_ID,
+              R.DATE_FROM,
+              R.DATE_TO,
+              -- Calculate number of nights from the room's own FROM/TO dates
+              CASE 
+                  WHEN R.DATE_FROM IS NOT NULL AND R.DATE_TO IS NOT NULL THEN 
+                      TRUNC(R.DATE_TO) - TRUNC(R.DATE_FROM)
+                  ELSE NULL 
+              END AS night_count,
+              COUNT(*) OVER (PARTITION BY R.ROOM_TYPE_ID, R.HOTEL_RESERVATION_ID) AS room_type_count,
+              ROW_NUMBER() OVER (
+                  PARTITION BY R.ROOM_TYPE_ID, R.HOTEL_RESERVATION_ID 
+                  ORDER BY R.CREATED_DATE
+              ) AS rn
+          FROM HOTEL_RESERVATION_ROOMS R
+          JOIN HOTEL_ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ROOM_TYPE_ID
+      
+      )
+      ORDER BY display_value
+      
+
+  column-mapping: 
+    return: RETURN_VALUE
+    display: DISPLAY_VALUE
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: HOTELS SUPPLIERS FEES TYPE ==========
+  id: 261472611293984981
+  identification: 
+    name: HOTELS SUPPLIERS FEES TYPE
+
+  subscription: 
+    version-number: 44789102503329
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          DECODE(code, 
+              'PERCENTAGE', 'نسبة (%)', 
+              'FIXED', 'مبلغ محدد', 
+              'DIFFERENCE', 'فرق سعر'
+          ) AS display_value,
+          code AS return_value
+      FROM (
+          SELECT 'PERCENTAGE' AS code FROM DUAL
+          UNION ALL
+          SELECT 'FIXED' FROM DUAL
+          UNION ALL
+          SELECT 'DIFFERENCE' FROM DUAL
+      )
+      
+
+  column-mapping: 
+    return: RETURN_VALUE
+    display: DISPLAY_VALUE
+    default-sort: DISPLAY_VALUE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: WORKFLOW_CHARTS.LOV.TIME_UNIT =======
+  id: 264326191992221962
+  identification: 
+    name: WORKFLOW_CHARTS.LOV.TIME_UNIT
+
+  subscription: 
+    version-number: 44800250103698
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Seconds ======================================
+    id: 264326468538221964
+    entry: 
+      sequence: 1
+      display: Seconds
+      return: SEC
+
+  - # ====== Entry: Minutes ======================================
+    id: 264326840521221968
+    entry: 
+      sequence: 2
+      display: Minutes
+      return: MIN
+
+  - # ====== Entry: Hours ========================================
+    id: 264327252095221968
+    entry: 
+      sequence: 3
+      display: Hours
+      return: HOUR
+
+  - # ====== Entry: Days =========================================
+    id: 264327642468221968
+    entry: 
+      sequence: 4
+      display: Days
+      return: DAY
+
+- # ====== List of Values: PAYMENT METHODS =====================
+  id: 265001668657056253
+  identification: 
+    name: PAYMENT METHODS
+
+  subscription: 
+    version-number: 44809495738627
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: PAYMENT_METHODS
+
+  column-mapping: 
+    return: METHOD_CODE
+    display: METHOD_NAME
+    default-sort: METHOD_NAME
+    sort-direction: Ascending (Nulls Last)
+    icon: ICON
+
+- # ====== List of Values: CAR TYPES CATEGORIES ================
+  id: 266657472268387203
+  identification: 
+    name: CAR TYPES CATEGORIES
+
+  subscription: 
+    version-number: 44835075105332
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_CAR_TYPE_CATEGORIES
+
+  column-mapping: 
+    return: CATEGORY_ID
+    display: CATEGORY_NAME_AR
+    default-sort: CATEGORY_NAME_AR
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: CAR TYPES NAMES =====================
+  id: 266880751448522438
+  identification: 
+    name: CAR TYPES NAMES
+
+  subscription: 
+    version-number: 44835565620682
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_CAR_TYPES
+
+  column-mapping: 
+    return: CAR_TYPE_ID
+    display: CAR_TYPE_NAME
+    default-sort: CAR_TYPE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO RESERVATION REQUEST CLASSIFICATI
+  id: 267073320409618852
+  identification: 
+    name: LIMO RESERVATION REQUEST CLASSIFICATIONS
+
+  subscription: 
+    version-number: 46497985951110
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_CLASSIFICATIONS_TYPES
+    where-clause: ACTIVE_YN = 'Y'
+
+  column-mapping: 
+    return: CLASSIFICATION_CODE
+    display: CLASSIFICATION_LABEL_AR
+    default-sort: CLASSIFICATION_LABEL_AR
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMOPRODUCTS TRIP TYPES =============
+  id: 267647733503170392
+  identification: 
+    name: LIMOPRODUCTS TRIP TYPES
+
+  subscription: 
+    version-number: 44860810565246
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select * from LIMO_TRIP_TYPES where ACTIVE_YN = 'Y'
+
+  column-mapping: 
+    return: TRIP_TYPE_CODE
+    display: NAME_AR
+    default-sort: NAME_AR
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO TRIPS STATUSES =================
+  id: 268044888112141093
+  identification: 
+    name: LIMO TRIPS STATUSES
+
+  subscription: 
+    version-number: 44860796799602
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_PRODUCT_STATUSES
+    where-clause: UPPER(STATUS_CODE) = UPPER(STATUS_CODE)
+
+  column-mapping: 
+    return: STATUS_CODE
+    display: STATUS_LABEL_AR
+    default-sort: STATUS_LABEL_AR
+    sort-direction: Ascending (Nulls Last)
+    icon: ICON_CLASS
+
+- # ====== List of Values: LIMO RESERVATION REQUEST STATUSES ===
+  id: 268045048478146164
+  identification: 
+    name: LIMO RESERVATION REQUEST STATUSES
+
+  subscription: 
+    version-number: 44839854545864
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_RESERVATION_STATUSES
+
+  column-mapping: 
+    return: STATUS_CODE
+    display: STATUS_LABEL_AR
+    default-sort: STATUS_LABEL_AR
+    sort-direction: Ascending (Nulls Last)
+    icon: ICON_CLASS
+
+- # ====== List of Values: LIMO_RESERVATIONS.CLIENT_ID =========
+  id: 270183567791398601
+  identification: 
+    name: LIMO_RESERVATIONS.CLIENT_ID
+
+  subscription: 
+    version-number: 44866983367321
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_RESERVATIONS
+
+  column-mapping: 
+    return: RESERVATION_ID
+    display: CLIENT_ID
+    default-sort: CLIENT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO_ASSIGNMENT_TYPES.ASSIGNMENT_TYPE
+  id: 270184615033398610
+  identification: 
+    name: LIMO_ASSIGNMENT_TYPES.ASSIGNMENT_TYPE_NAME_EN
+
+  subscription: 
+    version-number: 44868531281977
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_ASSIGNMENT_TYPES
+
+  column-mapping: 
+    return: ASSIGNMENT_TYPE_CODE
+    display: ASSIGNMENT_TYPE_NAME_AR
+    default-sort: ASSIGNMENT_TYPE_NAME_EN
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: DRIVER_SHARE_TYPES.LABEL_EN =========
+  id: 270188573552398614
+  identification: 
+    name: DRIVER_SHARE_TYPES.LABEL_EN
+
+  subscription: 
+    version-number: 44911006278974
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: DRIVER_SHARE_TYPES
+
+  column-mapping: 
+    return: SHARE_TYPE_CODE
+    display: LABEL_AR
+    default-sort: DISPLAY_ORDER
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO_TRIPS_TRACKER.PRODUCT_ID =======
+  id: 271462263082835038
+  identification: 
+    name: LIMO_TRIPS_TRACKER.PRODUCT_ID
+
+  subscription: 
+    version-number: 44884979087673
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_TRIPS_TRACKER
+
+  column-mapping: 
+    return: TRIP_ID
+    display: PRODUCT_ID
+    default-sort: PRODUCT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO_PRODUCT_ASSIGNMENTS.PRODUCT_ID =
+  id: 271462951210835053
+  identification: 
+    name: LIMO_PRODUCT_ASSIGNMENTS.PRODUCT_ID
+
+  subscription: 
+    version-number: 44884979087855
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_PRODUCT_ASSIGNMENTS
+
+  column-mapping: 
+    return: ASSIGNMENT_ID
+    display: PRODUCT_ID
+    default-sort: PRODUCT_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO_EXPENSE_STATUSES.STATUS_NAME ===
+  id: 271465697534835056
+  identification: 
+    name: LIMO_EXPENSE_STATUSES.STATUS_NAME
+
+  subscription: 
+    version-number: 44884979087863
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_EXPENSE_STATUSES
+
+  column-mapping: 
+    return: STATUS_CODE
+    display: STATUS_NAME
+    default-sort: STATUS_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO_EXPENSE_TYPES.EXPENSE_TYPE_NAME 
+  id: 271466362044835057
+  identification: 
+    name: LIMO_EXPENSE_TYPES.EXPENSE_TYPE_NAME
+
+  subscription: 
+    version-number: 44884979087865
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_EXPENSE_TYPES
+
+  column-mapping: 
+    return: EXPENSE_TYPE_CODE
+    display: EXPENSE_TYPE_NAME
+    default-sort: EXPENSE_TYPE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LIMO_ADDITIONAL_SERVICE_TYPES.SERVICE
+  id: 271641261794667432
+  identification: 
+    name: LIMO_ADDITIONAL_SERVICE_TYPES.SERVICE_TYPE_NAME
+
+  subscription: 
+    version-number: 44885335069419
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_ADDITIONAL_SERVICE_TYPES
+
+  column-mapping: 
+    return: SERVICE_TYPE_CODE
+    display: SERVICE_TYPE_NAME
+    default-sort: SERVICE_TYPE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: P6005_COLLECTED_BY_ID ===============
+  id: 276371775389227518
+  identification: 
+    name: P6005_COLLECTED_BY_ID
+
+  subscription: 
+    version-number: 44998722934594
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          FIRST_NAME || ' ' || LAST_NAME AS display_value,
+          ID AS return_value
+      FROM
+          BS_EMPLOYEES
+      WHERE
+          :P6005_COLLECTED_BY_TYPE = 'OFFICE'
+      
+      
+      UNION ALL
+      
+      SELECT
+          DRIVER_NAME AS display_value,
+          DRIVER_ID AS return_value
+      FROM
+          UNIFIED_DRIVERS_LIST
+      WHERE
+          :P6005_COLLECTED_BY_TYPE = 'DRIVER'
+          AND DRIVER_ID IN (
+              SELECT DISTINCT DRIVER_ID
+              FROM LIMO_PRODUCT_ASSIGNMENTS
+              WHERE PRODUCT_ID = :P6005_PRODUCT_ID
+          )
+      ORDER BY display_value
+      
+
+  column-mapping: 
+    return: RETURN_VALUE
+    display: DISPLAY_VALUE
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: FAST TRACK SERVICE LIST =============
+  id: 281238947486638512
+  identification: 
+    name: FAST TRACK SERVICE LIST
+
+  subscription: 
+    version-number: 44966274933729
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: FAST_TRACK_SERVICE_CATALOG
+
+  column-mapping: 
+    return: SERVICE_ID
+    display: SERVICE_NAME
+    default-sort: SERVICE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: CURRENCIES.CURRENCY_NAME_AR =========
+  id: 281335805869958419
+  identification: 
+    name: CURRENCIES.CURRENCY_NAME_AR
+
+  subscription: 
+    version-number: 44968065127908
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CURRENCIES
+
+  column-mapping: 
+    return: CURRENCY_CODE
+    display: CURRENCY_NAME_AR
+    default-sort: CURRENCY_NAME_AR
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: PROJECTS DETAIL =====================
+  id: 10542219230000313743
+  identification: 
+    name: PROJECTS DETAIL
+
+  subscription: 
+    version-number: 44445820407248
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 
+           p.id, 
+           decode(rt.release,null,p.project,rt.release_train||' '||rt.release||': '||project)|| ' - '||pct_complete||'%' display
+      from SP_PROJECTS p,
+           SP_RELEASE_TRAINS rt
+      where p.release_id = rt.id(+) and
+            p.ARCHIVED_YN = 'N' and
+            p.DUPLICATE_OF_PROJECT_ID is null
+      order by p.project
+
+  column-mapping: 
+    return: ID
+    display: DISPLAY
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: SP_TEAM_MEMBERS.FIRST_NAME ==========
+  id: 11715378143393731797
+  identification: 
+    name: SP_TEAM_MEMBERS.FIRST_NAME
+
+  subscription: 
+    version-number: 41378026954546
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_TEAM_MEMBERS
+
+  column-mapping: 
+    return: ID
+    display: FIRST_NAME
+    default-sort: FIRST_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: SP_TEAM_MEMBERS - CURRENT ONLY ======
+  id: 12920238305811790409
+  identification: 
+    name: SP_TEAM_MEMBERS - CURRENT ONLY
+
+  subscription: 
+    version-number: 41396193905491
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select last_name||', '||first_name||' ('||lower(email)||')' d, id r
+      from SP_TEAM_MEMBERS
+      where is_current_yn = 'Y'
+      order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: EMAIL_ALERT_PREF ====================
+  id: 14584715172579081139
+  identification: 
+    name: EMAIL_ALERT_PREF
+
+  subscription: 
+    version-number: 42183413345495
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Within Application ===========================
+    id: 14584715494606081142
+    entry: 
+      sequence: 1
+      display: Within Application
+      return: APP
+
+  - # ====== Entry: Email ========================================
+    id: 14584715815807081143
+    entry: 
+      sequence: 2
+      display: Email
+      return: EMAIL
+
+    configuration: 
+      build-option: Email Configured # 27339243674243649467
+
+  - # ====== Entry: None =========================================
+    id: 14584716242135081144
+    entry: 
+      sequence: 3
+      display: None
+      return: NONE
+
+- # ====== List of Values: AREA INITIATIVE 2 ===================
+  id: 15329501299144209578
+  identification: 
+    name: AREA INITIATIVE 2
+
+  subscription: 
+    version-number: 41430208760493
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select i.initiative, 
+             a.area,
+             i.id initiative_id
+      from sp_initiatives i, sp_areas a
+      where i.area_id = a.id
+      order by 2, 1
+
+  column-mapping: 
+    return: INITIATIVE_ID
+    display: INITIATIVE
+    default-sort: Use Order By from Query
+
+  columns: 
+  - # ====== Column: AREA ========================================
+    id: 15329580704605211402
+    identification: 
+      column-name: AREA
+      show: true
+
+    heading: 
+      heading: Area
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: INITIATIVE_ID ===============================
+    id: 15329581169416211403
+    identification: 
+      column-name: INITIATIVE_ID
+      show: false
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: NUMBER
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: INITIATIVE ==================================
+    id: 15329581552924211403
+    identification: 
+      column-name: INITIATIVE
+      show: true
+
+    heading: 
+      heading: Initiative
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: FEEDBACK_RATING =====================
+  id: 18694105574768829552
+  identification: 
+    name: FEEDBACK_RATING
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Positive =====================================
+    id: 18694105851096829553
+    entry: 
+      sequence: 1
+      display: Positive
+      return: 3
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-smile-o fa-2x feedback-positive" aria-hidden="true" ></span></span>
+
+  - # ====== Entry: Neutral ======================================
+    id: 18694106280117829554
+    entry: 
+      sequence: 2
+      display: Neutral
+      return: 2
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-emoji-neutral fa-2x feedback-neutral" aria-hidden="true" ></span></span>
+
+  - # ====== Entry: Negative =====================================
+    id: 18694106633298829555
+    entry: 
+      sequence: 3
+      display: Negative
+      return: 1
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-frown-o fa-2x feedback-negative" aria-hidden="true" ></span></span>
+
+- # ====== List of Values: FEEDBACK_STATUS =====================
+  id: 18694117932379829570
+  identification: 
+    name: FEEDBACK_STATUS
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: No Action ====================================
+    id: 18694118251547829570
+    entry: 
+      sequence: 1
+      display: No Action
+      return: 0
+
+  - # ====== Entry: Acknowledged =================================
+    id: 18694118693124829570
+    entry: 
+      sequence: 2
+      display: Acknowledged
+      return: 1
+
+  - # ====== Entry: Open =========================================
+    id: 18694119069832829570
+    entry: 
+      sequence: 3
+      display: Open
+      return: 3
+
+  - # ====== Entry: Closed =======================================
+    id: 18694119459793829571
+    entry: 
+      sequence: 4
+      display: Closed
+      return: 4
+
+- # ====== List of Values: SP_GROUPS.GROUP_NAME ================
+  id: 19499067922261967827
+  identification: 
+    name: SP_GROUPS.GROUP_NAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_GROUPS
+
+  column-mapping: 
+    return: ID
+    display: GROUP_NAME
+    default-sort: GROUP_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.PRIORITY ======
+  id: 19796056541925762400
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.PRIORITY
+
+  subscription: 
+    version-number: 44425368134881
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_human_task.get_lov_priority )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: WORKFLOW_CONSOLE.LOV.WORKFLOW_STATE =
+  id: 19866355922587765695
+  identification: 
+    name: WORKFLOW_CONSOLE.LOV.WORKFLOW_STATE
+
+  subscription: 
+    version-number: 44427828483332
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_workflow.get_lov_workflow_state )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: WORKFLOW_CONSOLE.LOV.INITIATED ======
+  id: 19866357534692765697
+  identification: 
+    name: WORKFLOW_CONSOLE.LOV.INITIATED
+
+  subscription: 
+    version-number: 44427828483759
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Last hour ====================================
+    id: 19866357805684765698
+    entry: 
+      sequence: 1
+      display: Last hour
+      return: '|1'
+
+  - # ====== Entry: Last 24 hours ================================
+    id: 19866358293876765699
+    entry: 
+      sequence: 2
+      display: Last 24 hours
+      return: 1|24
+
+  - # ====== Entry: Last 7 days ==================================
+    id: 19866358612852765699
+    entry: 
+      sequence: 3
+      display: Last 7 days
+      return: 24|168
+
+  - # ====== Entry: Last 30 days =================================
+    id: 19866359063506765699
+    entry: 
+      sequence: 4
+      display: Last 30 days
+      return: 168|720
+
+  - # ====== Entry: Older than 30 days ===========================
+    id: 19866359419665765700
+    entry: 
+      sequence: 5
+      display: Older than 30 days
+      return: 720|
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.DUE ===========
+  id: 19867176161247810557
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.DUE
+
+  subscription: 
+    version-number: 44427842958960
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Overdue ======================================
+    id: 19867176482549810557
+    entry: 
+      sequence: 1
+      display: Overdue
+      return: '|0'
+
+  - # ====== Entry: Next hour ====================================
+    id: 19867176839804810558
+    entry: 
+      sequence: 2
+      display: Next hour
+      return: 0|1
+
+  - # ====== Entry: Next 24 hours ================================
+    id: 19867177212358810559
+    entry: 
+      sequence: 3
+      display: Next 24 hours
+      return: 1|24
+
+  - # ====== Entry: Next 7 days ==================================
+    id: 19867177629578810559
+    entry: 
+      sequence: 4
+      display: Next 7 days
+      return: 24|168
+
+  - # ====== Entry: Next 30 days =================================
+    id: 19867178000694810559
+    entry: 
+      sequence: 5
+      display: Next 30 days
+      return: 168|720
+
+  - # ====== Entry: More than 30 days ============================
+    id: 19867178470111810559
+    entry: 
+      sequence: 6
+      display: More than 30 days
+      return: 720|
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.TYPE ==========
+  id: 19867179228471810561
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.TYPE
+
+  subscription: 
+    version-number: 44427842959028
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_human_task.get_lov_type )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.STATE =========
+  id: 19867180735117810562
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.STATE
+
+  subscription: 
+    version-number: 44427842959179
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val
+        from table ( apex_human_task.get_lov_state )
+       order by insert_order
+
+  column-mapping: 
+    return: VAL
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: UNIFIED_TASK_LIST.LOV.INITIATED =====
+  id: 19867182691425810565
+  identification: 
+    name: UNIFIED_TASK_LIST.LOV.INITIATED
+
+  subscription: 
+    version-number: 44427842959727
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Last hour ====================================
+    id: 19867182979576810565
+    entry: 
+      sequence: 1
+      display: Last hour
+      return: '|1'
+
+  - # ====== Entry: Last 24 hours ================================
+    id: 19867183385124810566
+    entry: 
+      sequence: 2
+      display: Last 24 hours
+      return: 1|24
+
+  - # ====== Entry: Last 7 days ==================================
+    id: 19867183790985810566
+    entry: 
+      sequence: 3
+      display: Last 7 days
+      return: 24|168
+
+  - # ====== Entry: Last 30 days =================================
+    id: 19867184103107810566
+    entry: 
+      sequence: 4
+      display: Last 30 days
+      return: 168|720
+
+  - # ====== Entry: Older than 30 days ===========================
+    id: 19867184586620810567
+    entry: 
+      sequence: 5
+      display: Older than 30 days
+      return: 720|
+
+- # ====== List of Values: SP_RELEASE_TRAINS.RELEASE_TRAIN =====
+  id: 22174765328176346847
+  identification: 
+    name: SP_RELEASE_TRAINS.RELEASE_TRAIN
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select release_train||' '||release release_train, id from SP_RELEASE_TRAINS
+
+  column-mapping: 
+    return: ID
+    display: RELEASE_TRAIN
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: RELEASES ============================
+  id: 42332167104453541029
+  identification: 
+    name: RELEASES
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 
+             id,
+             RELEASE_TRAIN||' '||release release,
+             to_char(release_open_date,'YYYY.MM.DD')||' - '||
+             to_char(release_target_date,'YYYY.MM.DD') window
+      from SP_RELEASE_TRAINS
+      order by release_target_date
+
+  column-mapping: 
+    return: ID
+    display: RELEASE
+    default-sort: Use Order By from Query
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 42337962576263640496
+    identification: 
+      column-name: ID
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: NUMBER
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: RELEASE =====================================
+    id: 42337962818178640498
+    identification: 
+      column-name: RELEASE
+      show: true
+
+    heading: 
+      heading: Release
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: WINDOW ======================================
+    id: 42337963285803640498
+    identification: 
+      column-name: WINDOW
+      show: true
+
+    heading: 
+      heading: Window
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+- # ====== List of Values: SP_RESOURCE_TYPES.RESOURCE_TYPE =====
+  id: 43156114547804848314
+  identification: 
+    name: SP_RESOURCE_TYPES.RESOURCE_TYPE
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_RESOURCE_TYPES
+
+  column-mapping: 
+    return: ID
+    display: RESOURCE_TYPE
+    default-sort: RESOURCE_TYPE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: SP_INITIATIVES.INITIATIVE ===========
+  id: 125355201407004724084
+  identification: 
+    name: SP_INITIATIVES.INITIATIVE
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_INITIATIVES
+
+  column-mapping: 
+    return: ID
+    display: INITIATIVE
+    default-sort: INITIATIVE
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: SP_PROJECTS.PROJECT =================
+  id: 125355201682756724085
+  identification: 
+    name: SP_PROJECTS.PROJECT
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_PROJECTS
+
+  column-mapping: 
+    return: ID
+    display: PROJECT
+    default-sort: PROJECT
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: ACCESS_ROLES ========================
+  id: 149832840835224023850
+  identification: 
+    name: ACCESS_ROLES
+
+  subscription: 
+    version-number: 41513701615234
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select role_name d, role_id r
+        from APEX_APPL_ACL_ROLES
+       where application_id = :APP_ID 
+      order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: EMAIL_USERNAME_FORMAT ===============
+  id: 149832848369675023865
+  identification: 
+    name: EMAIL_USERNAME_FORMAT
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Email Addresses ==============================
+    id: 149832848665448023865
+    entry: 
+      sequence: 1
+      display: Email Addresses
+      return: EMAIL
+
+- # ====== List of Values: SP_TEAM_MEMBERS =====================
+  id: 149852462326100699648
+  identification: 
+    name: SP_TEAM_MEMBERS
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select last_name||', '||first_name||' ('||lower(email)||')' d, id r
+      from SP_TEAM_MEMBERS
+      order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: SP_AREAS.AREA =======================
+  id: 149868455984062939183
+  identification: 
+    name: SP_AREAS.AREA
+
+  subscription: 
+    version-number: 41430199627956
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SP_AREAS
+
+  column-mapping: 
+    return: ID
+    display: AREA
+    default-sort: AREA
+    sort-direction: Ascending (Nulls Last)
+

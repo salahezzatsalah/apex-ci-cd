@@ -1,0 +1,918 @@
+---
+# ====== Page: Print Financial Account Balance Window Control 
+id: 759
+identification: 
+  name: Print Financial Account Balance Window Control
+  alias: PRINT-FINANCIAL-ACCOUNT-BALANCE-WINDOW-CONTROL
+  title: طباعة كشف حساب - نموذج 759
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Account Information Display =================
+  id: 232070324389887996
+  identification: 
+    name: Account Information Display
+    title: طباعة كشف حساب - نموذج 759
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Btns Control ================================
+  id: 232070742947888000
+  identification: 
+    name: Btns Control
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P759_ACCOUNTNAME =========================
+  id: 232070435010887997
+  identification: 
+    name: P759_ACCOUNTNAME
+    type: Display Only
+
+  label: 
+    label: اسم الحساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_ACCOUNTNUMBER =======================
+  id: 232070561925887998
+  identification: 
+    name: P759_ACCOUNTNUMBER
+    type: Display Only
+
+  label: 
+    label: رقم الحساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_CURRENTUSER =========================
+  id: 232070622106887999
+  identification: 
+    name: P759_CURRENTUSER
+    type: Display Only
+
+  label: 
+    label: اسم المستخدم
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 50
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':APP_USER'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_STARTDATE ===========================
+  id: 232070999874888003
+  identification: 
+    name: P759_STARTDATE
+    type: Date Picker
+
+  label: 
+    label: من تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 60
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_ENDDATE =============================
+  id: 232071133783888004
+  identification: 
+    name: P759_ENDDATE
+    type: Date Picker
+
+  label: 
+    label: الي تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: Item
+    minimum-item: P759_STARTDATE
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 70
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_FILTER_DATE_RANGE ===================
+  id: 232071417769888007
+  identification: 
+    name: P759_FILTER_DATE_RANGE
+    type: Display Only
+
+  label: 
+    label: 'فترة كشف الحساب '
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 80
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      CASE
+        WHEN TO_DATE(:P759_STARTDATE, 'DD-MM-YYYY') = TO_DATE(:P759_ENDDATE, 'DD-MM-YYYY') THEN
+          TO_CHAR(TO_DATE(:P759_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+        ELSE
+          'من ' || TO_CHAR(TO_DATE(:P759_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY') ||
+          ' إلى ' || TO_CHAR(TO_DATE(:P759_ENDDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+      END
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_REPORT_DATE =========================
+  id: 232071525258888008
+  identification: 
+    name: P759_REPORT_DATE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      TO_CHAR(
+        CAST(FROM_TZ(CAST(SYSDATE AS TIMESTAMP), 'UTC') AT TIME ZONE 'Africa/Cairo' AS DATE),
+        'DD/MM/YYYY HH24:MI'
+      )
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_ACCOUNTTYPE =========================
+  id: 232072404418888017
+  identification: 
+    name: P759_ACCOUNTTYPE
+    type: Display Only
+
+  label: 
+    label: نوع الحساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT at.NAME_AR
+      FROM ACCOUNTS a
+      JOIN ACCOUNT_TYPES at ON a.ACCOUNT_TYPE = at.ACCOUNT_TYPE_CODE
+      WHERE a.ACCOUNT_ID = :P759_ACCOUNTNUMBER
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P759_ACCOUNTCURRENCY =====================
+  id: 232072535060888018
+  identification: 
+    name: P759_ACCOUNTCURRENCY
+    type: Display Only
+
+  label: 
+    label: عملة الحساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 40
+    region: Account Information Display # 232070324389887996
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT CURRENCY_CODE
+      FROM ACCOUNTS 
+      WHERE ACCOUNT_ID = :P759_ACCOUNTNUMBER
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Print =======================================
+  id: 232070840632888001
+  identification: 
+    button-name: Print
+    label: طباعة
+
+  layout: 
+    sequence: 10
+    region: Btns Control # 232070742947888000
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--success
+    - t-Button--stretch
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: Cancel ======================================
+  id: 232070951642888002
+  identification: 
+    button-name: Cancel
+    label: الغاء
+
+  layout: 
+    sequence: 20
+    region: Btns Control # 232070742947888000
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--warning
+    - t-Button--stretch
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+dynamic-actions: 
+- # ====== Dynamic Action: Update EndDate ======================
+  id: 232071219410888005
+  identification: 
+    name: Update EndDate
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P759_STARTDATE
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 232071290092888006
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |
+        :P759_STARTDATE
+        
+      items-to-submit: 
+      - P759_STARTDATE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P759_ENDDATE
+
+    execution: 
+      sequence: 10
+      event: Update EndDate # 232071219410888005
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: hide search filter ==================
+  id: 232072001453888013
+  identification: 
+    name: hide search filter
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P759_STARTDATE
+
+  client-side-condition: 
+    type: Item is not null
+    item: P759_STARTDATE
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 232072199602888015
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P759_FILTER_DATE_RANGE
+
+    execution: 
+      sequence: 20
+      event: hide search filter # 232072001453888013
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 232072335185888016
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P759_FILTER_DATE_RANGE
+
+    execution: 
+      sequence: 10
+      event: hide search filter # 232072001453888013
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: PrintHistoricalStatment =============
+  id: 232072654054888019
+  identification: 
+    name: PrintHistoricalStatment
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Print # 232070840632888001
+
+  actions: 
+  - # ====== Action: Print Report ================================
+    id: 232072719214888020
+    identification: 
+      action: Print Report
+
+    settings: 
+      report-query: Historical Statement Report # 234644722156066359
+      filename: كشف حساب - &P759_ACCOUNTNAME. - &P759_FILTER_DATE_RANGE.
+      view-file-as: Inline
+      items-to-submit: 
+      - P759_STARTDATE
+      - P759_ENDDATE
+      - P759_FILTER_DATE_RANGE
+      - P759_REPORT_DATE
+      - P759_CURRENTUSER
+      - P759_ACCOUNTNUMBER
+
+    execution: 
+      sequence: 10
+      event: PrintHistoricalStatment # 232072654054888019
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Close Dialog ================================
+    id: 232072797565888021
+    identification: 
+      action: Close Dialog
+
+    execution: 
+      sequence: 20
+      event: PrintHistoricalStatment # 232072654054888019
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+- # ====== Dynamic Action: Close ===============================
+  id: 232072903121888022
+  identification: 
+    name: Close
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Cancel # 232070951642888002
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 232073069409888023
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Close # 232072903121888022
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: RefreshFieldsREPORT =================
+  id: 234622522359843036
+  identification: 
+    name: RefreshFieldsREPORT
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P759_STARTDATE
+    - P759_ENDDATE
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 232071762865888010
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |
+        CASE
+          WHEN TO_DATE(:P759_STARTDATE, 'DD-MM-YYYY') = TO_DATE(:P759_ENDDATE, 'DD-MM-YYYY') THEN
+            TO_CHAR(TO_DATE(:P759_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+          ELSE
+            'من ' || TO_CHAR(TO_DATE(:P759_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY') ||
+            ' إلى ' || TO_CHAR(TO_DATE(:P759_ENDDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+        END
+      items-to-submit: 
+      - P759_STARTDATE
+      - P759_ENDDATE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P759_FILTER_DATE_RANGE
+
+    execution: 
+      sequence: 10
+      event: RefreshFieldsREPORT # 234622522359843036
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 234622971001843040
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P759_REPORT_DATE
+      - P759_FILTER_DATE_RANGE
+
+    execution: 
+      sequence: 20
+      event: RefreshFieldsREPORT # 234622522359843036
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

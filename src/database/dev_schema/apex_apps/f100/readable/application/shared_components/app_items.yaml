@@ -1,0 +1,183 @@
+---
+- # ====== Application Item: TENANT_ID =========================
+  id: 177290139630420742
+  identification: 
+    name: TENANT_ID
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46309017857803
+
+- # ====== Application Item: GLOBAL_ROLE =======================
+  id: 177290410189422050
+  identification: 
+    name: GLOBAL_ROLE
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46309017926494
+
+- # ====== Application Item: PROJECT ===========================
+  id: 177387787699604416
+  identification: 
+    name: PROJECT
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46310744646639
+
+- # ====== Application Item: INITIATIVE ========================
+  id: 177388011804609942
+  identification: 
+    name: INITIATIVE
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46310744947325
+
+- # ====== Application Item: FOCUS_AREA ========================
+  id: 177388188459612221
+  identification: 
+    name: FOCUS_AREA
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46310745066629
+
+- # ====== Application Item: P273_FROM_ID ======================
+  id: 223118257276135506
+  identification: 
+    name: P273_FROM_ID
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46257277002599
+
+- # ====== Application Item: P273_TO_ID ========================
+  id: 223118471180136215
+  identification: 
+    name: P273_TO_ID
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46257277027531
+
+- # ====== Application Item: P273_DATE_FROM ====================
+  id: 223118590519136974
+  identification: 
+    name: P273_DATE_FROM
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46257277061956
+
+- # ====== Application Item: P273_DATE_TO ======================
+  id: 223118838553137713
+  identification: 
+    name: P273_DATE_TO
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 46257277097782
+
+- # ====== Application Item: USER_TYPE =========================
+  id: 276366755357107060
+  identification: 
+    name: USER_TYPE
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 44912251523891
+
+- # ====== Application Item: G_LANG ============================
+  id: 276890246428805140
+  identification: 
+    name: G_LANG
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 44940657449681
+
+- # ====== Application Item: APP_USER_ID =======================
+  id: 22376185645518149557
+  identification: 
+    name: APP_USER_ID
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 1
+
+- # ====== Application Item: APP_USER_FIRST_LAST_NAME ==========
+  id: 23825819251842167700
+  identification: 
+    name: APP_USER_FIRST_LAST_NAME
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 41877008859768
+
+- # ====== Application Item: IS_ADMIN ==========================
+  id: 28693817263668469376
+  identification: 
+    name: IS_ADMIN
+    scope: Application
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 42076101876867
+

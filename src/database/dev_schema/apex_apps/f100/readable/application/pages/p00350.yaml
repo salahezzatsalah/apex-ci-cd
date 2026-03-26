@@ -1,0 +1,2036 @@
+---
+# ====== Page: Limousine Department Home =====================
+id: 350
+identification: 
+  name: Limousine Department Home
+  alias: LIMOUSINE-DEPARTMENT-HOME
+  title: إدارة الليموزين
+  page-group: Home # 18677563246010402822
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: |
+    function copyPhoneToClipboard(btn) {
+      var phone = btn.getAttribute('data-phone');
+      if (phone) {
+        navigator.clipboard.writeText(phone).then(function() {
+          btn.title = "تم نسخ الرقم!";
+          btn.classList.add("copied");
+          setTimeout(function() {
+            btn.title = btn.title.includes("الكابتن") ? "اضغط لنسخ رقم الكابتن" : "اضغط لنسخ رقم العميل";
+            btn.classList.remove("copied");
+          }, 1500);
+        }, function() {
+          alert("تعذر نسخ الرقم، برجاء المحاولة مرة أخرى.");
+        });
+      }
+    }
+    
+    
+  execute-when-page-loads: |
+    // --- WebSocket to trigger region refreshes ---
+    let ws = new WebSocket('wss://ecdtai.com:443');
+    ws.onmessage = (e) => {
+      if (e.data === 'refresh') {
+        apex.region("todayTripsRegion").refresh();
+        apex.region("ongoingTripsRegion").refresh();
+      }
+    };
+    
+    // --- Initialization of features per region wrapper ---
+    function initTripTableFeatures(wrapperSelector, contextMenuSelector) {
+      const $ = apex.jQuery;
+      const wrapper = $(wrapperSelector);
+      const table = wrapper.find('table');
+      const contextMenu = $(contextMenuSelector);
+      const searchInput = wrapper.find('.search-input-with-icon');
+    
+      // Unbind only handlers that need re-init
+      table.off('.tripcustom');
+      contextMenu.off('.tripcustom');
+      if (searchInput.length) searchInput.off('.tripcustom');
+    
+      // --- Long press on mobile ---
+      let touchTimer = null;
+      const LONG_PRESS_MS = 500;
+    
+      table.on('touchstart.tripcustom', '.trip-row', function (e) {
+        const $row = $(this);
+        if (touchTimer) clearTimeout(touchTimer);
+        touchTimer = setTimeout(() => {
+          showContextMenu($row, e.originalEvent.touches ? e.originalEvent.touches[0] : e);
+          touchTimer = null;
+        }, LONG_PRESS_MS);
+      });
+      table.on('touchend.tripcustom touchmove.tripcustom touchcancel.tripcustom', '.trip-row', function () {
+        if (touchTimer) clearTimeout(touchTimer);
+        touchTimer = null;
+      });
+    
+      // --- Right click on desktop ---
+      table.on('contextmenu.tripcustom', '.trip-row', function (e) {
+        e.preventDefault();
+        const $row = $(this);
+        showContextMenu($row, e);
+      });
+    
+      // --- Copy button ---
+      table.on('click.tripcustom', '.copy-btn', function (e) {
+        e.stopPropagation();
+        const d = $(this).data();
+        let msg = `بيانات الرحلة\n\n` +
+          `العميل: ${d.client} (${d.phone})\n` +
+          `رقم الرحلة: ${d.trip}\n` +
+          `نوع السيارة: ${d.car}\n` +
+          `نوع الرحلة: ${d.type}\n` +
+          `السائق: ${d.driver}\n` +
+          `من: ${d.route}\n`;
+        if (d.ticket && d.ticket !== '-') {
+          msg += `رقم التذكرة: ${d.ticket}\n`;
+        }
+        if (d.signage && d.signage !== '-') {
+          msg += `لافتة الترحيب: ${d.signage}\n`;
+        }
+        navigator.clipboard.writeText(msg).then(
+          () => apex.message.showPageSuccess("تم نسخ تفاصيل الرحلة"),
+          () => apex.message.alert("تعذر نسخ التفاصيل")
+        );
+      });
+    
+      // --- Context menu actions ---
+      contextMenu.on('click.tripcustom', '.menu-item', function (e) {
+        e.stopPropagation();
+        const action = $(this).data('action');
+        let targetUrl = contextMenu.data(`${action}-url`);
+        if (action === "edit-assignment") {
+          targetUrl = contextMenu.data('edit-assignment-url');
+        }
+        hideContextMenu();
+        if (targetUrl) {
+          apex.navigation.dialog(targetUrl, {});
+        }
+      });
+    
+      // --- Search filter ---
+      if (searchInput.length) {
+        searchInput.on('input.tripcustom', function () {
+          const val = $(this).val().toLowerCase();
+          table.find('tbody tr').each(function () {
+            const rowText = $(this).text().toLowerCase();
+            $(this).toggle(rowText.indexOf(val) > -1);
+          });
+        });
+      }
+    
+      function showContextMenu($row, e) {
+        const offsetTop = (e.pageY || e.clientY || (e.touches && e.touches[0].pageY) || 100) - wrapper.offset().top;
+        const offsetLeft = (e.pageX || e.clientX || (e.touches && e.touches[0].pageX) || 100) - wrapper.offset().left;
+        const assigned = $row.data('assigned');
+        const assignMenuItem = contextMenu.find('[data-action="assign"]');
+        if (assigned === 'Y') {
+          assignMenuItem.html('<i class="fa6 fa6-solid fa6-taxi me-1.5"></i> تغيير السائق');
+        } else {
+          assignMenuItem.html('<i class="fa6 fa6-solid fa6-taxi me-1.5"></i> توزيع التشغيل');
+        }
+        const editAssignmentUrl = $row.data('edit-assignment-url');
+        const editAssignmentMenuItem = contextMenu.find('[data-action="edit-assignment"]');
+        if (editAssignmentUrl) {
+          editAssignmentMenuItem.show();
+        } else {
+          editAssignmentMenuItem.hide();
+        }
+        if ("vibrate" in navigator) navigator.vibrate(15);
+    
+        // Measure menu width
+        contextMenu.css({ display: 'block', visibility: 'hidden' });
+        const menuWidth = contextMenu.outerWidth();
+        let menuLeft = offsetLeft - menuWidth;
+        if (menuLeft < 0) menuLeft = 2;
+    
+        contextMenu
+          .css({ top: offsetTop, left: menuLeft, visibility: 'visible' })
+          .stop(true, true)
+          .fadeIn(150)
+          .data('assign-url', $row.data('assign-url'))
+          .data('edit-url', $row.data('edit-url'))
+          .data('edit-assignment-url', editAssignmentUrl);
+      }
+    
+      function hideContextMenu() {
+        $('.context-menu:visible').stop(true, true).fadeOut(150);
+      }
+    }
+    
+    // --- Attach document-level outside click handler ONCE ---
+    $(document).off('.tripcontext').on('click.tripcontext touchstart.tripcontext', function (e) {
+      if ($(e.target).closest('.context-menu').length === 0) {
+        $('.context-menu:visible').fadeOut(150);
+      }
+    });
+    
+    // --- Region refresh re-init ---
+    $(document).on("apexafterrefresh", function(event) {
+      const refreshedRegionId = event.target.id;
+      if (refreshedRegionId === "todayTripsRegion") {
+        initTripTableFeatures('.today-trips-wrapper', '#trip-context-menu');
+      }
+      if (refreshedRegionId === "ongoingTripsRegion") {
+        initTripTableFeatures('.today-trips-wrapper-followup', '#trip-context-menu-followup');
+      }
+    });
+    
+    // --- Initial page load ---
+    apex.jQuery(document).ready(function() {
+      setTimeout(function() {
+        initTripTableFeatures('.today-trips-wrapper', '#trip-context-menu');
+        initTripTableFeatures('.today-trips-wrapper-followup', '#trip-context-menu-followup');
+      }, 200);
+    });
+    
+
+css: 
+  inline: |
+    /* ========== TODAY & FOLLOW-UP TRIPS STYLES - Uber Base Design ========== */
+    
+    .today-trips-wrapper,
+    .today-trips-wrapper-followup {
+      font-family: 'Cairo', 'Segoe UI', sans-serif;
+      font-size: 12px;
+      direction: rtl;
+      padding: 1.5rem;
+      color: #2e2e2e;
+      overflow-x: auto;
+      background-color: #f9fafb;
+    }
+    
+    .today-trips-table,
+    .today-trips-table-followup {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      table-layout: auto;
+      border-color: orange;
+    }
+    
+    .today-trips-table thead th,
+    .today-trips-table-followup thead th {
+      text-align: center;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid #374151;
+      background: orangered;
+      color: black;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-color: orange;
+    }
+    
+    .today-trips-table tbody td,
+    .today-trips-table-followup tbody td {
+      text-align: center;
+      vertical-align: middle;
+      font-size: 12px;
+      color: #1f2937;
+      padding: 0.6rem 0.75rem;
+      background-color: #fff;
+      border-bottom: 1px solid #f3f4f6;
+      line-height: 1.4;
+      white-space: normal;
+      overflow-wrap: break-word;
+      max-width: 200px;
+      border-color: black;
+      font-weight: bold;
+      min-height: 48px; /* ✅ Uniform row height */
+    }
+    
+    .today-trips-table tbody tr:nth-child(even) td,
+    .today-trips-table-followup tbody tr:nth-child(even) td {
+      background-color: #f9fafb;
+    }
+    
+    .trip-row {
+      transition: all 0.25s ease;
+    }
+    .trip-row:hover {
+      transform: scale(1.002);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+    }
+    
+    .status-alert {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    
+    /* ===== Context Menu ===== */
+    .context-menu,
+    .context-menu-followup {
+      position: absolute;
+      z-index: 1000;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      min-width: 160px;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .context-menu .menu-item,
+    .context-menu-followup .menu-item-followup {
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #111827;
+      transition: background-color 0.2s;
+    }
+    .context-menu .menu-item:hover,
+    .context-menu-followup .menu-item-followup:hover {
+      background-color: #f3f4f6;
+    }
+    
+    /* ===== Overlay ===== */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 18px;
+      font-weight: bold;
+      color: #374151;
+      z-index: 999;
+    }
+    
+    /* ===== Time-based Highlighting ===== */
+    .trip-row-past {
+      background: linear-gradient(90deg, #e0e7ef 0%, #f3f4f6 100%);
+      opacity: 0.6;
+    }
+    .trip-row-now {
+      background: linear-gradient(90deg, #fdf6b2 10%, #fff9db 100%);
+      box-shadow: 0 0 12px 0 #ffd90040, 0 0 0 2px #facc1530;
+      animation: glow-now 2s infinite alternate;
+    }
+    @keyframes glow-now {
+      0% { box-shadow: 0 0 8px 0 #ffd90020; }
+      100% { box-shadow: 0 0 20px 0 #ffd90070, 0 0 0 3px #fde04740; }
+    }
+    .trip-row-future {
+      background: linear-gradient(90deg, #f0fdf4 0%, #ecfdf5 100%);
+      opacity: 0.9;
+    }
+    
+    /* ===== Row Statuses ===== */
+    .row-cancelled {
+      background: linear-gradient(90deg, #ffe5e5 0%, #fff1f2 100%);
+      border-left: 8px solid #ef4444;
+      color: #991b1b;
+      opacity: 0.85;
+    }
+    
+    .row-unassigned {
+      background: linear-gradient(90deg, #fef2f2 0%, #fff7ed 100%);
+      border-left: 8px dashed #f59e42;
+      color: #b45309;
+      font-weight: 500;
+    }
+    
+    .row-active {
+      background: linear-gradient(90deg, #d1fae5 0%, #e0f2fe 100%);
+      border-left: 8px solid #22d3ee;
+      color: #065f46;
+      animation: active-row-glow 2s infinite alternate;
+    }
+    @keyframes active-row-glow {
+      from { box-shadow: 0 0 8px 0 #38bdf820; }
+      to   { box-shadow: 0 0 32px 0 #38bdf870; }
+    }
+    
+    .row-paused {
+      background: linear-gradient(90deg, #fef9c3 0%, #fdf6b2 100%);
+      border-left: 8px solid #facc15;
+      color: #a16207;
+    }
+    
+    .row-partial {
+      background: linear-gradient(90deg, #f3e8ff 0%, #ede9fe 100%);
+      border-left: 8px dashed #a78bfa;
+      color: #6d28d9;
+    }
+    
+    .row-completed {
+      background: linear-gradient(90deg, #e0f2fe 0%, #d1fae5 100%);
+      border-left: 8px solid #34d399;
+      color: #166534;
+      font-weight: 700;
+    }
+    
+    .row-error {
+      background: linear-gradient(90deg, #fcd34d 0%, #fecaca 100%);
+      border-left: 8px solid #f87171;
+      color: #b91c1c;
+      font-style: italic;
+    }
+    
+    /* ===== Status Badges ===== */
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      color: #fff;
+    }
+    .status-badge.active { background: #10b981; }
+    .status-badge.cancelled { background: #ef4444; }
+    .status-badge.paused { background: #f59e0b; }
+    .status-badge.completed { background: #3b82f6; }
+    .status-badge.partial { background: #8b5cf6; }
+    .status-badge.unassigned { background: #f97316; }
+    .status-badge.error { background: #dc2626; }
+    
+    /* ===== Utility Labels ===== */
+    .driver-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    
+    .copy-btn {
+      background-color: transparent;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      color: #4b5563;
+      transition: color 0.2s;
+      vertical-align: middle;
+    }
+    .copy-btn:hover { color: #1d4ed8; }
+    
+    .tag,
+    .requested-car,
+    .client-code {
+      display: inline-block;
+      margin-top: 6px;
+      margin-left: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+    .tag i { margin-left: 4px; }
+    .tag.badge { background: #f3f4f6; color: #1f2937; }
+    .requested-car,
+    .client-code { background: #fb923c; color: #fff; }
+    
+    /* ===== Selection Control ===== */
+    .today-trips-wrapper .trip-row,
+    .today-trips-wrapper-followup .trip-row {
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    .selectable {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+    
+    /* ===== Responsive (Mobile) ===== */
+    @media (max-width: 768px) {
+      .today-trips-wrapper,
+      .today-trips-wrapper-followup {
+        padding: 1rem 0.5rem;
+        font-size: 14px;
+      }
+      .today-trips-table thead th,
+      .today-trips-table-followup thead th,
+      .today-trips-table tbody td,
+      .today-trips-table-followup tbody td {
+        font-size: 12px;
+        padding: 0.5rem 0.4rem;
+      }
+    }
+    
+    /* ===== Header & Search Enhancements ===== */
+    .today-trips-wrapper h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .search-input-with-icon {
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      padding: 0.5rem 1rem 0.5rem 2.25rem;
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      background-color: #fff;
+      color: #1f2937;
+      direction: rtl;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-input-with-icon:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      outline: none;
+    }
+    .search-placeholder-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 14px;
+      pointer-events: none;
+    }
+    
+    /* ===== Flashing Tag ===== */
+    .ft-today-tag {
+      display: inline-block;
+      background: linear-gradient(90deg, #FBBF24 60%, #fde68a 100%);
+      color: #915c09;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 14px;
+      padding: 2px 10px 2px 8px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      letter-spacing: 0.2px;
+      box-shadow: 0 1px 6px 0 #fbbf243a;
+      border: 1px solid #f5e09a;
+      vertical-align: middle;
+      animation: flashft 1s infinite alternate;
+    }
+    @keyframes flashft {
+      from { filter: brightness(1.07); }
+      to   { filter: brightness(1.16); }
+    }
+    
+    /* ===== Dark Mode Support ===== */
+    .dark .today-trips-table,
+    .dark .today-trips-table-followup {
+      background: #1f2937;
+      color: #f3f4f6;
+    }
+    .dark .today-trips-table thead th,
+    .dark .today-trips-table-followup thead th {
+      background: #111827;
+      color: #f9fafb;
+    }
+    .dark .row-active {
+      background: linear-gradient(90deg, #064e3b 0%, #065f46 100%);
+      border-left-color: #10b981;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+comments: 
+  comments: home
+
+regions: 
+- # ====== Region: Todays New Reservation Report ===============
+  id: 272524133890453935
+  identification: 
+    name: Todays New Reservation Report
+    title: تقرير شغل اليوم - ليموزين
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html           CLOB := '';
+        l_trip_status    VARCHAR2(500);
+        l_trip_url       VARCHAR2(4000);
+        l_edit_url       VARCHAR2(4000);
+        l_assign_url     VARCHAR2(4000);
+        l_edit_assignment_url VARCHAR2(4000);
+        l_row_class      VARCHAR2(100);
+        l_unassigned     BOOLEAN;
+        l_client_name    VARCHAR2(1000);
+        l_client_link    VARCHAR2(2000);
+        l_client_phone   VARCHAR2(1000);
+        l_client_phone_link VARCHAR2(1200);
+        l_driver_phone   VARCHAR2(1000);
+        l_driver_phone_link VARCHAR2(1200);
+        l_car_type       VARCHAR2(500);
+        l_trip_type      VARCHAR2(500);
+        l_trip_class     VARCHAR2(500);
+        l_ticket_no      VARCHAR2(500);
+        l_signage        VARCHAR2(500);
+        l_driver_cell    CLOB;
+        l_driver_link    VARCHAR2(2000);
+        l_notes          CLOB;
+        l_route          CLOB;
+        l_client_phone_digits VARCHAR2(100);
+        l_driver_phone_digits VARCHAR2(100);
+        l_assignment_notes    VARCHAR2(2000);
+        l_assignment_id       VARCHAR2(2000);
+        l_now            DATE := convert_to_local_timezone(SYSTIMESTAMP);
+        l_row_time       DATE;
+        l_time_class     VARCHAR2(30);
+        l_safe_price     VARCHAR2(100);
+        l_safe_trip_idx  VARCHAR2(100);
+      BEGIN
+        l_html := l_html || '
+        <div class="today-trips-wrapper">
+          <div class="flex items-center justify-between mb-4 px-2">
+            <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <i class="fa6 fa6-solid fa6-list-ul text-blue-600"></i>
+              تقرير رحلات اليوم
+            </h2>
+            <div class="relative w-full max-w-md">
+              <input type="text"
+                     class="search-input-with-icon"
+                     placeholder="ابحث عن رحلة أو عميل...">
+              <i class="fa6 fa6-solid fa6-magnifying-glass search-placeholder-icon"></i>
+            </div>
+          </div>
+          <div id="loading-overlay" class="hidden">🔄 الرجاء الانتظار...</div>
+          <div id="trip-context-menu" class="context-menu">
+            <div class="menu-item" data-action="assign"><i class="fa6 fa6-solid fa6-taxi me-1.5"></i> توزيع التشغيل</div>
+            <div class="menu-item" data-action="edit"><i class="fa6 fa6-solid fa6-pen-to-square me-1.5"></i> تعديل الحجز</div>
+            <div class="menu-item" data-action="edit-assignment"><i class="fa6 fa6-solid fa6-user-edit me-1.5"></i> تعديل التوزيعة</div>
+                  <div class="menu-item" data-action="easyrentmarket"><i class="fa6 fa6-solid fa6-taxi me-1.5"></i> سوق التوريد السهل</div>
+          </div>
+          <table class="today-trips-table compact-table" id="trips-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th><i class="fa6 fa6-solid fa6-car-side me-1"></i> نوع التشغيلة</th>
+                <th><i class="fa6 fa6-solid fa6-hashtag me-1"></i> كود التشغيلة</th>
+                <th><i class="fa6 fa6-solid fa6-user me-1"></i> العميل</th>
+                <th><i class="fa6 fa6-solid fa6-clock me-1"></i> الوقت</th>
+                <th><i class="fa6 fa6-solid fa6-location-dot me-1"></i> المسار</th>
+                <th><i class="fa6 fa6-solid fa6-id-badge me-1"></i> الكابتن</th>
+                <th><i class="fa6 fa6-solid fa6-note-sticky me-1"></i> ملاحظات</th>
+                <th><i class="fa6 fa6-solid fa6-money-bill-wave me-1"></i> السعر</th>
+                <th><i class="fa6 fa6-solid fa6-rotate me-1"></i> الحالة</th>
+                <th class="text-center"><i class="fa6 fa6-solid fa6-clipboard me-1"></i></th>
+              </tr>
+            </thead>
+            <tbody>';
+      
+        FOR rec IN (
+          SELECT TRIP_INDEX, REQUESTED_CAR, CLIENT_ID, CLIENT_NAME, CLIENT_PHONE, DRIVER_PHONE,
+                 ASSIGNMENT_ID, ASSIGNMENTNOTES, DRIVER_ASSIGNMENT_VALUE, PICK_UP_TIME,
+                 PRODUCT_ID, PRODUCT_STATUS, TRIPS_COUNT, NUMBER_OF_DAYS, LAST_TRIP_STATUS,
+                 CLASSIFICATION_TYPE, TICKET_NUMBER, SIGNAGE_DETAILS, FROM_LOCATION, TO_LOCATION,
+                 HAS_FAST_TRACK_RESERVATION_TODAY, PRODUCT_PRICE, PRODUCT_CURRENCY, TRIP_NOTES
+            FROM VW_LIMO_TODAY_TRIPS
+           ORDER BY TRIP_INDEX
+        ) LOOP
+          BEGIN
+            BEGIN
+              l_row_time := TO_DATE(rec.PICK_UP_TIME, 'DD/MM/YYYY HH24:MI');
+            EXCEPTION WHEN OTHERS THEN l_row_time := NULL; END;
+      
+            IF l_row_time IS NULL THEN
+              l_time_class := '';
+            ELSIF l_row_time < l_now THEN
+              l_time_class := 'trip-row-past';
+            ELSIF l_row_time >= l_now AND l_row_time < (l_now + (20/1440)) THEN
+              l_time_class := 'trip-row-now';
+            ELSE
+              l_time_class := 'trip-row-future';
+            END IF;
+      
+            l_client_name := rec.CLIENT_NAME;
+            l_client_link := '<a href="' || APEX_UTIL.PREPARE_URL(
+                                'f?p=' || :APP_ID || ':98:' || :APP_SESSION || '::::P98_ID:' || rec.CLIENT_ID
+                              ) || '" class="text-blue-700 hover:underline font-semibold">' || l_client_name || '</a>';
+      
+            l_client_phone := NULLIF(rec.CLIENT_PHONE, '-');
+            IF l_client_phone IS NOT NULL THEN
+              l_client_phone_digits := regexp_replace(l_client_phone, '[^0-9]', '');
+              l_client_phone_link :=
+                '<button type="button" class="copy-phone-btn" data-phone="'||l_client_phone_digits||'" '||
+                'onclick="copyPhoneToClipboard(this)" '||
+                'style="background:transparent;border:none;color:#22c55e;cursor:pointer;padding:0;font-family:monospace;" '||
+                'title="اضغط لنسخ رقم العميل">'||
+                '<span dir="ltr">'||l_client_phone||'</span> <i class="fa6 fa6-solid fa6-copy"></i></button>';
+            ELSE
+              l_client_phone_link := '-';
+              l_client_phone_digits := '';
+            END IF;
+      
+            l_driver_phone := NULLIF(rec.DRIVER_PHONE, '-');
+            IF l_driver_phone IS NOT NULL THEN
+              l_driver_phone_digits := regexp_replace(l_driver_phone, '[^0-9]', '');
+              l_driver_phone_link :=
+                '<button type="button" class="copy-phone-btn" data-phone="'||l_driver_phone_digits||'" '||
+                'onclick="copyPhoneToClipboard(this)" '||
+                'style="background:transparent;border:none;color:#22c55e;cursor:pointer;padding:0;font-family:monospace;" '||
+                'title="اضغط لنسخ رقم الكابتن">'||
+                '<span dir="ltr">'||l_driver_phone||'</span> <i class="fa6 fa6-solid fa6-copy"></i></button>';
+            ELSE
+              l_driver_phone_link := '-';
+              l_driver_phone_digits := '';
+            END IF;
+      
+            l_car_type := REGEXP_SUBSTR(rec.REQUESTED_CAR, '^[^/]+');
+            l_trip_type := REGEXP_SUBSTR(rec.REQUESTED_CAR, '[^/]+$', 1);
+            l_trip_class := NVL(rec.CLASSIFICATION_TYPE, '-');
+            l_ticket_no := NVL(rec.TICKET_NUMBER, NULL);
+            l_signage := NVL(rec.SIGNAGE_DETAILS, NULL);
+            l_unassigned := (rec.DRIVER_ASSIGNMENT_VALUE = 'في انتظار التوزيع');
+            l_route := NVL(rec.FROM_LOCATION, '-') || ' <i class="fa6 fa6-solid fa6-arrow-left-long mx-1 text-gray-400"></i> ' || NVL(rec.TO_LOCATION, '-');
+      
+            l_assignment_notes := TRIM(NVL(rec.ASSIGNMENTNOTES, ''));
+            l_assignment_id := rec.ASSIGNMENT_ID;
+            l_edit_assignment_url := '';
+            IF l_assignment_id IS NOT NULL THEN
+              l_edit_assignment_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':363:' || :APP_SESSION || '::::P363_ASSIGNMENT_ID:' || l_assignment_id);
+            END IF;
+      
+            IF l_assignment_id IS NOT NULL THEN
+              l_driver_link := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6007:' || :APP_SESSION || '::::P6007_ASSIGNMENT_ID:' || l_assignment_id);
+              l_driver_cell := '<a href="' || l_driver_link || '" class="text-blue-700 hover:underline font-bold">' || rec.DRIVER_ASSIGNMENT_VALUE || '</a>';
+            ELSE
+              l_driver_cell := rec.DRIVER_ASSIGNMENT_VALUE;
+            END IF;
+      
+            IF rec.PRODUCT_STATUS = 'CANCELLED' THEN
+              l_trip_status := '<i class="fa6 fa6-solid fa6-ban text-red-500 me-1"></i> تم إلغاء الحجز';
+              l_row_class := 'row-cancelled';
+            ELSIF rec.TRIPS_COUNT = 0 THEN
+              l_trip_status := 'لم تبدأ الرحلة';
+              l_row_class := CASE WHEN l_unassigned THEN 'row-unassigned' ELSE 'row-paused' END;
+            ELSIF rec.TRIPS_COUNT < rec.NUMBER_OF_DAYS THEN
+              CASE rec.LAST_TRIP_STATUS
+                WHEN 'ACTIVE' THEN l_trip_status := '<i class="fa6 fa6-solid fa6-play text-green-500 me-1"></i> رحلة نشطة'; l_row_class := 'row-active';
+                WHEN 'PAUSED' THEN l_trip_status := '<i class="fa6 fa6-solid fa6-pause text-yellow-600 me-1"></i> رحلة متوقفة مؤقتاً'; l_row_class := 'row-paused';
+                WHEN 'FINISHED' THEN l_trip_status := 'تم تنفيذ ' || rec.TRIPS_COUNT || ' / ' || rec.NUMBER_OF_DAYS; l_row_class := 'row-partial';
+                ELSE l_trip_status := 'في انتظار التحديث'; l_row_class := 'row-error';
+              END CASE;
+            ELSIF rec.TRIPS_COUNT = rec.NUMBER_OF_DAYS THEN
+              IF rec.LAST_TRIP_STATUS = 'FINISHED' THEN
+                l_trip_status := '<i class="fa6 fa6-solid fa6-check-circle text-emerald-600 me-1"></i> اكتملت الرحلات';
+                l_row_class := 'row-completed';
+              ELSIF rec.LAST_TRIP_STATUS = 'ACTIVE' THEN
+                l_trip_status := 'رحلة نشطة (أخيرة)';
+                l_row_class := 'row-active';
+              ELSIF rec.LAST_TRIP_STATUS = 'PAUSED' THEN
+                l_trip_status := 'رحلة متوقفة مؤقتاً (أخيرة)';
+                l_row_class := 'row-paused';
+              ELSE
+                l_trip_status := 'في انتظار استكمال الرحلة الأخيرة';
+                l_row_class := 'row-error';
+              END IF;
+            ELSE
+              l_trip_status := 'بيانات غير متطابقة';
+              l_row_class := 'row-error';
+            END IF;
+      
+            l_trip_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6001:' || :APP_SESSION || '::::P6001_PRODUCT_ID:' || rec.PRODUCT_ID);
+            l_assign_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':363:' || :APP_SESSION || '::::P363_PRODUCT_ID:' || rec.PRODUCT_ID);
+            l_edit_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':254:' || :APP_SESSION || '::::P254_SUB_RES_ID:' || rec.PRODUCT_ID);
+      
+            BEGIN l_safe_price := rec.PRODUCT_PRICE; EXCEPTION WHEN OTHERS THEN l_safe_price := 'ERR'; END;
+            BEGIN l_safe_trip_idx := rec.TRIP_INDEX; EXCEPTION WHEN OTHERS THEN l_safe_trip_idx := 'ERR'; END;
+      
+            l_notes := '';
+            IF rec.TRIP_NOTES IS NOT NULL THEN
+              l_notes := l_notes || '<div>' || rec.TRIP_NOTES || '</div>';
+            END IF;
+            IF l_ticket_no IS NOT NULL THEN
+              l_notes := l_notes || '<span class="tag badge bg-sky-100 text-sky-700 ms-1 mb-1"><i class="fa6 fa6-solid fa6-ticket me-1"></i>' || l_ticket_no || '</span>';
+            END IF;
+            IF l_signage IS NOT NULL THEN
+              l_notes := l_notes || '<span class="tag badge bg-amber-100 text-amber-700 ms-1 mb-1"><i class="fa6 fa6-solid fa6-tag me-1"></i>' || l_signage || '</span>';
+            END IF;
+            IF l_notes IS NULL OR l_notes = '' THEN
+              l_notes := '-';
+            END IF;
+      
+            l_html := l_html || '
+              <tr class="trip-row ' || l_row_class || ' ' || l_time_class || '" 
+                  data-url="' || l_trip_url || '" 
+                  data-assign-url="' || l_assign_url || '" 
+                  data-edit-url="' || l_edit_url || '" 
+                  data-edit-assignment-url="' || REPLACE(NVL(l_edit_assignment_url,''),'"','&quot;') || '"
+                  data-assignment-id="' || NVL(l_assignment_id, '') || '" 
+                  data-client="' || l_client_name || '" 
+                  data-phone="' || l_client_phone || '" 
+                  data-car="' || l_car_type || '" 
+                  data-type="' || l_trip_type || '" 
+                  data-classification="' || l_trip_class || '" 
+                  data-time="' || rec.PICK_UP_TIME || '" 
+                  data-route="' || NVL(rec.FROM_LOCATION, '-') || ' → ' || NVL(rec.TO_LOCATION, '-') || '" 
+                  data-driver="' || rec.DRIVER_ASSIGNMENT_VALUE || '" 
+                  data-trip="' || rec.PRODUCT_ID || '" 
+                  data-signage="' || NVL(l_signage, '-') || '" 
+                  data-ticket="' || NVL(l_ticket_no, '-') || '"
+                  data-assigned="' || CASE WHEN l_assignment_id IS NOT NULL THEN 'Y' ELSE 'N' END || '">';
+      
+            l_html := l_html || '
+                <td>' || l_safe_trip_idx || '</td>
+                <td>' || l_car_type || '<br><span class="text-xs text-gray-500">' || l_trip_type || ' | ' || l_trip_class || '</span></td>
+                <td>
+                  <a href="' || l_trip_url || '" class="trip-code-link text-blue-700 hover:underline font-bold" data-trip-id="' || rec.PRODUCT_ID || '">' || rec.PRODUCT_ID || '</a>
+                </td>
+                <td>
+                  <span class="selectable">' || l_client_link || '</span><br>
+                  <span class="text-xs text-gray-500 selectable">' || l_client_phone_link || '</span>' ||
+                  CASE WHEN rec.HAS_FAST_TRACK_RESERVATION_TODAY = 1
+                       THEN '<br><span class="ft-today-tag" style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:11px;padding:2px 8px;border-radius:12px;margin-top:3px;border:1px solid #7dd3fc;" title="لديه حجز فاست تراك اليوم">حجز فاست تراك اليوم</span>'
+                       ELSE ''
+                  END
+                  || '
+                </td>
+                <td>' || rec.PICK_UP_TIME || '</td>
+                <td><span class="route-path">' || l_route || '</span></td>
+                <td>' || l_driver_cell || '<br><span class="text-xs text-gray-500 selectable">' || l_driver_phone_link || '</span>';
+      
+            -- Assignment notes badge (show only if exists)
+            IF l_assignment_notes IS NOT NULL THEN
+              l_html := l_html || '<br><span style="display:inline-block;background:#e0f2fe;color:#0284c7;font-size:11px;padding:2px 8px;border-radius:12px;margin-top:3px;border:1px solid #7dd3fc;">' || l_assignment_notes || '</span>';
+            END IF;
+      
+            l_html := l_html || '</td>
+                <td>' || l_notes || '</td>
+                <td>' || l_safe_price || ' ' || rec.PRODUCT_CURRENCY || '</td>
+                <td>' || l_trip_status || '</td>
+                <td class="text-center">
+                  <button type="button" class="copy-btn inline-block mx-1" title="نسخ التفاصيل"
+                    data-client="' || l_client_name || '"
+                    data-phone="' || l_client_phone || '"
+                    data-car="' || l_car_type || '"
+                    data-type="' || l_trip_type || '"
+                    data-classification="' || l_trip_class || '"
+                    data-time="' || rec.PICK_UP_TIME  || '"
+                    data-route="' || NVL(rec.FROM_LOCATION, '-') || ' → ' || NVL(rec.TO_LOCATION, '-') || '"
+                    data-driver="' || rec.DRIVER_ASSIGNMENT_VALUE || '"
+                    data-trip="' || rec.PRODUCT_ID || '"
+                    data-signage="' || l_signage || '"
+                    data-ticket="' || l_ticket_no || '"
+                    data-notes="' || NVL(rec.TRIP_NOTES, '-') || '">
+                    <i class="fa6 fa6-solid fa6-copy"></i>
+                  </button>
+                </td>
+              </tr>';
+          EXCEPTION
+            WHEN OTHERS THEN
+              l_html := l_html || '<tr style="background:#fee"><td colspan="11" style="color:red">خطأ في الرحلة رقم: '
+                || NVL(rec.TRIP_INDEX, '؟') || '، المنتج: ' || NVL(rec.PRODUCT_ID, '؟') || ' : ' || SQLERRM || '</td></tr>';
+          END;
+        END LOOP;
+      
+        l_html := l_html || '</tbody></table></div>';
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 51
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: todayTripsRegion
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Ongoing Reservation Report ==================
+  id: 272524653160453940
+  identification: 
+    name: Ongoing Reservation Report
+    title: تقرير متابعة اليوميات - ليموزين
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html                 CLOB := '';
+        l_trip_url             VARCHAR2(4000);
+        l_edit_url             VARCHAR2(4000);
+        l_assign_url           VARCHAR2(4000);
+        l_edit_assignment_url  VARCHAR2(4000);
+        l_row_class            VARCHAR2(1000);
+        l_trip_status          VARCHAR2(2000);
+        l_signage              VARCHAR2(4000);
+        l_ticket               VARCHAR2(4000);
+        l_driver_phone         VARCHAR2(4000);
+        l_driver_phone_digits  VARCHAR2(4000);
+        l_driver_phone_link    VARCHAR2(4000);
+        l_client_phone         VARCHAR2(4000);
+        l_client_phone_digits  VARCHAR2(4000);
+        l_client_phone_link    VARCHAR2(4000);
+        l_assignment_id        VARCHAR2(4000);
+        l_safe_price           VARCHAR2(4000);
+        l_safe_index           VARCHAR2(4000);
+        l_safe_daydesc         VARCHAR2(4000);
+        l_client_link          VARCHAR2(4000);
+      BEGIN
+        l_html := l_html || '
+        <div class="today-trips-wrapper-followup">
+          <div class="flex items-center justify-between mb-4 px-2">
+            <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+              <i class="fa6 fa6-solid fa6-list-ul text-blue-600"></i>
+              تقرير متابعة اليومية
+            </h2>
+            <div class="relative w-full max-w-md">
+              <input type="text"
+                     class="search-input-with-icon"
+                     placeholder="ابحث عن رحلة أو عميل...">
+              <i class="fa6 fa6-solid fa6-magnifying-glass search-placeholder-icon"></i>
+            </div>
+          </div>
+          <div id="trip-context-menu-followup" class="context-menu">
+            <div class="menu-item" data-action="assign"><i class="fa6 fa6-solid fa6-taxi me-1.5"></i> توزيع التشغيل</div>
+            <div class="menu-item" data-action="edit"><i class="fa6 fa6-solid fa6-pen-to-square me-1.5"></i> تعديل الحجز</div>
+            <div class="menu-item" data-action="edit-assignment"><i class="fa6 fa6-solid fa6-user-edit me-1.5"></i> تعديل التوزيعة</div>
+          </div>
+          <table class="min-w-full divide-y divide-gray-200 text-sm rtl text-right shadow-sm rounded-md overflow-hidden today-trips-table-followup">
+            <thead class="bg-gray-50 text-xs font-semibold text-gray-600">
+              <tr>
+                <th class="px-4 py-3">#</th>
+                <th class="px-4 py-3">نوع التشغيلة</th>
+                <th class="px-4 py-3">كود التشغيلة</th>
+                <th class="px-4 py-3">العميل</th>
+                <th class="px-4 py-3">المسار</th>
+                <th class="px-4 py-3">السائق</th>
+                <th class="px-4 py-3">اليوم</th>
+                <th class="px-4 py-3">الحالة</th>
+                <th class="px-4 py-3">السعر</th>
+                <th class="px-4 py-3 text-center"></th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">';
+      
+        FOR rec IN (
+          SELECT CLIENT_ID, TRIP_INDEX, CAR_TYPE_NAME, TRIP_TYPE_NAME, CLASSIFICATION_NAME, PRODUCT_ID, CLIENT_NAME, CLIENT_PHONE, DRIVER_NAME, DRIVER_PHONE, ASSIGNMENT_ID,
+                 SIGNAGE_DETAILS, TICKET_NUMBER, FROM_LOCATION, TO_LOCATION, PRODUCT_PRICE, PRODUCT_CURRENCY, DAY_DESCRIPTION_AR, LAST_SESSION_STATUS
+            FROM VW_LIMO_ONGOING_DAILY_TRIPS
+           ORDER BY TRIP_INDEX
+        ) LOOP
+          BEGIN
+            l_signage       := NULLIF(rec.SIGNAGE_DETAILS, '-');
+            l_ticket        := NULLIF(rec.TICKET_NUMBER, '-');
+            l_client_phone  := NULLIF(rec.CLIENT_PHONE, '-');
+            l_driver_phone  := NULLIF(rec.DRIVER_PHONE, '-');
+            l_assignment_id := NULLIF(rec.ASSIGNMENT_ID, '-');
+      
+            IF l_client_phone IS NOT NULL THEN
+              l_client_phone_digits := regexp_replace(l_client_phone, '[^0-9]', '');
+              l_client_phone_link :=
+                '<a href="https://web.whatsapp.com/send?phone='||l_client_phone_digits||'" target="_blank" title="تواصل مع العميل عبر واتساب ويب" style="color:#22c55e;text-decoration:none"><span dir="ltr" style="font-family:monospace">'||l_client_phone||'</span></a>';
+            ELSE
+              l_client_phone_link := '-';
+            END IF;
+      
+            l_client_link := '<a href="' || APEX_UTIL.PREPARE_URL(
+                                'f?p=' || :APP_ID || ':98:' || :APP_SESSION || '::::P98_ID:' || rec.CLIENT_ID
+                              ) || '" class="text-blue-700 hover:underline font-semibold">' || rec.CLIENT_NAME || '</a>';
+      
+            IF l_driver_phone IS NOT NULL THEN
+              l_driver_phone_digits := regexp_replace(l_driver_phone, '[^0-9]', '');
+              l_driver_phone_link :=
+                '<a href="https://web.whatsapp.com/send?phone='||l_driver_phone_digits||'" target="_blank" title="تواصل مع السائق عبر واتساب ويب" style="color:#22c55e;text-decoration:none"><span dir="ltr" style="font-family:monospace">'||l_driver_phone||'</span></a>';
+            ELSE
+              l_driver_phone_link := '-';
+            END IF;
+      
+            BEGIN l_safe_price := rec.PRODUCT_PRICE; EXCEPTION WHEN OTHERS THEN l_safe_price := 'ERR'; END;
+            BEGIN l_safe_index := rec.TRIP_INDEX;   EXCEPTION WHEN OTHERS THEN l_safe_index := 'ERR'; END;
+            BEGIN l_safe_daydesc := rec.DAY_DESCRIPTION_AR; EXCEPTION WHEN OTHERS THEN l_safe_daydesc := 'ERR'; END;
+      
+            -- Determine status and row class
+            CASE rec.LAST_SESSION_STATUS
+              WHEN 'ACTIVE' THEN
+                l_trip_status := '<i class="fa6 fa6-solid fa6-play text-green-500 me-1"></i> الرحلة نشطة';
+                l_row_class := 'row-active';
+              WHEN 'PAUSED' THEN
+                l_trip_status := '<i class="fa6 fa6-solid fa6-pause text-yellow-600 me-1"></i> الرحلة متوقفة مؤقتاً';
+                l_row_class := 'row-paused';
+              WHEN 'FINISHED' THEN
+                l_trip_status := '<i class="fa6 fa6-solid fa6-check-circle text-emerald-600 me-1"></i> الرحلة مكتملة';
+                l_row_class := 'row-completed';
+              ELSE
+                IF rec.DAY_DESCRIPTION_AR IS NOT NULL AND INSTR(rec.DAY_DESCRIPTION_AR, 'اليوم الأول') > 0 THEN
+                  l_trip_status := 'بانتظار بدء الرحلة';
+                  l_row_class := 'row-unassigned';
+                ELSE
+                  l_trip_status := 'بيانات غير متطابقة';
+                  l_row_class := 'row-error';
+                END IF;
+            END CASE;
+      
+            l_trip_url   := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6001:' || :APP_SESSION || '::::P6001_PRODUCT_ID:' || rec.PRODUCT_ID);
+            l_assign_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':363:'  || :APP_SESSION || '::::P363_PRODUCT_ID:'  || rec.PRODUCT_ID);
+            l_edit_url   := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':359:'  || :APP_SESSION || '::::P359_PRODUCT_ID:'  || rec.PRODUCT_ID);
+            IF l_assignment_id IS NOT NULL THEN
+              l_edit_assignment_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':363:' || :APP_SESSION || '::::P363_ASSIGNMENT_ID:' || l_assignment_id);
+            ELSE
+              l_edit_assignment_url := '';
+            END IF;
+      
+            l_html := l_html || '
+              <tr class="trip-row ' || l_row_class || ' hover:bg-gray-50 cursor-pointer"
+                  data-url="' || l_trip_url || '"
+                  data-assign-url="' || l_assign_url || '"
+                  data-edit-url="' || l_edit_url || '"
+                  data-edit-assignment-url="' || REPLACE(NVL(l_edit_assignment_url,''),'"','&quot;') || '"
+                  data-assignment-id="' || NVL(l_assignment_id, '') || '"
+                  data-client="' || rec.CLIENT_NAME || '"
+                  data-phone="' || NVL(l_client_phone, '') || '"
+                  data-car="' || rec.CAR_TYPE_NAME || '"
+                  data-type="' || rec.TRIP_TYPE_NAME || '"
+                  data-classification="' || rec.CLASSIFICATION_NAME || '"
+                  data-route="' || NVL(rec.FROM_LOCATION, '-') || ' → ' || NVL(rec.TO_LOCATION, '-') || '"
+                  data-driver="' || rec.DRIVER_NAME || '"
+                  data-trip="' || rec.PRODUCT_ID || '"
+                  data-signage="' || NVL(l_signage, '-') || '"
+                  data-ticket="' || NVL(l_ticket, '-') || '"
+                  data-assigned="' || CASE WHEN l_assignment_id IS NOT NULL THEN 'Y' ELSE 'N' END || '">
+                <td class="px-4 py-3">' || l_safe_index || '</td>
+                <td class="px-4 py-3">
+                  <div class="font-semibold text-gray-900">' || rec.CAR_TYPE_NAME || '</div>
+                  <div class="text-xs text-gray-500">' || rec.TRIP_TYPE_NAME || ' | ' || rec.CLASSIFICATION_NAME || '</div>
+                </td>
+                <td class="px-4 py-3">
+                  <a href="' || l_trip_url || '" class="trip-code-link text-blue-700 hover:underline font-bold" data-trip-id="' || rec.PRODUCT_ID || '">' || rec.PRODUCT_ID || '</a>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="selectable font-medium text-gray-900">' || l_client_link || '</div>
+                  <div class="selectable text-xs text-gray-500">' || l_client_phone_link || '</div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="route-path">' || NVL(rec.FROM_LOCATION, '-') || ' <i class="fa6 fa6-solid fa6-arrow-left-long mx-1 text-gray-400"></i> ' || NVL(rec.TO_LOCATION, '-') || '</span>
+                </td>
+                <td class="px-4 py-3">';
+            IF l_assignment_id IS NOT NULL THEN
+              l_html := l_html ||
+                '<a href="' || APEX_UTIL.PREPARE_URL(
+                  'f?p=' || :APP_ID || ':6007:' || :APP_SESSION || '::::P6007_ASSIGNMENT_ID:' || l_assignment_id
+                ) || '" class="font-semibold text-blue-700 hover:underline" title="عرض التعيين">' || rec.DRIVER_NAME || '</a>';
+            ELSE
+              l_html := l_html || rec.DRIVER_NAME;
+            END IF;
+            l_html := l_html || '<br><span class="text-xs text-gray-500">' || l_driver_phone_link || '</span>
+                </td>
+                <td class="px-4 py-3">' || l_safe_daydesc || '</td>
+                <td class="px-4 py-3">' || l_trip_status || '</td>
+                <td class="px-4 py-3">' || l_safe_price || ' ' || rec.PRODUCT_CURRENCY || '</td>
+                <td class="px-4 py-3 text-center">
+                  <button type="button" class="copy-btn inline-block mx-1" title="نسخ التفاصيل"
+                          data-client="' || rec.CLIENT_NAME || '"
+                          data-phone="' || NVL(l_client_phone, '') || '"
+                          data-car="' || rec.CAR_TYPE_NAME || '"
+                          data-type="' || rec.TRIP_TYPE_NAME || '"
+                          data-classification="' || rec.CLASSIFICATION_NAME || '"
+                          data-route="' || NVL(rec.FROM_LOCATION, '-') || ' → ' || NVL(rec.TO_LOCATION, '-') || '"
+                          data-driver="' || rec.DRIVER_NAME || '"
+                          data-trip="' || rec.PRODUCT_ID || '"
+                          data-signage="' || NVL(l_signage, '-') || '"
+                          data-ticket="' || NVL(l_ticket, '-') || '">
+                    <i class="fa6 fa6-solid fa6-copy"></i>
+                  </button>
+                </td>
+              </tr>';
+      
+          EXCEPTION
+            WHEN OTHERS THEN
+              l_html := l_html || '<tr style="background:#fee"><td colspan="10" style="color:red">خطأ في الرحلة رقم: '
+                || NVL(rec.TRIP_INDEX, '؟') || '، المنتج: ' || NVL(rec.PRODUCT_ID, '؟') || ' : ' || SQLERRM || '</td></tr>';
+          END;
+        END LOOP;
+      
+        l_html := l_html || '</tbody></table></div>';
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 61
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: ongoingTripsRegion
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Gamified Scores Board =======================
+  id: 313027026099897522
+  identification: 
+    name: Gamified Scores Board
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html                CLOB;
+      
+        -- Period (July 2025)
+        l_from                DATE := DATE '2025-07-01';
+        l_to                  DATE := LAST_DAY(DATE '2025-07-01');
+      
+        -- KPI cards
+        l_count_today         NUMBER := 0;
+        l_count_ongoing       NUMBER := 0;
+        l_count_fasttrack     NUMBER := 0;
+      
+        -- July totals (all)
+        l_office_net_total    NUMBER := 0;
+        l_commission_pool     NUMBER := 0;
+      
+        -- Leaderboard top employee (for the crown)
+        l_top_emp_id          VARCHAR2(300);
+      
+        -- Personal stats (current user / creator)
+        l_me_id               VARCHAR2(300) := APEX_UTIL.GET_SESSION_STATE('APP_USER_ID');
+        l_me_name             VARCHAR2(400);
+        l_me_trips            NUMBER := 0;
+        l_me_office_net       NUMBER := 0;
+        l_me_commission_due   NUMBER := 0;
+      
+        -- Goal for gamified progress (tweakable)
+        l_goal_egp            NUMBER := 100000; -- milestone goal EGP for progress bar
+        l_progress_pct        NUMBER := 0;
+      
+        -- Helpers
+        FUNCTION fmt(p_num NUMBER) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN TO_CHAR(NVL(p_num,0), 'FM999G999G999G990D00', 'NLS_NUMERIC_CHARACTERS=.,');
+        END;
+      
+        FUNCTION pct(p_num NUMBER, p_den NUMBER) RETURN NUMBER IS
+        BEGIN
+          IF NVL(p_den,0) = 0 THEN
+            RETURN 0;
+          ELSE
+            RETURN LEAST(100, ROUND(100 * NVL(p_num,0) / p_den, 0));
+          END IF;
+        END;
+      
+      BEGIN
+        l_html := '';
+      
+        /* ========== KPIs (today/ongoing/fast-track) ========== */
+        BEGIN
+          SELECT COUNT(*) INTO l_count_today   FROM VW_LIMO_TODAY_TRIPS;
+        EXCEPTION WHEN OTHERS THEN l_count_today := 0; END;
+      
+        BEGIN
+          SELECT COUNT(*) INTO l_count_ongoing FROM VW_LIMO_ONGOING_DAILY_TRIPS;
+        EXCEPTION WHEN OTHERS THEN l_count_ongoing := 0; END;
+      
+        BEGIN
+          SELECT COUNT(*) INTO l_count_fasttrack FROM VW_FAST_TRACK_TODAY_RESERVATIONS;
+        EXCEPTION WHEN OTHERS THEN l_count_fasttrack := 0; END;
+      
+        /* ========== July totals (exclude cancelled) ========== */
+        BEGIN
+          SELECT NVL(SUM(v.office_net_egp),0),
+                 NVL(ROUND(SUM(v.office_net_egp) * 0.005, 2), 0)
+            INTO l_office_net_total, l_commission_pool
+          FROM vw_limo_trip_accounting v
+          JOIN limo_products p
+            ON p.product_id = v.product_id
+          WHERE p.status != 'تم الإلغاء'
+            AND TRUNC(CAST(v.start_datetime AS DATE)) BETWEEN l_from AND l_to;
+        EXCEPTION WHEN OTHERS THEN
+          l_office_net_total := 0;
+          l_commission_pool  := 0;
+        END;
+      
+        /* ========== Leaderboard top employee id ========== */
+        BEGIN
+          SELECT employee_id
+            INTO l_top_emp_id
+          FROM (
+            SELECT c.employee_id,
+                   SUM(c.commission_egp) AS total_comm
+              FROM vw_emp_trip_commissions c
+             WHERE TRUNC(CAST(c.start_datetime AS DATE)) BETWEEN l_from AND l_to
+             GROUP BY c.employee_id
+             ORDER BY total_comm DESC
+          )
+          WHERE ROWNUM = 1;
+        EXCEPTION WHEN NO_DATA_FOUND THEN
+          l_top_emp_id := NULL;
+        END;
+      
+        /* ========== Personal stats (current user) ========== */
+        IF l_me_id IS NOT NULL THEN
+          BEGIN
+            SELECT NVL(e.screen_name, e.first_name || ' ' || e.last_name)
+              INTO l_me_name
+            FROM bs_employees e
+            WHERE e.id = l_me_id;
+          EXCEPTION WHEN OTHERS THEN
+            l_me_name := NVL(V('APP_USER'), 'You');
+          END;
+      
+          BEGIN
+            SELECT NVL(COUNT(DISTINCT c.trip_id), 0),
+                   NVL(ROUND(SUM(c.office_net_egp), 2), 0),
+                   NVL(ROUND(SUM(c.commission_egp), 2), 0)
+              INTO l_me_trips, l_me_office_net, l_me_commission_due
+            FROM vw_emp_trip_commissions c
+            WHERE c.employee_id = l_me_id
+              AND TRUNC(CAST(c.start_datetime AS DATE)) BETWEEN l_from AND l_to;
+          EXCEPTION WHEN OTHERS THEN
+            l_me_trips := 0; l_me_office_net := 0; l_me_commission_due := 0;
+          END;
+        ELSE
+          l_me_name := NVL(V('APP_USER'), 'You');
+        END IF;
+      
+        l_progress_pct := pct(l_me_office_net, l_goal_egp);
+      
+        /* ========== Inline micro styles for gamified bits (safe) ========== */
+        l_html := l_html || '
+        <style>
+          .shine{background:linear-gradient(110deg,rgba(255,255,255,.0) 0%,rgba(255,255,255,.6) 20%,rgba(255,255,255,.0) 40%) no-repeat;background-size:200% 100%;animation:shine 3s linear infinite;}
+          @keyframes shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+          .trophy{filter: drop-shadow(0 1px 1px rgba(0,0,0,.15));}
+          .ring{height:84px;width:84px;border-radius:9999px;position:relative;background:#f3f4f6}
+          .ring>.bar{position:absolute;inset:0;border-radius:9999px;background:
+            conic-gradient(#f59e0b ' || l_progress_pct || '%, #e5e7eb ' || l_progress_pct || '%);}
+          .ring>.center{position:absolute;inset:10px;border-radius:9999px;background:white;display:flex;align-items:center;justify-content:center;font-weight:800;}
+        </style>';
+      
+        /* ========== Header banner ========== */
+        l_html := l_html || '
+        <div class="space-y-6 p-6">
+          <div class="relative rounded-3xl bg-gradient-to-br from-yellow-50 via-white to-yellow-100 border border-yellow-200 p-6 overflow-hidden">
+            <div class="absolute -top-6 -left-6 rotate-12 opacity-20">
+              <svg class="h-28 w-28 trophy text-yellow-400" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4h10v2h3v3a5 5 0 0 1-4 4.9V15a3 3 0 0 1-3 3v2h3v2H8v-2h3v-2a3 3 0 0 1-3-3v-1.1A5 5 0 0 1 4 9V6h3V4Zm-1 5a3 3 0 0 0 2 2.816V6H6v3Zm12-3h-2v5.816A3 3 0 0 0 18 9V6Z"/></svg>
+            </div>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div>
+                <div class="text-2xl md:text-3xl font-extrabold text-gray-800">لوحة الإنجازات - يوليو 2025</div>
+                <div class="text-gray-600">مكافآت 0.5% من صافي المكتب (EGP)</div>
+              </div>
+      
+              <div class="flex items-center gap-6">
+                <div class="ring shadow">
+                  <div class="bar rounded-full"></div>
+                  <div class="center text-yellow-600">
+                    ' || l_progress_pct || '%
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm text-gray-500">هدفك الشهري</div>
+                  <div class="font-bold text-gray-800">' || fmt(l_me_office_net) || ' / ' || fmt(l_goal_egp) || ' EGP</div>
+                  <div class="text-xs text-gray-500">رحلاتك: ' || NVL(l_me_trips,0) || ' | عمولتك: ' || fmt(l_me_commission_due) || ' EGP</div>
+                </div>
+              </div>
+            </div>
+          </div>';
+      
+        /* ========== KPI cards row ========== */
+        l_html := l_html || '
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="rounded-2xl border border-gray-200 p-4 bg-white shadow">
+              <div class="text-sm text-gray-500">حجوزات اليوم</div>
+              <div class="text-3xl font-extrabold text-gray-800">' || NVL(l_count_today,0) || '</div>
+            </div>
+            <div class="rounded-2xl border border-gray-200 p-4 bg-white shadow">
+              <div class="text-sm text-gray-500">متابعة اليوم</div>
+              <div class="text-3xl font-extrabold text-gray-800">' || NVL(l_count_ongoing,0) || '</div>
+            </div>
+            <div class="rounded-2xl border border-gray-200 p-4 bg-white shadow">
+              <div class="text-sm text-gray-500">صافي المكتب (يوليو)</div>
+              <div class="text-3xl font-extrabold text-gray-800">' || fmt(l_office_net_total) || ' <span class="text-base font-bold">EGP</span></div>
+            </div>
+            <div class="rounded-2xl border border-gray-200 p-4 bg-white shadow">
+              <div class="text-sm text-gray-500">صندوق العمولات (0.5%)</div>
+              <div class="text-3xl font-extrabold text-yellow-600">' || fmt(l_commission_pool) || ' <span class="text-base font-bold">EGP</span></div>
+            </div>
+          </div>';
+      
+        /* ========== Achievements (simple rules) ========== */
+        l_html := l_html || '
+          <div class="flex flex-wrap gap-2">
+            ' || CASE WHEN l_me_trips >= 10 THEN '<span class="shine inline-flex items-center gap-2 rounded-full bg-green-100 text-green-700 px-4 py-1 text-sm font-bold border border-green-200">🏁 عشرة رحلات</span>' ELSE '' END || '
+            ' || CASE WHEN l_me_office_net >= 50000 THEN '<span class="shine inline-flex items-center gap-2 rounded-full bg-yellow-100 text-yellow-700 px-4 py-1 text-sm font-bold border border-yellow-200">💎 صافي 50K+</span>' ELSE '' END || '
+            ' || CASE WHEN l_me_id = l_top_emp_id AND l_top_emp_id IS NOT NULL THEN '<span class="shine inline-flex items-center gap-2 rounded-full bg-purple-100 text-purple-700 px-4 py-1 text-sm font-bold border border-purple-200">👑 متصدر الشهر</span>' ELSE '' END || '
+          </div>';
+      
+        /* ========== Leaderboard (Top 5) ========== */
+        l_html := l_html || '
+          <div class="rounded-3xl border border-gray-200 bg-white shadow p-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xl font-extrabold text-gray-800">لوحة المتصدرين (يوليو)</div>
+              <div class="text-sm text-gray-500">أعلى 5 حسب العمولات</div>
+            </div>
+            <div class="divide-y divide-gray-100">';
+      
+        FOR r IN (
+          SELECT * FROM (
+            SELECT
+              c.employee_id,
+              COALESCE(e.screen_name, e.first_name || ' ' || e.last_name, e.username) AS employee_name,
+              COUNT(DISTINCT c.trip_id) AS trips,
+              ROUND(SUM(c.office_net_egp), 2) AS office_net_egp_total,
+              ROUND(SUM(c.commission_egp), 2) AS commission_due_egp
+            FROM vw_emp_trip_commissions c
+            JOIN bs_employees e ON e.id = c.employee_id
+            WHERE TRUNC(CAST(c.start_datetime AS DATE)) BETWEEN l_from AND l_to
+            GROUP BY c.employee_id, COALESCE(e.screen_name, e.first_name || ' ' || e.last_name, e.username)
+            ORDER BY commission_due_egp DESC
+          )
+          WHERE ROWNUM <= 5
+        )
+        LOOP
+          l_html := l_html || '
+            <div class="flex items-center justify-between py-3">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-yellow-100 to-white border border-yellow-200 flex items-center justify-center text-yellow-700 font-extrabold">
+                  ' || SUBSTR(NVL(r.employee_name, '؟'), 1, 1) || '
+                </div>
+                <div>
+                  <div class="font-bold text-gray-800">' || r.employee_name || CASE WHEN r.employee_id = l_top_emp_id THEN ' <span class="text-yellow-500">👑</span>' ELSE '' END || '</div>
+                  <div class="text-xs text-gray-500">رحلات: ' || r.trips || ' · صافي: ' || fmt(r.office_net_egp_total) || ' EGP</div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-base font-extrabold text-yellow-600">' || fmt(r.commission_due_egp) || ' EGP</div>
+                <div class="text-xs text-gray-500">عمولة مستحقة</div>
+              </div>
+            </div>';
+        END LOOP;
+      
+        l_html := l_html || '
+            </div>
+          </div>';
+      
+        /* ========== Existing Menu Tiles (with your counts) ========== */
+        l_html := l_html || '
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-right">';
+      
+        FOR r IN (
+          SELECT MENU_ID, MENU_LABEL, MENU_PAGE_ID, MENU_ICON, MENU_IMAGE_URL
+            FROM APP_MENU_HOME
+           WHERE PARENT_MENU_ID IS NULL
+             AND IS_ACTIVE = 'Y'
+           ORDER BY DISPLAY_ORDER
+        )
+        LOOP
+          -- Badge counts reset
+          l_count_today := NULL; l_count_ongoing := NULL; l_count_fasttrack := NULL;
+      
+          IF r.MENU_PAGE_ID = 350 THEN
+            BEGIN
+              SELECT COUNT(*) INTO l_count_today   FROM VW_LIMO_TODAY_TRIPS;
+              SELECT COUNT(*) INTO l_count_ongoing FROM VW_LIMO_ONGOING_DAILY_TRIPS;
+            EXCEPTION WHEN OTHERS THEN l_count_today := 0; l_count_ongoing := 0; END;
+          ELSIF r.MENU_PAGE_ID = 450 THEN
+            BEGIN
+              SELECT COUNT(*) INTO l_count_fasttrack FROM VW_FAST_TRACK_TODAY_RESERVATIONS;
+            EXCEPTION WHEN OTHERS THEN l_count_fasttrack := 0; END;
+          END IF;
+      
+          -- URL
+          DECLARE
+            l_url VARCHAR2(4000);
+          BEGIN
+            l_url := APEX_UTIL.PREPARE_URL(
+              p_url => 'f?p=' || V('APP_ID') || ':' || r.MENU_PAGE_ID || ':' || V('APP_SESSION'),
+              p_checksum_type => 'SESSION'
+            );
+      
+            l_html := l_html ||
+              '<a href="' || l_url || '" class="menu-tile relative group block rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition transform hover:scale-105 active:scale-100 bg-gradient-to-br from-white to-gray-100 p-4 text-center overflow-hidden">';
+      
+            -- Crown sparkle
+            l_html := l_html ||
+              '<span class="absolute -top-3 -right-3 z-10"><svg class="h-7 w-7 text-yellow-400 drop-shadow-lg opacity-80" fill="none" viewBox="0 0 24 24"><path d="M12 3l2.09 6.26L21 9.27l-5 4.87L17.18 21 12 17.77 6.82 21 8 14.14l-5-4.87 6.91-1.01z" fill="currentColor"/></svg></span>';
+      
+            -- Icon or image
+            IF r.MENU_IMAGE_URL IS NOT NULL THEN
+              l_html := l_html ||
+              '<div class="flex items-center justify-center mb-3">'||
+                '<img src="' || r.MENU_IMAGE_URL || '" alt="' || r.MENU_LABEL || '" class="rounded-full h-20 w-20 object-contain shadow-md bg-gradient-to-tr from-yellow-50 to-white p-2 border-2 border-yellow-300 group-hover:scale-110 transition" />'||
+              '</div>';
+            ELSE
+              l_html := l_html ||
+              '<div class="flex items-center justify-center mb-3">'||
+                '<span class="flex items-center justify-center rounded-full h-20 w-20 bg-gradient-to-tr from-yellow-100 via-white to-yellow-50 shadow-md border-2 border-yellow-200 group-hover:scale-110 transition">'||
+                  '<i class="' || r.MENU_ICON || ' text-5xl text-yellow-500 drop-shadow-lg"></i>'||
+                '</span>'||
+              '</div>';
+            END IF;
+      
+            -- Label
+            l_html := l_html ||
+              '<div class="text-xl font-extrabold text-gray-800 tracking-tight mb-2 group-hover:text-yellow-600 transition">' || r.MENU_LABEL || '</div>';
+      
+            -- Badges
+            IF r.MENU_PAGE_ID = 350 THEN
+              l_html := l_html ||
+                '<div class="flex flex-row justify-center gap-2 mb-2">'||
+                  '<span class="inline-block bg-green-100 text-green-700 text-base font-bold rounded-full px-4 py-1 shadow group-hover:bg-yellow-100 group-hover:text-yellow-600 transition">حجوزات اليوم: '|| NVL(TO_CHAR(l_count_today), '0') ||'</span>'||
+                  '<span class="inline-block bg-blue-100 text-blue-700 text-base font-bold rounded-full px-4 py-1 shadow group-hover:bg-yellow-100 group-hover:text-yellow-600 transition">متابعة اليوم: '|| NVL(TO_CHAR(l_count_ongoing), '0') ||'</span>'||
+                '</div>';
+            ELSIF r.MENU_PAGE_ID = 450 THEN
+              l_html := l_html ||
+                '<div class="flex justify-center mb-2">'||
+                  '<span class="inline-block bg-green-100 text-green-700 text-base font-bold rounded-full px-4 py-1 shadow group-hover:bg-yellow-100 group-hover:text-yellow-600 transition">حجوزات اليوم: '|| NVL(TO_CHAR(l_count_fasttrack), '0') ||'</span>'||
+                '</div>';
+            END IF;
+      
+            l_html := l_html || '</a>';
+          END;
+        END LOOP;
+      
+        l_html := l_html || '</div>'; -- end tiles grid
+        l_html := l_html || '</div>'; -- end page container
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 85
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 13808952306785256037
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 75
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 14673295661818270855
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 13808952306785256037
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: تحديث التقرير ===============================
+    id: 229969242230398209
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تحديث التقرير
+
+    layout: 
+      sequence: 30
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:350::'
+        page: 350 # Limousine Department Home
+        clear-cache: 350
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 14673295962397270858
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: الانشطة الشخصية  ==============================
+      id: 11920535525736858085
+      identification: 
+        type: Menu Entry
+        label: 'الانشطة الشخصية '
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض حجوزاتي ===================================
+      id: 12675832483861570817
+      identification: 
+        type: Menu Entry
+        label: عرض حجوزاتي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: Separator =====================================
+      id: 12691541281110894024
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Separator =====================================
+      id: 13284896686851110917
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 14673296668304270865
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 150
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:RP,1::'
+          page: 350 # Limousine Department Home
+          clear-cache: RP,1
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: مهامي =========================================
+      id: 20585293493588506889
+      identification: 
+        type: Menu Entry
+        label: مهامي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:RP,500:P500_ASSIGNED_TO:&APP_USER_FIRST_LAST_NAME.'
+          page: 500 # Tasks
+          clear-cache: RP,500
+          values: 
+            p500_assigned_to: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-clipboard-list
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: اضافة نشاط ====================================
+      id: 22931853800340907508
+      identification: 
+        type: Menu Entry
+        label: اضافة نشاط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:101:&SESSION.::&DEBUG.:RP,101::'
+          page: 101
+          clear-cache: RP,101
+
+      appearance: 
+        icon: fa-plus
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: مفضل ========================================
+    id: 19924635466067550610
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: مفضل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,:P362_FAVORITE:نعم'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP
+        values: 
+          p362_favorite: نعم
+
+    appearance: 
+      display-type: Icon
+      icon: fa-heart
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: عرض جميع الطلابات ===========================
+    id: 22931853681104907507
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: عرض جميع الطلابات
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,362::'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP,362
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+dynamic-actions: 
+- # ====== Dynamic Action: toggle favorite =====================
+  id: 266555727848125929
+  identification: 
+    name: toggle favorite
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P350_RESERVATION_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 266556242159125930
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        RESERVATION_FAVORITE_TOGGLE(
+            p_reservation_id  => :P350_RESERVATION_TO_FAVORITE, 
+            p_user_id => :APP_USER_ID );
+      items-to-submit: 
+      - P350_RESERVATION_TO_FAVORITE
+      - APP_USER_ID
+
+    execution: 
+      sequence: 10
+      event: toggle favorite # 266555727848125929
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 266556705134125930
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-reservation-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-reservation-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('تم اضافة الحجز في قائمة المفضل!');
+        }
+        apex.items.P350_RESERVATION_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: toggle favorite # 266555727848125929
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: dismiss notif =======================
+  id: 266557201178125930
+  identification: 
+    name: dismiss notif
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P350_NOTIF_TO_DISMISS
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 266557701446125931
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        update sp_team_member_notifications
+           set dismissed_yn = 'Y'
+         where id = :P350_NOTIF_TO_DISMISS
+           and team_member_id =  :APP_USER_ID;
+      items-to-submit: 
+      - P350_NOTIF_TO_DISMISS
+
+    execution: 
+      sequence: 10
+      event: dismiss notif # 266557201178125930
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 266558107533125931
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.items.P350_NOTIF_TO_DISMISS.setValue('',undefined,true);
+
+    execution: 
+      sequence: 20
+      event: dismiss notif # 266557201178125930
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 266558529359125931
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 13808952306785256037
+
+- # ====== Dynamic Action: refresh region today report =========
+  id: 272524502268453938
+  identification: 
+    name: refresh region today report
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Todays New Reservation Report # 272524133890453935
+
+  actions: 
+  - # ====== Action: Submit Page =================================
+    id: 272524580008453939
+    identification: 
+      action: Submit Page
+
+    settings: 
+      show-processing: true
+
+    execution: 
+      sequence: 10
+      event: refresh region today report # 272524502268453938
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh region ongoing report =======
+  id: 279058844711864274
+  identification: 
+    name: refresh region ongoing report
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Ongoing Reservation Report # 272524653160453940
+
+  actions: 
+  - # ====== Action: Submit Page =================================
+    id: 279058928285864275
+    identification: 
+      action: Submit Page
+
+    settings: 
+      show-processing: true
+
+    execution: 
+      sequence: 10
+      event: refresh region ongoing report # 279058844711864274
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

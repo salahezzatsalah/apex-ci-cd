@@ -1,0 +1,1602 @@
+---
+# ====== Page: Clients =======================================
+id: 112
+identification: 
+  name: Clients
+  alias: CLIENTS
+  title: سجل العملاء
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: filters =====================================
+  id: 17848362715356855648
+  identification: 
+    name: filters
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 3
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 19573200531605492129
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 20437543886638506947
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 19573200531605492129
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20437545120144506959
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: اضافة عميل ==================================
+    id: 16549071709436249571
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اضافة عميل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:121:&SESSION.::&DEBUG.:RP,121::'
+        page: 121 # Client Details-form
+        clear-cache: RP,121
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20437544187217506950
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: عرض سجل الاعضاء ===============================
+      id: 14652528836353571720
+      identification: 
+        type: Menu Entry
+        label: عرض سجل الاعضاء
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:19:&SESSION.::&DEBUG.:RP,::'
+          page: 19 # Update Identity
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Separator =====================================
+      id: 14652530523077571737
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+    - # ====== Menu: Add Multiple &NOMENCLATURE_USERS. (admin) =====
+      id: 16264316498616612678
+      identification: 
+        type: Menu Entry
+        label: Add Multiple &NOMENCLATURE_USERS. (admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:54:&SESSION.::&DEBUG.:RP,54::'
+          page: 54
+          clear-cache: RP,54
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: اعدة ظبط ======================================
+      id: 17668864916244604216
+      identification: 
+        type: Menu Entry
+        label: اعدة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:112:&SESSION.::&DEBUG.:RP,74::'
+          page: 112 # Clients
+          clear-cache: RP,74
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: عن &NOMENCLATURE_USER. ========================
+      id: 17668865107396604217
+      identification: 
+        type: Menu Entry
+        label: عن &NOMENCLATURE_USER.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:109:&SESSION.::&DEBUG.:RP,::'
+          page: 109
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-info
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Manage Groups =================================
+      id: 19284050083188815223
+      identification: 
+        type: Menu Entry
+        label: Manage Groups
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:103:&SESSION.::&DEBUG.:RP,::'
+          page: 103
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+    - # ====== Menu: تحديث =========================================
+      id: 20437544893124506957
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:112:&SESSION.::&DEBUG.:RP,::'
+          page: 112 # Clients
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Clients =====================================
+  id: 20891131005101571464
+  identification: 
+    name: Clients
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          c.client_id,
+          c.client_code,
+          c.full_name,
+          NVL(c.country_name, '—') AS country_name,
+          cc.contact_value         AS phone,
+          cu.status                AS user_status,
+          cu.verified,
+          TO_CHAR(c.created_at, 'DD Mon YYYY') AS joined_on,
+      
+          /* created date breakdown */
+          EXTRACT(YEAR  FROM CAST(c.created_at AS DATE)) AS created_year,
+          EXTRACT(MONTH FROM CAST(c.created_at AS DATE)) AS created_month,
+          EXTRACT(DAY   FROM CAST(c.created_at AS DATE)) AS created_day,
+      
+          /* active main reservation flag */
+          CASE
+            WHEN EXISTS (
+              SELECT 1
+                FROM main_reservations m
+               WHERE m.customer_id = c.client_id
+                 AND m.status = 'ACTIVE'
+            )
+            THEN 'Y'
+            ELSE 'N'
+          END AS has_active_main_reservation
+      
+      FROM clients c
+      LEFT JOIN client_contacts cc
+        ON cc.client_id = c.client_id
+       AND cc.contact_type = 'PHONE'
+       AND cc.is_primary = 'Y'
+      LEFT JOIN customer_users cu
+        ON cu.client_id = c.client_id;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 33
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+    - t-CardsRegion--styleC
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 205455359862406160
+    appearance: 
+      layout: Grid
+      grid-columns: 5 Columns
+
+    card: 
+      primary-key-column-1: CLIENT_ID
+
+    title: 
+      advanced-formatting: false
+      column: PHONE
+
+    subtitle: 
+      advanced-formatting: false
+      column: FULL_NAME
+
+    body: 
+      advanced-formatting: false
+      column: CLIENT_CODE
+
+    secondary-body: 
+      advanced-formatting: false
+      column: COUNTRY_NAME
+
+    icon-and-badge: 
+      icon-source: No Icon
+
+    media: 
+      advanced-formatting: false
+      source: No Media
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: true
+
+    actions: 
+    - # ====== Action: Full Card ===================================
+      id: 205455423452406161
+      identification: 
+        type: Full Card
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:98:&SESSION.::&DEBUG.::P98_ID:&CLIENT_ID.'
+          page: 98 # Client Details Full Page
+          values: 
+            p98_id: '&CLIENT_ID.'
+
+    - # ====== Action: إضافة حجز ===================================
+      id: 205456670715406173
+      identification: 
+        type: Button
+        label: إضافة حجز
+
+      layout: 
+        position: Primary
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1499:&SESSION.::&DEBUG.::P1499_CUSTOMER_ID:&CLIENT_ID.'
+          page: 1499 # Main Reservation Details Form
+          values: 
+            p1499_customer_id: '&CLIENT_ID.'
+
+      appearance: 
+        display-type: Text
+        hot: true
+
+- # ====== Region: Faceted Search ==============================
+  id: 21686874626887231234
+  identification: 
+    name: Faceted Search
+    type: Faceted Search
+
+  source: 
+    filtered-region: Clients # 20891131005101571464
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: Yes
+      total-row-count-label: عدد البيانات
+      show-charts: Dialog
+      display-chart-for-top-n-values: 20
+
+  facets: 
+  - # ====== Facet: P112_USER_STATUS =============================
+    id: 212110210619323198
+    identification: 
+      name: P112_USER_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة التحقق (OTP)
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: USER_STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P112_VERIFIED ================================
+    id: 212110384545323199
+    identification: 
+      name: P112_VERIFIED
+      type: Checkbox Group
+
+    label: 
+      label: حالة التحقق
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: VERIFIED
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P112_HAS_ACTIVE_ORDER ========================
+    id: 213708584913160051
+    identification: 
+      name: P112_HAS_ACTIVE_ORDER
+      type: Checkbox Group
+
+    label: 
+      label: حالة التحقق
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:يوجد حجز نشط له الان;Y,لا يوجد حجز نشط;N'
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: HAS_ACTIVE_MAIN_RESERVATION
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P112_CREATEYEAR ==============================
+    id: 213708603582160052
+    identification: 
+      name: P112_CREATEYEAR
+      type: Checkbox Group
+
+    label: 
+      label: سنة التسجيل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CREATED_YEAR
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P112_CREATEMONTH =============================
+    id: 213708776986160053
+    identification: 
+      name: P112_CREATEMONTH
+      type: Checkbox Group
+
+    label: 
+      label: شهر التسجيل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CREATED_MONTH
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      facet: P112_CREATEYEAR # 213708603582160052
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P112_CREATEDAY ===============================
+    id: 213708811783160054
+    identification: 
+      name: P112_CREATEDAY
+      type: Checkbox Group
+
+    label: 
+      label: يوم التسجيل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 80
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CREATED_DAY
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      facet: P112_CREATEMONTH # 213708776986160053
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P112_STATUS ==================================
+    id: 19284087372916815314
+    identification: 
+      name: P112_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الحساب
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 90
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:نشط;Active,غير نشط;Inactive'
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Facet: P112_SEARCH ==================================
+    id: 21686921686722231396
+    identification: 
+      name: P112_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): FULL_NAME,COUNTRY,PHONE,EMAIL,CLIENT_CODE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P112_COUNTRY =================================
+    id: 24137027713144249818
+    identification: 
+      name: P112_COUNTRY
+      type: Checkbox Group
+
+    label: 
+      label: الدولة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: COUNTRY_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P112_USER_STATUS ============================
+    id: 212110210619323198
+    identification: 
+      name: P112_USER_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة التحقق (OTP)
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: USER_STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P112_VERIFIED ===============================
+    id: 212110384545323199
+    identification: 
+      name: P112_VERIFIED
+      type: Checkbox Group
+
+    label: 
+      label: حالة التحقق
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: VERIFIED
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P112_HAS_ACTIVE_ORDER =======================
+    id: 213708584913160051
+    identification: 
+      name: P112_HAS_ACTIVE_ORDER
+      type: Checkbox Group
+
+    label: 
+      label: حالة التحقق
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:يوجد حجز نشط له الان;Y,لا يوجد حجز نشط;N'
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: HAS_ACTIVE_MAIN_RESERVATION
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P112_CREATEYEAR =============================
+    id: 213708603582160052
+    identification: 
+      name: P112_CREATEYEAR
+      type: Checkbox Group
+
+    label: 
+      label: سنة التسجيل
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CREATED_YEAR
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P112_CREATEMONTH ============================
+    id: 213708776986160053
+    identification: 
+      name: P112_CREATEMONTH
+      type: Checkbox Group
+
+    label: 
+      label: شهر التسجيل
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CREATED_MONTH
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      filter: P112_CREATEYEAR # 213708603582160052
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P112_CREATEDAY ==============================
+    id: 213708811783160054
+    identification: 
+      name: P112_CREATEDAY
+      type: Checkbox Group
+
+    label: 
+      label: يوم التسجيل
+
+    layout: 
+      sequence: 80
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CREATED_DAY
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      filter: P112_CREATEMONTH # 213708776986160053
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P112_STATUS =================================
+    id: 19284087372916815314
+    identification: 
+      name: P112_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الحساب
+
+    layout: 
+      sequence: 90
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:نشط;Active,غير نشط;Inactive'
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Filter: P112_SEARCH =================================
+    id: 21686921686722231396
+    identification: 
+      name: P112_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): FULL_NAME,COUNTRY,PHONE,EMAIL,CLIENT_CODE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P112_COUNTRY ================================
+    id: 24137027713144249818
+    identification: 
+      name: P112_COUNTRY
+      type: Checkbox Group
+
+    label: 
+      label: الدولة
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: COUNTRY_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P112_ORDER_BY ============================
+  id: 14652548185200571771
+  identification: 
+    name: P112_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: filters # 17848362715356855648
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:اسم العميل;FULL_NAME,تاريخ الانشاء;CREATED,اخر تعديل;UPDATED'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: FULL_NAME
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 251707627310329563
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 19573200531605492129
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-left
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP,::'
+      page: 1 # home
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 251714022845329570
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Clients # 20891131005101571464
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 251714525668329570
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Clients # 20891131005101571464
+
+    execution: 
+      sequence: 10
+      event: DC # 251714022845329570
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 251715087164329571
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21686874626887231234
+
+    execution: 
+      sequence: 20
+      event: DC # 251714022845329570
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog closed ============
+  id: 251715418899329571
+  identification: 
+    name: refresh on dialog closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 19573200531605492129
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 251715974936329571
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Clients # 20891131005101571464
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog closed # 251715418899329571
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 251716455961329571
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21686874626887231234
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog closed # 251715418899329571
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: sync roles =================================
+  id: 251713667962329570
+  identification: 
+    name: sync roles
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_members_app_role (
+          p_app_id => :APP_ID);
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Never
+

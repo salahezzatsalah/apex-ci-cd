@@ -1,0 +1,776 @@
+---
+- # ====== Report Query: Trip Settlement Query =================
+  id: 196869955992163864
+  identification: 
+    name: Trip Settlement Query
+
+  advanced: 
+    static-id: TRIP_SETTLEMENT_QUERY
+
+  output: 
+    file-name: Trip Settlement Query
+    format: PDF
+    layout: Trip Settlement # 196868173036014675
+    view-file-as: Attachment
+
+  session-state: 
+    items: 
+    - P248_FROMDATE
+    - P248_TODATE
+    - P248_DRIVERID
+    - P248_CARFILE
+    - P248_USER
+    - P248_CURRENTDATE
+
+  source-queries: 
+  - # ====== Source Query: settlement_summary ====================
+    id: 196870235506163877
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        WITH base_trips AS (
+            SELECT
+                t.TRIP_ID,
+                t.EXECUTED_DATE,
+                t.TRIP_CURRENCY,
+                NVL(t.TRIP_EXPENSES_EGP,0)        AS TRIP_EXPENSES_EGP,
+                NVL(t.TOTAL_DRIVER_PAYOUT_EGP,0)  AS TOTAL_DRIVER_PAYOUT_EGP,
+                NVL(t.TOTAL_INVOICE_CURRENCY,0)   AS TOTAL_INVOICE_CURRENCY
+            FROM LIMO_TRIPS_TRACKER_V2 t
+            WHERE t.SATTLE_STATUS <> 'SETTLED'
+              AND t.EXECUTED_DATE IS NOT NULL
+              AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+              AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+        ),
+        
+        trip_totals AS (
+            SELECT
+                TRIP_CURRENCY,
+                SUM(TOTAL_INVOICE_CURRENCY) AS TOTAL_INVOICE
+            FROM base_trips
+            GROUP BY TRIP_CURRENCY
+        ),
+        
+        collections_raw AS (
+            SELECT
+                c.TRIP_ID,
+                c.CURRENCY,
+                SUM(c.AMOUNT_COLLECTED) AS AMOUNT_COLLECTED
+            FROM LIMO_TRIP_COLLECTIONS c
+            GROUP BY c.TRIP_ID, c.CURRENCY
+        ),
+        
+        collections_totals AS (
+            SELECT
+                CURRENCY,
+                SUM(AMOUNT_COLLECTED) AS TOTAL_COLLECTED
+            FROM collections_raw cr
+            JOIN base_trips b ON b.TRIP_ID = cr.TRIP_ID
+            GROUP BY CURRENCY
+        )
+        
+        SELECT
+            /* ===========================
+               Driver
+               =========================== */
+            (SELECT d.DRIVER_NAME
+               FROM COMPANY_DRIVERS d
+               WHERE d.DRIVER_ID = :P248_DRIVERID
+            ) AS DRIVER_NAME,
+        
+            /* ===========================
+               Meta
+               =========================== */
+            (SELECT COUNT(*) FROM base_trips)                    AS TRIP_COUNT,
+            (SELECT MIN(EXECUTED_DATE) FROM base_trips)          AS START_DATE,
+            (SELECT MAX(EXECUTED_DATE) FROM base_trips)          AS END_DATE,
+            (SELECT COUNT(DISTINCT EXECUTED_DATE)
+               FROM base_trips)                                  AS WORKING_DAYS,
+        
+            /* ===========================
+               Core totals
+               =========================== */
+            (SELECT SUM(TRIP_EXPENSES_EGP)
+               FROM base_trips)                                  AS TOTAL_EXPENSES_EGP,
+        
+            (SELECT SUM(TOTAL_DRIVER_PAYOUT_EGP)
+               FROM base_trips)                                  AS TOTAL_DRIVER_PAYOUT_EGP,
+        
+            /* ===========================
+               Invoice totals by currency
+               =========================== */
+            (SELECT LISTAGG(
+                    TO_CHAR(TOTAL_INVOICE,'FM999G999G999D00')
+                    || ' ' || TRIP_CURRENCY,
+                    ' | '
+                ) WITHIN GROUP (ORDER BY TRIP_CURRENCY)
+             FROM trip_totals)                                   AS TRIP_TOTALS_BY_CURRENCY,
+        
+            /* ===========================
+               Collections by currency
+               =========================== */
+            (SELECT LISTAGG(
+                    TO_CHAR(TOTAL_COLLECTED,'FM999G999G999D00')
+                    || ' ' || CURRENCY,
+                    ' | '
+                ) WITHIN GROUP (ORDER BY CURRENCY)
+             FROM collections_totals)                            AS COLLECTIONS_BY_CURRENCY,
+        
+            NVL((
+                SELECT TOTAL_COLLECTED
+                FROM collections_totals
+                WHERE CURRENCY = 'EGP'
+            ),0)                                                 AS COLLECTED_EGP,
+        
+            (SELECT LISTAGG(
+                    TO_CHAR(TOTAL_COLLECTED,'FM999G999G999D00')
+                    || ' ' || CURRENCY,
+                    ' | '
+                ) WITHIN GROUP (ORDER BY CURRENCY)
+             FROM collections_totals
+             WHERE CURRENCY <> 'EGP')                             AS FOREIGN_CURRENCY_DUE,
+        
+            (
+                NVL((SELECT TOTAL_COLLECTED
+                       FROM collections_totals
+                       WHERE CURRENCY = 'EGP'),0)
+                - (SELECT SUM(TOTAL_DRIVER_PAYOUT_EGP) FROM base_trips)
+                - (SELECT SUM(TRIP_EXPENSES_EGP) FROM base_trips)
+            )                                                     AS EGP_AVAILABLE,
+        
+            CASE
+                WHEN (
+                    NVL((SELECT TOTAL_COLLECTED
+                           FROM collections_totals
+                           WHERE CURRENCY = 'EGP'),0)
+                    - (SELECT SUM(TOTAL_DRIVER_PAYOUT_EGP) FROM base_trips)
+                    - (SELECT SUM(TRIP_EXPENSES_EGP) FROM base_trips)
+                ) >= 0
+                THEN (
+                    NVL((SELECT TOTAL_COLLECTED
+                           FROM collections_totals
+                           WHERE CURRENCY = 'EGP'),0)
+                    - (SELECT SUM(TOTAL_DRIVER_PAYOUT_EGP) FROM base_trips)
+                    - (SELECT SUM(TRIP_EXPENSES_EGP) FROM base_trips)
+                )
+                ELSE 0
+            END AS COMPANY_DUE_EGP,
+        
+            CASE
+                WHEN (
+                    NVL((SELECT TOTAL_COLLECTED
+                           FROM collections_totals
+                           WHERE CURRENCY = 'EGP'),0)
+                    - (SELECT SUM(TOTAL_DRIVER_PAYOUT_EGP) FROM base_trips)
+                    - (SELECT SUM(TRIP_EXPENSES_EGP) FROM base_trips)
+                ) < 0
+                THEN ABS(
+                    NVL((SELECT TOTAL_COLLECTED
+                           FROM collections_totals
+                           WHERE CURRENCY = 'EGP'),0)
+                    - (SELECT SUM(TOTAL_DRIVER_PAYOUT_EGP) FROM base_trips)
+                    - (SELECT SUM(TRIP_EXPENSES_EGP) FROM base_trips)
+                )
+                ELSE 0
+            END AS COMPANY_PAY_DRIVER_EGP
+        
+        FROM dual;
+        
+
+    identification: 
+      name: settlement_summary
+
+    layout: 
+      sequence: 1
+
+  - # ====== Source Query: settlement_trips_breakdown ============
+    id: 196874706178316361
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        WITH base_trips AS (
+            SELECT
+                t.TRIP_ID,
+                t.EXECUTED_DATE,
+                t.TRIP_CURRENCY,
+                t.TOTAL_INVOICE_CURRENCY,
+                NVL(t.TRIP_EXPENSES_EGP,0)        AS TRIP_EXPENSES_EGP,
+                NVL(t.TOTAL_DRIVER_PAYOUT_EGP,0)  AS TOTAL_DRIVER_PAYOUT_EGP,
+                t.SATTLE_STATUS,
+                t.USED_CAR_ID,
+                t.DRIVER_ID
+            FROM LIMO_TRIPS_TRACKER_V2 t
+            WHERE t.SATTLE_STATUS <> 'SETTLED'
+              AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+              AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+        ),
+        
+        /* ===============================
+           Driver / Captain collections
+           =============================== */
+        collections_by_trip AS (
+            SELECT
+                c.TRIP_ID,
+                c.CURRENCY,
+                SUM(c.AMOUNT_COLLECTED) AS TOTAL_AMOUNT
+            FROM LIMO_TRIP_COLLECTIONS c
+            GROUP BY c.TRIP_ID, c.CURRENCY
+        ),
+        
+        driver_collections AS (
+            SELECT
+                TRIP_ID,
+                LISTAGG(
+                    TO_CHAR(TOTAL_AMOUNT,'FM999G999G999D00') || ' ' || CURRENCY,
+                    ' | '
+                ) WITHIN GROUP (ORDER BY CURRENCY) AS CAPTAIN_COLLECTIONS
+            FROM collections_by_trip
+            GROUP BY TRIP_ID
+        ),
+        
+        /* ===============================
+           Office net logic (EGP adjusted)
+           =============================== */
+        office_net_raw AS (
+            SELECT
+                bt.TRIP_ID,
+                col.CURRENCY,
+                CASE
+                    WHEN col.CURRENCY = 'EGP'
+                    THEN col.TOTAL_AMOUNT - bt.TOTAL_DRIVER_PAYOUT_EGP
+                    ELSE col.TOTAL_AMOUNT
+                END AS NET_AMOUNT
+            FROM collections_by_trip col
+            JOIN base_trips bt ON bt.TRIP_ID = col.TRIP_ID
+        
+            UNION ALL
+        
+            /* EGP payout without EGP collection */
+            SELECT
+                bt.TRIP_ID,
+                'EGP' AS CURRENCY,
+                - bt.TOTAL_DRIVER_PAYOUT_EGP AS NET_AMOUNT
+            FROM base_trips bt
+            WHERE bt.TOTAL_DRIVER_PAYOUT_EGP > 0
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM collections_by_trip c
+                  WHERE c.TRIP_ID = bt.TRIP_ID
+                    AND c.CURRENCY = 'EGP'
+              )
+        ),
+        
+        office_collections AS (
+            SELECT
+                TRIP_ID,
+                LISTAGG(
+                    TO_CHAR(NET_AMOUNT,'FM999G999G999D00') || ' ' || CURRENCY,
+                    ' | '
+                ) WITHIN GROUP (ORDER BY CURRENCY) AS OFFICE_COLLECTIONS
+            FROM office_net_raw
+            GROUP BY TRIP_ID
+        )
+        
+        SELECT
+            bt.TRIP_ID,
+            bt.EXECUTED_DATE,
+        
+            /* ===============================
+               Car display
+               =============================== */
+            c.car_name || ' - ' || c.license_plate || ' - ' || c.year
+                AS CAR_DISPLAY,
+        
+            /* ===============================
+               Driver name (company / supplier)
+               =============================== */
+            COALESCE(
+                d.DRIVER_NAME,
+                s.SUPPLIER_NAME,
+                'غير معروف'
+            ) AS DRIVER_NAME,
+        
+            /* ===============================
+               Trip invoice
+               =============================== */
+            bt.TOTAL_INVOICE_CURRENCY,
+            bt.TRIP_CURRENCY,
+        
+            /* ===============================
+               Collections
+               =============================== */
+            NVL(dc.CAPTAIN_COLLECTIONS,'—') AS CAPTAIN_COLLECTIONS,
+            bt.TRIP_EXPENSES_EGP,
+            NVL(oc.OFFICE_COLLECTIONS,'—')  AS OFFICE_COLLECTIONS,
+        
+            bt.SATTLE_STATUS
+        
+        FROM base_trips bt
+        LEFT JOIN COMPANY_REGISTERED_CARS c
+               ON c.id = bt.USED_CAR_ID
+        LEFT JOIN COMPANY_DRIVERS d
+               ON d.DRIVER_ID = bt.DRIVER_ID
+        LEFT JOIN SUPPLIERS s
+               ON TO_CHAR(s.SUPPLIER_ID) = bt.DRIVER_ID
+        LEFT JOIN driver_collections dc
+               ON dc.TRIP_ID = bt.TRIP_ID
+        LEFT JOIN office_collections oc
+               ON oc.TRIP_ID = bt.TRIP_ID
+        ORDER BY bt.EXECUTED_DATE;
+        
+
+    identification: 
+      name: settlement_trips_breakdown
+
+    layout: 
+      sequence: 3
+
+  - # ====== Source Query: settlement_expenses_breakdown =========
+    id: 196925657629337658
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        WITH base_expenses AS (
+            SELECT
+                TRUNC(e.EXPENSE_DATE) AS EXPENSE_DAY,
+                NVL(e.AMOUNT,0) * NVL(e.EXCHANGE_RATE,1) AS EXPENSE_EGP,
+                e.AMOUNT,
+                e.CURRENCY,
+                et.EXPENSE_TYPE_NAME,
+                NVL(et.SORTNO,999) AS SORTNO
+            FROM LIMO_TRIP_EXPENSES e
+            JOIN LIMO_TRIPS_TRACKER_V2 t
+                ON t.TRIP_ID = e.TRIP_ID
+            LEFT JOIN LIMO_EXPENSE_TYPES et
+                ON et.EXPENSE_TYPE_CODE = e.EXPENSE_TYPE
+            WHERE e.EXPENSE_DATE IS NOT NULL
+              AND NVL(e.AMOUNT,0) > 0
+              AND t.SATTLE_STATUS <> 'SETTLED'
+              AND (:P248_DRIVERID IS NULL OR t.DRIVER_ID = :P248_DRIVERID)
+              AND (:P248_CARFILE IS NULL OR t.USED_CAR_ID = :P248_CARFILE)
+        ),
+        daily_expenses AS (
+            SELECT
+                EXPENSE_DAY,
+                SUM(EXPENSE_EGP) AS TOTAL_EXPENSE_EGP,
+                LISTAGG(
+                    '• ' || EXPENSE_TYPE_NAME || ': ' ||
+                    TO_CHAR(AMOUNT,'FM999G999G999D00') || ' ' || CURRENCY,
+                    ' '
+                ) WITHIN GROUP (ORDER BY SORTNO, EXPENSE_TYPE_NAME) 
+                || ' ' AS EXPENSE_BREAKDOWN  -- هنا ضفنا خط الفاصل
+            FROM base_expenses
+            GROUP BY EXPENSE_DAY
+        )
+        SELECT
+            EXPENSE_DAY,
+            TOTAL_EXPENSE_EGP,
+            EXPENSE_BREAKDOWN
+        FROM daily_expenses
+        ORDER BY EXPENSE_DAY;
+        
+
+    identification: 
+      name: settlement_expenses_breakdown
+
+    layout: 
+      sequence: 4
+
+- # ====== Report Query: InvoiceReport =========================
+  id: 215445224130036364
+  identification: 
+    name: InvoiceReport
+
+  advanced: 
+    static-id: INVOICEREPORT
+
+  output: 
+    file-name: InvoiceReport
+    format: PDF
+    layout: test # 183879920248107162
+    view-file-as: Attachment
+
+  session-state: 
+    items: 
+    - P98_INVOICE_ID
+
+  source-queries: 
+  - # ====== Source Query: InvoiceReport =========================
+    id: 215445514470036614
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        SELECT JSON_OBJECT(
+                 'invoice' VALUE JSON_OBJECT(
+                   'invoice_id'       VALUE i.invoice_id,
+                   'invoice_no'       VALUE NVL(i.invoice_no, i.invoice_id),
+                   'status'           VALUE i.status,
+                   'invoice_date'     VALUE TO_CHAR(i.invoice_date, 'DD/MM/YYYY'),
+                   'due_date'         VALUE TO_CHAR(i.due_date, 'DD/MM/YYYY'),
+                   'currency_code'    VALUE i.currency_code,
+                   'billing_group_id' VALUE i.billing_group_id,
+                   'group_title'      VALUE bg.group_title,
+                   'customer_id'      VALUE bg.customer_id,
+                   'vat_included'     VALUE NVL(i.vat_included,'N'),
+                   'vat_rate'         VALUE NVL(i.vat_rate,0)
+                 ),
+                 'lines' VALUE (
+                   SELECT JSON_ARRAYAGG(
+                            JSON_OBJECT(
+                              'line_no'     VALUE x.line_no,
+                              'description' VALUE x.description,
+                              'quantity'    VALUE x.quantity,
+                              'unit_price'  VALUE TO_CHAR(x.unit_price,'999G999G990D00'),
+                              'total_price' VALUE TO_CHAR(x.total_price,'999G999G990D00')
+                            )
+                          )
+                   FROM (
+                     SELECT
+                       ROW_NUMBER() OVER (ORDER BY il.source_item_id) AS line_no,
+                       il.description,
+                       il.quantity,
+                       il.unit_price,
+                       il.total_price
+                     FROM invoice_lines il
+                     WHERE il.invoice_id = i.invoice_id
+                   ) x
+                 ),
+                 'totals' VALUE JSON_OBJECT(
+                   'subtotal'     VALUE TO_CHAR(i.total_amount,'999G999G990D00'),
+                   'vat_amount'   VALUE TO_CHAR(i.tax_amount,'999G999G990D00'),
+                   'grand_total'  VALUE TO_CHAR(i.grand_total,'999G999G990D00')
+                 )
+               ) AS payload_json
+        FROM invoices i
+        JOIN billing_groups bg
+          ON bg.billing_group_id = i.billing_group_id
+        WHERE i.invoice_id = :P98_INVOICE_ID;
+        
+
+    identification: 
+      name: InvoiceReport
+
+    layout: 
+      sequence: 1
+
+- # ====== Report Query: Historical Statement Report ===========
+  id: 234644722156066359
+  identification: 
+    name: Historical Statement Report
+
+  advanced: 
+    static-id: HISTORICAL_STATEMENT_REPORT
+
+  output: 
+    file-name: Historical Statement Report
+    format: PDF
+    layout: Historical Statements # 234635794563615110
+    view-file-as: Attachment
+
+  session-state: 
+    items: 
+    - P759_ACCOUNTNUMBER
+    - P759_STARTDATE
+    - P759_ENDDATE
+    - P759_REPORT_DATE
+    - P759_FILTER_DATE_RANGE
+    - P759_CURRENTUSER
+
+  source-queries: 
+  - # ====== Source Query: AccountInfo ===========================
+    id: 234645002116066363
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        SELECT
+            a.ACCOUNT_ID,
+            a.ACCOUNT_NAME,
+            a.ACCOUNT_TYPE,
+            at.NAME_AR AS ACCOUNT_TYPE_NAME_AR,
+            a.CURRENCY_CODE,
+            cur.CURRENCY_NAME_AR AS CURRENCY_NAME_AR,
+        
+            TO_CHAR(
+                NVL((
+                    SELECT BALANCE_AFTER_TRANSACTION
+                    FROM V_TRANSACTION_HISTORY
+                    WHERE ACCOUNT_ID = a.ACCOUNT_ID
+                      AND CAST(TRANSACTION_DATE AT TIME ZONE 'Africa/Cairo' AS TIMESTAMP) < :P759_STARTDATE
+                    ORDER BY CAST(TRANSACTION_DATE AT TIME ZONE 'Africa/Cairo' AS TIMESTAMP) DESC
+                    FETCH FIRST 1 ROWS ONLY
+                ), 0), 'FM999G999G999G990') AS STARTING_BALANCE,
+        
+            TO_CHAR(
+                NVL((
+                    SELECT BALANCE_AFTER_TRANSACTION
+                    FROM V_TRANSACTION_HISTORY
+                    WHERE ACCOUNT_ID = a.ACCOUNT_ID
+                      AND CAST(TRANSACTION_DATE AT TIME ZONE 'Africa/Cairo' AS TIMESTAMP) <= :P759_ENDDATE
+                    ORDER BY CAST(TRANSACTION_DATE AT TIME ZONE 'Africa/Cairo' AS TIMESTAMP) DESC
+                    FETCH FIRST 1 ROWS ONLY
+                ), 0), 'FM999G999G999G990') AS ENDING_BALANCE
+        
+        FROM ACCOUNTS a
+        JOIN ACCOUNT_TYPES at ON a.ACCOUNT_TYPE = at.ACCOUNT_TYPE_CODE
+        JOIN CURRENCIES cur ON a.CURRENCY_CODE = cur.CURRENCY_CODE
+        WHERE a.ACCOUNT_ID = :P759_ACCOUNTNUMBER;
+        
+
+    identification: 
+      name: AccountInfo
+
+    layout: 
+      sequence: 1
+
+  - # ====== Source Query: TransactionsTable =====================
+    id: 234645284744066364
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        SELECT
+            ROW_NUMBER() OVER (ORDER BY CREATED AT TIME ZONE 'Africa/Cairo') AS row_index,
+            TO_CHAR(CAST(CREATED AT TIME ZONE 'Africa/Cairo' AS TIMESTAMP), 'DD/MM/YYYY HH24:MI') AS transaction_date,
+            CASE 
+                WHEN SIGNED_AMOUNT < 0 THEN TO_CHAR(ABS(SIGNED_AMOUNT), 'FM999G999G999G990') 
+                ELSE NULL 
+            END AS debit_amount,
+            CASE 
+                WHEN SIGNED_AMOUNT > 0 THEN TO_CHAR(SIGNED_AMOUNT, 'FM999G999G999G990') 
+                ELSE NULL 
+            END AS credit_amount,
+            TO_CHAR(BALANCE_AFTER_TRANSACTION, 'FM999G999G999G990') AS balance_after_transaction,
+            DESCRIPTION
+        FROM V_TRANSACTION_HISTORY
+        WHERE
+            ACCOUNT_ID = :P759_ACCOUNTNUMBER
+            AND CAST(TRANSACTION_DATE AT TIME ZONE 'Africa/Cairo' AS TIMESTAMP) 
+                BETWEEN :P759_STARTDATE AND :P759_ENDDATE
+        ORDER BY
+            CREATED AT TIME ZONE 'Africa/Cairo';
+        
+
+    identification: 
+      name: TransactionsTable
+
+    layout: 
+      sequence: 2
+
+- # ====== Report Query: Trip Report Query =====================
+  id: 275954762110616491
+  identification: 
+    name: Trip Report Query
+
+  advanced: 
+    static-id: TRIP_REPORT_QUERY
+
+  output: 
+    file-name: Trip Report Query
+    format: PDF
+    layout: TripsReportTemplate # 184548524490310724
+    view-file-as: Attachment
+
+  session-state: 
+    items: 
+    - P183_EMPLOYEE_NAME
+    - P183_ENDDATE
+    - P183_FILTER_DATE_RANGE
+    - P183_REPORT_DATE
+    - P183_STARTDATE
+    - APP_USER_ID
+
+  source-queries: 
+  - # ====== Source Query: Trip Report Query =====================
+    id: 275955094756616500
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        SELECT
+          ROW_NUMBER() OVER (
+            ORDER BY lp.TRIP_DATE_FROM ASC, 
+                     TO_CHAR(
+                       CAST(TRUNC(lp.TRIP_DATE_FROM) + 
+                         (CASE 
+                           WHEN REGEXP_LIKE(lp.TRIP_TIME, '^\d{1,2}:\d{2}$')
+                           THEN (TO_NUMBER(SUBSTR(lp.TRIP_TIME, 1, INSTR(lp.TRIP_TIME, ':') - 1)) / 24)
+                              + (TO_NUMBER(SUBSTR(lp.TRIP_TIME, INSTR(lp.TRIP_TIME, ':') + 1)) / 1440)
+                           ELSE 0
+                         END) AS DATE
+                       ),
+                       'DD/MM/YYYY HH24:MI'
+                     ) ASC
+          ) AS "index",
+        
+          lp.PRODUCT_ID                                   AS "Trip ID",
+        
+          c.CLIENT_CODE || ' - ' || ltt.NAME_AR           AS "Client Code",
+        
+          c.PHONE                                         AS "Client Number",
+        
+          lct.CAR_TYPE_NAME                               AS "Car Type",
+        
+          lp.NOTES            || ' ' || lr.notes                            AS "Reservation Details",
+        
+          TRIM(
+            lp.FROM_LOCATION ||
+            CASE
+              WHEN lp.TICKET_NUMBER IS NOT NULL AND TRIM(lp.TICKET_NUMBER) IS NOT NULL THEN
+                ' [' || lp.TICKET_NUMBER || ']'
+              ELSE
+                ''
+            END
+          ) AS "From Location",
+        
+          TO_CHAR(
+            CAST(
+              TRUNC(lp.TRIP_DATE_FROM) + 
+              (CASE 
+                WHEN REGEXP_LIKE(lp.TRIP_TIME, '^\d{1,2}:\d{2}$')
+                THEN (TO_NUMBER(SUBSTR(lp.TRIP_TIME, 1, INSTR(lp.TRIP_TIME, ':') - 1)) / 24)
+                   + (TO_NUMBER(SUBSTR(lp.TRIP_TIME, INSTR(lp.TRIP_TIME, ':') + 1)) / 1440)
+                ELSE 0
+              END)
+              AS DATE
+            ),
+            'DD/MM/YYYY HH24:MI'
+          ) AS "Arrival Date/Time",
+        
+          TO_CHAR(lp.PRICE, 'FM999,990.00') || ' ' || lp.CURRENCY AS "Price with Currency",
+        
+          TRIM(
+            lp.TO_LOCATION ||
+            CASE
+              WHEN lp.SIGNAGE_DETAILS IS NOT NULL AND TRIM(lp.SIGNAGE_DETAILS) IS NOT NULL THEN
+                ' [' || lp.SIGNAGE_DETAILS || ']'
+              ELSE
+                ''
+            END
+          ) AS "To Location",
+        
+          (
+            SELECT LISTAGG(u.DRIVER_NAME, ', ')
+                   WITHIN GROUP (ORDER BY u.DRIVER_NAME)
+            FROM LIMO_PRODUCT_ASSIGNMENTS lpa
+            JOIN UNIFIED_DRIVERS_LIST u ON lpa.DRIVER_ID = u.DRIVER_ID
+            WHERE lpa.PRODUCT_ID = lp.PRODUCT_ID
+              AND lpa.DRIVER_STATUS = 'CURRENT'
+          ) AS "Assigned Captains",
+        
+          -- Global/report fields
+          TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI') AS "report_date",
+          TO_CHAR(TO_DATE(:P183_STARTDATE, 'DD-MM-YYYY'), 'DD/MM/YYYY') 
+             || ' - ' || TO_CHAR(TO_DATE(:P183_ENDDATE, 'DD-MM-YYYY'), 'DD/MM/YYYY') AS "filter_date_range",
+          (
+            SELECT e.FIRST_NAME || ' ' || e.LAST_NAME
+            FROM BS_EMPLOYEES e
+            WHERE UPPER(e.USERNAME) = UPPER(:APP_USER)
+            FETCH FIRST 1 ROWS ONLY
+          ) AS "username"
+        
+        FROM
+          LIMO_PRODUCTS lp
+          JOIN LIMO_RESERVATIONS lr ON lp.RESERVATION_ID = lr.RESERVATION_ID
+          JOIN CRM_CLIENTS c ON lr.CLIENT_ID = c.CLIENT_ID
+          JOIN LIMO_CAR_TYPES lct ON lp.CAR_TYPE_ID = lct.CAR_TYPE_ID
+          LEFT JOIN LIMO_TRIP_TYPES ltt ON lp.TRIP_TYPE = ltt.TRIP_TYPE_CODE
+        
+        WHERE
+          TRUNC(lp.TRIP_DATE_FROM) BETWEEN TO_DATE(:P183_STARTDATE, 'DD-MM-YYYY') 
+                                      AND TO_DATE(:P183_ENDDATE, 'DD-MM-YYYY')
+        ORDER BY 
+          lp.TRIP_DATE_FROM ASC,
+          "Arrival Date/Time" ASC;
+        
+
+    identification: 
+      name: Trip Report Query
+
+    layout: 
+      sequence: 1
+
+- # ====== Report Query: FastTrack Report Query ================
+  id: 281215017882546998
+  identification: 
+    name: FastTrack Report Query
+
+  advanced: 
+    static-id: FASTTRACK_REPORT_QUERY
+
+  output: 
+    file-name: FastTrack Report Query
+    format: PDF
+    layout: FastTrack Report # 281215833448549256
+    view-file-as: Attachment
+
+  session-state: 
+    items: 
+    - P199_EMPLOYEE_NAME
+    - P199_ENDDATE
+    - P199_FILTER_DATE_RANGE
+    - P199_STARTDATE
+    - P199_REPORT_DATE
+    - APP_USER_ID
+
+  source-queries: 
+  - # ====== Source Query: FastTrack Report Query ================
+    id: 281215355619547008
+    source: 
+      location: Local Database
+      type: SQL Query
+      sql-query: |
+        SELECT 
+            ROW_NUMBER() OVER (
+                ORDER BY ftr.RESERVATION_DATE ASC, ftr.RES_TIME ASC
+            ) AS "index",
+        
+            ftr.RESERVATION_ID AS "reservation id",
+            c.CLIENT_CODE || ' - ' || NVL(ftc.SERVICE_NAME, 'حجز مسار') AS "client code",
+            c.PHONE AS "client number",
+            ftr.RESERVATION_TYPE AS "reservation type",
+            ftr.notes AS "reservation details",
+            ftr.TICKET_NO AS "ticket number",
+            TO_CHAR(ftr.RESERVATION_DATE, 'DD/MM/YYYY') || ' ' || ftr.RES_TIME AS "reservation date/time",
+            TO_CHAR(ftr.PRICE_PER_PERSON, 'FM999,990.00') || ' ' || ftr.CURRENCY AS "price per person (with currency)",
+            TO_CHAR(ftr.PRICE_PER_PERSON * ftr.PASSENGERS_NO, 'FM999,990.00') || ' ' || ftr.CURRENCY AS "total price (with currency)",
+            ftr.PASSENGERS_NO AS "passengers no",
+            ftr.SIGNAGE_DETAILS AS "signage details",
+        
+            -- Global Fields
+            TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI') AS "report_date",
+            TO_CHAR(TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY'), 'DD/MM/YYYY') || ' - ' || 
+            TO_CHAR(TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY'), 'DD/MM/YYYY') AS "filter_date_range",
+            (
+                SELECT e.FIRST_NAME || ' ' || e.LAST_NAME
+                FROM BS_EMPLOYEES e
+                WHERE UPPER(e.USERNAME) = UPPER(:APP_USER)
+                FETCH FIRST 1 ROWS ONLY
+            ) AS "username"
+        
+        FROM 
+            FAST_TRACK_RESERVATIONS ftr
+        LEFT JOIN 
+            CRM_CLIENTS c ON ftr.CLIENT_ID = c.CLIENT_ID
+        LEFT JOIN
+            FAST_TRACK_SERVICE_CATALOG ftc ON ftr.SERVICE_ID = ftc.SERVICE_ID
+        
+        WHERE 
+            TRUNC(ftr.RESERVATION_DATE) BETWEEN TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY') 
+                                           AND TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY')
+        ORDER BY 
+            ftr.RESERVATION_DATE ASC, 
+            ftr.RES_TIME ASC
+        ;
+        
+
+    identification: 
+      name: FastTrack Report Query
+
+    layout: 
+      sequence: 1
+

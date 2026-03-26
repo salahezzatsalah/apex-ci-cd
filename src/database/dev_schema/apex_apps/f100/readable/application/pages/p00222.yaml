@@ -1,0 +1,1439 @@
+---
+# ====== Page: Status Scale ==================================
+id: 222
+identification: 
+  name: Status Scale
+  alias: STATUS-SCALE
+  title: Status Scale
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: &P222_LABEL_E. ==============================
+  id: 14973661325318456300
+  identification: 
+    name: '&P222_LABEL_E.'
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 0 pct_complete, pc0_label project_status, pc0_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 10 pct_complete, pc10_label project_status, pc10_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 20 pct_complete, pc20_label project_status, pc20_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 30 pct_complete, pc30_label project_status, pc30_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 40 pct_complete, pc40_label project_status, pc40_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 50 pct_complete, pc50_label project_status, pc50_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 60 pct_complete, pc60_label project_status, pc60_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 70 pct_complete, pc70_label project_status, pc70_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 80 pct_complete, pc80_label project_status, pc80_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 90 pct_complete, pc90_label project_status, pc90_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      union all
+      select 100 pct_complete, pc100_label project_status, pc100_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'E'
+      order by pct_complete
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from sp_project_scales 
+       where is_active_yn = 'Y'
+         and scale_letter = 'E'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: PCT_COMPLETE ================================
+    id: 14973661589450456302
+    identification: 
+      column-name: PCT_COMPLETE
+      type: Plain Text
+
+    heading: 
+      heading: Complete
+      alignment: end
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#PCT_COMPLETE#%'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PROJECT_STATUS ==============================
+    id: 14973661660961456303
+    identification: 
+      column-name: PROJECT_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 14973661780568456304
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: RDS =========================================
+  id: 14973662151012456308
+  identification: 
+    name: RDS
+    type: Region Display Selector
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': true
+      remember-selection: By User
+
+- # ====== Region: &P222_LABEL_D. ==============================
+  id: 128362466386478660868
+  identification: 
+    name: '&P222_LABEL_D.'
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 0 pct_complete, pc0_label project_status, pc0_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 10 pct_complete, pc10_label project_status, pc10_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 20 pct_complete, pc20_label project_status, pc20_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 30 pct_complete, pc30_label project_status, pc30_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 40 pct_complete, pc40_label project_status, pc40_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 50 pct_complete, pc50_label project_status, pc50_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 60 pct_complete, pc60_label project_status, pc60_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 70 pct_complete, pc70_label project_status, pc70_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 80 pct_complete, pc80_label project_status, pc80_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 90 pct_complete, pc90_label project_status, pc90_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      union all
+      select 100 pct_complete, pc100_label project_status, pc100_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'D'
+      order by pct_complete
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from sp_project_scales 
+       where is_active_yn = 'Y'
+         and scale_letter = 'D'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: PCT_COMPLETE ================================
+    id: 15070366217934426377
+    identification: 
+      column-name: PCT_COMPLETE
+      type: Plain Text
+
+    heading: 
+      heading: Complete
+      alignment: end
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#PCT_COMPLETE#%'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PROJECT_STATUS ==============================
+    id: 15070367458349426379
+    identification: 
+      column-name: PROJECT_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 15070367862779426379
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: &P222_LABEL_C. ==============================
+  id: 128362468386579660888
+  identification: 
+    name: '&P222_LABEL_C.'
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 0 pct_complete, pc0_label project_status, pc0_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 10 pct_complete, pc10_label project_status, pc10_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 20 pct_complete, pc20_label project_status, pc20_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 30 pct_complete, pc30_label project_status, pc30_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 40 pct_complete, pc40_label project_status, pc40_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 50 pct_complete, pc50_label project_status, pc50_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 60 pct_complete, pc60_label project_status, pc60_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 70 pct_complete, pc70_label project_status, pc70_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 80 pct_complete, pc80_label project_status, pc80_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 90 pct_complete, pc90_label project_status, pc90_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      union all
+      select 100 pct_complete, pc100_label project_status, pc100_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'C'
+      order by pct_complete
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from sp_project_scales 
+       where is_active_yn = 'Y'
+         and scale_letter = 'C'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: PCT_COMPLETE ================================
+    id: 15070363092930426374
+    identification: 
+      column-name: PCT_COMPLETE
+      type: Plain Text
+
+    heading: 
+      heading: Complete
+      alignment: end
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#PCT_COMPLETE#%'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PROJECT_STATUS ==============================
+    id: 15070364259945426375
+    identification: 
+      column-name: PROJECT_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 15070364671837426375
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: &P222_LABEL_B. ==============================
+  id: 128379414345606564946
+  identification: 
+    name: '&P222_LABEL_B.'
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 0 pct_complete, pc0_label project_status, pc0_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 10 pct_complete, pc10_label project_status, pc10_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 20 pct_complete, pc20_label project_status, pc20_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 30 pct_complete, pc30_label project_status, pc30_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 40 pct_complete, pc40_label project_status, pc40_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 50 pct_complete, pc50_label project_status, pc50_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 60 pct_complete, pc60_label project_status, pc60_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 70 pct_complete, pc70_label project_status, pc70_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 80 pct_complete, pc80_label project_status, pc80_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 90 pct_complete, pc90_label project_status, pc90_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      union all
+      select 100 pct_complete, pc100_label project_status, pc100_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'B'
+      order by pct_complete
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from sp_project_scales 
+       where is_active_yn = 'Y'
+         and scale_letter = 'B'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: PCT_COMPLETE ================================
+    id: 15070359893928426370
+    identification: 
+      column-name: PCT_COMPLETE
+      type: Plain Text
+
+    heading: 
+      heading: Complete
+      alignment: end
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#PCT_COMPLETE#%'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PROJECT_STATUS ==============================
+    id: 15070361072545426371
+    identification: 
+      column-name: PROJECT_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 15070361482809426371
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: &P222_LABEL_A. ==============================
+  id: 128379415130004564954
+  identification: 
+    name: '&P222_LABEL_A.'
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 0 pct_complete, pc0_label project_status, pc0_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 10 pct_complete, pc10_label project_status, pc10_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 20 pct_complete, pc20_label project_status, pc20_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 30 pct_complete, pc30_label project_status, pc30_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 40 pct_complete, pc40_label project_status, pc40_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 50 pct_complete, pc50_label project_status, pc50_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 60 pct_complete, pc60_label project_status, pc60_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 70 pct_complete, pc70_label project_status, pc70_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 80 pct_complete, pc80_label project_status, pc80_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 90 pct_complete, pc90_label project_status, pc90_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      union all
+      select 100 pct_complete, pc100_label project_status, pc100_desc description
+        from SP_PROJECT_SCALES s
+       where scale_letter = 'A'
+      order by pct_complete
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+        from sp_project_scales 
+       where is_active_yn = 'Y'
+         and scale_letter = 'A'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: PCT_COMPLETE ================================
+    id: 15070356645219426357
+    identification: 
+      column-name: PCT_COMPLETE
+      type: Plain Text
+
+    heading: 
+      heading: Complete
+      alignment: end
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: '#PCT_COMPLETE#%'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PROJECT_STATUS ==============================
+    id: 15070357831065426359
+    identification: 
+      column-name: PROJECT_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 15070358218085426359
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P222_LABEL_E =============================
+  id: 128362479503927660912
+  identification: 
+    name: P222_LABEL_E
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P222_LABEL_D =============================
+  id: 128362479649296660913
+  identification: 
+    name: P222_LABEL_D
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 100
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P222_LABEL_C =============================
+  id: 128362479731852660914
+  identification: 
+    name: P222_LABEL_C
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P222_LABEL_B =============================
+  id: 128362479823287660915
+  identification: 
+    name: P222_LABEL_B
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P222_LABEL_A =============================
+  id: 128362479950439660916
+  identification: 
+    name: P222_LABEL_A
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+processes: 
+- # ====== Process: load labels ================================
+  id: 15070370388181426392
+  identification: 
+    name: load labels
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      for c1 in (
+          select scale_letter, scale_name
+          from sp_project_scales 
+          where is_active_yn = 'Y'
+          order by scale_letter) loop
+          if    c1.scale_letter = 'A' then :P222_LABEL_A := c1.scale_name;
+          elsif c1.scale_letter = 'B' then :P222_LABEL_B := c1.scale_name;
+          elsif c1.scale_letter = 'C' then :P222_LABEL_C := c1.scale_name;
+          elsif c1.scale_letter = 'D' then :P222_LABEL_D := c1.scale_name;
+          elsif c1.scale_letter = 'E' then :P222_LABEL_E := c1.scale_name;
+          end if;
+      end loop;
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+

@@ -1,0 +1,2557 @@
+---
+# ====== Page: Fast Track Reservations Requests ==============
+id: 454
+identification: 
+  name: Fast Track Reservations Requests
+  alias: FAST-TRACK-RESERVATIONS-REQUESTS
+  title: سجل طلبات المسار السريع
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    .overline {
+      color: var(--ut-region-text-color, var(--ut-component-text-default-color));
+    }
+    
+    .a-FS-facetsDashboard {
+      --a-fs-chart-grid-gap: 0px;
+      --a-fs-chart-border-width: 0px;
+      --a-fs-chart-shadow: none;
+    }
+    
+    @media (max-width: 768px) {
+      .t-ContentRow-wrap.unassigned {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+    
+      .t-ContentRow-body,
+      .t-ContentRow-misc,
+      .t-ContentRow-actions {
+        width: 100%;
+        max-width: 100%;
+      }
+    
+      .t-ContentRow-misc {
+        order: 2; /* place after main body */
+      }
+    
+      .t-ContentRow-actions {
+        order: 3; /* actions come last */
+      }
+    }
+    
+    
+    .limo-overline {
+      font-size: 1em;
+      color: #030101;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 6px;
+    }
+    
+    .limo-overline .overline-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .limo-overline .label {
+      font-weight: 600;
+      color: #444;
+    }
+    .limo-overline .overline-separator {
+      color: #ccc;
+    }
+    
+    .limo-title.nowrap-wrap {
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping on very small screens if needed */
+      direction: rtl;
+      gap: 10px;
+      font-size: clamp(0.8rem, 2vw, 0.95rem); /* ✅ responsive font size */
+      line-height: 1.4;
+    }
+    
+    .limo-title .title-group {
+      display: inline-flex;
+      align-items: center;
+      background: #f3f6f9;
+      border-radius: 10px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      max-width: 100%;
+      flex-shrink: 1; /* allow shrink within container */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .limo-title i {
+      margin-left: 6px;
+      color: #23598c;
+      font-size: 1em;
+    }
+    
+    .title-label {
+      font-weight: 600;
+      margin-left: 4px;
+      color: #333;
+    }
+    
+    .title-value {
+      color: #111;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    
+    /* Row layout: image + description */
+    .limo-row {
+      display: flex;
+    
+      gap: 1px;
+      align-items: flex-start;
+          margin-top: 10px;
+    
+      max-width: 900px;
+    }
+    
+    .limo-avatar {
+      justify-content: center;
+    }
+    
+    /* Avatar */
+    .limo-avatar img {
+      width: 120px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    
+    
+    
+    /* Description container */
+    .limo-description {
+        flex: 1;
+        font-size: 0.95em;
+        line-height: 1.6;
+        color: #333;
+        direction: rtl;
+        margin-right: 20px;
+    
+        height: 90px;
+    }
+    
+    /* Trip card */
+    .trip-location-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    .location-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .location-name {
+      font-weight: 600;
+      color: #444;
+    }
+    .location-datetime {
+      font-size: 0.85em;
+      color: #888;
+    }
+    .location-arrow svg {
+      fill: #009688;
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Badges */
+    .limo-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .limo-meta .badge {
+      background: #008234;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size:0.85em;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      gap: 4px;
+    }
+    .badge-classification {
+      background: #e0f7fa;
+      color: #00695c;
+    }
+    .badge-triptype {
+      background: #f1f8e9;
+      color: #558b2f;
+    }
+    .badge-days {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    /* Ticket & Signage */
+    .limo-ticket,
+    .limo-signage {
+      font-size: 0.88em;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    .limo-ticket i,
+    .limo-signage i {
+      margin-left: 5px;
+      color: #7d4c18;
+    }
+    
+    .trip-location-card {
+        display: flex
+    ;
+        align-items: right;
+        /* justify-content: space-between; */
+        gap: 10px;
+        /* padding: 10px 16px; */
+        padding-bottom: 10px;
+        /* border: 1px solid #f5b400; */
+        border-radius: 8px;
+        /* background: #fff; */
+        direction: rtl;
+        font-family: 'Cairo', sans-serif;
+        width: fit-content;
+    }
+    
+    .trip-location-card .location-block {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+    
+    .trip-location-card .location-name {
+      font-weight: bold;
+      font-size: 1em;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    
+    .trip-location-card .location-datetime {
+      font-size: 0.9em;
+      color: #555;
+    }
+    
+    .trip-location-card .location-arrow {
+      flex-shrink: 0;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .trip-location-card .location-arrow svg {
+      transform: scaleX(-1); /* Flip for RTL */
+      fill: #999;
+      width: 20px;
+      height: 20px;
+    }
+    
+    
+    
+    
+    
+    .limo-misc {
+      width: 250px;
+      max-width: 250px;
+      padding: 10px 12px;
+      padding-top: 25px;
+      background-color: transparent;
+    
+      font-size: 0.88em;
+      direction: rtl;
+      color: #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      gap: 12px;
+    }
+    
+    /* Group block with same margin/padding rules */
+    .misc-group {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e2e2e2;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    /* Attention group styling */
+    .misc-highlight {
+      border-color: #ffca28;
+      background-color: #fffde7;
+      box-shadow: inset 0 0 0 1px #ffe08244;
+    }
+    
+    /* Row layout */
+    .misc-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.6;
+    }
+    
+    /* Icons */
+    .misc-row i {
+      color: #23598c;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    /* Label */
+    .misc-label {
+      font-weight: 600;
+      color: #444;
+      white-space: nowrap;
+    }
+    
+    /* Value */
+    .misc-value {
+      flex: 1;
+      color: #111;
+      overflow-wrap: break-word;
+    }
+    
+    /* Notes (separated block style) */
+    .misc-notes {
+      background: #fff;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-top: 4px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+    
+    
+    
+    /* ===== Actions Wrapper Alignment ===== */
+    .t-ContentRow-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start; /* default is right in RTL */
+      gap: 8px;
+      direction: rtl;
+      margin-top: 6px;
+    }
+    
+    
+    /* ===== Shared Base Style for All Custom Buttons ===== */
+    .btn-menu,
+    .btn-favorite {
+      background-color: #f3f6f9;
+      border: 1px solid #ccd6e0;
+      color: #23598c;
+      font-size: 0.85em;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* ===== Menu Button (with label) ===== */
+    .btn-menu {
+      padding: 6px 12px;
+      gap: 6px;
+    }
+    
+    .btn-menu:hover {
+      background-color: #e6eef5;
+      border-color: #b0c3d2;
+    }
+    
+    /* ===== Favorite Button (icon-only, round) ===== */
+    .btn-favorite {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      padding: 0;
+    }
+    
+    .btn-favorite:hover {
+      background-color: #ffe9e9;
+      color: #c62828;
+      border-color: #f4c7c7;
+    }
+    
+    /* Icon inside buttons */
+    .btn-menu i,
+    .btn-favorite i {
+      font-size: 1em;
+    }
+    
+    .trip-group-header-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 10px;
+    }
+    
+    .trip-bubble {
+      background-color: #f5f5f5;
+      border-radius: 16px;
+      padding: 5px 10px;
+      font-size: 0.82em;
+      font-weight: 500;
+      color: #2e2e2e;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .bubble-label {
+      margin-left: 4px;
+      color: #616161;
+      font-weight: 600;
+    }
+    
+    .bubble-value {
+      color: #212121;
+    }
+    
+    .unassigned {background-color: rgb(251, 249, 235);}
+    
+    
+    .spaceint {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: transparent; /* Material yellow */
+      border: none;
+        margin: 10px 0;
+    }
+    
+    /* Optional: make it more visible in print (or emulate break zones) */
+    @media print {
+      .spaceint {
+        break-before: always; /* Force page break */
+        height: 1px;
+        background-color: transparent;
+      }
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Content Row =================================
+  id: 10951724335631785709
+  identification: 
+    name: Content Row
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+        SERVICE_TYPE_NAME,
+        PRODUCT_IMAGE_URL,
+        RESERVATION_ID,
+        CLIENT_CODE,
+        CLIENT_NUMBER,
+        COUNTRY,
+        CLIENT_NAME,
+        RESERVATION_DATE,
+        RES_TIME,
+        TICKET_NO,
+        SIGNAGE_DETAILS,
+        PASSENGERS_NO,
+        CURRENCY,
+        PRICE_PER_PERSON,
+        TOTAL_AMOUNT,
+        NOTES,
+        COLLECTION_BY,
+        FULFILLED_BY_NAME,
+        CREATED_BY_NAME,
+          -- Period tracking
+         TO_CHAR(RESERVATION_DATE, 'YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_year,
+        TO_CHAR(RESERVATION_DATE, 'MM', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_month,
+        TO_CHAR(RESERVATION_DATE, 'DAY / DD/MM/YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS days_filter
+      
+      FROM FAST_TRACK_RESERVATIONS_VW;
+      
+    page-items-to-submit: 
+    - APP_USER_ID
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P454_ORDER_BY
+      order-bys: 
+      - key: PICK_UP_TIME
+        clause: PICK_UP_TIME
+
+      - key: RESERVATION_ID
+        clause: RESERVATION_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+      css-classes: 
+      - limo-card-display
+
+    settings: 
+      overline: |
+        
+            <div class="flex flex-wrap gap-2 items-center">
+              <span class="chip bg-gray-100 text-xs">
+                <i class="fa6 fa6-building text-indigo-500"></i> تنفيذ: <span class="font-semibold">&FULFILLED_BY_NAME.</span>
+              </span>
+              <span class="chip bg-gray-100 text-xs">
+                <i class="fa6 fa6-user-check text-teal-500"></i> تحصيل: <span class="font-semibold">&COLLECTION_BY.</span>
+              </span>
+              <span class="chip bg-gray-100 text-xs">
+                <i class="fa6 fa6-user text-green-500"></i> بواسطة: <span class="font-semibold">&CREATED_BY_NAME.</span>
+              </span>
+            </div>
+      title: |2
+          <div class="flex items-center gap-3">
+            <img src="&PRODUCT_IMAGE_URL."
+                 class="h-16 w-16 rounded-xl object-cover border border-gray-200 shadow-sm"
+                 alt="صورة الخدمة"
+                 onerror="this.onerror=null;this.src='#APP_FILES#placeholders/unknown-product.png'" />
+            <div class="flex flex-col gap-1 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-lg text-gray-900">&SERVICE_TYPE_NAME.</span>
+                <span class="text-xs px-2 py-0.5 bg-slate-100 rounded font-medium text-slate-600">
+                  كود الحجز: &RESERVATION_ID.
+                </span>
+                <span class="text-xs px-2 py-0.5 bg-slate-100 rounded font-medium text-slate-600">
+                  كود العميل: &CLIENT_CODE.
+                </span>
+              </div>
+              <div class="flex items-center gap-2 mt-1 flex-wrap">
+                <span class="text-sm text-gray-600"><i class="fa6 fa6-user text-blue-500"></i> &CLIENT_NAME.</span>
+                <span class="text-sm text-gray-600"><i class="fa6 fa6-clock text-amber-500"></i> &RESERVATION_DATE. &RES_TIME.</span>
+              </div>
+            </div>
+          </div>
+      description: |2
+          <div class="flex items-center gap-3 flex-wrap border-b pb-2 border-dashed">
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa6 fa6-users text-cyan-600"></i>
+              <span>عدد الركاب:</span>
+              <span class="font-bold text-gray-800">&PASSENGERS_NO.</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa6 fa6-money-bill-wave text-emerald-600"></i>
+              <span>الإجمالي:</span>
+              <span class="font-bold text-gray-800">&TOTAL_AMOUNT. &CURRENCY.</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa6 fa6-ticket-alt text-violet-600"></i>
+              <span>تذكرة:</span>
+              <span class="font-bold">&TICKET_NO.</span>
+            </div>
+            <!-- Show signage only if present -->
+            <div class="flex items-center gap-2 text-sm" style="display: &SIGNAGE_DETAILS_DISPLAY;;">
+              <i class="fa6 fa6-sign text-pink-600"></i>
+              <span>لافتة:</span>
+              <span class="font-bold">&SIGNAGE_DETAILS.</span>
+            </div>
+          </div>
+      miscellaneous: |2
+            <div class="flex items-center gap-2 text-xs text-gray-600" style="display: &NOTES_DISPLAY;;">
+              <i class="fa6 fa6-sticky-note text-yellow-400"></i>
+              <span>&NOTES.</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-gray-600">
+              <i class="fa6 fa6-sticky-note text-yellow-400"></i>
+              <span> سعر الفرد &PRICE_PER_PERSON. &CURRENCY. </span>
+            </div>
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: false
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: true
+
+    pagination: 
+      type: Page
+      entities-per-page: 100
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: SERVICE_TYPE_NAME ===========================
+    id: 229967252322398189
+    identification: 
+      name: SERVICE_TYPE_NAME
+
+    layout: 
+      sequence: 980
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_TYPE_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_IMAGE_URL ===========================
+    id: 229967324384398190
+    identification: 
+      name: PRODUCT_IMAGE_URL
+
+    layout: 
+      sequence: 990
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_IMAGE_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_NUMBER ===============================
+    id: 229967395819398191
+    identification: 
+      name: CLIENT_NUMBER
+
+    layout: 
+      sequence: 1000
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_NAME =================================
+    id: 229967546418398192
+    identification: 
+      name: CLIENT_NAME
+
+    layout: 
+      sequence: 1010
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_DATE ============================
+    id: 229967576546398193
+    identification: 
+      name: RESERVATION_DATE
+
+    layout: 
+      sequence: 1020
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_DATE
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RES_TIME ====================================
+    id: 229967686921398194
+    identification: 
+      name: RES_TIME
+
+    layout: 
+      sequence: 1030
+
+    source: 
+      type: Database Column
+      database-column: RES_TIME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TICKET_NO ===================================
+    id: 229967853569398195
+    identification: 
+      name: TICKET_NO
+
+    layout: 
+      sequence: 1040
+
+    source: 
+      type: Database Column
+      database-column: TICKET_NO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PASSENGERS_NO ===============================
+    id: 229967904479398196
+    identification: 
+      name: PASSENGERS_NO
+
+    layout: 
+      sequence: 1050
+
+    source: 
+      type: Database Column
+      database-column: PASSENGERS_NO
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CURRENCY ====================================
+    id: 229967988590398197
+    identification: 
+      name: CURRENCY
+
+    layout: 
+      sequence: 1060
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRICE_PER_PERSON ============================
+    id: 229968168421398198
+    identification: 
+      name: PRICE_PER_PERSON
+
+    layout: 
+      sequence: 1070
+
+    source: 
+      type: Database Column
+      database-column: PRICE_PER_PERSON
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 229968192855398199
+    identification: 
+      name: TOTAL_AMOUNT
+
+    layout: 
+      sequence: 1080
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_AMOUNT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COLLECTION_BY ===============================
+    id: 229968319101398200
+    identification: 
+      name: COLLECTION_BY
+
+    layout: 
+      sequence: 1090
+
+    source: 
+      type: Database Column
+      database-column: COLLECTION_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FULFILLED_BY_NAME ===========================
+    id: 229968460319398201
+    identification: 
+      name: FULFILLED_BY_NAME
+
+    layout: 
+      sequence: 1100
+
+    source: 
+      type: Database Column
+      database-column: FULFILLED_BY_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY_NAME =============================
+    id: 229968550744398202
+    identification: 
+      name: CREATED_BY_NAME
+
+    layout: 
+      sequence: 1110
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_YEAR ===================================
+    id: 229968579868398203
+    identification: 
+      name: TRIP_YEAR
+
+    layout: 
+      sequence: 1120
+
+    source: 
+      type: Database Column
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_MONTH ==================================
+    id: 229968696924398204
+    identification: 
+      name: TRIP_MONTH
+
+    layout: 
+      sequence: 1130
+
+    source: 
+      type: Database Column
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DAYS_FILTER =================================
+    id: 229968830258398205
+    identification: 
+      name: DAYS_FILTER
+
+    layout: 
+      sequence: 1140
+
+    source: 
+      type: Database Column
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COUNTRY =====================================
+    id: 229968951870398206
+    identification: 
+      name: COUNTRY
+
+    layout: 
+      sequence: 1150
+
+    source: 
+      type: Database Column
+      database-column: COUNTRY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 229969011308398207
+    identification: 
+      name: RESERVATION_ID
+
+    layout: 
+      sequence: 1160
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_CODE =================================
+    id: 323501911116156693
+    identification: 
+      name: CLIENT_CODE
+
+    layout: 
+      sequence: 820
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 323502045187156695
+    identification: 
+      name: SIGNAGE_DETAILS
+
+    layout: 
+      sequence: 840
+
+    source: 
+      type: Database Column
+      database-column: SIGNAGE_DETAILS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 324557858379131706
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 970
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Favorite Reservation ========================
+    id: 11202100441491751414
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: Favorite Reservation
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to URL
+      target: '#action$favoriteReservation?id=&RESERVATION_ID.'
+
+    appearance: 
+      display-type: Icon
+      icon: '&FAVORITE_ICON.'
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - btn-favorite
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: قائمة الإجرائات =============================
+    id: 11203656548614708090
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: قائمة الإجرائات
+
+    layout: 
+      sequence: 1
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-chevron-down
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - btn-menu
+
+    menus: 
+    - # ====== Menu: توزيع على مورد ================================
+      id: 177079626881573161
+      identification: 
+        type: Menu Entry
+        label: توزيع على مورد
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:247:&SESSION.::&DEBUG.::P247_RESERVATION_ID:&RESERVATION_ID.'
+          page: 247 # Fast Track Assignment Form
+          values: 
+            p247_reservation_id: '&RESERVATION_ID.'
+
+    - # ====== Menu: تعديل الخدمة ==================================
+      id: 11203656617372708091
+      identification: 
+        type: Menu Entry
+        label: تعديل الخدمة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:451:&SESSION.::&DEBUG.:RP,451:P451_RESERVATION_ID:&RESERVATION_ID.'
+          page: 451 # Fast Track Reservation Form
+          clear-cache: RP,451
+          values: 
+            p451_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: عرض تفاصيل الطلب ==============================
+      id: 11203656783424708093
+      identification: 
+        type: Menu Entry
+        label: عرض تفاصيل الطلب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:3:P3_RESERVATION_ID:&RESERVATION_ID.'
+          page: 3 # Create Identity
+          clear-cache: 3
+          values: 
+            p3_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-package
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: نظرة سريعة على الطلب ==========================
+      id: 11777257012917194574
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة على الطلب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:36:&SESSION.::&DEBUG.:RP,36:P36_ID:&RESERVATION_ID.'
+          page: 36
+          clear-cache: RP,36
+          values: 
+            p36_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-package
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Separator =====================================
+      id: 11777257136748194575
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: سجل التغيرات ==================================
+      id: 12328319763125690983
+      identification: 
+        type: Menu Entry
+        label: سجل التغيرات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:124:&SESSION.::&DEBUG.:RP,124:P124_ID:&ID.'
+          page: 124
+          clear-cache: RP,124
+          values: 
+            p124_id: '&ID.'
+
+      appearance: 
+        icon: fa-clock-o
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض ملف العميل ================================
+      id: 13486125240494458793
+      identification: 
+        type: Menu Entry
+        label: عرض ملف العميل
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:97:&SESSION.::&DEBUG.:RP,97:P97_CLIENT_ID:&CLIENT_TRUE_ID.'
+          page: 97
+          clear-cache: RP,97
+          values: 
+            p97_client_id: '&CLIENT_TRUE_ID.'
+
+      appearance: 
+        icon: fa-user
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: ارشفة الحجز ===================================
+      id: 15081330825631739586
+      identification: 
+        type: Menu Entry
+        label: ارشفة الحجز
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:47:&SESSION.::&DEBUG.:RP,47:P47_RESERVATION_ID:&RESERVATION_ID.'
+          page: 47
+          clear-cache: RP,47
+          values: 
+            p47_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa-remove
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+- # ====== Region: Reservation Confirmation Tracker ============
+  id: 15218968204263963489
+  identification: 
+    name: Reservation Confirmation Tracker
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 16083311559296978307
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Reservation Confirmation Tracker # 15218968204263963489
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 16083312792802978319
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 16083311859875978310
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: الغاء الفلاتر =================================
+      id: 11941206879088018375
+      identification: 
+        type: Menu Entry
+        label: الغاء الفلاتر
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:454:&SESSION.::&DEBUG.:RP,23::'
+          page: 454 # Fast Track Reservations Requests
+          clear-cache: RP,23
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث =========================================
+      id: 16083312565782978317
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:454:&SESSION.::&DEBUG.:RP,::'
+          page: 454 # Fast Track Reservations Requests
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Items =======================================
+  id: 40919596028342603086
+  identification: 
+    name: Items
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    - margin-bottom-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Faceted Search ==============================
+  id: 41719991049109006801
+  identification: 
+    name: Faceted Search
+    title: ادوات البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: Content Row # 10951724335631785709
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: Yes
+      total-row-count-label: عدد الطلبات
+      show-charts: Dialog
+      display-chart-for-top-n-values: 10
+
+  facets: 
+  - # ====== Facet: P454_MONTH ===================================
+    id: 323527724086156775
+    identification: 
+      name: P454_MONTH
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالشهر
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 12
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      facet: P454_YEAR # 326289452182532067
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_TRIP_DATE ===============================
+    id: 323527914743156777
+    identification: 
+      name: P454_TRIP_DATE
+      type: Checkbox Group
+
+    label: 
+      label: بحث باليوم
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 80
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 31
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      facet: P454_MONTH # 323527724086156775
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_YEAR ====================================
+    id: 326289452182532067
+    identification: 
+      name: P454_YEAR
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالسنة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_COUNTRY =================================
+    id: 326289699950532070
+    identification: 
+      name: P454_COUNTRY
+      type: Checkbox Group
+
+    label: 
+      label: جنسية العميل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: COUNTRIESLIST # 251815092929946311
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: COUNTRY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_SERVICETYPE =============================
+    id: 326289794969532071
+    identification: 
+      name: P454_SERVICETYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع الخدمة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: SERVICE_TYPE_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_SALES ===================================
+    id: 326289899333532072
+    identification: 
+      name: P454_SALES
+      type: Checkbox Group
+
+    label: 
+      label: مسؤول المبيعات
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 90
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CREATED_BY_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_SUPPLIER ================================
+    id: 332823783197942403
+    identification: 
+      name: P454_SUPPLIER
+      type: Checkbox Group
+
+    label: 
+      label: مورد الخدمة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: FULFILLED_BY_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P454_SEARCH ==================================
+    id: 41720042328656006902
+    identification: 
+      name: P454_SEARCH
+      type: Search
+
+    label: 
+      label: بحث بمفاتيح الكلمات
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): CLIENT_CODE,   CLIENT_NUMBER,   COUNTRY,   CLIENT_NAME,
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  filters: 
+  - # ====== Filter: P454_MONTH ==================================
+    id: 323527724086156775
+    identification: 
+      name: P454_MONTH
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالشهر
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      filter: P454_YEAR # 326289452182532067
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_TRIP_DATE ==============================
+    id: 323527914743156777
+    identification: 
+      name: P454_TRIP_DATE
+      type: Checkbox Group
+
+    label: 
+      label: بحث باليوم
+
+    layout: 
+      sequence: 80
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    depending-on: 
+      filter: P454_MONTH # 323527724086156775
+      type: is not null
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_YEAR ===================================
+    id: 326289452182532067
+    identification: 
+      name: P454_YEAR
+      type: Checkbox Group
+
+    label: 
+      label: بحث بالسنة
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_COUNTRY ================================
+    id: 326289699950532070
+    identification: 
+      name: P454_COUNTRY
+      type: Checkbox Group
+
+    label: 
+      label: جنسية العميل
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: COUNTRIESLIST # 251815092929946311
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: COUNTRY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_SERVICETYPE ============================
+    id: 326289794969532071
+    identification: 
+      name: P454_SERVICETYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع الخدمة
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: SERVICE_TYPE_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_SALES ==================================
+    id: 326289899333532072
+    identification: 
+      name: P454_SALES
+      type: Checkbox Group
+
+    label: 
+      label: مسؤول المبيعات
+
+    layout: 
+      sequence: 90
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CREATED_BY_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_SUPPLIER ===============================
+    id: 332823783197942403
+    identification: 
+      name: P454_SUPPLIER
+      type: Checkbox Group
+
+    label: 
+      label: مورد الخدمة
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: FULFILLED_BY_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P454_SEARCH =================================
+    id: 41720042328656006902
+    identification: 
+      name: P454_SEARCH
+      type: Search
+
+    label: 
+      label: بحث بمفاتيح الكلمات
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): CLIENT_CODE,   CLIENT_NUMBER,   COUNTRY,   CLIENT_NAME,
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+page-items: 
+- # ====== Page Item: P454_ORDER_BY ============================
+  id: 42233154361167114158
+  identification: 
+    name: P454_ORDER_BY
+    type: Select List
+
+  label: 
+    label: ' '
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Items # 40919596028342603086
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:TRIP_DATE_FROM;TRIP_DATE_FROM,RESERVATION_ID;RESERVATION_ID'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: PICK_UP_TIME
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 230013723206649715
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Reservation Confirmation Tracker # 15218968204263963489
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:450:&SESSION.::&DEBUG.:RP,450::'
+      page: 450 # FastTrack Department Home
+      clear-cache: RP,450
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 230018516172649726
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Content Row # 10951724335631785709
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 230018991079649729
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Content Row # 10951724335631785709
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog close # 230018516172649726
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 230019514290649729
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Content Row # 10951724335631785709
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog close # 230018516172649726
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: on dialog closed ====================
+  id: 230019889903649729
+  identification: 
+    name: on dialog closed
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Reservation Confirmation Tracker # 15218968204263963489
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 230020453609649729
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Content Row # 10951724335631785709
+
+    execution: 
+      sequence: 10
+      event: on dialog closed # 230019889903649729
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 230020915747649730
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 41719991049109006801
+
+    execution: 
+      sequence: 20
+      event: on dialog closed # 230019889903649729
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Fav Reservation =====================
+  id: 230021281975649730
+  identification: 
+    name: Fav Reservation
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P454_RESERVATION_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 230021805375649730
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        RESERVATION_FAVORITE_TOGGLE(
+            p_reservation_id  => :P454_RESERVATION_TO_FAVORITE, 
+            p_user_id => :APP_USER_ID );
+      items-to-submit: 
+      - P454_RESERVATION_TO_FAVORITE
+      - APP_USER_ID
+
+    execution: 
+      sequence: 10
+      event: Fav Reservation # 230021281975649730
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 230022284296649731
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-reservation-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-reservation-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('تم اضافة الحجز في التفضيلات');
+        }
+        apex.items.P454_RESERVATION_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: Fav Reservation # 230021281975649730
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

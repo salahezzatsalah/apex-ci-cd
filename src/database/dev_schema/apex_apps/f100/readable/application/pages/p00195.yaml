@@ -1,0 +1,633 @@
+---
+# ====== Page: 811 ===========================================
+id: 195
+identification: 
+  name: 811
+  title: 811
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    function downloadCarZip() {
+        const carId = apex.item('P195_ID').getValue();
+        if (!carId) {
+            apex.message.alert('Please select a car first');
+            return;
+        }
+    const zipFileName = `COMPANY_REGISTERED_CARS_AVATAR/${apex.item('P195_ID').getValue()}/${apex.item('P195_ID').getValue()}_FILES.zip`;
+    
+    apex.server.process('GET_ZIP_DOWNLOAD_URL', { x01: zipFileName }, {
+        dataType: 'text',
+        success: function(downloadUrl) {
+            window.open(downloadUrl, '_blank'); // triggers ZIP download
+        },
+        error: function(err) {
+            console.error('Failed to get ZIP URL', err);
+            apex.message.alert('Error: Could not get ZIP URL');
+        }
+    });
+    
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: 811 =========================================
+  id: 177832373556364760
+  identification: 
+    name: 811
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+             column_value AS IMAGE_URL,
+             '<img src="' || column_value || '" style="max-width:200px; max-height:200px; margin:5px;">' AS IMAGE_HTML
+      FROM TABLE(get_car_images_par(:P195_ID))
+      
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P195_ORDER_BY
+      order-bys: 
+      - key: IMAGE_URL
+        clause: '"IMAGE_URL" asc'
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 177832853219364758
+    appearance: 
+      layout: Grid
+      grid-columns: Auto
+
+    title: 
+      advanced-formatting: false
+
+    subtitle: 
+      advanced-formatting: false
+
+    body: 
+      advanced-formatting: false
+
+    secondary-body: 
+      advanced-formatting: false
+
+    icon-and-badge: 
+      icon-source: No Icon
+
+    media: 
+      advanced-formatting: false
+      source: Image URL
+      url: '&IMAGE_URL.'
+      position: Body
+      appearance: Auto
+      sizing: Fit
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+page-items: 
+- # ====== Page Item: P195_ORDER_BY ============================
+  id: 177833422187364755
+  identification: 
+    name: P195_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: 811 # 177832373556364760
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:Image Url;IMAGE_URL'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: IMAGE_URL
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: DOWNLOAD_BLOB ============================
+  id: 178964126777498632
+  identification: 
+    name: DOWNLOAD_BLOB
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P195_ID ==================================
+  id: 178965172873498642
+  identification: 
+    name: P195_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: download ====================================
+  id: 178964713386498638
+  identification: 
+    button-name: download
+    label: تحميل الملف
+
+  layout: 
+    sequence: 10
+    region: 811 # 177832373556364760
+    slot: PREVIOUS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-cloud-download
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+processes: 
+- # ====== Process: GET_ZIP_DOWNLOAD_URL =======================
+  id: 178963571144498626
+  identification: 
+    name: GET_ZIP_DOWNLOAD_URL
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_file_name    VARCHAR2(4000) := apex_application.g_x01; -- ZIP path from JS
+          l_download_url VARCHAR2(4000);
+      BEGIN
+          -- Session-safe URL to DOWNLOAD_FILE
+          l_download_url := 'wwv_flow.show?p_request=APPLICATION_PROCESS:DOWNLOAD_FILE' ||
+                            '&p_flow_id=' || :APP_ID ||
+                            '&p_flow_step_id=195' ||      -- page where DOWNLOAD_FILE exists
+                            '&p_instance=' || :APP_SESSION ||
+                            '&x01=' || utl_url.escape(l_file_name, TRUE);
+      
+          htp.p(l_download_url);
+      END;
+      
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: download # 178964713386498638
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: DOWNLOAD_CAR_ZIP ===========================
+  id: 178963727371498628
+  identification: 
+    name: DOWNLOAD_CAR_ZIP
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_zip_blob BLOB;
+          l_zip_name VARCHAR2(255) := 'Car_' || :P195_ID || '_Images.zip';
+          l_file_blob BLOB;
+          l_response CLOB;
+          l_json_list JSON_OBJECT_T;
+          l_items JSON_ARRAY_T;
+          l_file_count NUMBER := 0;
+      BEGIN
+          -- Initialize ZIP
+          DBMS_LOB.CREATETEMPORARY(l_zip_blob, TRUE);
+      
+          -- Get file list from Object Storage
+          l_response := apex_web_service.make_rest_request(
+              p_url => 'https://objectstorage.me-jeddah-1.oraclecloud.com/n/axiuwmrz0vs3/b/LayaliElqahera-ObjectStorage/o',
+              p_http_method => 'GET',
+              p_credential_static_id => 'o_storagekey',
+              p_parm_name => apex_util.string_to_table('prefix'),
+              p_parm_value => apex_util.string_to_table('COMPANY_REGISTERED_CARS_AVATAR/' || :P195_ID || '/')
+          );
+          
+          -- Parse JSON response
+          l_json_list := JSON_OBJECT_T.PARSE(l_response);
+          l_items := l_json_list.get_Array('objects');
+      
+          -- Process each file
+          FOR i IN 0 .. l_items.get_size - 1 LOOP
+              DECLARE
+                  l_item JSON_OBJECT_T := TREAT(l_items.get(i) AS JSON_OBJECT_T);
+                  l_file_name VARCHAR2(4000) := l_item.get_String('name');
+              BEGIN
+                  -- Skip folders
+                  IF l_file_name IS NOT NULL AND NOT l_file_name LIKE '%/' THEN
+                      BEGIN
+                          -- Download individual file
+                          l_file_blob := apex_web_service.make_rest_request_b(
+                              p_url => 'https://objectstorage.me-jeddah-1.oraclecloud.com/n/axiuwmrz0vs3/b/LayaliElqahera-ObjectStorage/o/' || 
+                                      utl_url.escape(l_file_name, TRUE),
+                              p_http_method => 'GET',
+                              p_credential_static_id => 'o_storagekey'
+                          );
+                          
+                          -- Add to ZIP if download successful
+                          IF l_file_blob IS NOT NULL AND DBMS_LOB.getlength(l_file_blob) > 0 THEN
+                              apex_zip.add_file(
+                                  p_zipped_blob => l_zip_blob,
+                                  p_file_name => SUBSTR(l_file_name, INSTR(l_file_name, '/', -1) + 1),
+                                  p_content => l_file_blob
+                              );
+                              l_file_count := l_file_count + 1;
+                          END IF;
+                          
+                      EXCEPTION
+                          WHEN OTHERS THEN
+                              NULL; -- Continue with next file
+                      END;
+                  END IF;
+              END;
+          END LOOP;
+      
+          -- Check if any files were added
+          IF l_file_count = 0 THEN
+              RAISE_APPLICATION_ERROR(-20001, 'No images found for car ID: ' || :P195_ID);
+          END IF;
+      
+          -- Finalize ZIP
+          apex_zip.finish(l_zip_blob);
+      
+          -- Set download headers - THIS IS THE KEY FIX
+          sys.htp.init();
+          sys.owa_util.mime_header('application/zip', FALSE);
+          sys.htp.p('Content-Disposition: attachment; filename="' || l_zip_name || '"');
+          sys.htp.p('Content-Length: ' || DBMS_LOB.GETLENGTH(l_zip_blob));
+          sys.owa_util.http_header_close;
+          
+          -- Download the file
+          sys.wpg_docload.download_file(l_zip_blob);
+      
+          -- Stop APEX engine to prevent page rendering
+          apex_application.stop_apex_engine;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              IF DBMS_LOB.ISTEMPORARY(l_zip_blob) = 1 THEN
+                  DBMS_LOB.FREETEMPORARY(l_zip_blob);
+              END IF;
+              RAISE_APPLICATION_ERROR(-20002, 'Error: ' || SQLERRM);
+      END;
+
+  execution: 
+    sequence: 10
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: download # 178964713386498638
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: DOWNLOAD_FILE ==============================
+  id: 178963857045498629
+  identification: 
+    name: DOWNLOAD_FILE
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_car_id       VARCHAR2(100) := :P195_ID;
+          l_source_bucket VARCHAR2(200) := app_config.g_default_bucket;
+          l_target_bucket VARCHAR2(200) := app_config.g_default_bucket || '/my_zips/';
+          l_zip_name      VARCHAR2(200) := 'CAR_' || l_car_id || '.zip';
+          
+          l_response       DBMS_CLOUD_TYPES.resp;
+          l_response_text  CLOB;
+          l_json_resp      JSON_OBJECT_T;
+      
+          l_check_response CLOB;
+          l_attempts       PLS_INTEGER := 0;
+          l_max_attempts   PLS_INTEGER := 10; -- Max 10 retries
+          l_zip_exists     BOOLEAN := FALSE;
+      BEGIN
+          -- 1️⃣ Call OCI pre-built function to zip car files
+          l_response := DBMS_CLOUD.SEND_REQUEST(
+              credential_name => 'o_storagekey',
+              uri             => 'https://functions.us-ashburn-1.oci.oraclecloud.com/20181201/functions/<function_ocid>/actions/invoke',
+              method          => DBMS_CLOUD.METHOD_POST,
+              body            => UTL_RAW.cast_to_raw(
+                  '{ 
+                      "COMPARTMENT_ID": "ocid1.bucket.oc1.me-jeddah-1.aaaaaaaal4ptx4vhxoibdg4njm7e54j2gkeo4gwprgveg33ac7nxbvpowp7a",
+                      "REGION": "me-jeddah-1",
+                      "SOURCE_BUCKET": "' || l_source_bucket || '",
+                      "SOURCE_FILES": "COMPANY_REGISTERED_CARS_AVATAR/' || l_car_id || '/",
+                      "TARGET_BUCKET": "' || l_target_bucket || l_zip_name || '",
+                      "ALLOW_OVERWRITE": "true"
+                  }'
+              )
+          );
+      
+          -- 2️⃣ Convert response to text and log
+          l_response_text := DBMS_CLOUD.GET_RESPONSE_TEXT(l_response);
+          DBMS_OUTPUT.PUT_LINE('Function Response: ' || l_response_text);
+      
+          BEGIN
+              l_json_resp := JSON_OBJECT_T.PARSE(l_response_text);
+          EXCEPTION
+              WHEN OTHERS THEN
+                  DBMS_OUTPUT.PUT_LINE('Error parsing JSON from function response: ' || SQLERRM);
+          END;
+      
+          -- 3️⃣ Wait for ZIP file to appear (poll every 2 seconds)
+          WHILE l_attempts < l_max_attempts LOOP
+              BEGIN
+                  l_check_response := apex_web_service.make_rest_request(
+                      p_url => 'https://objectstorage.me-jeddah-1.oraclecloud.com/n/axiuwmrz0vs3/b/' 
+                                || l_target_bucket || l_zip_name,
+                      p_http_method => 'HEAD',
+                      p_credential_static_id => 'o_storagekey'
+                  );
+      
+                  l_zip_exists := TRUE;
+                  DBMS_OUTPUT.PUT_LINE('ZIP found on attempt ' || l_attempts + 1);
+                  EXIT;
+              EXCEPTION
+                  WHEN OTHERS THEN
+                      DBMS_OUTPUT.PUT_LINE('ZIP not found on attempt ' || l_attempts + 1 || ': ' || SQLERRM);
+                      l_zip_exists := FALSE;
+                      l_attempts := l_attempts + 1;
+              END;
+          END LOOP;
+      
+          -- 4️⃣ Return JSON response
+          apex_json.open_object;
+              apex_json.write('zip_url', 'https://objectstorage.me-jeddah-1.oraclecloud.com/n/axiuwmrz0vs3/b/' || l_target_bucket || l_zip_name);
+              apex_json.write('status', CASE WHEN l_zip_exists THEN 'Success' ELSE 'Pending/Error' END);
+          apex_json.close_object;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              DBMS_OUTPUT.PUT_LINE('Error in PL/SQL process: ' || SQLERRM);
+              apex_json.open_object;
+              apex_json.write('error', SQLERRM);
+              apex_json.close_object;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: download # 178964713386498638
+
+- # ====== Process: GET_OBJECT_STORAGE_FILES ===================
+  id: 178964486698498635
+  identification: 
+    name: GET_OBJECT_STORAGE_FILES
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_response CLOB;
+          l_json_list JSON_OBJECT_T;
+          l_items JSON_ARRAY_T;
+          l_car_id VARCHAR2(100) := :P195_ID;
+      BEGIN
+          -- Get the list of files from Object Storage using APEX credential
+          l_response := apex_web_service.make_rest_request(
+              p_url => 'https://objectstorage.me-jeddah-1.oraclecloud.com/n/axiuwmrz0vs3/b/LayaliElqahera-ObjectStorage/o',
+              p_http_method => 'GET',
+              p_credential_static_id => 'o_storagekey',
+              p_parm_name => apex_util.string_to_table('prefix'),
+              p_parm_value => apex_util.string_to_table('COMPANY_REGISTERED_CARS_AVATAR/' || l_car_id || '/')
+          );
+          
+          -- Parse response
+          l_json_list := JSON_OBJECT_T.PARSE(l_response);
+          l_items := l_json_list.get_Array('objects');
+          
+          -- Prepare file list
+          apex_json.open_object();
+          apex_json.open_array('files');
+          
+          FOR i IN 0 .. l_items.get_size - 1 LOOP
+              DECLARE
+                  l_item JSON_OBJECT_T := TREAT(l_items.get(i) AS JSON_OBJECT_T);
+                  l_file_name VARCHAR2(4000) := l_item.get_String('name');
+              BEGIN
+                  IF l_file_name IS NOT NULL AND NOT l_file_name LIKE '%/' THEN
+                      apex_json.write(l_file_name);
+                  END IF;
+              END;
+          END LOOP;
+          
+          apex_json.close_array();
+          apex_json.close_object();
+          
+      EXCEPTION
+          WHEN OTHERS THEN
+              apex_json.open_object();
+              apex_json.write('error', SQLERRM);
+              apex_json.close_object();
+      END;
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    when-button-pressed: download # 178964713386498638
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+

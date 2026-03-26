@@ -1,0 +1,113 @@
+---
+- # ====== Report Layout: PreBill-Template22 ===================
+  id: 183879600879139046
+  identification: 
+    name: PreBill-Template22
+    type: Named Columns (DOCX)
+    file-name: Initial Assessment and Preliminary Investigation Report - GEVI - 6MAR25.docx
+
+  advanced: 
+    static-id: PREBILL_TEMPLATE22
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 45854985108471
+
+- # ====== Report Layout: test =================================
+  id: 183879920248107162
+  identification: 
+    name: test
+    type: Named Columns (DOCX)
+    file-name: HistoricalStatmentTemplateWagha.docx
+
+  advanced: 
+    static-id: TEST
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 45854985879855
+
+- # ====== Report Layout: TripsReportTemplate ==================
+  id: 184548524490310724
+  identification: 
+    name: TripsReportTemplate
+    type: Named Columns (DOCX)
+    file-name: WaghaTripsReportTemp (2).docx
+
+  advanced: 
+    static-id: TRIPSREPORTTEMPLATE
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 45933834888217
+
+- # ====== Report Layout: Trip Settlement ======================
+  id: 196868173036014675
+  identification: 
+    name: Trip Settlement
+    type: Named Columns (DOCX)
+    file-name: فاتورة الواجهة الرائدة للسياحة٢ (1).docx
+
+  advanced: 
+    static-id: TRIP_SETTLEMENT
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 46028675370327
+
+- # ====== Report Layout: Historical Statements ================
+  id: 234635794563615110
+  identification: 
+    name: Historical Statements
+    type: Named Columns (DOCX)
+    file-name: HistoricalStatmentTemplateWagha.docx
+
+  advanced: 
+    static-id: HISTORICAL_STATEMENTS
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 46210773704912
+
+- # ====== Report Layout: TripsReport ==========================
+  id: 276621462473292801
+  identification: 
+    name: TripsReport
+    type: Named Columns (DOCX)
+    file-name: WaghaTripsReportTemp (1).docx
+
+  advanced: 
+    static-id: TRIPSREPORT
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 45933837364085
+
+- # ====== Report Layout: FastTrack Report =====================
+  id: 281215833448549256
+  identification: 
+    name: FastTrack Report
+    type: Named Columns (DOCX)
+    file-name: FastTrackWaghaReportTemp (1).docx
+
+  advanced: 
+    static-id: FASTTRACKREPORT
+
+  attributes: 
+    mime-type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+  subscription: 
+    version-number: 45855360258980
+

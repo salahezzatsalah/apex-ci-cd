@@ -1,0 +1,54 @@
+---
+- # ====== Role: مطور نظام =====================================
+  id: 251488762570595511
+  identification: 
+    name: مطور نظام
+
+  advanced: 
+    static-id: DEVELOPERS
+
+  subscription: 
+    version-number: 44699358314225
+
+- # ====== Role: إدارة النظام ==================================
+  id: 149832817901688023718
+  identification: 
+    name: إدارة النظام
+
+  advanced: 
+    static-id: ADMINISTRATOR
+
+  description: 
+    description: الدور المخصص لمسؤولي إدارة التطبيق.
+
+  subscription: 
+    version-number: 44699358235111
+
+- # ====== Role: مستخدم عادي ===================================
+  id: 149832818125192023718
+  identification: 
+    name: مستخدم عادي
+
+  advanced: 
+    static-id: CONTRIBUTOR
+
+  description: 
+    description: الدور المخصص للمستخدمين الذين يمكنهم إضافة المحتوى أو تعديله داخل التطبيق دون صلاحيات إدارية.
+
+  subscription: 
+    version-number: 44699358260072
+
+- # ====== Role: قرائة فقط =====================================
+  id: 149832818262921023718
+  identification: 
+    name: قرائة فقط
+
+  advanced: 
+    static-id: READER
+
+  description: 
+    description: الدور المخصص لمستخدمي التطبيق الذين يقتصر دورهم على العرض والقراءة فقط.
+
+  subscription: 
+    version-number: 44699358294288
+

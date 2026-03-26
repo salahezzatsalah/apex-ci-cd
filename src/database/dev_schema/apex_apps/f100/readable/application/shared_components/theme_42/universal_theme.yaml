@@ -1,0 +1,164 @@
+---
+# ====== Theme: Universal Theme ==============================
+id: 42
+identification: 
+  theme-number: 42
+  name: Universal Theme
+  identifier: UNIVERSAL_THEME
+  version: 24.2
+
+navigation: 
+  type: List
+  navigation-bar-type: List
+
+javascript: 
+  file-urls: 
+  - '#APEX_FILES#libraries/apex/#MIN_DIRECTORY#widget.stickyWidget#MIN#.js?v=#APEX_VERSION#'
+  - '#THEME_FILES#js/theme42#MIN#.js?v=#APEX_VERSION#'
+
+css: 
+  file-urls: 
+  - '#THEME_FILES#css/Core#MIN#.css?v=#APEX_VERSION#'
+
+component-defaults: 
+  current-theme-style: Redwood Light SP
+  page: Standard
+  navigation-bar-list: Navigation Bar
+  navigation-menu-list-position: Side
+  navigation-menu-list-(top): Top Navigation Menu
+  navigation-menu-list-(side): Side Navigation Menu
+  login-page: Login
+  error-page: Login
+  printer-friendly-page: Standard
+  breadcrumb: Breadcrumb
+  button: Text
+  legacy-calendar: Calendar
+  default-label: Optional - Floating
+  optional-label: Optional - Floating
+  required-label: Required - Floating
+  list: Links List
+  region: Standard
+  classic-report: Standard
+
+region-defaults: 
+  breadcrumbs: Title Bar
+  charts: Standard
+  forms: Standard
+  lists: Standard
+  reports: Standard
+  wizards: Standard
+  interactive-reports: Interactive Report
+
+dialog-defaults: 
+  dialog-content-region: Blank with Attributes
+  dialog-button-region: Buttons Container
+  dialog-page: Modal Dialog
+
+icons: 
+  library: Font APEX - Latest
+
+files: 
+  file-prefix: '#APEX_FILES#themes/theme_42/24.2/'
+
+styles: 
+- # ====== Style: Redwood Jericho ==============================
+  id: 179645124012574392
+  identification: 
+    name: Redwood Jericho
+
+  settings: 
+    is-public: true
+    accessibility-tested: false
+
+  css: 
+    file-urls: 
+    - '#APEX_FILES#libraries/oracle-fonts/oraclesans-apex#MIN#.css?v=#APEX_VERSION#'
+    - '#THEME_FILES#css/Redwood#MIN#.css?v=#APEX_VERSION#'
+
+  cascading-style-sheet: 
+    css-classes: ' rw-pillar--ocean rw-mode-header--pillar rw-mode-nav--pillar rw-mode-body-header--dark rw-mode-body--dark'
+
+  theme-roller-attributes: 
+    read-only: false
+    input-parameter-file-urls: '#THEME_FILES#less/theme/Redwood-Theme.less'
+    output-css-file-url: '#THEME_DB_FILES#169917989805132292.css'
+    json-configuration: '{"classes":["rw-pillar--ocean","rw-mode-header--pillar","rw-mode-nav--pillar","rw-mode-body-header--dark","rw-mode-body--dark"],"vars":{},"customCSS":"","useCustomLess":"N"}'
+
+- # ====== Style: Redwood Light SP =============================
+  id: 14774829622040814077
+  identification: 
+    name: Redwood Light SP
+
+  settings: 
+    is-public: true
+    accessibility-tested: false
+
+  css: 
+    file-urls: 
+    - '#APEX_FILES#libraries/oracle-fonts/oraclesans-apex#MIN#.css?v=#APEX_VERSION#'
+    - '#THEME_FILES#css/Redwood#MIN#.css?v=#APEX_VERSION#'
+
+  cascading-style-sheet: 
+    css-classes: ' rw-mode-body-header--dark rw-mode-nav--pillar rw-mode-body--dark rw-mode-header--pillar rw-pillar--sky rw-layout--contained'
+
+  theme-roller-attributes: 
+    read-only: false
+    input-parameter-file-urls: '#THEME_FILES#less/theme/Redwood-Theme.less'
+    output-css-file-url: '#THEME_DB_FILES#14765102487833371977.css'
+    json-configuration: '{"classes":["rw-mode-body-header--dark","rw-layout--fixed t-PageBody--scrollTitle","rw-layout--fixed t-PageBody--scrollTitle","rw-layout--fixed t-PageBody--scrollTitle","rw-mode-nav--pillar","rw-mode-body--dark","rw-layout--fixed t-PageBody--scrollTitle","rw-layout--fixed t-PageBody--scrollTitle","rw-mode-header--pillar","rw-pillar--sky","rw-layout--contained"],"vars":{},"customCSS":":root {\n  /* Reduce Redwood Padding */\n  --ut-footer-padding-x: var(--ut-body-content-padding-x);\n  --ut-body-content-padding-y: 2rem;\n  /* Unset badge font family */\n  --ut-treeview-badge-font-family: unset;\n}\n\n.header-actions {\n  margin-inline-start: auto;\n}\n\n.header-actions .t-ContentRow-wrap {\n  padding: 0;\n  float: right;\n}\n\n.has-header-actions {\n  display: inline-flex;\n}\n\n.header-actions .t-ContentRow-wrap button {\n  --a-button-background-color: transparent;\n}\n\n.t-BreadcrumbRegion--showBreadcrumb .t-BreadcrumbRegion-breadcrumb {\n  display: flex;\n  align-items: center;\n}\n\n\n/* Clear the default fa-user icon for content row regions with the clear-avatar-icons class */\n.clear-avatar-icons .t-Avatar.t-Avatar--icon.fa-user:before {\n  display: none;\n}\n\n/* Adding initiative icon to the left of contextual info region */\n.initiative-icon {\n  margin: 0 -2rem .5rem 3rem;\n  max-inline-size: 2.5rem;\n}\n\n.t-PageBody--showLeft .initiative-icon {\n  margin: 0 0 .5rem 1rem;\n  max-inline-size: 2.5rem;\n}\n\n/* Setting max height for facets, otherwise it gets too big */\n.a-FS-bodyInner .apex-item-checkbox {\n  max-height: 320px;\n  overflow: auto;\n}\n\n/* Search Clear Button */\n.sp-ClearButton {\n  position: absolute;\n  inline-size: 1.5rem;\n  block-size: 1.5rem;\n  cursor: pointer;\n  inset-inline-end: .25rem;\n  inset-block-start: 50%;\n  transform: translateY(-50%);\n  visibility: visible;\n  opacity: 1;\n  transition: opacity .25s ease;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  order: 4;\n}\n\n.sp-ClearButton:before {\n  content: \"\\e0a2\";\n  font-size: 1rem;\n  speak: none;\n  font-style: normal;\n  font-weight: 400;\n  font-variant: normal;\n  text-transform: none;\n  text-rendering: auto;\n  line-height: 1;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n  font-family: var(--a-icon-font-family, \"apex-5-icon-font\");\n  opacity: .8;\n}\n\n.t-Form-itemWrapper {\n  position: relative;\n}\n\n.t-Form-fieldContainer:not(.t-Form-fieldContainer--floatingLabel):not(.t-Form-fieldContainer--hiddenLabel) .t-Form-itemWrapper {\n  display: inline-flex;\n}\n\n.t-Form-itemWrapper:has(:placeholder-shown) .sp-ClearButton {\n  visibility: hidden;\n  opacity: 0;\n}\n","useCustomLess":"N"}'
+
+files: 
+- # ====== File: 14713982832266858828.css ======================
+  id: 176292967053424185
+  identification: 
+    file-name: 14713982832266858828.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== File: 14765102487833371977.css ======================
+  id: 179644260127562890
+  identification: 
+    file-name: 14765102487833371977.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== File: 169917989805132292.css ========================
+  id: 179645510296574396
+  identification: 
+    file-name: 169917989805132292.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== File: 14545850518355817248.css ======================
+  id: 251493167446621117
+  identification: 
+    file-name: 14545850518355817248.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== File: 1061471820146593877.css =======================
+  id: 10728091288952576138
+  identification: 
+    file-name: 1061471820146593877.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== File: 4264887325871720382.css =======================
+  id: 17806317089141671715
+  identification: 
+    file-name: 4264887325871720382.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+

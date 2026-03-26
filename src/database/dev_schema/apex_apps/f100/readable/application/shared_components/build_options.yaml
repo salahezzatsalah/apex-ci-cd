@@ -1,0 +1,315 @@
+---
+- # ====== Build Option: Identity & Governance =================
+  id: 180314052894210574
+  identification: 
+    name: Identity & Governance
+
+  status: 
+    status: Include
+    default-on-export: Include
+    on-upgrade-keep-status: true
+
+  subscription: 
+    version-number: 46367076854445
+
+- # ====== Build Option: Feature: Theme Style Selection ========
+  id: 230196557767440377
+  identification: 
+    name: 'Feature: Theme Style Selection'
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: 'Allow administrators to select a default color scheme (theme style) for the application. Administrators can also choose to allow end users to choose their own theme style. '
+
+  subscription: 
+    version-number: 44986765287921
+
+- # ====== Build Option: Feature: Push Notifications ===========
+  id: 251478320040477840
+  identification: 
+    name: 'Feature: Push Notifications'
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Allow users to subscribe to push notifications on their devices.
+
+  subscription: 
+    version-number: 44666008992632
+
+- # ====== Build Option: Feature: User Settings ================
+  id: 251478642664477840
+  identification: 
+    name: 'Feature: User Settings'
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: The user settings page is a drawer that links to all user settings pages.
+
+  subscription: 
+    version-number: 44666008992632
+
+- # ====== Build Option: Commented Out =========================
+  id: 253764608978089549
+  identification: 
+    name: Commented Out
+
+  status: 
+    status: Exclude
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  subscription: 
+    version-number: 44698686561766
+
+- # ====== Build Option: About Page ============================
+  id: 12640339829675005785
+  identification: 
+    name: About Page
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: This feature displays an "About this application" link and exposes a partially configurable about this application page.  If you don't want to have a link to about this application disable this setting.
+
+  subscription: 
+    version-number: 40760826019912
+
+- # ====== Build Option: Reviews ===============================
+  id: 13684680192996385737
+  identification: 
+    name: Reviews
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: If disabled, Reviews will not be included within NOMENCLATURE_PROJECTS.
+
+  subscription: 
+    version-number: 44449905286858
+
+- # ====== Build Option: Releases ==============================
+  id: 14854353056805192289
+  identification: 
+    name: Releases
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Used to exclude the use of "Releases".
+
+  subscription: 
+    version-number: 40935286839364
+
+- # ====== Build Option: Show friendly identifier ==============
+  id: 16265041365640344865
+  identification: 
+    name: Show friendly identifier
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Each project gets a friendly identifier by default.  Friendly identifiers are alternative primary keys that are human readable. For example "AA01" is a friendly identifier.  This setting controls if the identifiers are displayed in the UI of the application.
+
+  subscription: 
+    version-number: 40760828906055
+
+- # ====== Build Option: Feature: Feedback =====================
+  id: 18694099258590829535
+  identification: 
+    name: 'Feature: Feedback'
+
+  status: 
+    status: Exclude
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Provide a mechanism for end users to post general comments back to the application administrators and developers.
+
+  subscription: 
+    version-number: 41287209098302
+
+- # ====== Build Option: Configure Application Features ========
+  id: 18740535940495322676
+  identification: 
+    name: Configure Application Features
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Allow application administrators to enable or disable specific application features.
+
+  subscription: 
+    version-number: 41300082518941
+
+- # ====== Build Option: Comment Tagging =======================
+  id: 20414681067198081178
+  identification: 
+    name: Comment Tagging
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: If included, Screen Name will be available under NOMENCLATURE_USERS and NOMENCLATURE_PROJECT comments will be searched for screen names and if someone is 'tagged', they will receive an alert (if they have Comment Alerts enabled).
+
+  subscription: 
+    version-number: 44449904548259
+
+- # ====== Build Option: Developer Audit Reports ===============
+  id: 20474675645652926840
+  identification: 
+    name: Developer Audit Reports
+
+  status: 
+    status: Exclude
+    default-on-export: Exclude
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Allows hiding functions appropriate for a development environment, but not to be displayed in a production environment.
+
+  subscription: 
+    version-number: 41116367005658
+
+- # ====== Build Option: Groups ================================
+  id: 20718281984429459585
+  identification: 
+    name: Groups
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Groups allow you to organize contributors.  You define a group, then add NOMENCLATURE_USERS to the group.  When viewing  NOMENCLATURE_USERS, you can filter by groups.  This reduces a large list to a smaller, more targeted, list.
+
+  subscription: 
+    version-number: 44449904974681
+
+- # ====== Build Option: Subscriptions =========================
+  id: 21632088322832923817
+  identification: 
+    name: Subscriptions
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Allows enable/disable of Notification Subscriptions, sent via email.  This should be disabled if email is not configured on this instance.
+
+  subscription: 
+    version-number: 41329529515893
+
+- # ====== Build Option: Kanban ================================
+  id: 22131046553463954260
+  identification: 
+    name: Kanban
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Kanban Board, Cumulative Flow, Control Chart and Planning Board.
+
+  subscription: 
+    version-number: 42092809933464
+
+- # ====== Build Option: Activity Planning =====================
+  id: 24793266618951063217
+  identification: 
+    name: Activity Planning
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Allows a team member to plan activities; For example I am working on these activities (aka NOMENCLATURE_PROJECTS) for these dates.
+
+  subscription: 
+    version-number: 44449904025996
+
+- # ====== Build Option: Email Configured ======================
+  id: 27339243674243649467
+  identification: 
+    name: Email Configured
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: If email is not configured on your instance, use this to turn off the features that would send emails.
+
+  subscription: 
+    version-number: 41331431166856
+
+- # ====== Build Option: Include Project Active Toggle =========
+  id: 28601716865157713042
+  identification: 
+    name: Include Project Active Toggle
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Identifies a NOMENCLATURE_PROJECT as being actively worked or not.
+
+  subscription: 
+    version-number: 44449905825992
+
+- # ====== Build Option: Access Control ========================
+  id: 149832816658623023715
+  identification: 
+    name: Access Control
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: Incorporate role based user authentication within your application and manage username mappings to application roles.
+
+  subscription: 
+    version-number: 40760827840139
+

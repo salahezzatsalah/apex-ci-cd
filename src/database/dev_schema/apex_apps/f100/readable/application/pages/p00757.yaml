@@ -1,0 +1,620 @@
+---
+# ====== Page: Finance Account Balance Transfer Form =========
+id: 757
+identification: 
+  name: Finance Account Balance Transfer Form
+  alias: FINANCE-ACCOUNT-BALANCE-TRANSFER-FORM
+  title: استمارة تحويل رصيد من حساب الى حساب اخر - نموذج 757
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Transfer Details ============================
+  id: 230535740451461335
+  identification: 
+    name: Transfer Details
+    title: بيانات التحويل
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttns ======================================
+  id: 231784048588304087
+  identification: 
+    name: Buttns
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P757_FROM_ACC ============================
+  id: 230534110638461319
+  identification: 
+    name: P757_FROM_ACC
+    type: Display Only
+
+  label: 
+    label: من حساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Transfer Details # 230535740451461335
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        ACCOUNT_NAME || ' [' || ACCOUNT_CODE || '] - ' || CURRENCY_CODE AS display_value,
+        ACCOUNT_ID AS return_value
+      FROM ACCOUNTS
+      WHERE STATUS = 'ACTIVE'
+      ORDER BY ACCOUNT_NAME, ACCOUNT_CODE
+      
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P757_TO_ACC ==============================
+  id: 230534258037461320
+  identification: 
+    name: P757_TO_ACC
+    type: Select One
+
+  label: 
+    label: الي حساب
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 20
+    region: Transfer Details # 230535740451461335
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        ACCOUNT_NAME || ' [' || ACCOUNT_CODE || '] - ' || CURRENCY_CODE AS display_value,
+        ACCOUNT_ID AS return_value
+      FROM ACCOUNTS
+      WHERE STATUS = 'ACTIVE'
+      ORDER BY ACCOUNT_NAME, ACCOUNT_CODE
+      
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P757_AMOUNT ==============================
+  id: 230534276654461321
+  identification: 
+    name: P757_AMOUNT
+    type: Number Field
+
+  label: 
+    label: المبلغ
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 30
+    region: Transfer Details # 230535740451461335
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P757_RATE ================================
+  id: 230534428037461322
+  identification: 
+    name: P757_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 40
+    region: Transfer Details # 230535740451461335
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P757_DESC ================================
+  id: 230534513792461323
+  identification: 
+    name: P757_DESC
+    type: Text Field
+
+  label: 
+    label: الغرض من العملية
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Transfer Details # 230535740451461335
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Transfer ====================================
+  id: 230535333139461331
+  identification: 
+    button-name: Transfer
+    label: تحويل
+
+  layout: 
+    sequence: 10
+    region: Buttns # 231784048588304087
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: Cancel ======================================
+  id: 231783968586304086
+  identification: 
+    button-name: Cancel
+    label: الغاء
+
+  layout: 
+    sequence: 20
+    region: Buttns # 231784048588304087
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Currency Rates ======================
+  id: 230535104799461329
+  identification: 
+    name: Currency Rates
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P757_FROM_ACC
+    - P757_TO_ACC
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 230535205525461330
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            v_from_curr VARCHAR2(10);
+            v_to_curr   VARCHAR2(10);
+            v_rate      NUMBER := 1;
+        BEGIN
+            -- Get currencies
+            SELECT CURRENCY_CODE INTO v_from_curr FROM ACCOUNTS WHERE ACCOUNT_ID = :P757_FROM_ACC;
+            SELECT CURRENCY_CODE INTO v_to_curr   FROM ACCOUNTS WHERE ACCOUNT_ID = :P757_TO_ACC;
+        
+            IF v_from_curr = v_to_curr THEN
+                -- Allowed: same currency (EGP↔EGP, USD↔USD, etc.)
+                v_rate := 1;
+        
+            ELSIF v_from_curr <> 'EGP' AND v_to_curr = 'EGP' THEN
+                -- Allowed: foreign currency to EGP
+                SELECT EXCHANGE_RATE INTO v_rate
+                  FROM V_LATEST_CURRENCY_RATES
+                 WHERE CURRENCY_CODE = v_from_curr;
+        
+            ELSE
+                -- Not allowed: EGP→FX, FX→FX (different currencies)
+                :P757_RATE := NULL;
+                APEX_ERROR.ADD_ERROR(
+                    p_message => 'متقدرش تحول من العملة دي للعملة التانية! التحويل متاح بين نفس العملة أو من عملة أجنبية للجنيه المصري فقط.',
+                    p_display_location => APEX_ERROR.C_INLINE_IN_NOTIFICATION
+                );
+                RETURN;
+            END IF;
+        
+            :P757_RATE := v_rate;
+        
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                :P757_RATE := NULL;
+                APEX_ERROR.ADD_ERROR(
+                    p_message => 'مفيش سعر صرف متسجل للعملة دي! راجع الإدارة.',
+                    p_display_location => APEX_ERROR.C_INLINE_IN_NOTIFICATION
+                );
+            WHEN OTHERS THEN
+                :P757_RATE := NULL;
+                APEX_ERROR.ADD_ERROR(
+                    p_message => 'حصل خطأ غير متوقع! حاول تاني أو كلم الدعم.',
+                    p_display_location => APEX_ERROR.C_INLINE_IN_NOTIFICATION
+                );
+        END;
+        
+      items-to-submit: 
+      - P757_FROM_ACC
+      - P757_TO_ACC
+      items-to-return: 
+      - P757_RATE
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Currency Rates # 230535104799461329
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: TRANSFER_MONEY =============================
+  id: 230535436386461332
+  identification: 
+    name: TRANSFER_MONEY
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        PROVISION_ACCOUNT_TRANSFER(
+          p_from_account_id   => :P757_FROM_ACC,
+          p_to_account_id     => :P757_TO_ACC,
+          p_amount            => :P757_AMOUNT,
+          p_exchange_rate     => :P757_RATE,
+          p_description       => :P757_DESC,
+          p_reference_number  => :P757_REF,
+          p_created_by        => NVL(APEX_UTIL.GET_SESSION_STATE('APP_USER_ID'), USER)
+        );
+      EXCEPTION
+        WHEN OTHERS THEN
+          -- Show error in Egyptian Arabic (for notification region)
+          APEX_ERROR.ADD_ERROR(
+            p_message => 'حصلت مشكلة أثناء التحويل: ' || SQLERRM,
+            p_display_location => APEX_ERROR.C_INLINE_IN_NOTIFICATION
+          );
+          RAISE;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: تم التحويل بنجاح.
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 230535638910461334
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+

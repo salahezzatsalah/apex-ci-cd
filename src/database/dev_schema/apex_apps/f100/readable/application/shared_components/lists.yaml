@@ -1,0 +1,2706 @@
+---
+- # ====== List: ApartmentsReservations ========================
+  id: 181714163326324587
+  identification: 
+    name: ApartmentsReservations
+
+  subscription: 
+    version-number: 45597696824568
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: تم التسكين ===================================
+    id: 181714411765324586
+    label: 
+      label: تم التسكين
+
+    icon: 
+      image/icon-css-classes: fa-sign-in
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'CheckIn'});	"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تم الخروج ====================================
+    id: 181714796953324584
+    label: 
+      label: تم الخروج
+
+    icon: 
+      image/icon-css-classes: fa-sign-out
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'CheckOut'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تم الإلغاء ===================================
+    id: 181715170255324583
+    label: 
+      label: تم الإلغاء
+
+    icon: 
+      image/icon-css-classes: fa-remove
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'CancelProduct'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إعادة تنشيط الحجز ============================
+    id: 181715570675324583
+    label: 
+      label: إعادة تنشيط الحجز
+
+    icon: 
+      image/icon-css-classes: fa-refresh
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'Reactiviate'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إضافة عملية تحصيل ============================
+    id: 181716014184324583
+    label: 
+      label: إضافة عملية تحصيل
+
+    icon: 
+      image/icon-css-classes: fa-cash-register
+
+    layout: 
+      sequence: 50
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'AddTranscation'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إضافة مستند ==================================
+    id: 181716639130311772
+    label: 
+      label: إضافة مستند
+
+    icon: 
+      image/icon-css-classes: fa-upload
+
+    layout: 
+      sequence: 60
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'AddDocument'});	"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تعديل الحجز ==================================
+    id: 181716890566304499
+    label: 
+      label: تعديل الحجز
+
+    icon: 
+      image/icon-css-classes: fa-cart-edit
+
+    layout: 
+      sequence: 70
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'EditProduct'});	"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: setup_rooms ===================================
+  id: 193995097558539570
+  identification: 
+    name: setup_rooms
+
+  subscription: 
+    version-number: 46311012148175
+
+  source: 
+    type: Static Values
+
+- # ====== List: wizard_page_room ==============================
+  id: 194015746812459995
+  identification: 
+    name: wizard_page_room
+
+  subscription: 
+    version-number: 46311010185610
+
+  source: 
+    type: Static Values
+
+- # ====== List: hotelreservation ==============================
+  id: 200379132635620968
+  identification: 
+    name: hotelreservation
+
+  subscription: 
+    version-number: 45739281539446
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: تم التسكين ===================================
+    id: 200379335167620959
+    label: 
+      label: تم التسكين
+
+    icon: 
+      image/icon-css-classes: fa-sign-in
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'CheckIn'});	"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تم الخروج ====================================
+    id: 200379705637620953
+    label: 
+      label: تم الخروج
+
+    icon: 
+      image/icon-css-classes: fa-sign-out
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'CheckOut'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تم الإلغاء ===================================
+    id: 200380108189620952
+    label: 
+      label: تم الإلغاء
+
+    icon: 
+      image/icon-css-classes: fa-remove
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'CancelProduct'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إعادة تنشيط الحجز ============================
+    id: 200380506035620951
+    label: 
+      label: إعادة تنشيط الحجز
+
+    icon: 
+      image/icon-css-classes: fa-refresh
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'Reactiviate'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إضافة عملية تحصيل ============================
+    id: 200380924925620950
+    label: 
+      label: إضافة عملية تحصيل
+
+    icon: 
+      image/icon-css-classes: fa-cash-register
+
+    layout: 
+      sequence: 50
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'AddTranscation'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إضافة مستند ==================================
+    id: 200381245209620949
+    label: 
+      label: إضافة مستند
+
+    icon: 
+      image/icon-css-classes: fa-upload
+
+    layout: 
+      sequence: 60
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'AddDocument'});	"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تعديل الحجز ==================================
+    id: 200381707692620947
+    label: 
+      label: تعديل الحجز
+
+    icon: 
+      image/icon-css-classes: fa-cart-edit
+
+    layout: 
+      sequence: 70
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'EditProduct'});	"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تأكيد الحجز  =================================
+    id: 200384215010598770
+    label: 
+      label: 'تأكيد الحجز '
+
+    icon: 
+      image/icon-css-classes: ' fa-check'
+
+    layout: 
+      sequence: 5
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: "javascript:apex.event.trigger(document, 'menuAction',{action: 'ConfrimResrvation'});"
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: limo search query =============================
+  id: 220263121088262397
+  identification: 
+    name: limo search query
+
+  subscription: 
+    version-number: 46311310757528
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Step 2 =======================================
+    id: 220267525365262437
+    label: 
+      label: Step 2
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:271:&APP_SESSION.::&DEBUG.:::'
+        page: 271
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: limo search result ============================
+  id: 220275477752280322
+  identification: 
+    name: limo search result
+
+  subscription: 
+    version-number: 46311311298647
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: choose service type ==========================
+    id: 220276791098280331
+    label: 
+      label: choose service type
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:273:&APP_SESSION.::&DEBUG.:::'
+        page: 273 # choose service type
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: choose car ===================================
+    id: 220283770211280358
+    label: 
+      label: choose car
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:275:&APP_SESSION.::&DEBUG.:::'
+        page: 275 # choose car
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: reservation ==================================
+    id: 220287510652280371
+    label: 
+      label: reservation
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:277:&APP_SESSION.::&DEBUG.:::'
+        page: 277 # reservation
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: User Interface ================================
+  id: 230202474758440430
+  identification: 
+    name: User Interface
+
+  subscription: 
+    version-number: 44986770145949
+
+  source: 
+    type: Static Values
+
+  configuration: 
+    build-option: 'Feature: Theme Style Selection' # 230196557767440377
+
+  entries: 
+  - # ====== Entry: إعدادات الثيم ================================
+    id: 230202815269440431
+    label: 
+      label: إعدادات الثيم
+
+    icon: 
+      image/icon-css-classes: fa-paint-brush
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:20020:&SESSION.::&DEBUG.:20020:::'
+        page: 20020 # إعدادات الثيم
+        clear-cache: 20020
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: تحكم في شكل النظام الخاص بك
+
+- # ====== List: User Settings =================================
+  id: 251482288764477847
+  identification: 
+    name: User Settings
+
+  subscription: 
+    version-number: 44666714128573
+
+  source: 
+    type: Static Values
+
+  configuration: 
+    build-option: 'Feature: User Settings' # 251478642664477840
+
+  entries: 
+  - # ====== Entry: الإشعارات الفورية ============================
+    id: 251482691395477848
+    label: 
+      label: الإشعارات الفورية
+
+    icon: 
+      image/icon-css-classes: fa-bell-o
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:20010:&SESSION.::&DEBUG.::::'
+        page: 20010 # Push Notifications
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: اختر ما إذا كنت ترغب في تلقي إشعارات فورية على هذا الجهاز.
+      2.: <span class="a-pwaPush--state"></span>
+
+    configuration: 
+      build-option: 'Feature: Push Notifications' # 251478320040477840
+
+- # ====== List: Admin - Lookup Values =========================
+  id: 14194036454560127574
+  identification: 
+    name: Admin - Lookup Values
+
+  subscription: 
+    version-number: 46311322410621
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: تصنيفات الموردين =============================
+    id: 255233535810933714
+    label: 
+      label: تصنيفات الموردين
+
+    icon: 
+      image/icon-css-classes: fa-clipboard-wrench
+
+    layout: 
+      sequence: 1
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:125:&SESSION.::&DEBUG.::::'
+        page: 125 # Suppliers Type
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: يمثل جدول تصنيفات الموردين جدولًا مرجعيًا يحتوي على أنواع الموردين الذين يتم التعامل معهم داخل النظام.
+      2.: '&P10000_SUPPLIERS_TYPES.'
+
+  - # ====== Entry: قائمة العملات واسعار الصرف ===================
+    id: 256913106144507413
+    label: 
+      label: قائمة العملات واسعار الصرف
+
+    icon: 
+      image/icon-css-classes: fa-exchange
+
+    layout: 
+      sequence: 6
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:148:&SESSION.::&DEBUG.::::'
+        page: 148 # Currencies List
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: |
+        تمثل هذه القائمة المرجعية جميع العملات المتاحة في النظام، إلى جانب بيانات مفصلة حول أسعار الصرف الخاصة بها مقابل الجنيه المصري (EGP).
+        
+        
+      2.: '&P10000_CURRENCIES.'
+
+  - # ====== Entry:  قائمةانواع المرافق ==========================
+    id: 276604703371849393
+    label: 
+      label: ' قائمةانواع المرافق'
+
+    icon: 
+      image/icon-css-classes: fa6-solid fa6-toolbox
+
+    layout: 
+      sequence: 150
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:187:&SESSION.::&DEBUG.:RP:::'
+        page: 187
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: تمثل هذه القاءمة جميع المرافع المميزات الموجودة في الفنادق
+      2.: |2
+        	
+        &P10000_FACILITIES.
+        
+
+  - # ====== Entry: &NOMENCLATURE_INITIATIVE. Focus Areas ========
+    id: 13932687082409394853
+    label: 
+      label: '&NOMENCLATURE_INITIATIVE. Focus Areas'
+
+    icon: 
+      image/icon-css-classes: fa-user-magnifying-glass
+
+    layout: 
+      sequence: 115
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10150:&SESSION.::&DEBUG.:RP,10150:::'
+        page: 10150 # Initiative Focus Areas
+        clear-cache: RP,10150
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Focus Areas that can be associated with &NOMENCLATURE_PROJECTS. (selection is limited by &NOMENCLATURE_INITIATIVE.)
+      2.: '&P10000_FOCUS_AREAS.'
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: &NOMENCLATURE_PROJECT. Completeness Scales ===
+    id: 14194036661428127578
+    label: 
+      label: '&NOMENCLATURE_PROJECT. Completeness Scales'
+
+    icon: 
+      image/icon-css-classes: fa-badge-check
+
+    layout: 
+      sequence: 70
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10200:&SESSION.::&DEBUG.::::'
+        page: 10200 # Project Completeness Scales
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Details of available completeness scales (from 0% to 100% in 10% increments) used for &NOMENCLATURE_PROJECTS.
+      2.: '&P10000_PROJECT_STATUS_SCALES.'
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: Activity Types ===============================
+    id: 14194037434810127581
+    label: 
+      label: Activity Types
+
+    icon: 
+      image/icon-css-classes: fa-address-card-o
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10700:&SESSION.::&DEBUG.:RP,10700:::'
+        page: 10700
+        clear-cache: RP,10700
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Used to further describe logged activities
+      2.: '&P10000_ACTIVITY_TYPES.'
+
+    server-side-condition: 
+      type: Never
+
+    configuration: 
+      build-option: Activity Planning # 24793266618951063217
+
+  - # ====== Entry: &NOMENCLATURE_PROJECT. Sizes =================
+    id: 14194039067536127583
+    label: 
+      label: '&NOMENCLATURE_PROJECT. Sizes'
+
+    icon: 
+      image/icon-css-classes: fa-users-alt
+
+    layout: 
+      sequence: 90
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10100:&SESSION.::&DEBUG.::::'
+        page: 10100 # Project Size
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Sizes for &NOMENCLATURE_PROJECTS. with associated level of effort
+      2.: '&P10000_PROJECT_SIZES.'
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: Release Milestone Types ======================
+    id: 16697825096697425292
+    label: 
+      label: Release Milestone Types
+
+    icon: 
+      image/icon-css-classes: fa-clipboard-check-alt
+
+    layout: 
+      sequence: 140
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10090:&SESSION.::&DEBUG.::::'
+        page: 10090
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Used to describe Release Milestones
+      2.: '&P10000_REL_MILESTONE_TYPES.'
+
+    server-side-condition: 
+      type: Never
+
+    configuration: 
+      build-option: Releases # 14854353056805192289
+
+  - # ====== Entry: قائمة الكفائات (مستخدمة للفريق) ==============
+    id: 21545934273740520241
+    label: 
+      label: قائمة الكفائات (مستخدمة للفريق)
+
+    icon: 
+      image/icon-css-classes: fa-users-alt
+
+    layout: 
+      sequence: 4
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:154:&SESSION.::&DEBUG.::::'
+        page: 154
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: |
+        مرتبطة بأعضاء الفريق وتُعرض ضمن ملفهم الشخصي
+        
+        
+      2.: '&P10000_COMPETENCIES.'
+
+  - # ====== Entry: قائمة انواع المهام ===========================
+    id: 28846082588663595357
+    label: 
+      label: قائمة انواع المهام
+
+    icon: 
+      image/icon-css-classes: fa-clipboard-list
+
+    layout: 
+      sequence: 7
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10064:&SESSION.::&DEBUG.:RP:::'
+        page: 10064 # Task Types
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: قائمة انواع المهام الذي يمكن اختيارة عند اضافة مهمة على حجز
+      2.: '&P10000_TASK_TYPES.'
+
+  - # ====== Entry: حالات المهام (مراحل المهمة) ==================
+    id: 28846371927894614982
+    label: 
+      label: حالات المهام (مراحل المهمة)
+
+    icon: 
+      image/icon-css-classes: fa-wizard
+
+    layout: 
+      sequence: 8
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10061:&SESSION.::&DEBUG.:RP:::'
+        page: 10061 # Task Statuses
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: الحالات المتاحة للمهام
+      2.: '&P10000_TASK_STATUSES.'
+
+  - # ====== Entry: قائمة الدول ==================================
+    id: 35987786868554427145
+    label: 
+      label: قائمة الدول
+
+    icon: 
+      image/icon-css-classes: fa-globe
+
+    layout: 
+      sequence: 3
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:43:&SESSION.::&DEBUG.:RP:::'
+        page: 43 # Countries
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: قائمة الدول المسجلة في النظام
+      2.: '&P10000_COUNTRIES.'
+
+- # ====== List: Admin - Notifications =========================
+  id: 14596934940524139886
+  identification: 
+    name: Admin - Notifications
+
+  subscription: 
+    version-number: 46311321449313
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Notifications ================================
+    id: 14596935187087139888
+    label: 
+      label: Notifications
+
+    icon: 
+      image/icon-css-classes: fa-bullhorn
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10074:&SESSION.::&DEBUG.::::'
+        page: 10074
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Manage available notifications that team members can subscribe to
+
+    configuration: 
+      build-option: Subscriptions # 21632088322832923817
+
+- # ====== List: Recent Projects ===============================
+  id: 16622580192881277081
+  identification: 
+    name: Recent Projects
+
+  subscription: 
+    version-number: 44534599760393
+
+  source: 
+    type: SQL Query
+    sql-query: |
+      select the_level,
+             label, 
+             target, 
+             is_current_list_entry,
+             image,
+             image_attribute,
+             image_alt_attribute,
+             attribute1,
+             attribute2,
+             attribute3,
+             attribute4,
+             attribute5,
+             attribute6,
+             attribute7,
+             attribute8,
+             attribute9,
+             attribute10
+        from (
+      with recent_projects as (
+          select l.project_id, 
+                 max(page_rendered) page_rendered 
+          from SP_PROJ_INTERACTIONS_LOG l,
+               sp_projects p
+          where l.app_user = lower(:APP_USER) and
+                l.project_id = p.id and
+                p.ARCHIVED_YN = 'N' and
+                p.DUPLICATE_OF_PROJECT_ID is null and
+                l.page_rendered is not null
+          group by project_id, l.app_user
+          order by 2 desc
+          fetch first 10 rows only)
+      select distinct 
+             1 as the_level,
+             decode(
+               greatest(length(project),70), 
+               70, 
+               project,
+               substr(project,1,80)||'...') as label, 
+             apex_page.get_url(p_page => 3, p_items => 'fi', p_clear_cache => '3', p_values => p.friendly_identifier) as target, 
+             null    is_current_list_entry,
+             'fa-pie-chart-'||PCT_COMPLETE as image,
+             null    image_attribute,
+             null    image_alt_attribute,
+             null    attribute1,
+             null    attribute2,
+             null    attribute3,
+             null    attribute4,
+             null    attribute5,
+             null    attribute6,
+             null    attribute7,
+             null    attribute8,
+             null    attribute9,
+             null    attribute10,
+             l.page_rendered
+      from  sp_projects p,
+            recent_projects l
+      where p.id = l.project_id 
+      )
+      order by page_rendered desc
+
+- # ====== List: Admin - Monitoring ============================
+  id: 18667208730628558562
+  identification: 
+    name: Admin - Monitoring
+
+  subscription: 
+    version-number: 46311312817812
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: Page Views ===================================
+    id: 14043644043526974197
+    label: 
+      label: Page Views
+
+    icon: 
+      image/icon-css-classes: fa-file-o
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:39:&SESSION.::&DEBUG.::::'
+        page: 39 # Page Views
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Application page view details
+
+  - # ====== Entry: Page Performance =============================
+    id: 14044085714832409786
+    label: 
+      label: Page Performance
+
+    icon: 
+      image/icon-css-classes: fa-file-o
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:71:&SESSION.::&DEBUG.::::'
+        page: 71
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Application page view details
+
+  - # ====== Entry: Page Views by User ===========================
+    id: 14055394049092039245
+    label: 
+      label: Page Views by User
+
+    icon: 
+      image/icon-css-classes: fa-file-o
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:72:&SESSION.::&DEBUG.::::'
+        page: 72
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Application page view details
+
+  - # ====== Entry: Application Log ==============================
+    id: 15976237335760286325
+    label: 
+      label: Application Log
+
+    icon: 
+      image/icon-css-classes: fa-table-wrench
+
+    layout: 
+      sequence: 70
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10050:&SESSION.::&DEBUG.:10050:::'
+        page: 10050 # Application Log
+        clear-cache: 10050
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Log of all changes to administrative data (users, settings, valid values)
+
+  - # ====== Entry: Job Reporting ================================
+    id: 33476865421765404111
+    label: 
+      label: Job Reporting
+
+    icon: 
+      image/icon-css-classes: fa-user-chart
+
+    layout: 
+      sequence: 60
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:16010:&SESSION.::&DEBUG.:16010:::'
+        page: 16010 # Job Reporting
+        clear-cache: 16010
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: View status and run details of jobs supporting this application
+
+  - # ====== Entry: Email Reporting ==============================
+    id: 34257164777586035906
+    label: 
+      label: Email Reporting
+
+    icon: 
+      image/icon-css-classes: fa-envelope-chart
+
+    layout: 
+      sequence: 50
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:16020:&SESSION.::&DEBUG.:16020:::'
+        page: 16020 # Email Reporting
+        clear-cache: 16020
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Report of all email queued to be sent and those already sent
+
+    configuration: 
+      build-option: Email Configured # 27339243674243649467
+
+- # ====== List: Feedback ======================================
+  id: 18694137274392829609
+  identification: 
+    name: Feedback
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    type: Static Values
+
+  configuration: 
+    build-option: 'Feature: Feedback' # 18694099258590829535
+
+  entries: 
+  - # ====== Entry: User Feedback ================================
+    id: 18694137686800829610
+    label: 
+      label: User Feedback
+
+    icon: 
+      image/icon-css-classes: fa-comment-o
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:12123:&APP_SESSION.::&DEBUG.:12123::'
+        page: 12123 # Manage Feedback
+        clear-cache: 12123
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Report of all feedback submitted by application users
+
+- # ====== List: Reports =======================================
+  id: 20773939928084819644
+  identification: 
+    name: Reports
+
+  subscription: 
+    version-number: 46305873238392
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: &NOMENCLATURE_PROJECT. Contributors ==========
+    id: 11729533808280549253
+    label: 
+      label: '&NOMENCLATURE_PROJECT. Contributors'
+
+    icon: 
+      image/icon-css-classes: fa-user
+
+    layout: 
+      sequence: 190
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:55:&SESSION.::&DEBUG.::::'
+        page: 55
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Cross &NOMENCLATURE_PROJECT. Contributor report.
+
+  - # ====== Entry: &NOMENCLATURE_PROJECT. Groups ================
+    id: 11949597070466023777
+    label: 
+      label: '&NOMENCLATURE_PROJECT. Groups'
+
+    icon: 
+      image/icon-css-classes: fa-package
+
+    layout: 
+      sequence: 220
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:70:&SESSION.::&DEBUG.:RP:::'
+        page: 70
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: This report lists all &NOMENCLATURE_PROJECT. Groups with links to drill down to &NOMENCLATURE_PROJECTS. within the Group.
+
+  - # ====== Entry: Change History ===============================
+    id: 14432967706190365911
+    label: 
+      label: Change History
+
+    icon: 
+      image/icon-css-classes: fa-clock-o
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:78:&SESSION.::&DEBUG.:RP:::'
+        page: 78
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Change reporting across &NOMENCLATURE_INITIATIVES., &NOMENCLATURE_PROJECTS. and Releases.
+
+  - # ====== Entry: &NOMENCLATURE_PROJECTS. Interactive Report ===
+    id: 19095780276094907824
+    label: 
+      label: '&NOMENCLATURE_PROJECTS. Interactive Report'
+
+    icon: 
+      image/icon-css-classes: fa-table-arrow-down
+
+    layout: 
+      sequence: 180
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:86:&SESSION.::&DEBUG.::::'
+        page: 86
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Interactive report of &NOMENCLATURE_PROJECTS. that supports download.
+
+  - # ====== Entry: Comments =====================================
+    id: 23948735100655558785
+    label: 
+      label: Comments
+
+    icon: 
+      image/icon-css-classes: fa-comment-o
+
+    layout: 
+      sequence: 60
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:7:&SESSION.::&DEBUG.:RP:::'
+        page: 7 # Assign to Security Group
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: All comments added to this system.
+
+  - # ====== Entry: Duplicate &NOMENCLATURE_PROJECTS. ============
+    id: 23948967402193439224
+    label: 
+      label: Duplicate &NOMENCLATURE_PROJECTS.
+
+    icon: 
+      image/icon-css-classes: fa-copy
+
+    layout: 
+      sequence: 120
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:51:&SESSION.::&DEBUG.::::'
+        page: 51
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: All &NOMENCLATURE_PROJECTS. that appear to be duplicates.
+
+    configuration: 
+      build-option: Releases # 14854353056805192289
+
+  - # ====== Entry: Tasks ========================================
+    id: 29287225370020821879
+    label: 
+      label: Tasks
+
+    icon: 
+      image/icon-css-classes: fa-clipboard-list
+
+    layout: 
+      sequence: 17
+
+    is-current: 
+      type: Pages
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.::::'
+        page: 500 # Tasks
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: Tasks across all unarchived projects.
+      8.: documents, images
+
+- # ====== List: Admin - Utilities =============================
+  id: 21864624636978696820
+  identification: 
+    name: Admin - Utilities
+
+  subscription: 
+    version-number: 46311323431747
+
+  source: 
+    type: Static Values
+
+- # ====== List: Navigation Menu ===============================
+  id: 149832519864830023405
+  identification: 
+    name: Navigation Menu
+
+  subscription: 
+    version-number: 46525820839579
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: اضافة عميل ===================================
+    id: 179984178740929221
+    label: 
+      label: اضافة عميل
+
+    icon: 
+      image/icon-css-classes: fa-plus-circle-o
+
+    layout: 
+      sequence: 460
+      parent-entry: إدارة العملاء # 251690441351329539
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:121:&SESSION.::&DEBUG.:121:::'
+        page: 121 # Client Details-form
+        clear-cache: 121
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: depericated ==================================
+    id: 192660481683245491
+    label: 
+      label: depericated
+
+    layout: 
+      sequence: 1000
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.::::'
+        page: 1 # home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: إدارة التسويات ===============================
+    id: 195763057500364296
+    label: 
+      label: إدارة التسويات
+
+    icon: 
+      image/icon-css-classes: fa-money-withdrawal
+
+    layout: 
+      sequence: 410
+      parent-entry: depericated # 192660481683245491
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 248
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:251:&SESSION.::&DEBUG.::::'
+        page: 251 # نظام التسوية - الاصدار الاول
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: limo search result ===========================
+    id: 220275896077280329
+    label: 
+      label: limo search result
+
+    icon: 
+      image/icon-css-classes: fa-magic
+
+    layout: 
+      sequence: 450
+      parent-entry: depericated # 192660481683245491
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 273
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:273:&SESSION.::&DEBUG.::::'
+        page: 273 # choose service type
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: سجل طلبات المسار السريع ======================
+    id: 229985416722649650
+    label: 
+      label: سجل طلبات المسار السريع
+
+    icon: 
+      image/icon-css-classes: fa-th-list
+
+    layout: 
+      sequence: 280
+      parent-entry: إدارة المسار السريع # 280979830647411303
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 454
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:454:&SESSION.::&DEBUG.::::'
+        page: 454 # Fast Track Reservations Requests
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة العملاء ================================
+    id: 251690441351329539
+    label: 
+      label: إدارة العملاء
+
+    icon: 
+      image/icon-css-classes: fa-user-magnifying-glass
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 112
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:112:&SESSION.::&DEBUG.::::'
+        page: 112 # Clients
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: سجل الموظفين =================================
+    id: 255521919931485600
+    label: 
+      label: سجل الموظفين
+
+    icon: 
+      image/icon-css-classes: fa-clipboard-user
+
+    layout: 
+      sequence: 230
+      parent-entry: إدارة الهويات والمجموعات # 149852747289473716974
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:99:&SESSION.::&DEBUG.::::'
+        page: 99 # Employees Register Report 
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة الموردين ===============================
+    id: 255735265163086178
+    label: 
+      label: إدارة الموردين
+
+    icon: 
+      image/icon-css-classes: fa-id-card-o
+
+    layout: 
+      sequence: 40
+      parent-entry: depericated # 192660481683245491
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:157:&SESSION.::&DEBUG.::::'
+        page: 157 # Suppliers Accounts
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: سجل حسابات الموردين  =========================
+    id: 255897325161947631
+    label: 
+      label: 'سجل حسابات الموردين '
+
+    icon: 
+      image/icon-css-classes: 'fa-users	'
+
+    layout: 
+      sequence: 150
+      parent-entry: إدارة الموردين # 255735265163086178
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:168:&SESSION.::&DEBUG.::::'
+        page: 168 # Suppliers Register Report 
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة الليموزين ==============================
+    id: 266519133857125852
+    label: 
+      label: إدارة الليموزين
+
+    icon: 
+      image/icon-css-classes: fa-car
+
+    layout: 
+      sequence: 41
+      parent-entry: depericated # 192660481683245491
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 350
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.::::'
+        page: 350 # Limousine Department Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: كتالوج السيارات ==============================
+    id: 266575579798994967
+    label: 
+      label: كتالوج السيارات
+
+    icon: 
+      image/icon-css-classes: fa-shopping-cart
+
+    layout: 
+      sequence: 180
+      parent-entry: إدارة الليموزين # 266519133857125852
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 351
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:351:&SESSION.::&DEBUG.::::'
+        page: 351 # Limo Cars Catalog
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: سجل طلبات الليموزين ==========================
+    id: 269474559014527505
+    label: 
+      label: سجل طلبات الليموزين
+
+    icon: 
+      image/icon-css-classes: fa-th-list
+
+    layout: 
+      sequence: 190
+      parent-entry: إدارة الليموزين # 266519133857125852
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 361
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.::::'
+        page: 362 # Limo Reservations Requests
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: Drivers Application  =========================
+    id: 270622108083873447
+    label: 
+      label: |
+        Drivers Application
+        
+
+    layout: 
+      sequence: 120
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6000:&SESSION.::&DEBUG.::::'
+        page: 6000 # Driver's Application Home Page
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: سجل كباتن الشركة =============================
+    id: 274397905625614645
+    label: 
+      label: سجل كباتن الشركة
+
+    icon: 
+      image/icon-css-classes: fa-users
+
+    layout: 
+      sequence: 200
+      parent-entry: إدارة الليموزين # 266519133857125852
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 364
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:364:&SESSION.::&DEBUG.::::'
+        page: 364 # Drivers Accounts
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: نظام طباعة التقارير ==========================
+    id: 276208597401144968
+    label: 
+      label: نظام طباعة التقارير
+
+    icon: 
+      image/icon-css-classes: fa-file-pdf-o
+
+    layout: 
+      sequence: 130
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:189:&SESSION.::&DEBUG.::::'
+        page: 189
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: false
+
+  - # ====== Entry: سجل سيارات الشركة ============================
+    id: 280877510424153044
+    label: 
+      label: سجل سيارات الشركة
+
+    icon: 
+      image/icon-css-classes: fa-car
+
+    layout: 
+      sequence: 220
+      parent-entry: إدارة الليموزين # 266519133857125852
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 367
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:367:&SESSION.::&DEBUG.::::'
+        page: 367 # Company Registered Cars
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة المسار السريع ==========================
+    id: 280979830647411303
+    label: 
+      label: إدارة المسار السريع
+
+    icon: 
+      image/icon-css-classes: fa-person-running-fast
+
+    layout: 
+      sequence: 42
+      parent-entry: depericated # 192660481683245491
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 450
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:450:&SESSION.::&DEBUG.::::'
+        page: 450 # FastTrack Department Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة خدمات الطيران ==========================
+    id: 281055345616850388
+    label: 
+      label: إدارة خدمات الطيران
+
+    icon: 
+      image/icon-css-classes: fa-plane
+
+    layout: 
+      sequence: 70
+      parent-entry: depericated # 192660481683245491
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 650
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:650:&SESSION.::&DEBUG.::::'
+        page: 650 # Airport Services Department Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: الإدارة المالية ==============================
+    id: 281065274231858373
+    label: 
+      label: الإدارة المالية
+
+    icon: 
+      image/icon-css-classes: fa-vault
+
+    layout: 
+      sequence: 110
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 750
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:750:&SESSION.::&DEBUG.::::'
+        page: 750 # Finance Department Home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: financedepartmenutab
+      3.: financedepartmenutab
+
+    security: 
+      authorization-scheme: Administration Rights # 149832818388153023719
+
+  - # ====== Entry: كتالوج الخدمات ===============================
+    id: 281096447885893834
+    label: 
+      label: كتالوج الخدمات
+
+    icon: 
+      image/icon-css-classes: 'fa-shopping-cart	'
+
+    layout: 
+      sequence: 250
+      parent-entry: إدارة المسار السريع # 280979830647411303
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 452
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:452:&SESSION.::&DEBUG.::::'
+        page: 452 # Fast Track Services Catalog
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: الحسابات =====================================
+    id: 281327860221843892
+    label: 
+      label: الحسابات
+
+    icon: 
+      image/icon-css-classes: fa-briefcase
+
+    layout: 
+      sequence: 260
+      parent-entry: الإدارة المالية # 281065274231858373
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 751
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:751:&SESSION.::&DEBUG.::::'
+        page: 751 # Finance Department Accounts Page
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: العملات ======================================
+    id: 281549809743450723
+    label: 
+      label: العملات
+
+    icon: 
+      image/icon-css-classes: fa-coins
+
+    layout: 
+      sequence: 270
+      parent-entry: الإدارة المالية # 281065274231858373
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 755
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:755:&SESSION.::&DEBUG.::::'
+        page: 755 # Finance Department Currencies
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: الصفحة الرئيسية ==============================
+    id: 149832823987814023765
+    label: 
+      label: الصفحة الرئيسية
+
+    icon: 
+      image/icon-css-classes: fa-home
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.::::'
+        page: 1 # home
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة الهويات والمجموعات =====================
+    id: 149852747289473716974
+    label: 
+      label: إدارة الهويات والمجموعات
+
+    icon: 
+      image/icon-css-classes: 'fa-user '
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Pages
+      pages: 
+      - 5
+      - 19
+      - 20
+      - 74
+      - 61
+      - 4
+      - 2
+      - 6
+      - 4
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4:&SESSION.::&DEBUG.:RP:::'
+        page: 4 # Identities Department
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Navigation Bar ================================
+  id: 149832814382181023690
+  identification: 
+    name: Navigation Bar
+
+  subscription: 
+    version-number: 46362649530330
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: الحضور =======================================
+    id: 187482144214590239
+    label: 
+      label: الحضور
+
+    icon: 
+      image/icon-css-classes: fa-calendar-check
+
+    layout: 
+      sequence: 110
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:228:&SESSION.::&DEBUG.::::'
+        page: 228 # ATTENDANCE
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: اضافة عميل ===================================
+    id: 229974832887407759
+    label: 
+      label: اضافة عميل
+
+    icon: 
+      image/icon-css-classes: fa-plus-circle-o
+
+    layout: 
+      sequence: 30
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:121:&SESSION.::&DEBUG.:121:::'
+        page: 121 # Client Details-form
+        clear-cache: 121
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Never
+
+  - # ====== Entry: تسطيب Blitz ==================================
+    id: 231088673060387887
+    label: 
+      label: تسطيب Blitz
+
+    icon: 
+      image/icon-css-classes: fa-cloud-download
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Never
+
+    link: 
+      target: '#action$a-pwa-install'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: a-pwaInstall
+
+  - # ====== Entry: الإعدادات ====================================
+    id: 251485055053477852
+    label: 
+      label: الإعدادات
+
+    icon: 
+      image/icon-css-classes: fa-gear
+
+    layout: 
+      sequence: 70
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:20000:&SESSION.::&DEBUG.::::'
+        page: 20000 # Settings
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    configuration: 
+      build-option: 'Feature: User Settings' # 251478642664477840
+
+  - # ====== Entry: تغيير كلمة المرور ============================
+    id: 265927162604092353
+    label: 
+      label: تغيير كلمة المرور
+
+    icon: 
+      image/icon-css-classes: fa-lock-password
+
+    layout: 
+      sequence: 130
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10015:&SESSION.::&DEBUG.::P10015_USERNAME:&APP_USER.:'
+        page: 10015 # Change Password
+        values: 
+          p10015_username: '&APP_USER.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: إدارة النظام =================================
+    id: 14183069872450219922
+    label: 
+      label: إدارة النظام
+
+    icon: 
+      image/icon-css-classes: fa-users
+
+    layout: 
+      sequence: 120
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10000:&SESSION.::&DEBUG.:RP:::'
+        page: 10000
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    security: 
+      authorization-scheme: Administration Rights # 149832818388153023719
+
+  - # ====== Entry: بحث ==========================================
+    id: 14334424409136548350
+    label: 
+      label: بحث
+
+    icon: 
+      image/icon-css-classes: fa-search
+
+    layout: 
+      sequence: 40
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '#action$open-search'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: الاشتراكات ===================================
+    id: 14598881571269437336
+    label: 
+      label: الاشتراكات
+
+    icon: 
+      image/icon-css-classes: fa-sliders
+
+    layout: 
+      sequence: 80
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:139:&SESSION.::&DEBUG.:139:::'
+        page: 139
+        clear-cache: 139
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: |
+        :APP_USER_ID is not null and
+        apex_util.get_build_option_status (
+            p_application_id    => :APP_ID,
+            p_build_option_name => 'Email Configured') = 'INCLUDE' and
+        apex_util.get_build_option_status (
+            p_application_id    => :APP_ID,
+            p_build_option_name => 'Subscriptions') = 'INCLUDE'
+
+    security: 
+      authorization-scheme: Developers Rights # 251489129273602464
+
+  - # ====== Entry: حسابي ========================================
+    id: 14950191448528914839
+    label: 
+      label: حسابي
+
+    icon: 
+      image/icon-css-classes: fa-user
+
+    layout: 
+      sequence: 90
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:RP:P5_ID:&APP_USER_ID.:'
+        page: 5 # Security Group Form
+        clear-cache: RP
+        values: 
+          p5_id: '&APP_USER_ID.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+    server-side-condition: 
+      type: Item is NOT NULL
+      item: APP_USER_ID
+
+  - # ====== Entry: Feedback =====================================
+    id: 18694136979896829607
+    label: 
+      label: Feedback
+
+    icon: 
+      image/icon-css-classes: fa-comment-o
+
+    layout: 
+      sequence: 60
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:12120:&SESSION.::&DEBUG.:12120:P12120_PAGE_ID:&APP_PAGE_ID.:'
+        page: 12120 # Feedback
+        clear-cache: 12120
+        values: 
+          p12120_page_id: '&APP_PAGE_ID.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: icon-only
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: apex_util.feedback_enabled
+
+    security: 
+      authorization-scheme: Reader Rights # 149832818440453023719
+
+    configuration: 
+      build-option: 'Feature: Feedback' # 18694099258590829535
+
+  - # ====== Entry: &APP_USER. ===================================
+    id: 149832880404745024413
+    label: 
+      label: '&APP_USER.'
+
+    icon: 
+      image/icon-css-classes: fa-user
+
+    layout: 
+      sequence: 50
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '#'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      2.: has-username
+
+  - # ====== Entry: --- ==========================================
+    id: 149832880938828024414
+    label: 
+      label: '---'
+
+    layout: 
+      sequence: 140
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: separator
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+  - # ====== Entry: تسجيل الخروج =================================
+    id: 149832881372882024414
+    label: 
+      label: تسجيل الخروج
+
+    icon: 
+      image/icon-css-classes: fa-sign-out
+
+    layout: 
+      sequence: 150
+      parent-entry: '&APP_USER.' # 149832880404745024413
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: '&LOGOUT_URL.'
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+
+- # ====== List: Admin - Access Control ========================
+  id: 149832882998409024421
+  identification: 
+    name: Admin - Access Control
+
+  subscription: 
+    version-number: 44713768169834
+
+  source: 
+    type: Static Values
+
+  configuration: 
+    build-option: Access Control # 149832816658623023715
+
+  entries: 
+  - # ====== Entry: المستخدمين ===================================
+    id: 149832883478005024421
+    label: 
+      label: المستخدمين
+
+    icon: 
+      image/icon-css-classes: fa-users
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10011:&SESSION.::&DEBUG.:RP:::'
+        page: 10011 # Users
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: تحديد صلاحيات الوصول للمستخدمين الموثّقين في النظام
+
+  - # ====== Entry: التحكم في الوصول =============================
+    id: 149832883897055024422
+    label: 
+      label: التحكم في الوصول
+
+    icon: 
+      image/icon-css-classes: fa-key
+
+    layout: 
+      sequence: 20
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10010:&SESSION.::&DEBUG.::::'
+        page: 10010
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: تغيير إعدادات التحكم في الوصول
+
+- # ====== List: Admin - Configuration =========================
+  id: 149843827046632525025
+  identification: 
+    name: Admin - Configuration
+
+  subscription: 
+    version-number: 46311325125942
+
+  source: 
+    type: Static Values
+
+  entries: 
+  - # ====== Entry: إعدادات منظومة الانصراف والحضور ==============
+    id: 245033688420405787
+    label: 
+      label: إعدادات منظومة الانصراف والحضور
+
+    icon: 
+      image/icon-css-classes: fa-calendar-o
+
+    layout: 
+      sequence: 110
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:194:&SESSION.::&DEBUG.::::'
+        page: 194
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: false
+      1.: تحكم في اعدادات الخصم وايام العطل العامة للنظام
+
+  - # ====== Entry: Nomenclature =================================
+    id: 18476108273211430692
+    label: 
+      label: Nomenclature
+
+    icon: 
+      image/icon-css-classes: fa-external-link-square
+
+    layout: 
+      sequence: 10
+
+    is-current: 
+      type: Target Page
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10400:&SESSION.::&DEBUG.:RP:::'
+        page: 10400
+        clear-cache: RP
+
+    click-counting: 
+      count-clicks: false
+
+    user-defined-attributes: 
+      translatable: true
+      1.: Configure application name and labels of primary attribute names
+
+    server-side-condition: 
+      type: Never
+

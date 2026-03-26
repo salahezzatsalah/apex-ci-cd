@@ -1,0 +1,385 @@
+---
+# ====== Application: B.A.D.R ================================
+id: 100
+identification: 
+  name: B.A.D.R
+  alias: BADR
+  version: 4
+
+row-search: 
+  tokenize: true
+  text-query-function: None
+
+availability: 
+  status: Available with Developer Toolbar
+  build-status: Run and Build Application
+
+error-handling: 
+  default-display-location: Inline with Field and in Notification
+
+report-printing: 
+  type: Use Instance Settings
+
+advanced: 
+  friendly-urls: true
+  allow-feedback: true
+  logging: true
+  debugging: true
+  compatibility-mode: 24.2
+  accessible-read-only-items: false
+  pass-ecid: N
+  email-from-address: admin@ecdtai.com
+  copyright-banner: |
+    Name: #APP_NAME#
+    Copyright (c) 2025, #YEAR# Blitz Technology Solutions and/or its affiliates.
+
+authentication: 
+  public-user: APEX_PUBLIC_USER
+  authentication-scheme: Application Express Accounts # 251582727201222560
+
+authorization: 
+  source-for-role-or-group-schemes: Access Control User Role Assignments
+
+session-management: 
+  rejoin-sessions: Enabled for All Sessions
+
+session-state-protection: 
+  enabled: true
+
+security: 
+  deep-linking: Enabled
+  browser-cache: Disabled
+  embed-in-frames: Deny
+  referrer-policy: strict-origin
+  html-escaping-mode: Extended
+  runtime-api-usage: 
+  - Modify This Application
+
+database-session: 
+  parsing-schema: DEV_SCHEMA
+
+globalization: 
+  primary-language: Arabic (Egypt) (ar-eg)
+  document-direction: Language Default
+  language-derived-from: Application Primary Language
+  automatic-time-zone: false
+  automatic-csv-encoding: true
+
+application-format-masks: 
+  date: DD-MM-YYYY
+  date-time: DD-MM-YYYY
+  timestamp-time-zone: DD-MM-YYYY
+
+character-value-comparison: 
+  behavior: Database session NLS setting (default)
+
+logo: 
+  type: Image and Text
+  image-url: '#APP_FILES#icons/app-icon-512.png'
+  text: بدر - مفاعل بيانات بليتز أرمادا
+
+progressive-web-app: 
+  enable: true
+  installable: true
+  display: Standalone
+  screen-orientation: Any
+  ios-status-bar-style: Black
+  enable-push-notifications: true
+  pwa-push-notifications-credentials: App 191 Push Notifications Credentials # 125188643184433585
+  contact-email: admin@ecdtai.com
+
+navigation: 
+  home-url: 
+    url: 'f?p=&APP_ID.:1:&SESSION.'
+    page: 1 # home
+
+  login-url: 
+    url: 'f?p=&APP_ID.:LOGIN:&APP_SESSION.::&DEBUG.:::'
+    page: LOGIN
+
+navigation-menu: 
+  list-template: Top Navigation Mega Menu
+  template-options: 
+  - '#DEFAULT#'
+  - js-addActions
+  - js-menu-callout
+  - t-MegaMenu--fullWidth
+  - t-MegaMenu--layoutStacked
+  list-position: Top
+  list: Navigation Menu # 149832519864830023405
+
+navigation-bar: 
+  implementation: List
+  list: Navigation Bar # 149832814382181023690
+  list-template: Navigation Bar
+  template-options: 
+  - '#DEFAULT#'
+  - js-menu-callout
+
+javascript: 
+  file-urls: 
+  - '#APP_FILES#js/sp-search#MIN#.js'
+  - '#APP_FILES#js/blitzcode#MIN#.js'
+  include-jquery-migrate: false
+
+css: 
+  file-urls: 
+  - '#APP_FILES#fa6/fontawesome#MIN#.css'
+  - '#APP_FILES#fa6/brands#MIN#.css'
+  - '#APP_FILES#fa6/regular#MIN#.css'
+  - '#APP_FILES#fa6/solid#MIN#.css'
+  - '#APP_FILES#css/blitzcode#MIN#.css'
+  - null
+  - 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css'
+
+attributes: 
+  theme: Universal Theme # 42
+  global-page: 0
+  enable-end-users-to-choose-theme-style: false
+  add-"built-with-apex"-to-footer: false
+  auto-dismiss-success-messages: true
+
+subscription: 
+  version-number: 46533563693358
+
+substitutions: 
+- # ====== Substitution: APP_NAME ==============================
+  id: 1
+  identification: 
+    name: APP_NAME
+
+  value: 
+    static-value: BADR
+
+component-settings: 
+- # ====== Component Setting: PLUGIN_SD_INTL_PHONE_NUMBER ======
+  id: 229940713366978851
+  identification: 
+    name: PLUGIN_SD_INTL_PHONE_NUMBER
+    type: Item
+
+  subscription: 
+    version-number: 44985152575135
+
+- # ====== Component Setting: NATIVE_MAP_REGION ================
+  id: 10511683991475308726
+  identification: 
+    name: NATIVE_MAP_REGION
+    type: Region
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_ADFBC =====================
+  id: 10512314373013625374
+  identification: 
+    name: NATIVE_ADFBC
+    type: REST Data Source
+
+  subscription: 
+    version-number: 40388824085794
+
+- # ====== Component Setting: NATIVE_BOSS ======================
+  id: 10512429765571118806
+  identification: 
+    name: NATIVE_BOSS
+    type: REST Data Source
+
+  subscription: 
+    version-number: 42089648875524
+
+- # ====== Component Setting: NATIVE_SELECT_MANY ===============
+  id: 10512434014771712082
+  identification: 
+    name: NATIVE_SELECT_MANY
+    type: Item
+
+  subscription: 
+    version-number: 41354801002804
+
+- # ====== Component Setting: NATIVE_DATE_PICKER_APEX ==========
+  id: 10516082109658442962
+  identification: 
+    name: NATIVE_DATE_PICKER_APEX
+    type: Item
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_GEOCODING =================
+  id: 10516938028539712909
+  identification: 
+    name: NATIVE_GEOCODING
+    type: Process
+
+  settings: 
+    attribute-1: RELAX_HOUSE_NUMBER
+
+  subscription: 
+    version-number: 41354801014254
+
+- # ====== Component Setting: NATIVE_OPEN_AI_ASSISTANT =========
+  id: 10521442009604713586
+  identification: 
+    name: NATIVE_OPEN_AI_ASSISTANT
+    type: Dynamic Action
+
+  subscription: 
+    version-number: 41354801021278
+
+- # ====== Component Setting: NATIVE_COLOR_PICKER ==============
+  id: 149832515804838023390
+  identification: 
+    name: NATIVE_COLOR_PICKER
+    type: Item
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_GEOCODED_ADDRESS ==========
+  id: 149832516301065023393
+  identification: 
+    name: NATIVE_GEOCODED_ADDRESS
+    type: Item
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_SINGLE_CHECKBOX ===========
+  id: 149832516908595023394
+  identification: 
+    name: NATIVE_SINGLE_CHECKBOX
+    type: Item
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_STAR_RATING ===============
+  id: 149832517233910023394
+  identification: 
+    name: NATIVE_STAR_RATING
+    type: Item
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_YES_NO ====================
+  id: 149832517529600023394
+  identification: 
+    name: NATIVE_YES_NO
+    type: Item
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_DISPLAY_SELECTOR ==========
+  id: 149832518185839023395
+  identification: 
+    name: NATIVE_DISPLAY_SELECTOR
+    type: Region
+
+  subscription: 
+    version-number: 1
+
+- # ====== Component Setting: NATIVE_IR ========================
+  id: 149832518398482023395
+  identification: 
+    name: NATIVE_IR
+    type: Region
+
+  subscription: 
+    version-number: 1
+
+application-settings: 
+- # ====== Application Setting: GOOGLE_ROUTES_KEY ==============
+  id: 216904192866240749
+  identification: 
+    name: GOOGLE_ROUTES_KEY
+
+  value: 
+    value: AIzaSyD_yNuOwE3df2rRif63sfeH3kOKIy6k6v4
+    required: false
+
+  advanced: 
+    on-upgrade-keep-value: false
+
+  subscription: 
+    version-number: 46176636750909
+
+- # ====== Application Setting: EXTERNAL_PERSON_LINK ===========
+  id: 14967252161726945421
+  identification: 
+    name: EXTERNAL_PERSON_LINK
+
+  value: 
+    value: 'http://people.oracle.com/@#EMAIL#'
+    required: false
+
+  advanced: 
+    on-upgrade-keep-value: false
+
+  subscription: 
+    version-number: 41537612306125
+
+  comments: 
+    comments: 'link with #EMAIL# substitution to provide a link to more details - only if the email domain matches that within EXTERNAL_PERSON_LINK_DOMAIN'
+
+- # ====== Application Setting: EXTERNAL_PERSON_LINK_DOMAIN ====
+  id: 14967273623479950106
+  identification: 
+    name: EXTERNAL_PERSON_LINK_DOMAIN
+
+  value: 
+    value: oracle.com
+    required: false
+
+  advanced: 
+    on-upgrade-keep-value: false
+
+  subscription: 
+    version-number: 41537612306171
+
+  comments: 
+    comments: if the email of a "person" uses this domain, the EXTERNAL_PERSON_LINK will be used to show a link to more details
+
+- # ====== Application Setting: FEEDBACK_ATTACHMENTS_YN ========
+  id: 18694099551561829538
+  identification: 
+    name: FEEDBACK_ATTACHMENTS_YN
+
+  value: 
+    value: Y
+    required: false
+
+  advanced: 
+    valid-values: Y, N
+    on-upgrade-keep-value: true
+
+  subscription: 
+    version-number: 1
+
+  configuration: 
+    build-option: 'Feature: Feedback' # 18694099258590829535
+
+- # ====== Application Setting: ACCESS_CONTROL_SCOPE ===========
+  id: 19946490042100629655
+  identification: 
+    name: ACCESS_CONTROL_SCOPE
+
+  value: 
+    value: ALL_USERS
+    required: false
+
+  advanced: 
+    valid-values: ACL_ONLY, ALL_USERS
+    on-upgrade-keep-value: true
+
+  subscription: 
+    version-number: 44970597930313
+
+  configuration: 
+    build-option: Access Control # 149832816658623023715
+
+  comments: 
+    comments: The default access level given to authenticated users who are not in the access control list
+

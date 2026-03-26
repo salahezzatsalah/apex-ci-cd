@@ -1,0 +1,5221 @@
+---
+# ====== Page: Limo Reservation Request Form =================
+id: 358
+identification: 
+  name: Limo Reservation Request Form
+  alias: LIMO-RESERVATION-REQUEST-FORM
+  title: استمارة طلب حجز ليموزين - نموذج 358
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  width: 900
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  execute-when-page-loads: |
+    // $("#P358_TIME_TRIP").on("input", function() {
+    //   let v = this.value.replace(/[^0-9]/g, '').slice(0, 4); // Only allow 4 digits
+    //   let hours = v.slice(0,2);
+    //   let mins = v.slice(2,4);
+    
+    //   // Don't add ":" until there are at least 3 digits
+    //   if (v.length >= 3) {
+    //     this.value = hours + ':' + mins;
+    //   } else {
+    //     this.value = hours + (v.length > 2 ? ':' : '') + mins;
+    //   }
+    
+    //   // Validate and fix invalid hours/minutes
+    //   if (hours.length === 2) {
+    //     let h = parseInt(hours, 10);
+    //     if (h > 23) {
+    //       hours = '23';
+    //       this.value = hours + (mins.length > 0 ? ':' + mins : '');
+    //     }
+    //   }
+    //   if (mins.length === 2) {
+    //     let m = parseInt(mins, 10);
+    //     if (m > 59) {
+    //       mins = '59';
+    //       this.value = hours + ':' + mins;
+    //     }
+    //   }
+    // });
+    
+
+css: 
+  inline: |
+    /* Subtle glowing border or background to draw attention */
+    .attention-effect {
+      box-shadow: 0 0 6px 2px #ffc107cc, 0 0 16px 2px #fffbe8cc;
+      border-radius: 12px;
+      animation: attention-pulse 1.6s infinite;
+    }
+    @keyframes attention-pulse {
+      0%   { box-shadow: 0 0 8px 2px #ffc107cc, 0 0 16px 2px #fffbe8cc; }
+      50%  { box-shadow: 0 0 18px 6px #c1200eaa, 0 0 32px 8px #4c4628aa; }
+      100% { box-shadow: 0 0 8px 2px #ffc107cc, 0 0 16px 2px #fffbe8cc; }
+    }
+    
+    
+      .pushable {
+        background: hsl(340deg 100% 32%);
+        border-radius: 12px;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        outline-offset: 4px;
+      }
+    
+        .front {
+        display: block;
+        padding: 12px 42px;
+        border-radius: 12px;
+        font-size: 1.25rem;
+        background: hsl(345deg 100% 47%);
+        color: white;
+        transform: translateY(-6px);
+      }
+      
+      .pushable:active .front {
+        transform: translateY(-2px);
+      }
+    
+    
+    
+    
+    no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    .overline {
+      color: var(--ut-region-text-color, var(--ut-component-text-default-color));
+    }
+    
+    .a-FS-facetsDashboard {
+      --a-fs-chart-grid-gap: 0px;
+      --a-fs-chart-border-width: 0px;
+      --a-fs-chart-shadow: none;
+    }
+    
+    @media (max-width: 768px) {
+      .t-ContentRow-wrap.unassigned {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+    
+      .t-ContentRow-body,
+      .t-ContentRow-misc,
+      .t-ContentRow-actions {
+        width: 100%;
+        max-width: 100%;
+      }
+    
+      .t-ContentRow-misc {
+        order: 2; /* place after main body */
+      }
+    
+      .t-ContentRow-actions {
+        order: 3; /* actions come last */
+      }
+    }
+    
+    
+    .limo-overline {
+      font-size: 1em;
+      color: #030101;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 6px;
+    }
+    
+    .limo-overline .overline-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .limo-overline .label {
+      font-weight: 600;
+      color: #444;
+    }
+    .limo-overline .overline-separator {
+      color: #ccc;
+    }
+    
+    .limo-title.nowrap-wrap {
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping on very small screens if needed */
+      direction: rtl;
+      gap: 10px;
+      font-size: clamp(0.8rem, 2vw, 0.95rem); /* ✅ responsive font size */
+      line-height: 1.4;
+    }
+    
+    .limo-title .title-group {
+      display: inline-flex;
+      align-items: center;
+      background: #f3f6f9;
+      border-radius: 10px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      max-width: 100%;
+      flex-shrink: 1; /* allow shrink within container */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .limo-title i {
+      margin-left: 6px;
+      color: #23598c;
+      font-size: 1em;
+    }
+    
+    .title-label {
+      font-weight: 600;
+      margin-left: 4px;
+      color: #333;
+    }
+    
+    .title-value {
+      color: #111;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    
+    /* Row layout: image + description */
+    .limo-row {
+      display: flex;
+    
+      gap: 1px;
+      align-items: flex-start;
+          margin-top: 10px;
+    
+      max-width: 900px;
+    }
+    
+    .limo-avatar {
+      justify-content: center;
+    }
+    
+    /* Avatar */
+    .limo-avatar img {
+      width: 120px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    
+    
+    
+    /* Description container */
+    .limo-description {
+        flex: 1;
+        font-size: 0.95em;
+        line-height: 1.6;
+        color: #333;
+        direction: rtl;
+        margin-right: 20px;
+    
+        height: 90px;
+    }
+    
+    /* Trip card */
+    .trip-location-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    .location-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .location-name {
+      font-weight: 600;
+      color: #444;
+    }
+    .location-datetime {
+      font-size: 0.85em;
+      color: #888;
+    }
+    .location-arrow svg {
+      fill: #009688;
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Badges */
+    .limo-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .limo-meta .badge {
+      background: #008234;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size:0.85em;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      gap: 4px;
+    }
+    .badge-classification {
+      background: #e0f7fa;
+      color: #00695c;
+    }
+    .badge-triptype {
+      background: #f1f8e9;
+      color: #558b2f;
+    }
+    .badge-days {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    /* Ticket & Signage */
+    .limo-ticket,
+    .limo-signage {
+      font-size: 0.88em;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    .limo-ticket i,
+    .limo-signage i {
+      margin-left: 5px;
+      color: #7d4c18;
+    }
+    
+    .trip-location-card {
+        display: flex
+    ;
+        align-items: right;
+        /* justify-content: space-between; */
+        gap: 10px;
+        /* padding: 10px 16px; */
+        padding-bottom: 10px;
+        /* border: 1px solid #f5b400; */
+        border-radius: 8px;
+        /* background: #fff; */
+        direction: rtl;
+        font-family: 'Cairo', sans-serif;
+        width: fit-content;
+    }
+    
+    .trip-location-card .location-block {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+    
+    .trip-location-card .location-name {
+      font-weight: bold;
+      font-size: 1em;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    
+    .trip-location-card .location-datetime {
+      font-size: 0.9em;
+      color: #555;
+    }
+    
+    .trip-location-card .location-arrow {
+      flex-shrink: 0;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .trip-location-card .location-arrow svg {
+      transform: scaleX(-1); /* Flip for RTL */
+      fill: #999;
+      width: 20px;
+      height: 20px;
+    }
+    
+    
+    
+    
+    
+    .limo-misc {
+      width: 250px;
+      max-width: 250px;
+      padding: 10px 12px;
+      padding-top: 25px;
+      background-color: transparent;
+    
+      font-size: 0.88em;
+      direction: rtl;
+      color: #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      gap: 12px;
+    }
+    
+    /* Group block with same margin/padding rules */
+    .misc-group {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e2e2e2;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    /* Attention group styling */
+    .misc-highlight {
+      border-color: #ffca28;
+      background-color: #fffde7;
+      box-shadow: inset 0 0 0 1px #ffe08244;
+    }
+    
+    /* Row layout */
+    .misc-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.6;
+    }
+    
+    /* Icons */
+    .misc-row i {
+      color: #23598c;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    /* Label */
+    .misc-label {
+      font-weight: 600;
+      color: #444;
+      white-space: nowrap;
+    }
+    
+    /* Value */
+    .misc-value {
+      flex: 1;
+      color: #111;
+      overflow-wrap: break-word;
+    }
+    
+    /* Notes (separated block style) */
+    .misc-notes {
+      background: #fff;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-top: 4px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Fast Track Services Details =================
+  id: 229970686699398224
+  identification: 
+    name: Fast Track Services Details
+    title: حجز مسار سريع
+    type: Static Content
+
+  layout: 
+    sequence: 120
+    parent-region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: FastTrack Products Details ==================
+  id: 229970919287398226
+  identification: 
+    name: FastTrack Products Details
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |2
+       SELECT
+        SERVICE_TYPE_NAME,
+        PRODUCT_IMAGE_URL,
+        RESERVATION_ID,
+        CLIENT_CODE,
+        CLIENT_NUMBER,
+        COUNTRY,
+        CLIENT_NAME,
+        RESERVATION_DATE,
+        RES_TIME,
+        TICKET_NO,
+        SIGNAGE_DETAILS,
+        PASSENGERS_NO,
+        CURRENCY,
+        PRICE_PER_PERSON,
+        TOTAL_AMOUNT,
+        NOTES,
+        COLLECTION_BY,
+        FULFILLED_BY_NAME,
+        CREATED_BY_NAME,
+        RELATED_RESERVATION,
+          -- Period tracking
+         TO_CHAR(RESERVATION_DATE, 'YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_year,
+        TO_CHAR(RESERVATION_DATE, 'MM', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_month,
+        TO_CHAR(RESERVATION_DATE, 'DAY / DD/MM/YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS days_filter
+      
+      FROM FAST_TRACK_RESERVATIONS_VW
+      
+      WHERE 
+          RELATED_RESERVATION = :P358_RESERVATION_ID;
+      
+    page-items-to-submit: 
+    - P358_RESERVATION_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: Fast Track Services Details # 229970686699398224
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: |2
+            <div class="flex flex-wrap gap-2 items-center">
+              <span class="chip bg-gray-100 text-xs">
+                <i class="fa6 fa6-building text-indigo-500"></i> تنفيذ: <span class="font-semibold">&FULFILLED_BY_NAME.</span>
+              </span>
+              <span class="chip bg-gray-100 text-xs">
+                <i class="fa6 fa6-user-check text-teal-500"></i> تحصيل: <span class="font-semibold">&COLLECTION_BY.</span>
+              </span>
+              <span class="chip bg-gray-100 text-xs">
+                <i class="fa6 fa6-user text-green-500"></i> بواسطة: <span class="font-semibold">&CREATED_BY_NAME.</span>
+              </span>
+            </div>
+      title: |2
+          <div class="flex items-center gap-3">
+            <img src="&PRODUCT_IMAGE_URL."
+                 class="h-16 w-16 rounded-xl object-cover border border-gray-200 shadow-sm"
+                 alt="صورة الخدمة"
+                 onerror="this.onerror=null;this.src='#APP_FILES#placeholders/unknown-product.png'" />
+            <div class="flex flex-col gap-1 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-lg text-gray-900">&SERVICE_TYPE_NAME.</span>
+                <span class="text-xs px-2 py-0.5 bg-slate-100 rounded font-medium text-slate-600">
+                  كود الحجز: &RESERVATION_ID.
+                </span>
+                <span class="text-xs px-2 py-0.5 bg-slate-100 rounded font-medium text-slate-600">
+                  كود العميل: &CLIENT_CODE.
+                </span>
+              </div>
+              <div class="flex items-center gap-2 mt-1 flex-wrap">
+                <span class="text-sm text-gray-600"><i class="fa6 fa6-user text-blue-500"></i> &CLIENT_NAME.</span>
+                <span class="text-sm text-gray-600"><i class="fa6 fa6-clock text-amber-500"></i> &RESERVATION_DATE. &RES_TIME.</span>
+              </div>
+            </div>
+          </div>
+      description: |2
+          <div class="flex items-center gap-3 flex-wrap border-b pb-2 border-dashed">
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa6 fa6-users text-cyan-600"></i>
+              <span>عدد الركاب:</span>
+              <span class="font-bold text-gray-800">&PASSENGERS_NO.</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa6 fa6-money-bill-wave text-emerald-600"></i>
+              <span>الإجمالي:</span>
+              <span class="font-bold text-gray-800">&TOTAL_AMOUNT. &CURRENCY.</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa6 fa6-ticket-alt text-violet-600"></i>
+              <span>تذكرة:</span>
+              <span class="font-bold">&TICKET_NO.</span>
+            </div>
+            <!-- Show signage only if present -->
+            <div class="flex items-center gap-2 text-sm" style="display: &SIGNAGE_DETAILS_DISPLAY;;">
+              <i class="fa6 fa6-sign text-pink-600"></i>
+              <span>لافتة:</span>
+              <span class="font-bold">&SIGNAGE_DETAILS.</span>
+            </div>
+          </div>
+      miscellaneous: |2
+            <div class="flex items-center gap-2 text-xs text-gray-600" style="display: &NOTES_DISPLAY;;">
+              <i class="fa6 fa6-sticky-note text-yellow-400"></i>
+              <span>&NOTES.</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-gray-600">
+              <i class="fa6 fa6-sticky-note text-yellow-400"></i>
+              <span> سعر الفرد &PRICE_PER_PERSON. &CURRENCY. </span>
+            </div>
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 229971127332398228
+    identification: 
+      name: RESERVATION_ID
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 229971848136398235
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 230094342732430191
+    identification: 
+      name: SIGNAGE_DETAILS
+
+    layout: 
+      sequence: 150
+
+    source: 
+      type: Database Column
+      database-column: SIGNAGE_DETAILS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_CODE =================================
+    id: 230094706174430195
+    identification: 
+      name: CLIENT_CODE
+
+    layout: 
+      sequence: 190
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_MONTH ==================================
+    id: 230096606014430214
+    identification: 
+      name: TRIP_MONTH
+
+    layout: 
+      sequence: 380
+
+    source: 
+      type: Database Column
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DAYS_FILTER =================================
+    id: 230096748576430215
+    identification: 
+      name: DAYS_FILTER
+
+    layout: 
+      sequence: 390
+
+    source: 
+      type: Database Column
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SERVICE_TYPE_NAME ===========================
+    id: 230097623604430224
+    identification: 
+      name: SERVICE_TYPE_NAME
+
+    layout: 
+      sequence: 400
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_TYPE_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_IMAGE_URL ===========================
+    id: 230097691720430225
+    identification: 
+      name: PRODUCT_IMAGE_URL
+
+    layout: 
+      sequence: 410
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_IMAGE_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_NUMBER ===============================
+    id: 230097846468430226
+    identification: 
+      name: CLIENT_NUMBER
+
+    layout: 
+      sequence: 420
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COUNTRY =====================================
+    id: 230097947361430227
+    identification: 
+      name: COUNTRY
+
+    layout: 
+      sequence: 430
+
+    source: 
+      type: Database Column
+      database-column: COUNTRY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_NAME =================================
+    id: 230098029967430228
+    identification: 
+      name: CLIENT_NAME
+
+    layout: 
+      sequence: 440
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_DATE ============================
+    id: 230098165204430229
+    identification: 
+      name: RESERVATION_DATE
+
+    layout: 
+      sequence: 450
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_DATE
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RES_TIME ====================================
+    id: 230098190131430230
+    identification: 
+      name: RES_TIME
+
+    layout: 
+      sequence: 460
+
+    source: 
+      type: Database Column
+      database-column: RES_TIME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TICKET_NO ===================================
+    id: 230098337573430231
+    identification: 
+      name: TICKET_NO
+
+    layout: 
+      sequence: 470
+
+    source: 
+      type: Database Column
+      database-column: TICKET_NO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PASSENGERS_NO ===============================
+    id: 230098394073430232
+    identification: 
+      name: PASSENGERS_NO
+
+    layout: 
+      sequence: 480
+
+    source: 
+      type: Database Column
+      database-column: PASSENGERS_NO
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CURRENCY ====================================
+    id: 230098476405430233
+    identification: 
+      name: CURRENCY
+
+    layout: 
+      sequence: 490
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRICE_PER_PERSON ============================
+    id: 230098638074430234
+    identification: 
+      name: PRICE_PER_PERSON
+
+    layout: 
+      sequence: 500
+
+    source: 
+      type: Database Column
+      database-column: PRICE_PER_PERSON
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 230098755930430235
+    identification: 
+      name: TOTAL_AMOUNT
+
+    layout: 
+      sequence: 510
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_AMOUNT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COLLECTION_BY ===============================
+    id: 230123461977470486
+    identification: 
+      name: COLLECTION_BY
+
+    layout: 
+      sequence: 520
+
+    source: 
+      type: Database Column
+      database-column: COLLECTION_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FULFILLED_BY_NAME ===========================
+    id: 230123559460470487
+    identification: 
+      name: FULFILLED_BY_NAME
+
+    layout: 
+      sequence: 530
+
+    source: 
+      type: Database Column
+      database-column: FULFILLED_BY_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY_NAME =============================
+    id: 230123578290470488
+    identification: 
+      name: CREATED_BY_NAME
+
+    layout: 
+      sequence: 540
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RELATED_RESERVATION =========================
+    id: 230123733753470489
+    identification: 
+      name: RELATED_RESERVATION
+
+    layout: 
+      sequence: 550
+
+    source: 
+      type: Database Column
+      database-column: RELATED_RESERVATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_YEAR ===================================
+    id: 230123852278470490
+    identification: 
+      name: TRIP_YEAR
+
+    layout: 
+      sequence: 560
+
+    source: 
+      type: Database Column
+      database-column: TRIP_YEAR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تعديل =======================================
+    id: 230097166028430219
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تعديل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:451:&SESSION.::&DEBUG.::P451_RESERVATION_ID:&RESERVATION_ID.'
+        page: 451 # Fast Track Reservation Form
+        values: 
+          p451_reservation_id: '&RESERVATION_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: false
+      show-as-disabled: false
+
+- # ====== Region: Request Details =============================
+  id: 267097545571293641
+  identification: 
+    name: Request Details
+    title: تفاصيل الطلب
+    type: Static Content
+
+  layout: 
+    sequence: 100
+    parent-region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Services Details ============================
+  id: 267097610332293642
+  identification: 
+    name: Services Details
+    title: تفاصيل الخدمات
+    type: Static Content
+
+  layout: 
+    sequence: 110
+    parent-region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Limo Products Details =======================
+  id: 267097793718293643
+  identification: 
+    name: Limo Products Details
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        COUNT(*) OVER (PARTITION BY v.TRIP_DATE_FROM) AS TOTAL_TRIPS,
+        v.RESERVATION_ID,
+        v.CLIENT_ID,
+        v.CLIENT_CODE,
+        v.PRODUCT_ID,
+        v.CLASSIFICATION_TYPE,
+        v.TRIP_DATE_FROM,
+        v.TRIP_DATE_TO,
+      
+        -- True client ID
+        (SELECT client_id 
+         FROM LIMO_RESERVATIONS lr 
+         WHERE lr.RESERVATION_ID = v.RESERVATION_ID) AS client_true_id,
+      
+        -- Car Info
+        v.REQUESTED_CAR,
+        v.CAR_TYPE_ID,
+        v.CAR_PHOTO_URL,
+      
+        -- Trip Info
+        v.PICK_UP_TIME,
+        v.FROM_LOCATION,
+        v.TO_LOCATION,
+        v.TRIP_TYPE,
+        v.NUMBER_OF_DAYS,
+        v.TRIP_NOTES,
+        v.IMPORTANT_NOTES,
+      
+        -- Financial Info
+        v.PRODUCT_PRICE,
+        v.PRODUCT_CURRENCY,
+        v.PRODUCT_EXCHANGE_RATE,
+      
+        -- Reservation Status
+        v.PRODUCT_STATUS,
+        v.STATUS_DESCRIPTION,
+        v.ICON,
+        v.PROGRESS_PCT,
+      
+        -- Favorite Info
+        NVL((
+            SELECT 'نعم'
+            FROM RESERVATION_FAVORITES f
+            WHERE f.RESERVATION_ID = v.RESERVATION_ID
+              AND f.USER_ID = :APP_USER_ID
+        ), 'لا') AS favorite,
+      
+        NVL((
+            SELECT 'fa-heart u-danger-text'
+            FROM RESERVATION_FAVORITES f
+            WHERE f.RESERVATION_ID = v.RESERVATION_ID
+              AND f.USER_ID = :APP_USER_ID
+        ), 'fa-heart-o') AS favorite_icon,
+      
+        -- Audit Info
+        r.SALES_REP_ID,
+        r.OPS_REP_ID,
+        r.CREATED,
+        r.CREATED_BY,
+        r.UPDATED,
+        r.UPDATED_BY,
+        r.NOTES,
+      
+        -- Period tracking
+        TO_CHAR(v.TRIP_DATE_FROM, 'MM / YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS trip_month,
+        TO_CHAR(v.TRIP_DATE_FROM, 'DAY / DD/MM/YYYY', 'NLS_DATE_LANGUAGE = ''ARABIC''') AS days_filter,
+      
+        -- Driver Assignment Label
+        CASE
+          WHEN NOT EXISTS (
+            SELECT 1
+            FROM LIMO_PRODUCT_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = v.RESERVATION_ID
+              AND a.PRODUCT_ID = v.PRODUCT_ID
+              AND a.DRIVER_STATUS = 'CURRENT'
+          )
+          THEN 'حالة التوزيع:'
+          ELSE 'السائق الحالي:'
+        END AS DRIVER_ASSIGNMENT_LABEL,
+      
+        -- Driver Assignment Status
+        CASE
+          WHEN NOT EXISTS (
+            SELECT 1
+            FROM LIMO_PRODUCT_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = v.RESERVATION_ID
+              AND a.PRODUCT_ID = v.PRODUCT_ID
+              AND a.DRIVER_STATUS = 'CURRENT'
+          )
+          THEN 'في انتظار التوزيع'
+          ELSE
+             (
+              SELECT s.SUPPLIER_NAME
+              FROM LIMO_PRODUCT_ASSIGNMENTS a
+              JOIN SUPPLIERS s ON s.SUPPLIER_ID = a.DRIVER_ID
+              WHERE a.RESERVATION_ID = v.RESERVATION_ID
+                AND a.PRODUCT_ID = v.PRODUCT_ID
+                AND a.DRIVER_STATUS = 'CURRENT'
+              ORDER BY a.CREATED DESC
+              FETCH FIRST 1 ROWS ONLY
+            )
+        END AS DRIVER_ASSIGNMENT_VALUE,
+      
+        -- Assignment Class for Styling
+        CASE
+          WHEN NOT EXISTS (
+            SELECT 1
+            FROM LIMO_PRODUCT_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = v.RESERVATION_ID
+              AND a.PRODUCT_ID = v.PRODUCT_ID
+              AND a.DRIVER_STATUS = 'CURRENT'
+          )
+          THEN 'unassigned'
+          ELSE
+            'assigned' || (
+              SELECT e.USERNAME
+              FROM LIMO_PRODUCT_ASSIGNMENTS a
+              JOIN BS_EMPLOYEES e ON e.ID = a.DRIVER_ID
+              WHERE a.RESERVATION_ID = v.RESERVATION_ID
+                AND a.PRODUCT_ID = v.PRODUCT_ID
+                AND a.DRIVER_STATUS = 'CURRENT'
+              ORDER BY a.CREATED DESC
+              FETCH FIRST 1 ROWS ONLY
+            )
+        END AS ASSIGNMENTCSS,
+      
+        v.SIGNAGE_DETAILS,
+        v.TICKET_NUMBER
+      
+      FROM 
+          VW_LIMO_TRIPS_REPORT v
+          JOIN LIMO_RESERVATIONS r ON v.RESERVATION_ID = r.RESERVATION_ID
+      
+      WHERE 
+          v.RESERVATION_ID = :P358_RESERVATION_ID;
+      
+    page-items-to-submit: 
+    - P358_RESERVATION_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: Services Details # 267097610332293642
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    static-id: LIMO_PRODUCTS_REGION
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: |
+        <div class="limo-overline">
+          <span class="overline-item">
+            <span class="label">كود العميل:</span> &CLIENT_CODE.
+          </span>
+          <span class="overline-separator">|</span>
+          <span class="overline-item">
+            <span class="label">رقم الحجز:</span> &RESERVATION_ID.
+          </span>
+          <span class="overline-separator">|</span>
+          <span class="overline-item">
+            <span class="label">كود الرحلة:</span> &PRODUCT_ID.
+          </span>
+        </div>
+      title: |
+        <div class="limo-title nowrap-wrap">
+          <div class="title-group">
+            <i class="fa6 fa6-user"></i>
+            <span class="title-label">العميل:</span>
+            <span class="title-value">&CLIENT_ID.</span>
+          </div>
+          <div class="title-group">
+            <i class="fa6 fa6-clock"></i>
+            <span class="title-label">الموعد:</span>
+            <span class="title-value">&PICK_UP_TIME.</span>
+          </div>
+        </div>
+        
+      description: |2
+            <!-- Layout: Avatar + Details -->
+        <div class="limo-row">
+          <!-- Right Side: Car Avatar -->
+          <div class="limo-avatar">
+            <img src="&CAR_PHOTO_URL." alt="صورة السيارة"
+                 onerror="this.onerror=null;this.src='#APP_FILES#placeholders/unknown-car.png'" />
+          </div>
+        
+          <!-- Left Side: Description & Metadata -->
+          <div class="limo-description">
+            <!-- Route Info -->
+            <div class="trip-location-card">
+              <div class="location-block">
+                <div class="location-name">&FROM_LOCATION.</div>
+                <div class="location-datetime">&PICK_UP_TIME.</div>
+              </div>
+        
+              <div class="location-arrow">
+                <svg viewBox="0 0 24 24" width="1em" height="1em">
+                  <path d="M9.45 6c.2 0 .39.078.53.22l5 5c.208.206.323.487.32.78a1.1 1.1 0 0 1-.32.78l-5 5a.75.75 0 0 1-1.06 0 .74.74 0 0 1 0-1.06L13.64 12 8.92 7.28a.74.74 0 0 1 0-1.06.73.73 0 0 1 .53-.22z"></path>
+                </svg>
+              </div>
+        
+              <div class="location-block">
+                <div class="location-name">&TO_LOCATION.</div>
+                <div class="location-datetime">&TRIP_DATE_TO.</div>
+              </div>
+            </div>
+        
+            <!-- Trip Meta Info -->
+        
+        
+            <div class="limo-meta">
+              <span class="badge badge-classification">
+                <i class="fa6 fa6-tag"></i> &CLASSIFICATION_TYPE.
+              </span>
+              <span class="badge badge-triptype">
+                <i class="fa6 fa6-car-side"></i> &TRIP_TYPE.
+              </span>
+              <span class="badge badge-days">
+                <i class="fa6 fa6-calendar-day"></i> &NUMBER_OF_DAYS. يوم
+              </span>
+              <span class="badge badge-cartype">
+            <i class="fa6 fa6-car"></i> &REQUESTED_CAR.
+              </span>
+            </div>
+        
+        
+        
+          </div>
+        </div>
+        
+        
+      miscellaneous: |
+        <div class="spaceint"></div>
+        
+        <div class="limo-misc">
+        
+          <!-- Group: Price & Assignment -->
+        <div class="misc-group">
+          <div class="misc-row">
+            <i class="fa6 fa6-money-bill-wave"></i>
+            <span class="misc-label">السعر:</span>
+            <span class="misc-value">&PRODUCT_PRICE. &PRODUCT_CURRENCY.</span>
+          </div>
+          <div class="misc-row">
+            <i class="fa6 fa6-id-card"></i>
+            <span class="misc-label">&DRIVER_ASSIGNMENT_LABEL.</span>
+            <span class="misc-value">&DRIVER_ASSIGNMENT_VALUE.</span>
+          </div>
+        </div>
+        
+        
+          <!-- Group: Ticket + Signage -->
+          {if TICKET_NUMBER/}
+          <div class="misc-group misc-highlight">
+            <div class="misc-row">
+              <i class="fa6 fa6-ticket-alt"></i>
+              <span class="misc-label">رقم التذكرة:</span>
+              <span class="misc-value">&TICKET_NUMBER.</span>
+            </div>
+            {if SIGNAGE_DETAILS/}
+            <div class="misc-row">
+              <i class="fa6 fa6-sign"></i>
+              <span class="misc-label">لافتة الترحيب:</span>
+              <span class="misc-value">&SIGNAGE_DETAILS.</span>
+            </div>
+            {endif/}
+          </div>
+          {endif/}
+        
+          <!-- Notes -->
+          {if TRIP_NOTES/}
+          <div class="misc-row misc-notes">
+            <i class="fa6 fa6-sticky-note"></i>
+            <span class="misc-label">ملاحظات:</span>
+            <span class="misc-value">&TRIP_NOTES.</span>
+          </div>
+          {endif/}
+        
+        </div>
+        
+        
+        
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: PRODUCT_ID ==================================
+    id: 267097881253293644
+    identification: 
+      name: PRODUCT_ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_ID
+      data-type: VARCHAR2
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 267097960855293645
+    identification: 
+      name: RESERVATION_ID
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CAR_TYPE_ID =================================
+    id: 267098099596293646
+    identification: 
+      name: CAR_TYPE_ID
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: CAR_TYPE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES NAMES # 266880751448522438
+      display-extra-values: true
+
+  - # ====== Column: TRIP_TYPE ===================================
+    id: 267098165221293647
+    identification: 
+      name: TRIP_TYPE
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: TRIP_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LIMOPRODUCTS TRIP TYPES # 267647733503170392
+      display-extra-values: false
+
+  - # ====== Column: TRIP_DATE_FROM ==============================
+    id: 267098303533293648
+    identification: 
+      name: TRIP_DATE_FROM
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: TRIP_DATE_FROM
+      data-type: TIMESTAMP
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_DATE_TO ================================
+    id: 267098319956293649
+    identification: 
+      name: TRIP_DATE_TO
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: TRIP_DATE_TO
+      data-type: TIMESTAMP
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FROM_LOCATION ===============================
+    id: 267098531278293651
+    identification: 
+      name: FROM_LOCATION
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: FROM_LOCATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TO_LOCATION =================================
+    id: 267098605142293652
+    identification: 
+      name: TO_LOCATION
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: TO_LOCATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 267099486602293660
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 170
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 267099512717293661
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 180
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 267099606558293662
+    identification: 
+      name: CREATED_BY
+
+    layout: 
+      sequence: 190
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED =====================================
+    id: 267099729369293663
+    identification: 
+      name: UPDATED
+
+    layout: 
+      sequence: 200
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 267099809788293664
+    identification: 
+      name: UPDATED_BY
+
+    layout: 
+      sequence: 210
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TICKET_NUMBER ===============================
+    id: 269056359200390039
+    identification: 
+      name: TICKET_NUMBER
+
+    layout: 
+      sequence: 280
+
+    source: 
+      type: Database Column
+      database-column: TICKET_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 269056432671390040
+    identification: 
+      name: SIGNAGE_DETAILS
+
+    layout: 
+      sequence: 290
+
+    source: 
+      type: Database Column
+      database-column: SIGNAGE_DETAILS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLASSIFICATION_TYPE =========================
+    id: 269056522837390041
+    identification: 
+      name: CLASSIFICATION_TYPE
+
+    layout: 
+      sequence: 300
+
+    source: 
+      type: Database Column
+      database-column: CLASSIFICATION_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LIMO RESERVATION REQUEST CLASSIFICATIONS # 267073320409618852
+      display-extra-values: false
+
+  - # ====== Column: TOTAL_TRIPS =================================
+    id: 271411879198671039
+    identification: 
+      name: TOTAL_TRIPS
+
+    layout: 
+      sequence: 310
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_TRIPS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_ID ===================================
+    id: 271411987887671040
+    identification: 
+      name: CLIENT_ID
+
+    layout: 
+      sequence: 320
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_CODE =================================
+    id: 271412089860671041
+    identification: 
+      name: CLIENT_CODE
+
+    layout: 
+      sequence: 330
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CLIENT_TRUE_ID ==============================
+    id: 271412114779671042
+    identification: 
+      name: CLIENT_TRUE_ID
+
+    layout: 
+      sequence: 340
+
+    source: 
+      type: Database Column
+      database-column: CLIENT_TRUE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: REQUESTED_CAR ===============================
+    id: 271412229351671043
+    identification: 
+      name: REQUESTED_CAR
+
+    layout: 
+      sequence: 350
+
+    source: 
+      type: Database Column
+      database-column: REQUESTED_CAR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CAR_PHOTO_URL ===============================
+    id: 271412391755671044
+    identification: 
+      name: CAR_PHOTO_URL
+
+    layout: 
+      sequence: 360
+
+    source: 
+      type: Database Column
+      database-column: CAR_PHOTO_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PICK_UP_TIME ================================
+    id: 271412415023671045
+    identification: 
+      name: PICK_UP_TIME
+
+    layout: 
+      sequence: 370
+
+    source: 
+      type: Database Column
+      database-column: PICK_UP_TIME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NUMBER_OF_DAYS ==============================
+    id: 271412586606671046
+    identification: 
+      name: NUMBER_OF_DAYS
+
+    layout: 
+      sequence: 380
+
+    source: 
+      type: Database Column
+      database-column: NUMBER_OF_DAYS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_NOTES ==================================
+    id: 271412616388671047
+    identification: 
+      name: TRIP_NOTES
+
+    layout: 
+      sequence: 390
+
+    source: 
+      type: Database Column
+      database-column: TRIP_NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IMPORTANT_NOTES =============================
+    id: 271412721997671048
+    identification: 
+      name: IMPORTANT_NOTES
+
+    layout: 
+      sequence: 400
+
+    source: 
+      type: Database Column
+      database-column: IMPORTANT_NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_PRICE ===============================
+    id: 271412848557671049
+    identification: 
+      name: PRODUCT_PRICE
+
+    layout: 
+      sequence: 410
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_PRICE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_CURRENCY ============================
+    id: 271412975528671050
+    identification: 
+      name: PRODUCT_CURRENCY
+
+    layout: 
+      sequence: 420
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_EXCHANGE_RATE =======================
+    id: 271413079036671051
+    identification: 
+      name: PRODUCT_EXCHANGE_RATE
+
+    layout: 
+      sequence: 430
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_EXCHANGE_RATE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRODUCT_STATUS ==============================
+    id: 271413164083671052
+    identification: 
+      name: PRODUCT_STATUS
+
+    layout: 
+      sequence: 440
+
+    source: 
+      type: Database Column
+      database-column: PRODUCT_STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS_DESCRIPTION ==========================
+    id: 271413244290671053
+    identification: 
+      name: STATUS_DESCRIPTION
+
+    layout: 
+      sequence: 450
+
+    source: 
+      type: Database Column
+      database-column: STATUS_DESCRIPTION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ICON ========================================
+    id: 271413403048671054
+    identification: 
+      name: ICON
+
+    layout: 
+      sequence: 460
+
+    source: 
+      type: Database Column
+      database-column: ICON
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PROGRESS_PCT ================================
+    id: 271413470546671055
+    identification: 
+      name: PROGRESS_PCT
+
+    layout: 
+      sequence: 470
+
+    source: 
+      type: Database Column
+      database-column: PROGRESS_PCT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FAVORITE ====================================
+    id: 271413544915671056
+    identification: 
+      name: FAVORITE
+
+    layout: 
+      sequence: 480
+
+    source: 
+      type: Database Column
+      database-column: FAVORITE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FAVORITE_ICON ===============================
+    id: 271413618794671057
+    identification: 
+      name: FAVORITE_ICON
+
+    layout: 
+      sequence: 490
+
+    source: 
+      type: Database Column
+      database-column: FAVORITE_ICON
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SALES_REP_ID ================================
+    id: 271413720465671058
+    identification: 
+      name: SALES_REP_ID
+
+    layout: 
+      sequence: 500
+
+    source: 
+      type: Database Column
+      database-column: SALES_REP_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: OPS_REP_ID ==================================
+    id: 271413847810671059
+    identification: 
+      name: OPS_REP_ID
+
+    layout: 
+      sequence: 510
+
+    source: 
+      type: Database Column
+      database-column: OPS_REP_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_MONTH ==================================
+    id: 271413935871671060
+    identification: 
+      name: TRIP_MONTH
+
+    layout: 
+      sequence: 520
+
+    source: 
+      type: Database Column
+      database-column: TRIP_MONTH
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DAYS_FILTER =================================
+    id: 271414071894671061
+    identification: 
+      name: DAYS_FILTER
+
+    layout: 
+      sequence: 530
+
+    source: 
+      type: Database Column
+      database-column: DAYS_FILTER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DRIVER_ASSIGNMENT_LABEL =====================
+    id: 271414129065671062
+    identification: 
+      name: DRIVER_ASSIGNMENT_LABEL
+
+    layout: 
+      sequence: 540
+
+    source: 
+      type: Database Column
+      database-column: DRIVER_ASSIGNMENT_LABEL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DRIVER_ASSIGNMENT_VALUE =====================
+    id: 271414219548671063
+    identification: 
+      name: DRIVER_ASSIGNMENT_VALUE
+
+    layout: 
+      sequence: 550
+
+    source: 
+      type: Database Column
+      database-column: DRIVER_ASSIGNMENT_VALUE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ASSIGNMENTCSS ===============================
+    id: 271414362828671064
+    identification: 
+      name: ASSIGNMENTCSS
+
+    layout: 
+      sequence: 560
+
+    source: 
+      type: Database Column
+      database-column: ASSIGNMENTCSS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تعديل =======================================
+    id: 267689873984224544
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تعديل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:359:&SESSION.::&DEBUG.::P359_PRODUCT_ID:&PRODUCT_ID.'
+        page: 359 # Limo Product Reservation Form
+        values: 
+          p359_product_id: '&PRODUCT_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: false
+      show-as-disabled: false
+
+- # ====== Region: General Info ================================
+  id: 267907393685864371
+  identification: 
+    name: General Info
+    title: معلومات عن الطلب
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Limo Reservation Request Form ===============
+  id: 294658154260526272
+  identification: 
+    name: Limo Reservation Request Form
+    title: استمارة طلب حجز ليموزين - نموذج 358
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_RESERVATIONS
+    include-rowid-column: false
+    page-items-to-submit: 
+    - P358_RESERVATION_ID
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 294676729394526307
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P358_FAST_DIALOG_URL =====================
+  id: 230097462974430222
+  identification: 
+    name: P358_FAST_DIALOG_URL
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: General Info # 267907393685864371
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_CLASSIFICATION_TYPE =================
+  id: 266890129316625056
+  identification: 
+    name: P358_CLASSIFICATION_TYPE
+    type: Radio Group
+
+  label: 
+    label: <i class="fa6-solid fa6-folder-tree"></i>  تصنيف الطلب
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 50
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--slimPadding
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO RESERVATION REQUEST CLASSIFICATIONS # 267073320409618852
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: CLASSIFICATION_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_TICKET_NUMBER =======================
+  id: 266890266574625057
+  identification: 
+    name: P358_TICKET_NUMBER
+    type: Text Field
+
+  label: 
+    label: رقم التذكرة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: Upper
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: TICKET_NUMBER
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_SIGNAGE_DETAILS =====================
+  id: 266890339361625058
+  identification: 
+    name: P358_SIGNAGE_DETAILS
+    type: Text Field
+
+  label: 
+    label: بيانات اللافتة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-newspaper
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 200
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: SIGNAGE_DETAILS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_TIME_TRIP ===========================
+  id: 267689004008224536
+  identification: 
+    name: P358_TIME_TRIP
+    type: ClockPicker
+
+  label: 
+    label: <i class="fa6-solid fa6-clock"></i> ساعة الوصول
+    alignment: Left
+
+  settings: 
+    placement: Bottom
+    align: Right
+    autoclose: True
+    12h-mode: False
+    done-button-text: Done
+    show-clock-button: No
+    suppress-mobile-keyboards: Yes
+    logging: False
+
+  layout: 
+    sequence: 90
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 5
+
+  advanced: 
+    custom-attributes: 
+    - type="time"
+    - 'min="00:00"'
+    - 'max="23:59"'
+    - step="60"
+    - class="apex-item-text"
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: TIME_TRIP
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_DIALOG_URL ==========================
+  id: 267689434392224540
+  identification: 
+    name: P358_DIALOG_URL
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: General Info # 267907393685864371
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_RESERVATION_ID ======================
+  id: 294659154452526297
+  identification: 
+    name: P358_RESERVATION_ID
+    type: Display Only
+
+  label: 
+    label: كود طلب الحجز
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: General Info # 267907393685864371
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: RESERVATION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_CLIENT_ID ===========================
+  id: 294659513016526303
+  identification: 
+    name: P358_CLIENT_ID
+    type: Display Only
+
+  label: 
+    label: ملف العميل
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 60
+    region: General Info # 267907393685864371
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-user
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CRM_CLIENTS.FULL_NAME # 254031009602355585
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: CLIENT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_FROM_DATE ===========================
+  id: 294660776477526307
+  identification: 
+    name: P358_FROM_DATE
+    type: Date Picker
+
+  label: 
+    label: <i class="fa6-solid fa6-calendar-days"></i> تاريخ الحجز من
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 80
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: FROM_DATE
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_TO_DATE =============================
+  id: 294661147704526307
+  identification: 
+    name: P358_TO_DATE
+    type: Date Picker
+
+  label: 
+    label: <i class="fa6-solid fa6-calendar-days"></i> تاريخ الحجز الى
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: Item
+    minimum-item: P358_FROM_DATE
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 100
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: TO_DATE
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_CURRENCY ============================
+  id: 294662375972526308
+  identification: 
+    name: P358_CURRENCY
+    type: Select One
+
+  label: 
+    label: عملة الحجز
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 110
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill-wave
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT CURRENCY_CODE
+      FROM V_CURRENCY_DETAILS
+      WHERE IS_DEFAULT_YN = 'Y'
+      FETCH FIRST 1 ROWS ONLY;
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_EXCHANGE_RATE =======================
+  id: 294662701433526309
+  identification: 
+    name: P358_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 120
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-right-left
+    format-mask: FML999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT EXCHANGE_RATE_VALUE
+      FROM V_CURRENCY_DETAILS
+      WHERE CURRENCY_CODE = :P358_CURRENCY
+      
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_STATUS ==============================
+  id: 294665945634526312
+  identification: 
+    name: P358_STATUS
+    type: Display Only
+
+  label: 
+    label: <i class="fa6-solid fa6-check-to-slot"></i>  حالة الحجز
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 160
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO RESERVATION REQUEST STATUSES # 268045048478146164
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: PENDINGOPS
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_SALES_REP_ID ========================
+  id: 294666641920526320
+  identification: 
+    name: P358_SALES_REP_ID
+    type: Select List
+
+  label: 
+    label: ممثل المبيعات (Sales Representative)
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 70
+    region: General Info # 267907393685864371
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-user-tie
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: SALES_REP_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: NVL(APEX_UTIL.GET_SESSION_STATE('APP_USER_ID'), USER)
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_OPS_REP_ID ==========================
+  id: 294667386665526321
+  identification: 
+    name: P358_OPS_REP_ID
+    type: Select List
+
+  label: 
+    label: مسؤول العمليات
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 80
+    region: General Info # 267907393685864371
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-user-cog
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+    display-extra-values: false
+    display-null-value: true
+    null-display-value: لم يتم التحديد
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: OPS_REP_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_CREATED =============================
+  id: 294667764532526321
+  identification: 
+    name: P358_CREATED
+    type: Date Picker
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 130
+    region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_CREATED_BY ==========================
+  id: 294668521253526323
+  identification: 
+    name: P358_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 140
+    region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_UPDATED =============================
+  id: 294668915066526323
+  identification: 
+    name: P358_UPDATED
+    type: Date Picker
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 150
+    region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_UPDATED_BY ==========================
+  id: 294669745218526323
+  identification: 
+    name: P358_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 160
+    region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_NOTES ===============================
+  id: 294964169780266331
+  identification: 
+    name: P358_NOTES
+    type: Textarea
+
+  label: 
+    label: <i class="fa6-solid fa6-note-sticky"></i>  ملاحظات عامة على الطلب
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 130
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 400
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_RESERVATION_URL_NAME ================
+  id: 298090171225089457
+  identification: 
+    name: P358_RESERVATION_URL_NAME
+    type: Display Only
+
+  label: 
+    label: رابط الوصول
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 40
+    region: General Info # 267907393685864371
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-link
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: RESERVATION_URL_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_TAGS ================================
+  id: 298090233340089458
+  identification: 
+    name: P358_TAGS
+    type: Combobox
+
+  label: 
+    label: <i class="fa6-solid fa6-tags"></i> علامات مميزة
+    alignment: Left
+
+  settings: 
+    multi-selection: true
+    maximum-values-in-list: 20
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  multiple-values: 
+    type: Delimited List
+    separator: ','
+
+  layout: 
+    sequence: 180
+    region: Request Details # 267097545571293641
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: select tag d from DEFAULT_TAGS order by display_sequence, tag
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: TAGS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_ARCHIVED_YN =========================
+  id: 298090373310089459
+  identification: 
+    name: P358_ARCHIVED_YN
+    type: Switch
+
+  label: 
+    label: <i class="fa6-solid fa6-box-archive"></i> أرشيف
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 50
+    region: General Info # 267907393685864371
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 2
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: ARCHIVED_YN
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P358_ARCHIVED_BY =========================
+  id: 298090459436089460
+  identification: 
+    name: P358_ARCHIVED_BY
+    type: Text Field
+
+  label: 
+    label: Archived By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 170
+    region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: ARCHIVED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P358_ARCHIVED_DATE =======================
+  id: 298090516774089461
+  identification: 
+    name: P358_ARCHIVED_DATE
+    type: Date Picker
+
+  label: 
+    label: Archived Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 180
+    region: Limo Reservation Request Form # 294658154260526272
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Reservation Request Form # 294658154260526272
+    column: ARCHIVED_DATE
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: AddFastTrack ================================
+  id: 229970796751398225
+  identification: 
+    button-name: AddFastTrack
+    label: اضافة حجز مسار
+
+  layout: 
+    sequence: 10
+    region: Fast Track Services Details # 229970686699398224
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+    css-classes: 
+    - pushable
+    - front
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: CANCEL ======================================
+  id: 267046375368587368
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 294676729394526307
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 267046779136587369
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 294676729394526307
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+- # ====== Button: SAVE ========================================
+  id: 267047154315587369
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 294676729394526307
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+- # ====== Button: CREATE ======================================
+  id: 267047582252587369
+  identification: 
+    button-name: CREATE
+    label: انشاء كود الطلب
+
+  layout: 
+    sequence: 40
+    region: Buttons # 294676729394526307
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P358_RESERVATION_ID
+
+- # ====== Button: AddProduct ==================================
+  id: 267100027418293666
+  identification: 
+    button-name: AddProduct
+    label: اضافة خدمة سيارة
+
+  layout: 
+    sequence: 10
+    region: Services Details # 267097610332293642
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+    css-classes: 
+    - pushable
+    - front
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+dynamic-actions: 
+- # ====== Dynamic Action: Open Form Fast TrackForm ============
+  id: 230097215883430220
+  identification: 
+    name: Open Form Fast TrackForm
+
+  execution: 
+    sequence: 170
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: AddFastTrack # 229970796751398225
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 230097306700430221
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var fastdialogUrl = $v('P358_FAST_DIALOG_URL');
+        apex.navigation.redirect(fastdialogUrl);
+        
+
+    execution: 
+      sequence: 10
+      event: Open Form Fast TrackForm # 230097215883430220
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show Welcome Fields =================
+  id: 266890418914625059
+  identification: 
+    name: Show Welcome Fields
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_CLASSIFICATION_TYPE
+
+  client-side-condition: 
+    type: Item = Value
+    item: P358_CLASSIFICATION_TYPE
+    value: WELCOME
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 266890568223625060
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_TICKET_NUMBER
+      - P358_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Show Welcome Fields # 266890418914625059
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 266890658431625061
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_TICKET_NUMBER
+      - P358_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Show Welcome Fields # 266890418914625059
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 267052023267587394
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 267046375368587368
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 267052603606587394
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 267052023267587394
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: RefreshRooms ========================
+  id: 267052948160587394
+  identification: 
+    name: RefreshRooms
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_HOTEL_ID
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 267053488463587394
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: true
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_ROOMS
+
+    execution: 
+      sequence: 10
+      event: RefreshRooms # 267052948160587394
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: SetCurrency Rates ===================
+  id: 267055712084587397
+  identification: 
+    name: SetCurrency Rates
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 267056214293587397
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P358_CURRENCY
+        
+      items-to-submit: 
+      - P358_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: SetCurrency Rates # 267055712084587397
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: ShowHotel ===========================
+  id: 267056607696587398
+  identification: 
+    name: ShowHotel
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_CLIENT_ID
+
+  client-side-condition: 
+    type: Item is not null
+    item: P358_CLIENT_ID
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 267057178848587398
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_HOTEL_ID
+
+    execution: 
+      sequence: 10
+      event: ShowHotel # 267056607696587398
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 267057681669587398
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_HOTEL_ID
+
+    execution: 
+      sequence: 10
+      event: ShowHotel # 267056607696587398
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: ShowDates ===========================
+  id: 267058060231587398
+  identification: 
+    name: ShowDates
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_HOTEL_ID
+
+  client-side-condition: 
+    type: Item is not null
+    item: P358_HOTEL_ID
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 267058527964587399
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_FROM_DATE
+      - P358_TO_DATE
+      - P358_NUMBER_OF_GUESTS
+
+    execution: 
+      sequence: 10
+      event: ShowDates # 267058060231587398
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 267059023420587399
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_FROM_DATE
+      - P358_TO_DATE
+      - P358_NUMBER_OF_GUESTS
+
+    execution: 
+      sequence: 10
+      event: ShowDates # 267058060231587398
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Show Services =======================
+  id: 267059454609587399
+  identification: 
+    name: Show Services
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_FROM_DATE
+    - P358_TO_DATE
+
+  client-side-condition: 
+    type: Item is not null
+    item: P358_TO_DATE
+
+- # ====== Dynamic Action: Add Attention Effect ================
+  id: 267096762853293633
+  identification: 
+    name: Add Attention Effect
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_CLASSIFICATION_TYPE
+
+  client-side-condition: 
+    type: Item is null
+    item: P358_CLASSIFICATION_TYPE
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 267096839794293634
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_CLASSIFICATION_TYPE
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect # 267096762853293633
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect Ticket No. =====
+  id: 267096979573293635
+  identification: 
+    name: Add Attention Effect Ticket No.
+
+  execution: 
+    sequence: 120
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_TICKET_NUMBER
+
+  client-side-condition: 
+    type: Item is null
+    item: P358_TICKET_NUMBER
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 267097098112293636
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Ticket No. # 267096979573293635
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect Signage Details 
+  id: 267097171268293637
+  identification: 
+    name: Add Attention Effect Signage Details
+
+  execution: 
+    sequence: 130
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_SIGNAGE_DETAILS
+
+  client-side-condition: 
+    type: Item is null
+    item: P358_SIGNAGE_DETAILS
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 267097285495293638
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Signage Details # 267097171268293637
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Set To Date =========================
+  id: 267097335301293639
+  identification: 
+    name: Set To Date
+
+  execution: 
+    sequence: 150
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_FROM_DATE
+
+  client-side-condition: 
+    type: Item is null
+    item: P358_TO_DATE
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 267097491454293640
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: ':P358_FROM_DATE'
+      items-to-submit: 
+      - P358_FROM_DATE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_TO_DATE
+
+    execution: 
+      sequence: 10
+      event: Set To Date # 267097335301293639
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Open Form ===========================
+  id: 267397381208331169
+  identification: 
+    name: Open Form
+
+  execution: 
+    sequence: 160
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: AddProduct # 267100027418293666
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 267397496218331170
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var dialogUrl = $v('P358_DIALOG_URL');
+        apex.navigation.redirect(dialogUrl);
+        
+
+    execution: 
+      sequence: 10
+      event: Open Form # 267397381208331169
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Add Attention Effect Trip Time ======
+  id: 267689202974224537
+  identification: 
+    name: Add Attention Effect Trip Time
+
+  execution: 
+    sequence: 140
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_TIME_TRIP
+
+  client-side-condition: 
+    type: Item is null
+    item: P358_TIME_TRIP
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 267689215032224538
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_TIME_TRIP
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Trip Time # 267689202974224537
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Refresh Services Region =============
+  id: 267689645761224542
+  identification: 
+    name: Refresh Services Region
+
+  execution: 
+    sequence: 180
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: JavaScript Expression
+    javascript-expression: |
+      $(window).on("dialogclose", function(event, ui) {
+        apex.region("LIMO_PRODUCTS_REGION").refresh();
+      });
+      
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 230123952551470491
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: FastTrack Products Details # 229970919287398226
+
+    execution: 
+      sequence: 20
+      event: Refresh Services Region # 267689645761224542
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 267689710762224543
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Limo Products Details # 267097793718293643
+
+    execution: 
+      sequence: 10
+      event: Refresh Services Region # 267689645761224542
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show and Hide Reservation ID  =======
+  id: 268056815992285349
+  identification: 
+    name: 'Show and Hide Reservation ID '
+
+  execution: 
+    sequence: 190
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P358_RESERVATION_ID
+
+  client-side-condition: 
+    type: Item is null
+    item: P358_RESERVATION_ID
+
+  actions: 
+  - # ====== Action: Hide Reservation ID if new Reservation ======
+    id: 268056982147285350
+    identification: 
+      name: Hide Reservation ID if new Reservation
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_RESERVATION_ID
+
+    execution: 
+      sequence: 10
+      event: 'Show and Hide Reservation ID ' # 268056815992285349
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide Reservation ID if new Reservation ======
+    id: 268057093001285351
+    identification: 
+      name: Hide Reservation ID if new Reservation
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P358_RESERVATION_ID
+
+    execution: 
+      sequence: 10
+      event: 'Show and Hide Reservation ID ' # 268056815992285349
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+validations: 
+- # ====== Validation: P358_CREATED must be timestamp ==========
+  id: 267048213869587383
+  identification: 
+    name: P358_CREATED must be timestamp
+
+  execution: 
+    sequence: 200
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P358_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P358_CREATED # 294667764532526321
+
+- # ====== Validation: P358_UPDATED must be timestamp ==========
+  id: 267048553527587384
+  identification: 
+    name: P358_UPDATED must be timestamp
+
+  execution: 
+    sequence: 220
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P358_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P358_UPDATED # 294668915066526323
+
+computations: 
+- # ====== Computation: P358_FAST_DIALOG_URL ===================
+  id: 230097518258430223
+  identification: 
+    item-name: P358_FAST_DIALOG_URL
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      APEX_UTIL.PREPARE_URL(
+          p_url => 'f?p=' || :APP_ID || ':451:' || :APP_SESSION || 
+                   '::::P451_RELATED_RESERVATION:' || :P358_RESERVATION_ID
+      )
+      
+
+- # ====== Computation: P358_DIALOG_URL ========================
+  id: 267689538069224541
+  identification: 
+    item-name: P358_DIALOG_URL
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      APEX_UTIL.PREPARE_URL(
+          p_url => 'f?p=' || :APP_ID || ':359:' || :APP_SESSION || 
+                   '::::P359_RESERVATION_ID:' || :P358_RESERVATION_ID
+      )
+      
+
+processes: 
+- # ====== Process: Initialize form Hotel Reservation Form =====
+  id: 267037393476587346
+  identification: 
+    name: Initialize form Hotel Reservation Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Limo Reservation Request Form # 294658154260526272
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Limo Reservation Request Form =
+  id: 267037716705587347
+  identification: 
+    name: Process form Limo Reservation Request Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Limo Reservation Request Form # 294658154260526272
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: |
+      تم انشاء كود حجز بنجاح 
+      كود الحجز: &P358_RESERVATION_ID.
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P358_RESERVATION_ID
+
+- # ====== Process: Process Reservation ========================
+  id: 267038167174587348
+  identification: 
+    name: Process Reservation
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Limo Reservation Request Form # 294658154260526272
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: |
+      تم تنفيذ التعديلات
+      
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P358_RESERVATION_ID
+
+- # ====== Process: Close Dialog ===============================
+  id: 267048834469587384
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: SAVE,DELETE
+
+- # ====== Process: Start WorkFlow =============================
+  id: 267049255150587384
+  identification: 
+    name: Start WorkFlow
+    type: Workflow
+    execution-chain: None
+
+  settings: 
+    type: Start
+    definition: Hotel Reservation - Booking Request # 262536898224796662
+    details-primary-key-item: P358_RESERVATION_ID
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 267047154315587369
+    type: Item is NULL
+    item: P358_OPS_REP_ID
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  parameters: 
+  - # ====== Parameter: مسؤول المبيعات ===========================
+    id: 267049747356587387
+    identification: 
+      name: مسؤول المبيعات # 264237785387085240
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+
+    value: 
+      type: SQL Query (return single value)
+      sql-query: 'select username from bs_employees where id = :P358_SALES_REP_ID'
+
+  - # ====== Parameter: كود الحجز ================================
+    id: 267050293943587388
+    identification: 
+      name: كود الحجز # 262538066005796674
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+
+    value: 
+      type: Item
+      item: P358_RESERVATION_ID
+

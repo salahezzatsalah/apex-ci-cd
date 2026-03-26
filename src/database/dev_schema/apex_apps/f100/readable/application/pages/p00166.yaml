@@ -1,0 +1,2740 @@
+---
+# ====== Page: Supplier Details Full Page ====================
+id: 166
+identification: 
+  name: Supplier Details Full Page
+  alias: SUPPLIER-DETAILS-FULL-PAGE
+  title: ملف مورد - &P166_NAME.
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: |
+    function imagepopup(element) {
+      // Get the image URL from the data-url attribute
+      const imageUrl = element.getAttribute('data-url');
+      
+      // Remove existing popup if one is already open
+      const existingPopup = document.getElementById('image-display');
+      if (existingPopup) existingPopup.remove();
+    
+      // Create the popup container
+      const div = document.createElement('div');
+      div.id = 'image-display';
+      Object.assign(div.style, {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        zIndex: 10000,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      });
+    
+      // Create the image element
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      Object.assign(img.style, {
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        border: '3px solid white',
+        objectFit: 'contain',
+      });
+    
+      // Create close button
+      const closeBtn = document.createElement('span');
+      closeBtn.innerHTML = '&times;';
+      Object.assign(closeBtn.style, {
+        position: 'absolute',
+        top: '20px',
+        right: '30px',
+        fontSize: '30px',
+        color: '#fff',
+        cursor: 'pointer',
+      });
+      closeBtn.onclick = () => div.remove();
+    
+      // Close when clicking outside the image
+      div.onclick = (e) => {
+        if (e.target === div) div.remove();
+      };
+    
+      // Append content and close button to the popup container
+      div.appendChild(img);
+      div.appendChild(closeBtn);
+    
+      // Add the popup container to the body
+      document.body.appendChild(div);
+    
+      // Prevent scrolling when popup is open
+      document.body.style.overflow = 'hidden';
+      
+      // Restore scrolling when popup is closed
+      div.addEventListener('remove', () => {
+        document.body.style.overflow = '';
+      });
+    }
+
+css: 
+  inline: |
+    .sp-tag {
+      padding: .125rem .25rem;
+      display: inline-block;
+      vertical-align: text-bottom;
+      border-radius: .1875rem;
+      background-color: rgba(0, 0, 0, .1);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .sp-tags-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .25rem;
+      justify-content: flex-start;
+    }
+    
+    h3:first-of-type {
+      margin-block-start: 0;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Supplier Assignments ========================
+  id: 207285490841489381
+  identification: 
+    name: Supplier Assignments
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          a.ASSIGNMENT_ID,
+          'Fast Track' as SERVICE_CATEGORY,
+          r.RESERVATION_TYPE,
+          a.VENDOR_STATUS as STATUS,
+          a.TOTAL_SERVICE_AMOUNT_EGP as AMOUNT,
+          a.CURRENCY,
+          a.CREATED,
+          a.NOTES
+      FROM FAST_TRACK_ASSIGNMENTS a
+      LEFT JOIN FAST_TRACK_RESERVATIONS r ON a.RESERVATION_ID = r.RESERVATION_ID
+      WHERE a.VENDOR_ID = :P166_ID
+      
+      UNION ALL
+      
+      SELECT 
+          l.ASSIGNMENT_ID,
+          'Limo Service' as SERVICE_CATEGORY,
+          'Limo Trip' as RESERVATION_TYPE,
+          l.DRIVER_STATUS as STATUS,
+          l.TOTAL_TRIPS_AMOUNT_EGP as AMOUNT,
+          l.CURRENCY,
+          l.CREATED,
+          l.NOTES
+      FROM LIMO_PRODUCT_ASSIGNMENTS l
+      WHERE l.DRIVER_ID = :P166_ID
+      
+      ORDER BY 7 DESC
+    page-items-to-submit: 
+    - P166_ID
+
+  layout: 
+    sequence: 10
+    parent-region: Supplier Documents # 159238939816996695846
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 207285595832489382
+    link: 
+      link-column: Exclude Link Column
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 220908699940868194
+      identification: 
+        name: Primary Report
+        alias: 1600620
+
+    columns: 
+    - # ====== Column: ASSIGNMENT_ID ===============================
+      id: 207285752460489383
+      identification: 
+        column-name: ASSIGNMENT_ID
+        type: Plain Text
+
+      heading: 
+        heading: Assignment Id
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED =====================================
+      id: 207286826042489394
+      identification: 
+        column-name: CREATED
+        type: Plain Text
+
+      heading: 
+        heading: Created
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_TYPE ============================
+      id: 220897550311760956
+      identification: 
+        column-name: RESERVATION_TYPE
+        type: Plain Text
+
+      heading: 
+        heading: Reservation Type
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 170
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: SERVICE_CATEGORY ============================
+      id: 220897734895760958
+      identification: 
+        column-name: SERVICE_CATEGORY
+        type: Plain Text
+
+      heading: 
+        heading: Service Category
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 180
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS ======================================
+      id: 220897827334760959
+      identification: 
+        column-name: STATUS
+        type: Plain Text
+
+      heading: 
+        heading: Status
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 190
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: AMOUNT ======================================
+      id: 220897989379760960
+      identification: 
+        column-name: AMOUNT
+        type: Plain Text
+
+      heading: 
+        heading: Amount
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 200
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CURRENCY ====================================
+      id: 220898049532760961
+      identification: 
+        column-name: CURRENCY
+        type: Plain Text
+
+      heading: 
+        heading: Currency
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 210
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: NOTES =======================================
+      id: 220898095159760962
+      identification: 
+        column-name: NOTES
+        type: Plain Text
+
+      heading: 
+        heading: Notes
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 220
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: A4
+        orientation: Landscape
+        units: Millimeters
+        width: 297
+        height: 210
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+- # ====== Region: Breadcrumb ==================================
+  id: 279365826431023785
+  identification: 
+    name: Breadcrumb
+    title: محرك الوصول
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: RDS =========================================
+  id: 11477223370838249764
+  identification: 
+    name: RDS
+    type: Region Display Selector
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--fillLabels
+    - t-TabsRegion-mod--pill
+    css-classes: 
+    - project-rds-region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': false
+      remember-selection: By User
+
+- # ====== Region: Supplier Details ============================
+  id: 19003779347921196496
+  identification: 
+    name: Supplier Details
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          s.SUPPLIER_ID AS id,
+          s.SUPPLIER_NAME AS name,
+          s.PHONE,
+          s.EMAIL,
+          s.ADDRESS,
+          s.CITY || ', ' || (
+            SELECT COUNTRY_NAME || ' (' || REGION || ')'
+            FROM SP_COUNTRIES
+            WHERE ID = s.COUNTRY_ID
+          ) AS location,
+          --
+          CASE 
+            WHEN s.IS_COMPANY = 'Y' THEN 'شركة'
+            ELSE 'فرد'
+          END AS is_company,
+          --
+          (SELECT TYPE_NAME 
+           FROM SUPPLIER_TYPES t 
+           WHERE t.SUPPLIER_TYPE_ID = s.SUPPLIER_TYPE_ID) AS supplier_type,
+          --
+          CASE 
+            WHEN s.IS_COMPANY = 'Y' THEN 
+              'السجل التجاري: ' || NVL(s.COMPANY_REG_NO, 'غير محدد') || 
+              ' - مسؤول التواصل: ' || NVL(s.CONTACT_PERSON, 'غير محدد')
+            ELSE 
+              'الرقم القومي: ' || NVL(s.NATIONAL_ID, 'غير محدد')
+          END AS identity_info,
+          --
+          s.NOTES,
+          -- TO_CHAR(s.CREATED, 'DD-MM-YYYY') AS created,
+          -- TO_CHAR(s.UPDATED, 'DD-MM-YYYY') AS updated,
+          TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(s.CREATED), 'DD-MM-YYYY') AS created,
+          TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(s.UPDATED), 'DD-MM-YYYY') AS updated,
+      
+          --
+          CASE 
+              WHEN s.PROFILE_PHOTO IS NOT NULL AND DBMS_LOB.GETLENGTH(s.PROFILE_PHOTO) > 0 THEN 'نعم'
+              ELSE 'لا'
+          END AS has_profile_photo,
+          s.PHOTO_FILENAME,
+          s.PHOTO_MIMETYPE,
+          --
+          -- Attachments count
+          (
+            SELECT COUNT(*) 
+            FROM SUPPLIERS_DOCUMENTS a 
+            WHERE a.SUPPLIER_ID = s.SUPPLIER_ID
+          ) AS attachments_count
+      FROM SUPPLIERS s
+      WHERE s.SUPPLIER_ID = :P166_ID;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: Profile # 19367869843601332064
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-top-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-item--stacked
+      - t-ContextualInfo-label--stacked
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ADDRESS =====================================
+    id: 255572542129025563
+    identification: 
+      column-name: ADDRESS
+      type: Plain Text
+
+    heading: 
+      heading: عنوان المراسلات
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IS_COMPANY ==================================
+    id: 255572608972025564
+    identification: 
+      column-name: IS_COMPANY
+      type: Plain Text
+
+    heading: 
+      heading: الشخصية القانونية
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SUPPLIER_TYPE ===============================
+    id: 255572776008025565
+    identification: 
+      column-name: SUPPLIER_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: تصنيف الملف
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IDENTITY_INFO ===============================
+    id: 255572839335025566
+    identification: 
+      column-name: IDENTITY_INFO
+      type: Plain Text
+
+    heading: 
+      heading: بيانات الهوية
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 255742995839107783
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAME ========================================
+    id: 255743342590107784
+    identification: 
+      column-name: NAME
+      type: Plain Text
+
+    heading: 
+      heading: اسم العميل
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EMAIL =======================================
+    id: 255743769579107784
+    identification: 
+      column-name: EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: البريد الالكتروني
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 255744174210107784
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الانشاء
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH:MIPM'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 255744602900107785
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تحديث
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH:MIPM'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LOCATION ====================================
+    id: 255744908906107785
+    identification: 
+      column-name: LOCATION
+      type: Plain Text
+
+    heading: 
+      heading: العنوان والدولة
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHONE =======================================
+    id: 255745767862107786
+    identification: 
+      column-name: PHONE
+      type: Plain Text
+
+    heading: 
+      heading: رقم الهاتف
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 255747781591107787
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات على الملف
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHOTO_FILENAME ==============================
+    id: 255748125660107788
+    identification: 
+      column-name: PHOTO_FILENAME
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHOTO_MIMETYPE ==============================
+    id: 255748519563107788
+    identification: 
+      column-name: PHOTO_MIMETYPE
+      type: Hidden
+
+    layout: 
+      sequence: 150
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTACHMENTS_COUNT ===========================
+    id: 255748964833107788
+    identification: 
+      column-name: ATTACHMENTS_COUNT
+      type: Plain Text
+
+    heading: 
+      heading: عدد المرفقات في الملف
+      alignment: end
+
+    layout: 
+      sequence: 110
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HAS_PROFILE_PHOTO ===========================
+    id: 262535359018796647
+    identification: 
+      column-name: HAS_PROFILE_PHOTO
+      type: Plain Text
+
+    heading: 
+      heading: Has Profile Photo
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Profile =====================================
+  id: 19367869843601332064
+  identification: 
+    name: Profile
+    type: Static Content
+
+  layout: 
+    sequence: 500
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Menubar =====================================
+  id: 20324753083733281901
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 279365826431023785
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20324754317239281913
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 20324753384312281904
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: تعديل (Admin) =================================
+      id: 13428914233301222847
+      identification: 
+        type: Menu Entry
+        label: تعديل (Admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:121:&SESSION.::&DEBUG.:RP,121:P121_CLIENT_ID:&P166_ID.'
+          page: 121 # Client Details-form
+          clear-cache: RP,121
+          values: 
+            p121_client_id: '&P166_ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: Separator =====================================
+      id: 15540246933179347457
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+    - # ====== Menu: اعادة ظبط =====================================
+      id: 16182648403524321969
+      identification: 
+        type: Menu Entry
+        label: اعادة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:RP,5:P166_ID:&P166_ID.'
+          page: 166 # Supplier Details Full Page
+          clear-cache: RP,5
+          values: 
+            p166_id: '&P166_ID.'
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 20324754090219281911
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:RP,::'
+          page: 166 # Supplier Details Full Page
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: نظرة سريعة ====================================
+      id: 25255434264636486935
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:97:&SESSION.::&DEBUG.:RP,97:P97_CLIENT_ID:&P166_ID.'
+          page: 97
+          clear-cache: RP,97
+          values: 
+            p97_client_id: '&P166_ID.'
+
+      appearance: 
+        icon: fa-user
+
+- # ====== Region: Supplier Documents ==========================
+  id: 159238939816996695846
+  identification: 
+    name: Supplier Documents
+    title: مستندات [&P166_DOCUMENTCOUNT.]
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d.ID,
+             d.DOCUMENT_FILENAME,
+             d.UPDATED,
+             d.created,
+             case when length(d.doc_description) > 200
+                  then substr(d.doc_description,1,200)||'...'
+                  else d.doc_description
+                  end doc_description,
+             d.tags,
+             lower(created_by) created_by,
+             dbms_lob.getlength(d.DOCUMENT_BLOB) doc_size,
+             created date_created,
+             substr(DOCUMENT_FILENAME,instr(DOCUMENT_FILENAME,'.',-1)+1,length(DOCUMENT_FILENAME)-instr(DOCUMENT_FILENAME,'.',-1)) file_extension,
+             decode(important_yn,'Y','نعم','لا') important
+        from SUPPLIERS_DOCUMENTS d
+       where supplier_id = :P166_ID
+      order by created desc
+      
+    page-items-to-submit: 
+    - P166_ID
+
+  layout: 
+    sequence: 510
+    parent-region: RDS # 11477223370838249764
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: DOCUMENTS
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 45547553628661991170
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:174:&SESSION.::&DEBUG.:174:P174_ID:#ID#'
+        page: 174 # Add Supplier Attachment
+        clear-cache: 174
+        values: 
+          p174_id: '#ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 45549289863465583941
+      identification: 
+        name: Primary Report
+        alias: 8109551
+
+    columns: 
+    - # ====== Column: IMPORTANT ===================================
+      id: 43630588416530721205
+      identification: 
+        column-name: IMPORTANT
+        type: Plain Text
+
+      heading: 
+        heading: مهم
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 130
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED_BY ==================================
+      id: 44740136255940918665
+      identification: 
+        column-name: CREATED_BY
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+      heading: 
+        heading: القائم باضافة المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: ID ==========================================
+      id: 45547553729825991171
+      identification: 
+        column-name: ID
+        type: Plain Text
+
+      heading: 
+        heading: Id
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOCUMENT_FILENAME ===========================
+      id: 45547553862216991172
+      identification: 
+        column-name: DOCUMENT_FILENAME
+        type: Link
+
+      heading: 
+        heading: اسم المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      link: 
+        target: 
+          url: 'f?p=&APP_ID.:167:&SESSION.::&DEBUG.:167:P167_ID,P167_PREV_PAGE:#ID#,166'
+          page: 167 # Supplier Document Details
+          clear-cache: 167
+          values: 
+            p167_id: '#ID#'
+            p167_prev_page: 166
+
+        link-text: '#DOCUMENT_FILENAME#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED =====================================
+      id: 45547554039180991174
+      identification: 
+        column-name: UPDATED
+        type: Plain Text
+
+      heading: 
+        heading: اخر تحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED =====================================
+      id: 45547554115023991175
+      identification: 
+        column-name: CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الانشاء
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOC_DESCRIPTION =============================
+      id: 45547554287017991176
+      identification: 
+        column-name: DOC_DESCRIPTION
+        type: Plain Text
+
+      heading: 
+        heading: وصف المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOC_SIZE ====================================
+      id: 45547554492546991178
+      identification: 
+        column-name: DOC_SIZE
+        type: Plain Text
+
+      heading: 
+        heading: حجم النستند
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: FILESIZE
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DATE_CREATED ================================
+      id: 45547554509584991179
+      identification: 
+        column-name: DATE_CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الانشاء
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: FILE_EXTENSION ==============================
+      id: 45984408700330839958
+      identification: 
+        column-name: FILE_EXTENSION
+        type: Plain Text
+
+      heading: 
+        heading: امتداد الملف
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TAGS ========================================
+      id: 56644092404271388761
+      identification: 
+        column-name: TAGS
+        type: Plain Text
+
+      heading: 
+        heading: علامات مميزة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: Letter
+        orientation: Landscape
+        units: Inches
+        width: 11
+        height: 8.5
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+        page-header-text: Documents
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+page-items: 
+- # ====== Page Item: P166_DOCUMENTCOUNT =======================
+  id: 262534437791796638
+  identification: 
+    name: P166_DOCUMENTCOUNT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Profile # 19367869843601332064
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P166_ID ==================================
+  id: 280781375342427112
+  identification: 
+    name: P166_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P166_PHOTO_DEFAULT =======================
+  id: 14932191620494223647
+  identification: 
+    name: P166_PHOTO_DEFAULT
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: Image URL stored in Page Item Value
+    alternative-text: Placeholder Photo
+
+  layout: 
+    sequence: 40
+    region: Profile # 19367869843601332064
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    css-classes: 
+    - mxw160
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: '#APP_FILES#default-user-avatar.png'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: 'select 1 from suppliers where supplier_id = :P166_ID and profile_photo is not null'
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P166_PHOTO ===============================
+  id: 19084866443499184493
+  identification: 
+    name: P166_PHOTO
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: BLOB Column returned by SQL statement
+    sql-statement: 'select profile_PHOTO from suppliers where supplier_id = :P166_ID;'
+
+  layout: 
+    sequence: 20
+    region: Profile # 19367869843601332064
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    css-classes: 
+    - mxw160
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: 'select 1 from suppliers where supplier_id = :P166_ID and profile_photo is not null'
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P166_NAME ================================
+  id: 19093408448820501958
+  identification: 
+    name: P166_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Profile # 19367869843601332064
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 255737143604107775
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 279365826431023785
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:157:&SESSION.::&DEBUG.:RP,::'
+      page: 157 # Suppliers Accounts
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: view_images =================================
+  id: 262547600560146898
+  identification: 
+    button-name: view_images
+    label: معرض الصور
+
+  layout: 
+    sequence: 10
+    region: Supplier Documents # 159238939816996695846
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:176:&SESSION.::&DEBUG.:176:P176_SUPPLIER_ID:&P166_ID.'
+      page: 176 # Supplier Images Gallery
+      clear-cache: 176
+      values: 
+        p176_supplier_id: '&P166_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1 
+        from Suppliers_Documents d
+       where Supplier_Id = :P166_ID and 
+             (
+                 lower(DOCUMENT_FILENAME) like '%.png' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpg' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpeg' or 
+                 lower(DOCUMENT_FILENAME) like '%.gif' or 
+                 lower(DOCUMENT_FILENAME) like '%.tiff' or 
+                 lower(DOCUMENT_FILENAME) like '%.ai' 
+             )
+
+- # ====== Button: add_document ================================
+  id: 262547928463146899
+  identification: 
+    button-name: add_document
+    label: اضافة مستند
+
+  layout: 
+    sequence: 30
+    region: Supplier Documents # 159238939816996695846
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:174:&SESSION.::&DEBUG.:RR,174:P174_SUPPLIER_ID:&P166_ID.'
+      page: 174 # Add Supplier Attachment
+      clear-cache: RR,174
+      values: 
+        p174_supplier_id: '&P166_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: on include future change ============
+  id: 255760240927107801
+  identification: 
+    name: on include future change
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P166_INCLUDE_FUTURE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 255760789296107801
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P166_INCLUDE_FUTURE
+
+    execution: 
+      sequence: 10
+      event: on include future change # 255760240927107801
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: on change of include past ===========
+  id: 255761182753107801
+  identification: 
+    name: on change of include past
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P166_INCLUDE_PAST
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 255761658734107802
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P166_INCLUDE_PAST
+
+    execution: 
+      sequence: 10
+      event: on change of include past # 255761182753107801
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: refresh on modal close ==============
+  id: 255762082548107802
+  identification: 
+    name: refresh on modal close
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Menubar # 20324753083733281901
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 255762588334107802
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Supplier Details # 19003779347921196496
+
+    execution: 
+      sequence: 40
+      event: refresh on modal close # 255762082548107802
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: when Project Change Exclude User ====
+  id: 255762923708107802
+  identification: 
+    name: when Project Change Exclude User
+
+  execution: 
+    sequence: 60
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P166_PROJ_CHANGE_EXCLUDE_USER_YN
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 255763413281107803
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P166_PROJ_CHANGE_EXCLUDE_USER_YN
+
+    execution: 
+      sequence: 10
+      event: when Project Change Exclude User # 255762923708107802
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 255763914926107803
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        apex_util.set_preference (
+            p_preference => 'P166_PROJ_CHANGE_EXCLUDE_USER_YN',
+            p_value      => :P166_PROJ_CHANGE_EXCLUDE_USER_YN,
+            p_user       => :APP_USER );
+
+    execution: 
+      sequence: 20
+      event: when Project Change Exclude User # 255762923708107802
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: update docs report ==================
+  id: 262535150053796645
+  identification: 
+    name: update docs report
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Supplier Documents # 159238939816996695846
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 262535296920796646
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Supplier Documents # 159238939816996695846
+
+    execution: 
+      sequence: 10
+      event: update docs report # 262535150053796645
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: set first and last name session state ======
+  id: 255754570111107796
+  identification: 
+    name: set first and last name session state
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        SELECT SUPPLIER_NAME
+        INTO :P166_NAME
+        FROM SUPPLIERS
+        WHERE SUPPLIER_ID = :P166_ID;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+

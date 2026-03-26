@@ -1,0 +1,770 @@
+---
+# ====== Page: Client Details-form ===========================
+id: 121
+identification: 
+  name: Client Details-form
+  alias: CLIENT-DETAILS-FORM
+  title: استمارة عميل - نموذج 121
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Modal Dialog
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  file-urls: 
+  - '#PLUGIN_FILES#utils.js'
+
+css: 
+  inline: |
+    .iti__flag {background-image: url("#APP_FILES#flags.png");}
+    
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .iti__flag {background-image: url("#APP_FILES#flags@2x.png");}
+    }
+    
+    
+    .iti__selected-flag {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+    }
+    
+    .iti__selected-dial-code { 
+        direction: ltr;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Contact DETAILS =============================
+  id: 274312478979367842
+  identification: 
+    name: Contact DETAILS
+    title: بيانات التواصل
+    type: Static Content
+
+  layout: 
+    sequence: 60
+    parent-region: Client CRM Form # 149898047055120085478
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Client CRM Form =============================
+  id: 149898047055120085478
+  identification: 
+    name: Client CRM Form
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 149898058554424085497
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P121_COUNTRY =============================
+  id: 205458639862406193
+  identification: 
+    name: P121_COUNTRY
+    type: Select One
+
+  label: 
+    label: الدولة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 40
+    region: Client CRM Form # 149898047055120085478
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-user
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: 'select distinct COUNTRY_NAME as r, COUNTRY_NAME as d from SP_COUNTRIES '
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P121_CLIENT_ID ===========================
+  id: 251551389430871769
+  identification: 
+    name: P121_CLIENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Client CRM Form # 149898047055120085478
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P121_FULL_NAME ===========================
+  id: 251551428269871770
+  identification: 
+    name: P121_FULL_NAME
+    type: Text Field
+
+  label: 
+    label: اسم العميل بالكامل
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Client CRM Form # 149898047055120085478
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-user
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P121_PHONE ===============================
+  id: 251551608993871772
+  identification: 
+    name: P121_PHONE
+    type: Intl Phone Number
+
+  label: 
+    label: رقم الهاتف
+    alignment: Left
+
+  settings: 
+    allowdropdown: false
+    autohidedialcode: false
+    autoplaceholder: polite
+    formatondisplay: true
+    initialcountry: auto
+    placeholdernumbertype: FIXED_LINE_OR_MOBILE
+    separatedialcode: true
+
+  layout: 
+    sequence: 30
+    region: Client CRM Form # 149898047055120085478
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    row-css-classes: 
+    - phone
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+    column-css-classes: 
+    - phone
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - phone
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    css-classes: 
+    - phone
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 251758385033492954
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 149898058554424085497
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 251758759490492955
+  identification: 
+    button-name: DELETE
+    label: حذف الملف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 149898058554424085497
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--danger
+    - t-Button--simple
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: |
+      هل أنت متأكد أنك تريد الحذف؟ هذا الإجراء نهائي ولا يمكن التراجع عنه.
+      
+      
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P121_CLIENT_ID
+
+- # ====== Button: SAVE ========================================
+  id: 251759129762492955
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 149898058554424085497
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P121_CLIENT_ID
+
+- # ====== Button: CREATE ======================================
+  id: 251759543150492955
+  identification: 
+    button-name: CREATE
+    label: انشاء الملف
+
+  layout: 
+    sequence: 40
+    region: Buttons # 149898058554424085497
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P121_CLIENT_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 251761790150492960
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 251758385033492954
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 251762244576492960
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 251761790150492960
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Add Client =================================
+  id: 251743740766492939
+  identification: 
+    name: Add Client
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: CLIENTS_AUTH_PKG
+    procedure-or-function: CREATE_CLIENT_MANUAL
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: |
+      تم تحديث ملف العميل بنجاح
+      
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 251759543150492955
+    type: Item is NULL
+    item: P121_CLIENT_ID
+
+  parameters: 
+  - # ====== Parameter: p_full_name ==============================
+    id: 205457881757406185
+    identification: 
+      name: p_full_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P121_FULL_NAME
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_phone ==================================
+    id: 205457984507406186
+    identification: 
+      name: p_phone
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P121_PHONE
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_client_id ==============================
+    id: 205458552143406192
+    identification: 
+      name: p_client_id
+
+    parameter: 
+      direction: Out
+      data-type: VARCHAR2
+      ignore-output: false
+
+    value: 
+      item: P121_CLIENT_ID
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_country_name ===========================
+    id: 205458816071406195
+    identification: 
+      name: p_country_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P121_COUNTRY
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_created_by =============================
+    id: 205458913244406196
+    identification: 
+      name: p_created_by
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 110
+
+- # ====== Process: Close Dialog ===============================
+  id: 251761386622492959
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: ComboBox ===================================
+  id: 268237552064222344
+  identification: 
+    name: ComboBox
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+      l_new_tag_id number;
+      begin 
+          FOR L_NEW_TAG IN (
+          SELECT
+              PREFERRED_LANGUAGE
+          FROM
+          CRM_CLIENTS
+      
+              -- APEX_STRING.SPLIT(:P121_PREFERRED_LANGUAGE, ':')
+      ) LOOP
+           insert into CRM_CLIENTS
+      (PREFERRED_LANGUAGE) values (l_new_tag.PREFERRED_LANGUAGE) returning CLIENT_ID into l_new_tag_id;
+           :P121_PREFERRED_LANGUAGE := :P121_PREFERRED_LANGUAGE || CASE WHEN :P121_PREFERRED_LANGUAGE IS NOT NULL
+          THEN
+          ':'
+              END || L_NEW_TAG_ID;
+          END
+              LOOP;
+      :P121_PREFERRED_LANGUAGE := null;
+      end;
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+branches: 
+- # ====== Branch: Go to Client PRofile ========================
+  id: 229967159321398188
+  identification: 
+    name: Go to Client PRofile
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:98:&SESSION.::&DEBUG.::P98_ID:&P121_CLIENT_ID.&success_msg=#SUCCESS_MSG#'
+      page: 98 # Client Details Full Page
+      values: 
+        p98_id: '&P121_CLIENT_ID.'
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 251759543150492955
+

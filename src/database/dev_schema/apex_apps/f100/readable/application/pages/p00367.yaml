@@ -1,0 +1,1525 @@
+---
+# ====== Page: Company Registered Cars =======================
+id: 367
+identification: 
+  name: Company Registered Cars
+  alias: COMPANY-REGISTERED-CARS
+  title: سجل سيارات الشركة
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: filters =====================================
+  id: 17949515758900156534
+  identification: 
+    name: filters
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 3
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 19674353575148793015
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 20538696930181807833
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 19674353575148793015
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20538698163687807845
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تكويد سيارة جديدة ===========================
+    id: 16650224752979550457
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تكويد سيارة جديدة
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:368:&SESSION.::&DEBUG.:RP,368::'
+        page: 368 # company registered car form
+        clear-cache: RP,368
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20538697230760807836
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: عرض سجل الاعضاء ===============================
+      id: 14753681879896872606
+      identification: 
+        type: Menu Entry
+        label: عرض سجل الاعضاء
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:99:&SESSION.::&DEBUG.:RP,::'
+          page: 99 # Employees Register Report 
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Separator =====================================
+      id: 14753683566620872623
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+    - # ====== Menu: Add Multiple &NOMENCLATURE_USERS. (admin) =====
+      id: 16365469542159913564
+      identification: 
+        type: Menu Entry
+        label: Add Multiple &NOMENCLATURE_USERS. (admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:54:&SESSION.::&DEBUG.:RP,54::'
+          page: 54
+          clear-cache: RP,54
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: اعدة ظبط ======================================
+      id: 17770017959787905102
+      identification: 
+        type: Menu Entry
+        label: اعدة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:367:&SESSION.::&DEBUG.:RP,74::'
+          page: 367 # Company Registered Cars
+          clear-cache: RP,74
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: عن &NOMENCLATURE_USER. ========================
+      id: 17770018150939905103
+      identification: 
+        type: Menu Entry
+        label: عن &NOMENCLATURE_USER.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:109:&SESSION.::&DEBUG.:RP,::'
+          page: 109
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-info
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Manage Groups =================================
+      id: 19385203126732116109
+      identification: 
+        type: Menu Entry
+        label: Manage Groups
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:103:&SESSION.::&DEBUG.:RP,::'
+          page: 103
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+    - # ====== Menu: تحديث =========================================
+      id: 20538697936667807843
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:367:&SESSION.::&DEBUG.:RP,::'
+          page: 367 # Company Registered Cars
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Registered Cars =============================
+  id: 20992284048644872350
+  identification: 
+    name: Registered Cars
+    title: سجل سيارات الشركة المسجلة
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          ID,
+          CAR_NAME,
+          CAR_TYPE_ID,
+          MODEL_NAME,
+          YEAR,
+          LICENSE_PLATE,
+          COLOR,
+          CHASSIS_NUMBER,
+          CREATED_BY,
+          CREATED,
+          STATUS,
+          NOTES,
+          PROFILE_PHOTO_LASTUPD,
+          PHOTO_URL,
+          CASE
+              WHEN PHOTO_URL IS NOT NULL THEN 'نعم'
+              ELSE 'لا'
+          END AS HAS_PROFILE_PICTURE,
+          CASE
+              WHEN PHOTO_URL IS NOT NULL THEN
+                  PHOTO_URL
+              ELSE
+                  '#APP_FILES#placeholders/ownedcar.png'
+          END AS IMAGE_URL
+      FROM
+          COMPANY_REGISTERED_CARS;
+      
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P367_ORDER_BY
+      order-bys: 
+      - key: EMAIL
+        clause: email
+
+  layout: 
+    sequence: 33
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: '&CAR_NAME.'
+      title: '&CAR_TYPE_ID. - &MODEL_NAME. - &YEAR.'
+      description: |
+        &NOTES.
+        
+      miscellaneous: |
+        رقم اللوحات: &LICENSE_PLATE. <bR>
+        
+      display-avatar: true
+      display-badge: false
+
+    avatar: 
+      type: Image
+      image: 
+        url: '&IMAGE_URL.'
+
+      shape: Rounded
+      size: Medium
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: PHOTO_URL ===================================
+    id: 178406283592226841
+    identification: 
+      name: PHOTO_URL
+
+    layout: 
+      sequence: 560
+
+    source: 
+      type: Database Column
+      database-column: PHOTO_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CAR_NAME ====================================
+    id: 280904304296161230
+    identification: 
+      name: CAR_NAME
+
+    layout: 
+      sequence: 430
+
+    source: 
+      type: Database Column
+      database-column: CAR_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CAR_TYPE_ID =================================
+    id: 280904405682161231
+    identification: 
+      name: CAR_TYPE_ID
+
+    layout: 
+      sequence: 440
+
+    source: 
+      type: Database Column
+      database-column: CAR_TYPE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES NAMES # 266880751448522438
+      display-extra-values: false
+
+  - # ====== Column: MODEL_NAME ==================================
+    id: 280904542544161232
+    identification: 
+      name: MODEL_NAME
+
+    layout: 
+      sequence: 450
+
+    source: 
+      type: Database Column
+      database-column: MODEL_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: YEAR ========================================
+    id: 280904614619161233
+    identification: 
+      name: YEAR
+
+    layout: 
+      sequence: 460
+
+    source: 
+      type: Database Column
+      database-column: YEAR
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: LICENSE_PLATE ===============================
+    id: 280904794765161234
+    identification: 
+      name: LICENSE_PLATE
+
+    layout: 
+      sequence: 470
+
+    source: 
+      type: Database Column
+      database-column: LICENSE_PLATE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COLOR =======================================
+    id: 280904898276161235
+    identification: 
+      name: COLOR
+
+    layout: 
+      sequence: 480
+
+    source: 
+      type: Database Column
+      database-column: COLOR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CHASSIS_NUMBER ==============================
+    id: 280904968645161236
+    identification: 
+      name: CHASSIS_NUMBER
+
+    layout: 
+      sequence: 490
+
+    source: 
+      type: Database Column
+      database-column: CHASSIS_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PROFILE_PHOTO_LASTUPD =======================
+    id: 280905374034161240
+    identification: 
+      name: PROFILE_PHOTO_LASTUPD
+
+    layout: 
+      sequence: 530
+
+    source: 
+      type: Database Column
+      database-column: PROFILE_PHOTO_LASTUPD
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: HAS_PROFILE_PICTURE =========================
+    id: 280905407937161241
+    identification: 
+      name: HAS_PROFILE_PICTURE
+
+    layout: 
+      sequence: 540
+
+    source: 
+      type: Database Column
+      database-column: HAS_PROFILE_PICTURE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IMAGE_URL ===================================
+    id: 280905573768161242
+    identification: 
+      name: IMAGE_URL
+
+    layout: 
+      sequence: 550
+
+    source: 
+      type: Database Column
+      database-column: IMAGE_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS ======================================
+    id: 351541458360676774
+    identification: 
+      name: STATUS
+
+    layout: 
+      sequence: 400
+
+    source: 
+      type: Database Column
+      database-column: STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 351541643391676775
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 410
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 351541736936676776
+    identification: 
+      name: CREATED_BY
+
+    layout: 
+      sequence: 420
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ID ==========================================
+    id: 15028203180611702796
+    identification: 
+      name: ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ID
+      data-type: VARCHAR2
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 15459511962522362731
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 310
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14753681898641872607
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    menus: 
+    - # ====== Menu: معرض الصور ====================================
+      id: 178965037563498641
+      identification: 
+        type: Menu Entry
+        label: معرض الصور
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:195:&SESSION.::&DEBUG.::P195_ID:&ID.'
+          page: 195 # 811
+          values: 
+            p195_id: '&ID.'
+
+    - # ====== Menu: تفاصيل الحساب =================================
+      id: 14753682169341872609
+      identification: 
+        type: Menu Entry
+        label: تفاصيل الحساب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:RP,166:P166_ID:&ID.'
+          page: 166 # Supplier Details Full Page
+          clear-cache: RP,166
+          values: 
+            p166_id: '&ID.'
+
+      appearance: 
+        icon: fa-user
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: تعديل (ADMIN) =================================
+      id: 14753682221821872610
+      identification: 
+        type: Menu Entry
+        label: تعديل (ADMIN)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:368:&SESSION.::&DEBUG.:RP,368:P368_ID:&ID.'
+          page: 368 # company registered car form
+          clear-cache: RP,368
+          values: 
+            p368_id: '&ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: نظرة سريعة ====================================
+      id: 14753682321554872611
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:158:&SESSION.::&DEBUG.:RP,158:P158_SUPPLIER_ID:&ID.'
+          page: 158 # Supplier Quick Look
+          clear-cache: RP,158
+          values: 
+            p158_supplier_id: '&ID.'
+
+      appearance: 
+        icon: fa-user
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+- # ====== Region: Faceted Search ==============================
+  id: 21788027670430532120
+  identification: 
+    name: Faceted Search
+    title: ادوات البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: Registered Cars # 20992284048644872350
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 20
+
+  facets: 
+  - # ====== Facet: P367_COLOR ===================================
+    id: 178405081757226829
+    identification: 
+      name: P367_COLOR
+      type: Checkbox Group
+
+    label: 
+      label: 'اللون '
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 130
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: COLOR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P367_YEAR ====================================
+    id: 178405216669226831
+    identification: 
+      name: P367_YEAR
+      type: Checkbox Group
+
+    label: 
+      label: السنة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 110
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: SQL Query
+      sql-query: |
+        SELECT 1990 + LEVEL - 1 AS DISPLAY_VALUE,
+               1990 + LEVEL - 1 AS RETURN_VALUE
+        FROM dual
+        CONNECT BY 1990 + LEVEL - 1 <= EXTRACT(YEAR FROM SYSDATE)
+        ORDER BY RETURN_VALUE DESC;
+        
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: YEAR
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P367_CAR_TYPE_ID =============================
+    id: 178405499265226833
+    identification: 
+      name: P367_CAR_TYPE_ID
+      type: Checkbox Group
+
+    label: 
+      label: انواع السيارات
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 90
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES NAMES # 266880751448522438
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CAR_TYPE_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P367_SEARCH ==================================
+    id: 21788106081645532408
+    identification: 
+      name: P367_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  filters: 
+  - # ====== Filter: P367_COLOR ==================================
+    id: 178405081757226829
+    identification: 
+      name: P367_COLOR
+      type: Checkbox Group
+
+    label: 
+      label: 'اللون '
+
+    layout: 
+      sequence: 130
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: COLOR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P367_YEAR ===================================
+    id: 178405216669226831
+    identification: 
+      name: P367_YEAR
+      type: Checkbox Group
+
+    label: 
+      label: السنة
+
+    layout: 
+      sequence: 110
+
+    list-of-values: 
+      type: SQL Query
+      sql-query: |
+        SELECT 1990 + LEVEL - 1 AS DISPLAY_VALUE,
+               1990 + LEVEL - 1 AS RETURN_VALUE
+        FROM dual
+        CONNECT BY 1990 + LEVEL - 1 <= EXTRACT(YEAR FROM SYSDATE)
+        ORDER BY RETURN_VALUE DESC;
+        
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: YEAR
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P367_CAR_TYPE_ID ============================
+    id: 178405499265226833
+    identification: 
+      name: P367_CAR_TYPE_ID
+      type: Checkbox Group
+
+    label: 
+      label: انواع السيارات
+
+    layout: 
+      sequence: 90
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES NAMES # 266880751448522438
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CAR_TYPE_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P367_SEARCH =================================
+    id: 21788106081645532408
+    identification: 
+      name: P367_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+page-items: 
+- # ====== Page Item: P367_ORDER_BY ============================
+  id: 14753735625145872794
+  identification: 
+    name: P367_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: filters # 17949515758900156534
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:البريد الالكتروني;EMAIL'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: EMAIL
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 280895167801153094
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 19674353575148793015
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:RP,::'
+      page: 350 # Limousine Department Home
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 280901552103153106
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Registered Cars # 20992284048644872350
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 280902098737153109
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Registered Cars # 20992284048644872350
+
+    execution: 
+      sequence: 10
+      event: DC # 280901552103153106
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 280902521230153109
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21788027670430532120
+
+    execution: 
+      sequence: 20
+      event: DC # 280901552103153106
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog closed ============
+  id: 280902928294153109
+  identification: 
+    name: refresh on dialog closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 19674353575148793015
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 280903488361153110
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Registered Cars # 20992284048644872350
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog closed # 280902928294153109
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 280903913273153110
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21788027670430532120
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog closed # 280902928294153109
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

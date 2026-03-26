@@ -1,0 +1,946 @@
+---
+# ====== Page: Supplier Quick Look ===========================
+id: 158
+identification: 
+  name: Supplier Quick Look
+  alias: SUPPLIER-QUICK-LOOK
+  title: نظرة سريعة - ملف مورد
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .sp-tag {
+        padding: 2px 4px;
+        display: inline-block;
+        vertical-align: text-bottom;
+        border-radius: 3px;
+        background-color: rgba(0,0,0,.1);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .sp-tags-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: flex-start;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Supplier Details ============================
+  id: 13405289997495095544
+  identification: 
+    name: Supplier Details
+    title: تفاصيل ملف المورد
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+         s.SUPPLIER_ID AS id,
+         s.SUPPLIER_NAME AS name,
+         s.EMAIL AS supplier_email,
+         s.PHONE,
+         --
+         CASE 
+           WHEN s.IS_COMPANY = 'Y' THEN 'شركة'
+           ELSE 'فرد'
+         END AS supplier_type,
+         --
+         (SELECT TYPE_NAME FROM SUPPLIER_TYPES t WHERE t.SUPPLIER_TYPE_ID = s.SUPPLIER_TYPE_ID) AS type_name,
+         --
+         CASE 
+           WHEN s.IS_COMPANY = 'Y' THEN 
+             'السجل التجاري: ' || NVL(s.COMPANY_REG_NO, 'غير محدد') || 
+             ' - مسؤول التواصل: ' || NVL(s.CONTACT_PERSON, 'غير محدد')
+           ELSE 
+             'الرقم القومي: ' || NVL(s.NATIONAL_ID, 'غير محدد')
+         END AS identity_info,
+         --
+         s.CITY || '، ' || (
+           SELECT COUNTRY_NAME FROM SP_COUNTRIES c WHERE c.ID = s.COUNTRY_ID
+         ) AS location,
+         s.ADDRESS,
+         s.STATUS,
+         s.NOTES,
+         TO_CHAR(s.CREATED, 'DD-MM-YYYY') AS created,
+         TO_CHAR(s.UPDATED, 'DD-MM-YYYY') AS updated
+      FROM SUPPLIERS s
+      WHERE s.SUPPLIER_ID = :P158_SUPPLIER_ID;
+      
+    page-items-to-submit: 
+    - P158_SUPPLIER_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-top-sm
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P158_SUPPLIER_ID
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-label--stacked
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: SUPPLIER_EMAIL ==============================
+    id: 255571580021025553
+    identification: 
+      column-name: SUPPLIER_EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: البريد الالكتروني
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHONE =======================================
+    id: 255571603946025554
+    identification: 
+      column-name: PHONE
+      type: Plain Text
+
+    heading: 
+      heading: رقم الهاتف
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SUPPLIER_TYPE ===============================
+    id: 255571705008025555
+    identification: 
+      column-name: SUPPLIER_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: تصنيف الملف
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TYPE_NAME ===================================
+    id: 255571851261025556
+    identification: 
+      column-name: TYPE_NAME
+      type: Plain Text
+
+    heading: 
+      heading: تصنيف الملف
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IDENTITY_INFO ===============================
+    id: 255571918527025557
+    identification: 
+      column-name: IDENTITY_INFO
+      type: Plain Text
+
+    heading: 
+      heading: تفاصيل المورد
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LOCATION ====================================
+    id: 255572024957025558
+    identification: 
+      column-name: LOCATION
+      type: Plain Text
+
+    heading: 
+      heading: المدينة / الدولة
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 255572215779025560
+    identification: 
+      column-name: STATUS
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: حالة الحساب
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: SUPPLIER_STATUSES.STATUS_NAME # 255591319970110892
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 255572391359025561
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 255664047801852969
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAME ========================================
+    id: 255664434369852971
+    identification: 
+      column-name: NAME
+      type: Plain Text
+
+    heading: 
+      heading: الاسم
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 255666459677852973
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الانشاء
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 255666811978852974
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تعديل
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ADDRESS =====================================
+    id: 279057946699864265
+    identification: 
+      column-name: ADDRESS
+      type: Plain Text
+
+    heading: 
+      heading: Address
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Button Container ============================
+  id: 14633983483736266045
+  identification: 
+    name: Button Container
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P158_SUPPLIER_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Not a Registered Supplier ===================
+  id: 16403254190585130844
+  identification: 
+    name: Not a Registered Supplier
+    title: لبس مورد مسجل
+    type: Static Content
+
+  source: 
+    html-code: الملف المحدد ليس مسجلاً في سجل الموردين داخل هذا النظام.
+
+  layout: 
+    sequence: 1
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--info
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P158_SUPPLIER_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P158_SUPPLIER_ID =========================
+  id: 13405295771294095586
+  identification: 
+    name: P158_SUPPLIER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Supplier Details # 13405289997495095544
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P158_PHOTO_PLACEHOLDER ===================
+  id: 14634016210185266125
+  identification: 
+    name: P158_PHOTO_PLACEHOLDER
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: Image URL stored in Page Item Value
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Static Value
+    static-value: '#APP_FILES#default-user-avatar.png'
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select 1 
+      from suppliers 
+      where supplier_id = :P158_SUPPLIER_ID and 
+      profile_photo is not null
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P158_PHOTO ===============================
+  id: 14912317866319252109
+  identification: 
+    name: P158_PHOTO
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: BLOB Column returned by SQL statement
+    sql-statement: 'select profile_PHOTO from SUPPLIERS where supplier_id = :P158_SUPPLIER_ID '
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: 0
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1 
+      from suppliers 
+      where supplier_id = :P158_SUPPLIER_ID and 
+      profile_photo is not null
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: manage_my_profile ===========================
+  id: 255668290765852980
+  identification: 
+    button-name: manage_my_profile
+    label: Manage My Profile
+
+  layout: 
+    sequence: 20
+    region: Button Container # 14633983483736266045
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-user
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:20:&SESSION.::&DEBUG.:RP,20:P20_ID:&APP_USER_ID.'
+      page: 20
+      clear-cache: RP,20
+      values: 
+        p20_id: '&APP_USER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+      from bs_employees tm
+      where tm.id = :P158_TEAM_MEMBER_ID and
+            tm.username = lower(:APP_USER)
+
+- # ====== Button: edit_user ===================================
+  id: 255669077430852981
+  identification: 
+    button-name: edit_user
+    label: تعديل (ADMIN)
+
+  layout: 
+    sequence: 40
+    region: Button Container # 14633983483736266045
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-edit
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:159:&SESSION.::&DEBUG.:159:P159_SUPPLIER_ID:&P158_SUPPLIER_ID.'
+      page: 159 # Suppliers Account Form
+      clear-cache: 159
+      values: 
+        p159_supplier_id: '&P158_SUPPLIER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select 1
+      from sp_team_members tm
+      where tm.id = :P158_TEAM_MEMBER_ID and
+            tm.email = lower(:APP_USER)
+
+  security: 
+    authorization-scheme: Administration Rights # 149832818388153023719
+
+- # ====== Button: view_details ================================
+  id: 255669443018852982
+  identification: 
+    button-name: view_details
+    label: عرض التفاصيل
+
+  layout: 
+    sequence: 50
+    region: Button Container # 14633983483736266045
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-glasses
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:RP,166:P166_ID:&P158_SUPPLIER_ID.'
+      page: 166 # Supplier Details Full Page
+      clear-cache: RP,166
+      values: 
+        p166_id: '&P158_SUPPLIER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+

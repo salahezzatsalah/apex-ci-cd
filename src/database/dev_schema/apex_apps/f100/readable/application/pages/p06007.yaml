@@ -1,0 +1,1334 @@
+---
+# ====== Page: Limo Assignment Summary Report ================
+id: 6007
+identification: 
+  name: Limo Assignment Summary Report
+  alias: LIMO-ASSIGNMENT-SUMMARY-REPORT
+  title: تقرير عن توزيعة تشغيلة ليموزين - نموذج 6007
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .whitebackground {
+        background-color: white;
+    }
+    
+    .driver-card { max-width: 500px; margin: auto; box-shadow: 0 2px 8px #eee; }
+    .tile-metric { transition: box-shadow .2s; }
+    .tile-metric:hover { box-shadow: 0 2px 8px #bbb; }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Client Request Details ======================
+  id: 277032070392043675
+  identification: 
+    name: Client Request Details
+    title: تفاصيل طلب العميل - &P6007_PRODUCT_ID.
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        rec VW_LIMO_PRODUCT_OVERVIEW%ROWTYPE;
+        l_html CLOB := '';
+      BEGIN
+        BEGIN
+          SELECT *
+            INTO rec
+            FROM VW_LIMO_PRODUCT_OVERVIEW
+           WHERE PRODUCT_ID = :P6007_PRODUCT_ID;
+      
+          l_html := l_html || '
+          <!-- Compact Client Request Card -->
+          <div class="bg-white dark:bg-neutral-900 rounded-xl border border-gray-100 p-2 md:p-3 max-w-2xl w-full mx-auto mb-3 shadow-sm flex flex-col gap-2">
+      
+            <!-- Top Row: Codes, Name, Phone, Time -->
+            <div class="flex flex-wrap gap-2 items-center text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 leading-snug">
+      
+              <!-- Client Code -->
+              <span class="flex items-center gap-1"><span class="font-bold">كود العميل:</span> '|| rec.CLIENT_CODE ||'</span>
+              <span class="hidden sm:inline mx-1">|</span>
+              <!-- Reservation -->
+              <span class="flex items-center gap-1"><span class="font-bold">الحجز:</span> '|| rec.RESERVATION_ID ||'</span>
+              <span class="hidden sm:inline mx-1">|</span>
+              <!-- Trip -->
+              <span class="flex items-center gap-1"><span class="font-bold">الرحلة:</span> '|| rec.PRODUCT_ID ||'</span>
+            </div>
+            
+            <!-- Row 2: Avatar + Name + Phone + Time -->
+            <div class="flex items-center gap-2 mt-1 mb-1">
+      
+              <!-- Avatar/Car Photo -->
+              <div class="relative flex-shrink-0">
+                <img src="'|| rec.CAR_PHOTO_URL ||'" alt="سيارة"
+                  onerror="this.onerror=null;this.src=''#APP_FILES#placeholders/unknown-car.png''"
+                  class="w-16 h-12 sm:w-20 sm:h-16 object-cover rounded-md border border-gray-200 shadow-sm" />
+              </div>
+      
+              <!-- Name, Phone, Time -->
+              <div class="flex flex-col flex-1 min-w-0 gap-0.5">
+      
+                <div class="flex flex-wrap gap-2 items-center">
+                  <i class="fa6 fa6-user text-blue-800"></i>
+                  <span class="font-bold text-gray-800 dark:text-white">العميل:</span>
+                  <span class="truncate text-gray-900 dark:text-white" style="max-width:110px;display:inline-block;">'|| rec.FULL_NAME ||'</span>
+                </div>
+      
+                <div class="flex flex-wrap gap-2 items-center text-xs mt-0.5">
+                  <i class="fa6 fa6-phone-volume text-blue-800"></i>
+                  <span class="font-bold text-gray-800 dark:text-white">جوال:</span>
+                  <span class="truncate">'|| rec.PHONE ||'</span>
+                  <a href="tel:'|| rec.PHONE_CLEAN ||'" class="text-blue-700 hover:text-blue-900" title="اتصال"><i class="fa6 fa6-phone"></i></a>
+                  <a href="https://wa.me/'|| rec.PHONE_CLEAN ||'?text=مرحباً%20'|| apex_escape.html(rec.FULL_NAME) ||'" class="text-green-600 hover:text-green-800" target="_blank" title="واتساب"><i class="fa6 fa6-paper-plane"></i></a>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 items-center text-xs mt-0.5">
+                  <i class="fa6 fa6-clock text-blue-800"></i>
+                  <span class="font-bold text-gray-800 dark:text-white">الموعد:</span>
+                  <span>'|| NVL(rec.PICK_UP_TIME, '-') ||'</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Locations (compact) -->
+            <div class="flex flex-row flex-wrap items-center gap-2 bg-gray-50 dark:bg-neutral-800 rounded px-2 py-1 mb-1">
+              <div class="flex flex-col items-center min-w-[60px]">
+                <span class="font-bold text-black dark:text-white text-xs">'|| rec.FROM_LOCATION ||'</span>
+                <span class="text-[11px] text-gray-500">'|| NVL(rec.PICK_UP_TIME, '-') ||'</span>
+              </div>
+              <span class="flex items-center justify-center mx-1 text-gray-400">
+                <svg viewBox="0 0 24 24" class="w-4 h-4 fill-gray-500"><path d="M14.55 6c-.2 0-.39.078-.53.22l-5 5a1.1 1.1 0 0 0 0 1.56l5 5a.75.75 0 0 0 1.06-1.06L10.36 12l4.72-4.72a.75.75 0 0 0-.53-1.28z"/></svg>
+              </span>
+              <div class="flex flex-col items-center min-w-[60px]">
+                <span class="font-bold text-black dark:text-white text-xs">'|| rec.TO_LOCATION ||'</span>
+                <span class="text-[11px] text-gray-500">'|| 
+                  CASE 
+                    WHEN rec.TRIP_DATE_TO IS NOT NULL 
+                    THEN TO_CHAR(rec.TRIP_DATE_TO, 'DD/MM/YYYY HH24:MI') 
+                    ELSE '-' 
+                  END 
+                ||'</span>
+              </div>
+            </div>
+      
+            <!-- Meta Badges -->
+            <div class="flex flex-wrap gap-1 mb-1 text-xs">
+              <span class="inline-flex items-center gap-1 bg-blue-900 text-white px-2 py-0.5 rounded-full">
+                <i class="fa6 fa6-tag"></i> '|| rec.CLASSIFICATION_TYPE ||'
+              </span>
+              <span class="inline-flex items-center gap-1 bg-blue-900 text-white px-2 py-0.5 rounded-full">
+                <i class="fa6 fa6-car-side"></i> '|| rec.TRIP_TYPE ||'
+              </span>
+              <span class="inline-flex items-center gap-1 bg-blue-900 text-white px-2 py-0.5 rounded-full">
+                <i class="fa6 fa6-calendar-day"></i> '|| rec.NUMBER_OF_DAYS ||' يوم
+              </span>
+              <span class="inline-flex items-center gap-1 bg-blue-900 text-white px-2 py-0.5 rounded-full">
+                <i class="fa6 fa6-car"></i> '|| rec.REQUESTED_CAR ||'
+              </span>
+              <span class="inline-flex items-center gap-1 bg-yellow-400 text-gray-800 px-2 py-0.5 rounded-full font-semibold border border-yellow-600">
+                <i class="fa6 fa6-location-arrow text-yellow-800"></i>
+                '|| rec.TRIPS_COUNT ||' / '|| rec.TOTAL_DAYS ||'
+                <span class="ml-1 text-[10px] font-normal text-gray-600">رحلات</span>
+              </span>
+            </div>
+      
+            <!-- Sidebar/Misc (below main on mobile) -->
+            <div class="flex flex-wrap gap-2 mt-1">
+              <div class="flex flex-col gap-1 text-xs bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-2 flex-1 min-w-[140px]">
+                <div class="flex items-center gap-1"><i class="fa6 fa6-money-bill-wave text-blue-800"></i><span class="font-bold">سعر:</span><span>'|| rec.PRODUCT_PRICE ||' '|| rec.PRODUCT_CURRENCY ||'</span></div>
+                <div class="flex items-center gap-1"><i class="fa6 fa6-file-invoice text-blue-800"></i><span class="font-bold">إجمالي:</span><span>'|| rec.TOTAL_AMOUNT ||' '|| rec.PRODUCT_CURRENCY ||'</span></div>
+                <div class="flex items-center gap-1"><i class="fa6 fa6-plus-circle text-blue-800"></i><span class="font-bold">خدمات إضافية:</span><span>'|| rec.TOTAL_ADDED_SERVICES_EGP ||' EGP</span></div>
+                <div class="flex items-center gap-1"><i class="fa6 fa6-file-invoice text-blue-800"></i><span class="font-bold">الفتورة:</span><span>'|| rec.TOTAL_INVOICE_ORIG_CURR ||' '|| rec.PRODUCT_CURRENCY ||'</span></div>
+                <div class="flex items-center gap-1"><i class="fa6 fa6-sack-dollar text-blue-800"></i><span class="font-bold">المدفوع:</span><span>'|| rec.TOTAL_PAID_ORIG_CURR ||' '|| rec.PRODUCT_CURRENCY ||'</span></div>
+                <div class="flex items-center gap-1"><i class="fa6 fa6-wallet text-blue-800"></i><span class="font-bold">المتبقي:</span><span>'|| rec.TOTAL_OUTSTANDING_ORIG_CURR ||' '|| rec.PRODUCT_CURRENCY ||'</span></div>
+              </div>
+      
+              <div class="flex flex-col gap-1 text-xs bg-white dark:bg-neutral-800 rounded-lg border border-gray-200 dark:border-neutral-700 p-2 flex-1 min-w-[140px]">
+                <div class="flex items-center gap-1"><i class="fa6 fa6-user-check text-blue-800"></i><span class="font-bold">السائق:</span><span>'|| rec.CURRENT_DRIVER_NAME ||'</span></div>
+                <div class="flex items-center gap-1"><i class="fa6 fa6-phone text-blue-800"></i><span class="font-bold">جوال السائق:</span><span>'|| NVL(rec.CURRENT_DRIVER_PHONE, '-') ||'</span></div>
+              </div>
+            </div>';
+      
+          -- Ticket/Signage Section (optional)
+          IF rec.TICKET_NUMBER IS NOT NULL THEN
+            l_html := l_html || '
+            <div class="flex flex-wrap gap-2 bg-yellow-50 border border-yellow-300 rounded-lg p-2 text-xs mt-1">
+              <div class="flex items-center gap-1"><i class="fa6 fa6-ticket-alt text-yellow-800"></i><span class="font-bold">تذكرة:</span><span>'|| rec.TICKET_NUMBER ||'</span></div>';
+            IF rec.SIGNAGE_DETAILS IS NOT NULL THEN
+              l_html := l_html || '
+              <div class="flex items-center gap-1"><i class="fa6 fa6-sign text-yellow-800"></i><span class="font-bold">لافتة:</span><span>'|| rec.SIGNAGE_DETAILS ||'</span></div>';
+            END IF;
+            l_html := l_html || '</div>';
+          END IF;
+      
+          -- Trip Notes (optional)
+          IF rec.TRIP_NOTES IS NOT NULL THEN
+            l_html := l_html || '
+            <div class="border border-dashed border-gray-300 bg-white dark:bg-neutral-900 rounded-md px-2 py-1 italic text-xs flex items-center gap-1 mt-1">
+              <i class="fa6 fa6-sticky-note text-blue-800"></i>
+              <span class="font-bold">ملاحظات:</span>
+              <span>'|| rec.TRIP_NOTES ||'</span>
+            </div>';
+          END IF;
+      
+          l_html := l_html || '
+          </div> <!-- END Card -->';
+      
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            l_html := '<div class="bg-yellow-100 text-yellow-800 rounded-xl p-4 text-center my-6">لا يوجد بيانات لهذا الحجز.</div>';
+        END;
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6007_PRODUCT_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    css-classes: 
+    - whitebackground
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Assignment Details ==========================
+  id: 277032106865043676
+  identification: 
+    name: Assignment Details
+    title: تفاصيل التوزيعة - &P6007_ASSIGNMENT_ID.
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        rec VW_DRIVER_ASSIGNMENT_ACCOUNTING%ROWTYPE;
+        l_html           CLOB := '';
+        l_status_class   VARCHAR2(100);
+        l_type_class     VARCHAR2(100);
+        l_currency_count NUMBER := 0;
+      
+        -- Helper for pretty formatting
+        FUNCTION format_amt(n NUMBER) RETURN VARCHAR2 IS
+        BEGIN
+          IF n IS NULL THEN RETURN '0'; END IF;
+          IF MOD(n, 1) = 0 THEN
+            RETURN TO_CHAR(n, '999G999G990');
+          ELSE
+            RETURN TO_CHAR(n, '999G999G990D00');
+          END IF;
+        END;
+      
+        FUNCTION strip_zeros(s VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          -- Remove trailing .00 (from JSON or char values)
+          IF s IS NULL THEN RETURN '0'; END IF;
+          IF INSTR(s, '.') > 0 AND REGEXP_SUBSTR(s, '\.0+$') IS NOT NULL THEN
+            RETURN REGEXP_REPLACE(s, '\.0+$', '');
+          ELSE
+            RETURN s;
+          END IF;
+        END;
+      BEGIN
+        BEGIN
+          SELECT *
+            INTO rec
+            FROM VW_DRIVER_ASSIGNMENT_ACCOUNTING
+           WHERE ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID;
+      
+          -- Status color
+          l_status_class :=
+            CASE rec.DRIVER_STATUS
+              WHEN 'حالي'   THEN 'bg-emerald-100 text-emerald-700'
+              WHEN 'سابق'   THEN 'bg-gray-100 text-gray-600'
+              ELSE 'bg-yellow-100 text-yellow-700'
+            END;
+      
+          -- Assignment type color
+          l_type_class :=
+            CASE rec.ASSIGNMENT_TYPE
+              WHEN 'INSOURCE'  THEN 'bg-indigo-100 text-indigo-700'
+              WHEN 'OUTSOURCE' THEN 'bg-blue-100 text-blue-700'
+              ELSE 'bg-slate-100 text-slate-700'
+            END;
+      
+          -- Count the number of collected currencies
+          IF rec.COLLECTIONS_BY_CURRENCY_JSON IS NOT NULL AND rec.COLLECTIONS_BY_CURRENCY_JSON != '[]' THEN
+            SELECT COUNT(*)
+              INTO l_currency_count
+              FROM JSON_TABLE(
+                rec.COLLECTIONS_BY_CURRENCY_JSON,
+                '$[*]' COLUMNS (
+                  currency     VARCHAR2(10)  PATH '$.currency'
+                )
+              );
+          END IF;
+      
+          l_html := l_html || '
+          <div class="bg-white dark:bg-neutral-900 border border-gray-100 rounded-2xl shadow-sm flex flex-col md:flex-row overflow-hidden mb-3 max-w-full">';
+      
+          -- Avatar/Info
+          l_html := l_html || '
+            <div class="flex flex-col items-center justify-center w-full md:w-36 bg-gray-50 dark:bg-neutral-800 p-2 sm:p-3">
+              <img src="' || rec.DRIVER_AVATAR || '" class="rounded-full w-12 h-12 object-cover border border-gray-200 mb-1 shadow" alt="Driver" />
+              <div class="text-center w-full">
+                <div class="font-bold text-[14px] text-blue-700 dark:text-blue-300 truncate">
+                  <a href="' || APEX_UTIL.PREPARE_URL(
+                    'f?p=' || :APP_ID || ':366:' || :APP_SESSION || '::::P366_DRIVER_ID:' || rec.DRIVER_ID
+                  ) || '" class="hover:underline" target="_blank">'|| rec.DRIVER_NAME ||'</a>
+                </div>
+                <div class="flex justify-center gap-1 mt-1 mb-1">
+                  <span class="text-[10px] px-1 py-0.5 rounded-full '|| l_status_class || '">' || rec.DRIVER_STATUS || '</span>
+                  <span class="text-[10px] px-1 py-0.5 rounded-full '|| l_type_class   || '">' || rec.ASSIGNMENT_TYPE_AR || '</span>
+                </div>
+                <div class="flex items-center justify-center gap-1 text-[11px] text-gray-500 ltr:text-left rtl:text-right mt-0.5">
+                  <span>'|| rec.ASSIGNMENT_NOTE ||'</span>
+                </div>
+                <div class="flex items-center justify-center gap-1 text-[10px] text-gray-400 mt-0.5 ltr:text-left rtl:text-right">
+                  <span dir="ltr" style="unicode-bidi: plaintext;">'|| NVL(rec.COLLECTION_NOTE, '') ||'</span>
+                </div>';
+      
+          -- Edit Assignment button (if assignment id present)
+          IF rec.ASSIGNMENT_ID IS NOT NULL THEN
+            l_html := l_html || '
+                <div class="flex justify-center mt-2">
+                  <a href="' || APEX_UTIL.PREPARE_URL(
+                    'f?p=' || :APP_ID || ':363:' || :APP_SESSION || '::::P363_ASSIGNMENT_ID:' || rec.ASSIGNMENT_ID
+                  ) || '" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold transition" style="margin-top:2px;">
+                    <i class="fa6 fa6-solid fa6-pen-to-square"></i> تعديل التعيين
+                  </a>
+                </div>';
+          END IF;
+      
+          l_html := l_html || '
+              </div>
+            </div>';
+      
+          -- Main Tiles Grid
+          l_html := l_html || '
+            <div class="flex-1 p-2 grid grid-cols-2 sm:grid-cols-3 gap-2 bg-white dark:bg-neutral-900">';
+      
+          l_html := l_html ||
+            -- Trip count
+            '<div class="rounded-xl bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-700 p-2 flex flex-col items-center shadow-sm min-w-[88px]">
+                <div class="flex items-center gap-1 text-indigo-700 dark:text-indigo-100 mb-0.5"><i class="fa6 fa6-road"></i></div>
+                <div class="font-bold text-xs text-indigo-900 dark:text-indigo-50">'|| NVL(rec.TRIPS_MADE, 0) ||'</div>
+                <div class="text-[10px] text-indigo-700 dark:text-indigo-200 mt-0.5">عدد الرحلات</div>
+            </div>' ||
+      
+            -- Total trips amount (original currency)
+            '<div class="rounded-xl bg-emerald-50 dark:bg-emerald-900 border border-emerald-100 dark:border-emerald-700 p-2 flex flex-col items-center shadow-sm min-w-[88px]">
+                <div class="flex items-center gap-1 text-emerald-700 dark:text-emerald-100 mb-0.5"><i class="fa6 fa6-money-bill-wave"></i></div>
+                <div class="font-bold text-xs text-emerald-900 dark:text-emerald-50">'|| format_amt(rec.TOTAL_TRIPS_AMOUNT) ||' '|| rec.PRODUCT_CURRENCY ||'</div>
+                <div class="text-[10px] text-emerald-700 dark:text-emerald-200 mt-0.5">إجمالي الرحلات</div>
+            </div>' ||
+      
+            -- Expenses
+            '<div class="rounded-xl bg-red-50 dark:bg-red-900 border border-red-100 dark:border-red-700 p-2 flex flex-col items-center shadow-sm min-w-[88px]">
+                <div class="flex items-center gap-1 text-red-700 dark:text-red-100 mb-0.5"><i class="fa6 fa6-screwdriver-wrench"></i></div>
+                <div class="font-bold text-xs text-red-900 dark:text-red-50">'|| format_amt(rec.TOTAL_EXPENSES_EGP) ||' EGP</div>
+                <div class="text-[10px] text-red-700 dark:text-red-200 mt-0.5">المصروفات</div>
+            </div>' ||
+      
+            -- Added services
+            '<div class="rounded-xl bg-amber-50 dark:bg-amber-900 border border-amber-100 dark:border-amber-700 p-2 flex flex-col items-center shadow-sm min-w-[88px]">
+                <div class="flex items-center gap-1 text-amber-700 dark:text-amber-100 mb-0.5"><i class="fa6 fa6-bell-concierge"></i></div>
+                <div class="font-bold text-xs text-amber-900 dark:text-amber-50">'|| format_amt(rec.TOTAL_ADDED_SERVICES_EGP) ||' EGP</div>
+                <div class="text-[10px] text-amber-700 dark:text-amber-200 mt-0.5">الخدمات</div>
+            </div>' ||
+      
+            -- Driver payout
+            '<div class="rounded-xl bg-blue-50 dark:bg-blue-900 border border-blue-100 dark:border-blue-700 p-2 flex flex-col items-center shadow-sm min-w-[88px]">
+                <div class="flex items-center gap-1 text-blue-700 dark:text-blue-100 mb-0.5"><i class="fa6 fa6-money-bill-trend-up"></i></div>
+                <div class="font-bold text-xs text-blue-900 dark:text-blue-50">'|| format_amt(rec.DRIVER_TOTAL_PAYOUT_EGP) ||' EGP</div>
+                <div class="text-[10px] text-blue-700 dark:text-blue-200 mt-0.5">نصيب السائق</div>
+            </div>' ||
+      
+            -- Office net
+            '<div class="rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 p-2 flex flex-col items-center shadow-sm min-w-[88px]">
+                <div class="flex items-center gap-1 text-slate-700 dark:text-slate-100 mb-0.5"><i class="fa6 fa6-building-columns"></i></div>
+                <div class="font-bold text-xs text-slate-900 dark:text-slate-50">'|| format_amt(rec.OFFICE_NET_EGP) ||' EGP</div>
+                <div class="text-[10px] text-slate-700 dark:text-slate-200 mt-0.5">صافي المكتب</div>
+            </div>';
+      
+          l_html := l_html || '</div>'; -- close grid
+      
+          -- Improved Currency breakdown section
+          IF l_currency_count > 0 THEN
+            l_html := l_html || '
+            <div class="flex flex-col gap-2 mt-4">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center border border-amber-100 shadow-sm">
+                  <i class="fa6 fa-wallet text-amber-600 text-lg"></i>
+                </span>
+                <span class="font-bold text-amber-900 text-sm">اجمالي التحصيلات التي قام بها السائق</span>
+              </div>
+              <div class="flex flex-wrap gap-2 px-1">';
+            
+            -- Calculate and show total across all currencies (sum EGP equivalents)
+            DECLARE
+              l_total_collected_egp NUMBER := 0;
+            BEGIN
+              FOR curr_rec IN (
+                SELECT jt.*
+                FROM JSON_TABLE(
+                  rec.COLLECTIONS_BY_CURRENCY_JSON,
+                  '$[*]'
+                  COLUMNS (
+                    currency     VARCHAR2(10)  PATH '$.currency',
+                    amount       VARCHAR2(50)  PATH '$.amount',
+                    amount_egp   VARCHAR2(50)  PATH '$.amount_egp'
+                  )
+                ) jt
+              ) LOOP
+                l_total_collected_egp := l_total_collected_egp + NVL(TO_NUMBER(REPLACE(curr_rec.amount_egp,',','')),0);
+                l_html := l_html || '
+                  <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[13px] font-semibold shadow-sm">
+                    <i class="fa6 fa-money-bill-wave text-amber-500"></i>
+                    <span>' || strip_zeros(curr_rec.amount) || ' <span class="font-bold uppercase">' || curr_rec.currency || '</span></span>
+                    <span class="text-neutral-400 mx-1">|</span>
+                    <span class="font-normal">' || strip_zeros(curr_rec.amount_egp) || ' EGP</span>
+                  </span>';
+              END LOOP;
+              l_html := l_html || '
+                <span class="inline-flex items-center gap-1 px-4 py-1 rounded-full bg-green-50 text-green-900 border border-green-200 text-[13px] font-extrabold shadow-sm ml-1">
+                  <i class="fa6 fa-coins text-green-600"></i>
+                  <span>الاجمالي بالـEGP</span>
+                  <span class="font-bold">' || format_amt(l_total_collected_egp) || ' EGP</span>
+                </span>';
+            END;
+            l_html := l_html || '</div></div>';
+          END IF;
+      
+          l_html := l_html || '</div>'; -- close driver card
+      
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            l_html := '
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-sm mt-4">
+              <div class="font-medium">🚫 لا توجد بيانات لهذا التعيين</div>
+              <div class="text-xs mt-1">لم يتم العثور على تعيين سائق برقم المعرف المحدد.</div>
+            </div>';
+        END;
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6007_ASSIGNMENT_ID
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Assignment Trips Records ====================
+  id: 277032223169043677
+  identification: 
+    name: Assignment Trips Records
+    title: ' تقرير الرحلات'
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html     CLOB;
+        l_index    INTEGER := 0;
+        l_count    INTEGER := 0;
+        l_driver   VARCHAR2(4000);
+        l_val_disp VARCHAR2(40);
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        -- Count trips for the assignment
+        SELECT COUNT(*) INTO l_count
+        FROM VW_LIMO_TRIP_TRACKING
+        WHERE ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID;
+      
+        -- Get current driver for this assignment
+        BEGIN
+          SELECT 
+            CASE a.ASSIGNMENT_TYPE
+              WHEN 'INSOURCE' THEN d.DRIVER_NAME || ' (' || d.DRIVER_ID || ')'
+              WHEN 'OUTSOURCE' THEN s.SUPPLIER_NAME || ' (' || s.SUPPLIER_ID || ')'
+              ELSE 'غير معروف'
+            END
+          INTO l_driver
+          FROM LIMO_PRODUCT_ASSIGNMENTS a
+          LEFT JOIN COMPANY_DRIVERS d ON a.ASSIGNMENT_TYPE = 'INSOURCE' AND d.DRIVER_ID = a.DRIVER_ID
+          LEFT JOIN SUPPLIERS s ON a.ASSIGNMENT_TYPE = 'OUTSOURCE' AND TO_CHAR(s.SUPPLIER_ID) = a.DRIVER_ID
+          WHERE a.ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID
+            AND a.DRIVER_STATUS = 'CURRENT'
+            AND ROWNUM = 1;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            l_driver := NULL;
+        END;
+      
+        DBMS_LOB.APPEND(l_html, '<div class="space-y-3">');
+      
+        IF l_count = 0 THEN
+          DBMS_LOB.APPEND(l_html, '
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-2xl text-sm flex flex-col items-start">
+              <div class="font-medium">🚫 لا توجد رحلات مسجلة</div>
+              <div class="text-xs mt-1">' || 
+              CASE 
+                WHEN l_driver IS NOT NULL THEN 'تم تعيين السائق: <strong>' || l_driver || '</strong> ولكن لم تسجل أي رحلات.'
+                ELSE 'لم يتم تسجيل أي سائق أو رحلة على هذا التعيين.'
+              END || '</div>
+            </div>');
+        ELSE
+          FOR rec IN (
+            SELECT * FROM VW_LIMO_TRIP_TRACKING
+            WHERE ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID
+            ORDER BY START_DATETIME ASC
+          ) LOOP
+            l_index := l_index + 1;
+      
+            DBMS_LOB.APPEND(l_html, '
+            <div class="bg-white border border-gray-100 rounded-2xl shadow-sm px-2 py-3 flex flex-col gap-3 max-w-md mx-auto">
+              <div class="flex items-center gap-3">
+                <img src="' || NVL(rec.DRIVER_AVATAR, '#APP_FILES#placeholders/unknown.png') || '" 
+                     onerror="this.onerror=null;this.src=''#APP_FILES#placeholders/unknown.png'';" 
+                     class="w-11 h-11 rounded-full object-cover border border-gray-200 shadow-sm flex-shrink-0" 
+                     alt="Driver" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="font-semibold text-base text-gray-900 flex items-center gap-1">
+                      <i class="fa6 fa6-car-side text-indigo-600"></i>
+                      <span>الرحلة رقم ' || l_index || '</span>
+                    </div>
+                    <div>' ||
+                      CASE UPPER(NVL(rec.STATUS, 'UNKNOWN'))
+                        WHEN 'FINISHED' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200">منتهية</span>'
+                        WHEN 'ACTIVE' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">نشطة</span>'
+                        WHEN 'PAUSED' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200">متوقفة</span>'
+                        WHEN 'RESUMED' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200">مستأنفة</span>'
+                        ELSE '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-50 text-gray-500 border border-gray-200">غير معروف</span>'
+                      END || '
+                    </div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1 truncate">' || NVL(rec.DRIVER_NAME, '-') || '</div>
+                </div>
+              </div>
+      
+              <!-- Timeline/metrics (Uber Base section: Tiles) -->
+              <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 text-xs">
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center">
+                  <span class="text-gray-400 mb-0.5"><i class="fa6 fa6-clock"></i></span>
+                  <span class="font-semibold text-gray-800">' || TO_CHAR(convert_to_local_timezone(rec.START_DATETIME), 'DD-MM-YYYY HH24:MI') || '</span>
+                  <span class="text-[10px] text-gray-500 mt-0.5">البداية</span>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center">
+                  <span class="text-yellow-400 mb-0.5"><i class="fa6 fa6-clock-rotate-left"></i></span>
+                  <span class="font-semibold text-yellow-700">' || NVL(rec.TIME_SPENT_MINUTES,0) || ' دقيقة</span>
+                  <span class="text-[10px] text-gray-500 mt-0.5">المدة</span>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center">
+                  <span class="text-indigo-400 mb-0.5"><i class="fa6 fa6-road"></i></span>
+                  <span class="font-semibold text-indigo-700">' || 
+                  (CASE WHEN rec.DISTANCE_KM IS NULL THEN '-' 
+                        WHEN MOD(rec.DISTANCE_KM, 1) = 0 THEN TO_CHAR(rec.DISTANCE_KM, '999G990') 
+                        ELSE TO_CHAR(rec.DISTANCE_KM, '999G990D00') END) || ' كم</span>
+                  <span class="text-[10px] text-gray-500 mt-0.5">المسافة</span>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center">
+                  <span class="text-red-400 mb-0.5"><i class="fa6 fa6-money-bill"></i></span>
+                  <span class="font-semibold text-red-700">' || 
+                  (CASE WHEN rec.TOTAL_EXPENSES IS NULL THEN '-' 
+                        WHEN MOD(rec.TOTAL_EXPENSES, 1) = 0 THEN TO_CHAR(rec.TOTAL_EXPENSES, '999G990') 
+                        ELSE TO_CHAR(rec.TOTAL_EXPENSES, '999G990D00') END) || ' EGP</span>
+                  <span class="text-[10px] text-gray-500 mt-0.5">المصروفات</span>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center">
+                  <span class="text-yellow-500 mb-0.5"><i class="fa6 fa6-bell-concierge"></i></span>
+                  <span class="font-semibold text-yellow-700">' || 
+                  (CASE WHEN rec.TOTAL_SERVICES IS NULL THEN '-' 
+                        WHEN MOD(rec.TOTAL_SERVICES, 1) = 0 THEN TO_CHAR(rec.TOTAL_SERVICES, '999G990') 
+                        ELSE TO_CHAR(rec.TOTAL_SERVICES, '999G990D00') END) || ' EGP</span>
+                  <span class="text-[10px] text-gray-500 mt-0.5">الخدمات</span>
+                </div>
+                <div class="bg-gray-50 border border-gray-100 rounded-xl p-2 flex flex-col items-center">
+                  <span class="text-blue-500 mb-0.5"><i class="fa6 fa6-wallet"></i></span>
+                  <span class="font-semibold text-blue-700">' || 
+                  (CASE WHEN rec.TOTAL_DRIVER_PAYOUT_EGP IS NULL THEN '-' 
+                        WHEN MOD(rec.TOTAL_DRIVER_PAYOUT_EGP, 1) = 0 THEN TO_CHAR(rec.TOTAL_DRIVER_PAYOUT_EGP, '999G990') 
+                        ELSE TO_CHAR(rec.TOTAL_DRIVER_PAYOUT_EGP, '999G990D00') END) || ' EGP</span>
+                  <span class="text-[10px] text-gray-500 mt-0.5">نصيب السائق</span>
+                </div>
+              </div>
+      
+              <!-- Uber Base Design: Actions as navigation -->
+              <div class="grid grid-cols-2 sm:flex sm:justify-center flex-wrap gap-2 pt-3 border-t border-gray-100 mt-3">
+                <a href="' || APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6002:' || :APP_SESSION || '::::P6002_TRIP_ID:' || rec.TRIP_ID) || '"
+                  class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-gray-900 text-white text-xs font-semibold hover:bg-black transition shadow-sm">
+                  <i class="fa6 fa6-file-lines"></i>عرض التفاصيل
+                </a>
+                 <a href="' || APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6003:' || :APP_SESSION || '::::P6003_TRIP_ID:' || rec.TRIP_ID) || '"
+                  class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-gray-900 text-white text-xs font-semibold hover:bg-black transition shadow-sm">
+                  <i class="fa6 fa6-file-lines"></i>تسجيل مصروف
+                </a>
+                <a href="' || APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6004:' || :APP_SESSION || '::::P6004_TRIP_ID:' || rec.TRIP_ID) || '"
+                  class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-yellow-600 text-white text-xs font-semibold hover:bg-yellow-700 transition shadow-sm">
+                  <i class="fa6 fa6-bell-concierge"></i>نسجيل خدمات
+                </a>
+                <a href="' || APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6005:' || :APP_SESSION || '::::P6005_TRIP_ID:' || rec.TRIP_ID) || '"
+                  class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-blue-700 text-white text-xs font-semibold hover:bg-blue-900 transition shadow-sm">
+                  <i class="fa6 fa6-cash-register"></i>تسجيل تحصيل
+                </a>
+              </div>
+            </div>
+            ');
+          END LOOP;
+        END IF;
+      
+        DBMS_LOB.APPEND(l_html, '</div>');
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6007_ASSIGNMENT_ID
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Assignment Expenses Report ==================
+  id: 277032376226043678
+  identification: 
+    name: Assignment Expenses Report
+    title: ' تقرير المصروفات'
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html           CLOB := '';
+        l_total_expense  NUMBER := 0;
+        l_amount_disp    VARCHAR2(32);
+        l_edit_url       VARCHAR2(4000);
+      BEGIN
+        l_html := l_html || '<div class="flex flex-col gap-1">';
+      
+        FOR e IN (
+          SELECT e.EXPENSE_ID,
+                 TO_CHAR(convert_to_local_timezone(e.UPDATED), 'DD/MM/YYYY HH24:MI') AS UPDATED_DATE,
+                 et.EXPENSE_TYPE_NAME,
+                 es.STATUS_NAME,
+                 es.STATUS_CODE,
+                 e.AMOUNT,
+                 e.CURRENCY,
+                 e.DETAILS
+            FROM LIMO_TRIP_EXPENSES e
+            JOIN LIMO_EXPENSE_TYPES et ON e.EXPENSE_TYPE = et.EXPENSE_TYPE_CODE
+            JOIN LIMO_EXPENSE_STATUSES es ON e.STATUS = es.STATUS_CODE
+           WHERE e.ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID
+           ORDER BY e.UPDATED DESC
+        ) LOOP
+          l_total_expense := l_total_expense + NVL(e.AMOUNT, 0);
+      
+          -- Format amount: strip decimals if .00, else show with up to 2 decimals
+          IF MOD(e.AMOUNT, 1) = 0 THEN
+            l_amount_disp := TO_CHAR(e.AMOUNT, '999G999G990');
+          ELSE
+            l_amount_disp := TO_CHAR(e.AMOUNT, '999G999G990D00');
+          END IF;
+      
+          -- Build edit URL for modal dialog (page 6003)
+          l_edit_url := APEX_UTIL.PREPARE_URL(
+            p_url => 'f?p=' || :APP_ID || ':6003:' || :APP_SESSION ||
+                     '::::P6003_EXPENSE_ID:' || e.EXPENSE_ID,
+            p_checksum_type => 'SESSION'
+          );
+      
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800 rounded-xl p-2 shadow-sm border border-neutral-100 dark:border-neutral-700">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center">
+                <i class="fa6 fa6-receipt text-blue-600 text-[16px]"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="font-semibold text-xs text-black dark:text-white truncate">' || e.EXPENSE_TYPE_NAME || '</div>
+                  <div class="text-[10px] px-2 py-0.5 rounded-full ' ||
+                    CASE e.STATUS_CODE
+                      WHEN 'PAID' THEN 'bg-green-50 text-green-700 border border-green-200'
+                      WHEN 'PENDING' THEN 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                      WHEN 'REJECTED' THEN 'bg-red-50 text-red-700 border border-red-200'
+                      ELSE 'bg-gray-50 text-gray-700 border border-gray-200'
+                    END || '">' || e.STATUS_NAME || '</div>
+                </div>
+                <div class="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5">
+                  <i class="fa6 fa6-calendar text-gray-400"></i>
+                  <span>' || e.UPDATED_DATE || '</span>
+                </div>';
+          IF e.DETAILS IS NOT NULL THEN
+            l_html := l_html || '
+                <div class="text-[11px] text-neutral-400 mt-1 flex items-center gap-1">
+                  <i class="fa6 fa6-sticky-note text-neutral-300"></i>
+                  <span>' || APEX_ESCAPE.HTML(e.DETAILS) || '</span>
+                </div>';
+          END IF;
+          l_html := l_html || '
+              </div>
+              <div class="flex flex-col items-end min-w-[54px]">
+                <div class="font-bold text-sm text-red-600">' || l_amount_disp || '</div>
+                <div class="text-[10px] text-gray-500">' || e.CURRENCY || '</div>
+              </div>
+              <div class="flex items-center ml-2">
+                <a href="' || l_edit_url || '" target="dialog"
+                  class="bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs px-2 py-1 rounded-lg shadow-sm border border-blue-200 transition"
+                  data-dialog="6003" data-width="600" data-title="تعديل المصروف">
+                  <i class="fa fa-edit"></i> تعديل
+                </a>
+              </div>
+            </div>';
+        END LOOP;
+      
+        -- Summary tile (smaller, on mobile)
+        IF l_total_expense IS NOT NULL THEN
+          IF MOD(l_total_expense, 1) = 0 THEN
+            l_amount_disp := TO_CHAR(l_total_expense, '999G999G990');
+          ELSE
+            l_amount_disp := TO_CHAR(l_total_expense, '999G999G990D00');
+          END IF;
+      
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900 rounded-xl p-2 shadow border border-green-200 dark:border-green-800 mt-1">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-100 flex items-center justify-center">
+                <i class="fa6 fa6-sack-dollar text-green-700 text-[16px]"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-xs text-green-900 dark:text-green-100">إجمالي المصروفات</div>
+              </div>
+              <div class="font-extrabold text-sm text-green-700">' || l_amount_disp || ' EGP</div>
+            </div>';
+        END IF;
+      
+        l_html := l_html || '</div>';
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6007_ASSIGNMENT_ID
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Assignment Added Services Report ============
+  id: 277032405783043679
+  identification: 
+    name: Assignment Added Services Report
+    title: تقرير الخدمات المضافة
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html           CLOB := '';
+        l_total_services NUMBER := 0;
+        l_amt_disp       VARCHAR2(32);
+        l_amt_egp_disp   VARCHAR2(32);
+      BEGIN
+        l_html := l_html || '<div class="flex flex-col gap-1">';
+      
+        FOR s IN (
+          SELECT
+            s.SERVICE_DATE,
+            ast.SERVICE_TYPE_NAME,
+            s.QUANTITY,
+            s.RATE_PER_UNIT,
+            s.UNIT_TYPE,
+            s.CURRENCY,
+            s.AMOUNT,
+            s.AMOUNT_EGP
+          FROM LIMO_ADD_SERVICES s
+          JOIN LIMO_ADDITIONAL_SERVICE_TYPES ast ON s.SERVICE_TYPE_CODE = ast.SERVICE_TYPE_CODE
+          WHERE s.ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID
+          ORDER BY s.SERVICE_DATE DESC
+        ) LOOP
+          l_total_services := l_total_services + NVL(s.AMOUNT_EGP, 0);
+      
+          -- Format numbers: remove .00 if integer
+          IF MOD(s.AMOUNT, 1) = 0 THEN
+            l_amt_disp := TO_CHAR(s.AMOUNT, '999G999G990');
+          ELSE
+            l_amt_disp := TO_CHAR(s.AMOUNT, '999G999G990D00');
+          END IF;
+      
+          IF MOD(s.AMOUNT_EGP, 1) = 0 THEN
+            l_amt_egp_disp := TO_CHAR(s.AMOUNT_EGP, '999G999G990');
+          ELSE
+            l_amt_egp_disp := TO_CHAR(s.AMOUNT_EGP, '999G999G990D00');
+          END IF;
+      
+          l_html := l_html || '
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 bg-neutral-50 dark:bg-neutral-800 rounded-xl p-2 shadow-sm border border-neutral-100 dark:border-neutral-700">
+      
+              <div class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center">
+                <i class="fa6 fa6-puzzle-piece text-blue-600 text-[16px]"></i>
+              </div>
+      
+              <div class="flex-1 min-w-0 flex flex-col gap-0.5">
+                <span class="font-semibold text-xs text-black dark:text-white truncate">' || s.SERVICE_TYPE_NAME || '</span>
+                <span class="flex flex-wrap items-center gap-1 text-[10px] text-gray-500 mt-0.5">
+                  <span class="flex items-center gap-1"><i class="fa6 fa6-calendar text-gray-400"></i>' || TO_CHAR(s.SERVICE_DATE, 'DD/MM/YYYY') || '</span>
+                  <span class="hidden sm:inline-block text-gray-300">|</span>
+                  ' ||
+                  CASE 
+                    WHEN s.QUANTITY IS NULL AND s.RATE_PER_UNIT IS NULL THEN
+                      '<span class="text-gray-700">مبلغ اجمالي</span>'
+                    ELSE
+                      '<span>الكمية: ' || NVL(TO_CHAR(s.QUANTITY), '-') || ' × ' ||
+                      (CASE WHEN s.RATE_PER_UNIT IS NULL THEN '-' 
+                            WHEN MOD(s.RATE_PER_UNIT, 1) = 0
+                            THEN TO_CHAR(s.RATE_PER_UNIT, '999G999G990')
+                            ELSE TO_CHAR(s.RATE_PER_UNIT, '999G999G990D00')
+                      END) || ' ' || NVL(s.CURRENCY,'') || ' / ' || NVL(s.UNIT_TYPE,'') || '</span>'
+                  END
+                  || '
+                </span>
+              </div>
+      
+              <div class="flex flex-col items-end min-w-[54px] mt-1 sm:mt-0">
+                <span class="font-bold text-sm text-amber-600">' || l_amt_disp || '</span>
+                <span class="text-[10px] text-gray-500">' || s.CURRENCY || '</span>';
+          IF s.CURRENCY != 'EGP' THEN
+            l_html := l_html || '<span class="text-[10px] text-neutral-400 text-end">(≈ ' || l_amt_egp_disp || ' EGP)</span>';
+          END IF;
+          l_html := l_html || '</div>
+            </div>';
+        END LOOP;
+      
+        -- Total Summary
+        IF l_total_services IS NOT NULL THEN
+          IF MOD(l_total_services, 1) = 0 THEN
+            l_amt_egp_disp := TO_CHAR(l_total_services, '999G999G990');
+          ELSE
+            l_amt_egp_disp := TO_CHAR(l_total_services, '999G999G990D00');
+          END IF;
+      
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900 rounded-xl p-2 shadow border border-green-200 dark:border-green-800 mt-1">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-100 flex items-center justify-center">
+                <i class="fa6 fa6-layer-group text-green-700 text-[16px]"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="font-semibold text-xs text-green-900 dark:text-green-100">إجمالي الخدمات</span>
+              </div>
+              <span class="font-extrabold text-sm text-green-700">' || l_amt_egp_disp || ' EGP</span>
+            </div>';
+        END IF;
+      
+        l_html := l_html || '</div>';
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6007_ASSIGNMENT_ID
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Assignment Collections Report ===============
+  id: 279044136208380730
+  identification: 
+    name: Assignment Collections Report
+    title: تقرير التحصيلات
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html         CLOB := '';
+        l_total_egp    NUMBER := 0;
+        l_amt_disp     VARCHAR2(32);
+        l_amt_egp_disp VARCHAR2(32);
+        l_badge_bg     VARCHAR2(30);
+        l_badge_fg     VARCHAR2(30);
+        l_edit_url     VARCHAR2(4000);
+      BEGIN
+        l_html := '<div class="flex flex-col gap-1">';
+      
+        /* =========================================================
+           1. Collections for all trips under assignment (V2)
+           ========================================================= */
+        FOR p IN (
+          SELECT 
+            c.COLLECTION_ID,
+            c.COLLECTION_DATETIME,
+            cm.METHOD_NAME,
+            UPPER(cm.METHOD_NAME) AS METHOD_NAME_UPPER,
+            cm.METHOD_ICON,
+            c.COLLECTED_BY_TYPE,
+            c.COLLECTOR_NAME,
+            c.AMOUNT_COLLECTED,
+            c.CURRENCY,
+            c.EXCHANGE_RATE_USED,
+            c.AMOUNT_EGP,
+            c.RECEIPT_NOTE
+          FROM LIMO_TRIP_COLLECTIONS c
+          LEFT JOIN LIMO_COLLECTION_METHODS cm
+                 ON c.COLLECTION_METHOD = cm.METHOD_ID
+          WHERE c.TRIP_ID IN (
+            SELECT t.TRIP_ID
+            FROM LIMO_TRIPS_TRACKER_V2 t
+            WHERE t.ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID
+          )
+          ORDER BY c.COLLECTION_DATETIME DESC
+        ) LOOP
+      
+          l_total_egp := l_total_egp + NVL(p.AMOUNT_EGP, 0);
+      
+          /* ---------- Number formatting ---------- */
+          l_amt_disp :=
+            CASE
+              WHEN MOD(p.AMOUNT_COLLECTED,1)=0
+              THEN TO_CHAR(p.AMOUNT_COLLECTED,'999G999G990')
+              ELSE TO_CHAR(p.AMOUNT_COLLECTED,'999G999G990D00')
+            END;
+      
+          l_amt_egp_disp :=
+            CASE
+              WHEN MOD(p.AMOUNT_EGP,1)=0
+              THEN TO_CHAR(p.AMOUNT_EGP,'999G999G990')
+              ELSE TO_CHAR(p.AMOUNT_EGP,'999G999G990D00')
+            END;
+      
+          /* ---------- Method color logic ---------- */
+          IF p.METHOD_NAME_UPPER LIKE '%CASH%' OR p.METHOD_NAME_UPPER LIKE '%نقد%' THEN
+            l_badge_bg := 'bg-green-100';  l_badge_fg := 'text-green-700';
+          ELSIF p.METHOD_NAME_UPPER LIKE '%BANK%' OR p.METHOD_NAME_UPPER LIKE '%تحويل%' THEN
+            l_badge_bg := 'bg-blue-100';   l_badge_fg := 'text-blue-700';
+          ELSIF p.METHOD_NAME_UPPER LIKE '%POS%' OR p.METHOD_NAME_UPPER LIKE '%ماكينة%' THEN
+            l_badge_bg := 'bg-indigo-100'; l_badge_fg := 'text-indigo-700';
+          ELSIF p.METHOD_NAME_UPPER LIKE '%EWALLET%' OR p.METHOD_NAME_UPPER LIKE '%محفظة%' THEN
+            l_badge_bg := 'bg-amber-100';  l_badge_fg := 'text-amber-700';
+          ELSIF p.METHOD_NAME_UPPER LIKE '%INSTAPAY%' OR p.METHOD_NAME_UPPER LIKE '%إنستا%' THEN
+            l_badge_bg := 'bg-pink-100';    l_badge_fg := 'text-pink-700';
+          ELSE
+            l_badge_bg := 'bg-gray-100';    l_badge_fg := 'text-gray-600';
+          END IF;
+      
+          /* ---------- Edit dialog URL ---------- */
+          l_edit_url := APEX_UTIL.PREPARE_URL(
+            p_url => 'f?p=' || :APP_ID || ':6005:' || :APP_SESSION ||
+                     '::::P6005_COLLECTION_ID:' || p.COLLECTION_ID,
+            p_checksum_type => 'SESSION'
+          );
+      
+          /* ---------- Card HTML ---------- */
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-neutral-50 rounded-xl p-2 shadow-sm border">
+              <div class="w-8 h-8 rounded-full '||l_badge_bg||' flex items-center justify-center text-[18px]">'
+                || NVL(p.METHOD_ICON,'❓') || '
+              </div>
+      
+              <div class="flex-1 min-w-0">
+                <div class="font-bold text-xs uppercase truncate">'
+                  || NVL(p.METHOD_NAME,'غير معروف') || '
+                </div>
+      
+                <div class="text-[10px] text-gray-500 flex gap-2">
+                  <span>📅 '
+                    || TO_CHAR(convert_to_local_timezone(p.COLLECTION_DATETIME),'DD/MM/YYYY HH24:MI')
+                    || '</span>
+                  <span>|</span>
+                  <span>'
+                    || CASE p.COLLECTED_BY_TYPE
+                         WHEN 'DRIVER' THEN 'السائق'
+                         WHEN 'OFFICE' THEN 'المكتب'
+                         ELSE 'غير محدد'
+                       END
+                    || ' - ' || NVL(p.COLLECTOR_NAME,'غير معروف') || '
+                  </span>
+                </div>'
+                || CASE WHEN p.RECEIPT_NOTE IS NOT NULL
+                        THEN '<div class="text-[10px] text-neutral-400 mt-1">🗒️ '
+                             || p.RECEIPT_NOTE || '</div>'
+                        ELSE '' END || '
+              </div>
+      
+              <div class="text-right min-w-[70px]">
+                <div class="font-extrabold text-base text-green-700">'
+                  || l_amt_disp || '</div>
+                <div class="text-[10px] text-gray-500">'||p.CURRENCY||'</div>'
+                || CASE WHEN p.CURRENCY <> 'EGP'
+                        THEN '<div class="text-[10px] text-neutral-400">(≈ '
+                             || l_amt_egp_disp || ' EGP)</div>'
+                        ELSE '' END || '
+              </div>
+      
+              <a href="'||l_edit_url||'" target="dialog"
+                 class="ml-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs px-2 py-1 rounded-lg">
+                <i class="fa fa-edit"></i>
+              </a>
+            </div>';
+        END LOOP;
+      
+        /* =========================================================
+           2. Total Summary
+           ========================================================= */
+        IF l_total_egp > 0 THEN
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-green-50 rounded-xl p-2 mt-2 border">
+              <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">💰</div>
+              <div class="flex-1 font-bold text-xs">إجمالي المحصل</div>
+              <div class="font-extrabold text-base text-green-700">'
+                || TO_CHAR(l_total_egp,'999G999G990D00') || ' EGP</div>
+            </div>';
+        END IF;
+      
+        /* =========================================================
+           3. Currency Breakdown
+           ========================================================= */
+        l_html := l_html || '<div class="flex flex-wrap gap-1 pt-2">';
+        FOR cur IN (
+          SELECT c.CURRENCY, SUM(c.AMOUNT_COLLECTED) AMT
+          FROM LIMO_TRIP_COLLECTIONS c
+          WHERE c.TRIP_ID IN (
+            SELECT t.TRIP_ID
+            FROM LIMO_TRIPS_TRACKER_V2 t
+            WHERE t.ASSIGNMENT_ID = :P6007_ASSIGNMENT_ID
+          )
+          GROUP BY c.CURRENCY
+        ) LOOP
+          l_html := l_html || '
+            <span class="px-2 py-0.5 rounded-full bg-gray-100 text-[11px] font-semibold">
+              💲 '|| TO_CHAR(cur.AMT,'999G999G990D00') || ' '||cur.CURRENCY||'
+            </span>';
+        END LOOP;
+      
+        l_html := l_html || '</div></div>';
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6007_ASSIGNMENT_ID
+
+  layout: 
+    sequence: 110
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+page-items: 
+- # ====== Page Item: P6007_ASSIGNMENT_ID ======================
+  id: 277031745956043672
+  identification: 
+    name: P6007_ASSIGNMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6007_PRODUCT_ID =========================
+  id: 277031853887043673
+  identification: 
+    name: P6007_PRODUCT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+computations: 
+- # ====== Computation: P6007_PRODUCT_ID =======================
+  id: 277031939143043674
+  identification: 
+    item-name: P6007_PRODUCT_ID
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select product_id from limo_product_assignments where assignment_id = :P6007_ASSIGNMENT_ID'
+

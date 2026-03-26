@@ -1,0 +1,1319 @@
+---
+# ====== Page: ATTENDANCE ====================================
+id: 228
+identification: 
+  name: ATTENDANCE
+  alias: ATTENDANCE
+  title: الحضور والانصراف
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+  - t-Dialog--noPadding
+  - t-PageBody--noContentPadding
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  execute-when-page-loads: |
+    const officeLat = 30.97271;
+    const officeLon = 31.94712;
+    const CHECKIN_RADIUS = 1000000; // meters
+    
+    const checkInButton = document.getElementById("checkInBtn");
+    const checkOutButton = document.getElementById("checkOutBtn");
+    const statusDisplay = document.getElementById("STATUS_DISPLAY");
+    const locationDisplay = document.getElementById("LOCATION_DISPLAY");
+    
+    const timeInSpan     = document.getElementById("time_in");
+    const timeOutSpan    = document.getElementById("time_out");
+    const totalHoursSpan = document.getElementById("total_hours");
+    
+    checkInButton.style.display = "none";
+    checkOutButton.style.display = "none";
+    
+    // Show spinner
+    let spinner = document.getElementById("loadingSpinner");
+    if (!spinner) {
+      spinner = document.createElement("div");
+      spinner.id = "loadingSpinner";
+      spinner.innerHTML = `
+        <div class="spinner"></div>
+        <div class="spinner-text">جاري التحقق من موقعك...</div>
+      `;
+      Object.assign(spinner.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(255,255,255,0.9)",
+        zIndex: "9999"
+      });
+      document.body.appendChild(spinner);
+    }
+    
+    // Helper to get APEX page item
+    function getItemValue(name) {
+      try { return $v(name) || ""; } catch { return ""; }
+    }
+    
+    // Update time fields
+    function updateTimeFields() {
+      const timeIn  = getItemValue("P228_TIMEIN");
+      const timeOut = getItemValue("P228_TIMEOUT");
+      const totalH  = getItemValue("P228_TOTALHOURS");
+    
+      timeInSpan.textContent     = timeIn || "--:--";
+      timeOutSpan.textContent    = timeOut || "--:--";
+      totalHoursSpan.textContent = totalH || "--";
+    }
+    
+    // Update status and button states
+    function updateCheckInStatus(isInsideOffice) {
+      const checkinDisabled  = getItemValue("P228_CHECKIN_DISABLED") === "Y";
+      const checkoutDisabled = getItemValue("P228__CHECKOUT_DISABLED") === "Y";
+    
+      checkInButton.disabled  = checkinDisabled || !isInsideOffice;
+      checkOutButton.disabled = checkoutDisabled || !isInsideOffice;
+    
+      checkInButton.style.display = "inline-block";
+      checkOutButton.style.display = "inline-block";
+    
+      let text = "";
+      if (!isInsideOffice) text = "أنت خارج نطاق المكتب حالياً.";
+      else if (!checkinDisabled && checkoutDisabled) text = "يمكنك تسجيل الدخول الآن";
+      else if (checkinDisabled && !checkoutDisabled) text = "يمكنك تسجيل الخروج الآن";
+      else text = "تم تسجيل حضورك اليوم مسبقاً";
+    
+      statusDisplay.textContent = text;
+    
+      if (!isInsideOffice) statusDisplay.className = "status-display out-range";
+      else if (!checkinDisabled && checkoutDisabled) statusDisplay.className = "status-display ready";
+      else statusDisplay.className = "status-display checked-in";
+    
+      updateTimeFields(); // update the times on status change
+    }
+    
+    function waitForItemsAndLocation() {
+      const checkinVal  = getItemValue("P228_CHECKIN_DISABLED");
+      const checkoutVal = getItemValue("P228__CHECKOUT_DISABLED");
+    
+      if (checkinVal !== "" && checkoutVal !== "") {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              const dist = getDistance(latitude, longitude, officeLat, officeLon);
+              const isInsideOffice = dist <= CHECKIN_RADIUS;
+    
+              // Make location message more user-friendly
+              let locationMsg = "";
+              if (isInsideOffice) {
+                locationMsg = "أنت حالياً داخل نطاق المكتب ✅";
+              } else if (dist < 1000) {
+                locationMsg = `أنت خارج المكتب بحوالي ${Math.round(dist)} متر ⚠️`;
+              } else {
+                locationMsg = "أنت بعيد جداً عن المكتب ❌";
+              }
+    
+              locationDisplay.textContent = locationMsg;
+              locationDisplay.className = `location-display ${isInsideOffice ? "in-range" : "out-range"}`;
+    
+              updateCheckInStatus(isInsideOffice);
+    
+              spinner.remove();
+            },
+            () => {
+              locationDisplay.textContent = "تعذر الحصول على موقعك الحالي ❌";
+              updateCheckInStatus(false);
+              spinner.remove();
+            }
+          );
+        } else {
+          locationDisplay.textContent = "ميزة تحديد الموقع غير مدعومة في هذا المتصفح ❌";
+          updateCheckInStatus(false);
+          spinner.remove();
+        }
+      } else {
+        setTimeout(waitForItemsAndLocation, 100); // retry
+      }
+    }
+    
+    // Start waiting
+    waitForItemsAndLocation();
+    
+    // Helper to calculate distance
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3; // meters
+      const φ1 = lat1*Math.PI/180, φ2 = lat2*Math.PI/180;
+      const Δφ = (lat2-lat1)*Math.PI/180, Δλ = (lon2-lon1)*Math.PI/180;
+      const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+    
+
+css: 
+  inline: |
+    /* ===== Attendance Card Container ===== */
+    .attendance-card {
+        max-width: 480px;
+        margin: 20px auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        font-family: 'Tajawal', sans-serif;
+        border: 1px solid #e5e7eb;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .attendance-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* ===== User Header ===== */
+    .user-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .user-header .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #e5e7eb;
+        flex-shrink: 0;
+    }
+    
+    .user-header .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .user-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .user-name {
+        font-weight: 600;
+        font-size: 18px;
+        color: #1f2937;
+    }
+    
+    .user-title {
+        font-size: 14px;
+        color: #6b7280;
+    }
+    
+    /* ===== Status & Location Row ===== */
+    .status-location-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .location-display,
+    .status-display {
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-weight: 500;
+        font-size: 14px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        background: #f9fafb;
+        color: #1f2937;
+    }
+    
+    /* Optional subtle colors */
+    .location-display.in-range { color: #15803d; }
+    .location-display.out-range { color: #b91c1c; }
+    .status-display.ready { color: #1e40af; }
+    .status-display.checked-in { color: #92400e; }
+    
+    /* ===== Time Row ===== */
+    .time-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 12px;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .time-box {
+        background: #f9fafb;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .time-box label {
+        display: block;
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+    
+    .time-box .time-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    /* ===== Action Buttons ===== */
+    .action-buttons button {
+        flex: 1;
+        border: none;
+        border-radius: 8px;
+        padding: 13px 24px; /* bigger buttons */
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: #ffffff;
+    }
+    
+    .action-buttons button {
+        flex: 1;             /* buttons stretch equally */
+        border: none;
+        border-radius: 8px;
+        padding: 14px 20px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: #ffffff;
+    }
+    
+    /* Buttons colors */
+    .btn-checkin { background: #2563eb; }   /* blue */
+    .btn-checkout { background: #ef4444; }  /* red */
+    .btn-approve { background: #10b981; }   /* green */
+    .btn-reject { background: #f59e0b; }    /* amber */
+    
+    .action-buttons button:hover:not(:disabled) {
+        filter: brightness(1.1);
+    }
+    
+    button:disabled {
+        background: #e5e7eb;
+        color: #9ca3af;
+        cursor: not-allowed;
+    }
+    
+    /* ===== Responsive ===== */
+    @media (max-width: 480px) {
+        .attendance-card {
+            width: 95%;
+            margin: 15px auto;
+        }
+    
+        .status-location-row,
+        .time-row {
+            grid-template-columns: 1fr;
+        }
+    
+        .action-buttons {
+            flex-direction: column;  /* stack buttons vertically */
+        }
+    
+        .action-buttons button {
+            width: 100%;            /* full width on mobile */
+        }
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: div =========================================
+  id: 187836016430702306
+  identification: 
+    name: div
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--noUI
+    - t-Region--scrollBody
+    css-classes: 
+    - user-info-card
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: div-header ==================================
+  id: 187836137239702307
+  identification: 
+    name: div-header
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: div # 187836016430702306
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--noUI
+    - t-Region--scrollBody
+    css-classes: 
+    - user-header
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: user-info ===================================
+  id: 187836163231702308
+  identification: 
+    name: user-info
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE  
+        l_html       CLOB := '';
+        l_first_name BS_EMPLOYEES.FIRST_NAME%TYPE;
+        l_last_name  BS_EMPLOYEES.LAST_NAME%TYPE;
+        l_job_title  BS_EMPLOYEES.JOB_TITLE%TYPE;
+        l_photo_url  BS_EMPLOYEES.PHOTO_URL%TYPE;
+      BEGIN
+        -- Get user info
+        SELECT FIRST_NAME, LAST_NAME, JOB_TITLE, PHOTO_URL
+          INTO l_first_name, l_last_name, l_job_title, l_photo_url
+          FROM BS_EMPLOYEES
+         WHERE ID = :APP_USER_ID;
+      
+        -- Build HTML with orderead card layout
+        l_html := 
+      '
+              <!-- Header: Avatar & Details -->
+              <div class="user-header" style="display: flex; align-items: center; gap: 15px;">
+                <!-- Avatar -->
+                <div class="avatar" style="
+                      width: 90px; 
+                      height: 90px; 
+                      flex-shrink: 0; 
+                      border-radius: 50%; 
+                      overflow: hidden; 
+                      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                      border: 2px solid #1cc88a;">
+                  <img src="' || l_photo_url || '" 
+                       alt="Avatar" 
+                       style="width: 100%; height: 100%; object-fit: cover;"
+                       onerror="this.onerror=null;this.src=''https://via.placeholder.com/90?text=👤''">
+                </div>
+                
+                <!-- User Details -->
+                <div class="user-details" style="display: flex; flex-direction: column; justify-content: center;">
+                  <div class="user-name" style="font-weight: 700; font-size: 18px; color: #333;">
+                    ' || l_first_name || ' ' || l_last_name || '
+                  </div>
+                  <div class="user-title" style="font-size: 14px; color: #555; margin-top: 4px;">
+                    المسمى الوظيفي: ' || l_job_title || '
+                  </div>
+                </div>
+              </div>';
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 10
+    parent-region: div-header # 187836137239702307
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--noUI
+    - t-Region--scrollBody
+    css-classes: 
+    - user-info
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: card-body ===================================
+  id: 187836325156702309
+  identification: 
+    name: card-body
+    type: Static Content
+
+  source: 
+    html-code: |
+      <!-- Row 1: Status & Location -->
+      <div class="row row-1 status-location-row">
+        <div class="column location-column">
+          <p id="LOCATION_DISPLAY" class="location-display in-range">📍 تحديد الموقع .......</p>
+        </div>
+        <div class="column status-column">
+          <div id="STATUS_DISPLAY" class="status-display ready">جاهز للحضور</div>
+        </div>
+      </div>
+      
+      <!-- Row 2: Time & Total Hours -->
+      <div class="row row-2 time-row">
+        <div class="column time-in-box time-box">
+          <label>وقت الحضور</label>
+          <span id="time_in">--:--</span>
+        </div>
+        <div class="column time-out-box time-box">
+          <label>وقت الانصراف</label>
+          <span id="time_out">--:--</span>
+        </div>
+        <div class="column total-hours-box time-box">
+          <label>عدد ساعات اليوم</label>
+          <span id="total_hours">--</span>
+        </div>
+      </div>
+      
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--noUI
+    - t-Region--scrollBody
+    css-classes: 
+    - card-body
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: button-container ============================
+  id: 187836798337702314
+  identification: 
+    name: button-container
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    css-classes: 
+    - action-buttons
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P228_ATTEND_ID ===========================
+  id: 183342825969417036
+  identification: 
+    name: P228_ATTEND_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 100
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_CHECKIN_DISABLED ====================
+  id: 187836430147702310
+  identification: 
+    name: P228_CHECKIN_DISABLED
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 50
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228__CHECKOUT_DISABLED ==================
+  id: 187836463080702311
+  identification: 
+    name: P228__CHECKOUT_DISABLED
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 60
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_WORK_FLOW_ID ========================
+  id: 187836628832702312
+  identification: 
+    name: P228_WORK_FLOW_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 80
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_TASK_ID =============================
+  id: 187836711474702313
+  identification: 
+    name: P228_TASK_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 70
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_LOCATION ============================
+  id: 187836882835702315
+  identification: 
+    name: P228_LOCATION
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 90
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_TIMEIN ==============================
+  id: 188630375452623536
+  identification: 
+    name: P228_TIMEIN
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 110
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_TIMEOUT =============================
+  id: 188630498241623537
+  identification: 
+    name: P228_TIMEOUT
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 120
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P228_TOTALHOURS ==========================
+  id: 188630546231623538
+  identification: 
+    name: P228_TOTALHOURS
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 130
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CheckIn =====================================
+  id: 187836974352702316
+  identification: 
+    button-name: CheckIn
+    label: الحضور
+
+  layout: 
+    sequence: 10
+    region: button-container # 187836798337702314
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - t-Button
+    - btn-checkin
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: checkInBtn
+
+- # ====== Button: CheckOut ====================================
+  id: 187837136216702317
+  identification: 
+    button-name: CheckOut
+    label: الانصراف
+
+  layout: 
+    sequence: 10
+    region: button-container # 187836798337702314
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - t-Button
+    - btn-checkout
+    - null
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: checkOutBtn
+
+dynamic-actions: 
+- # ====== Dynamic Action: New_1 ===============================
+  id: 183342987990417038
+  identification: 
+    name: New_1
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 183343125331417039
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            v_user_id       VARCHAR2(300) := :APP_USER_ID;
+            v_attend_id     VARCHAR2(300);
+            v_last_checkin  DATE;
+            v_last_checkout DATE;
+            v_total_hours   NUMBER;
+            v_complete      VARCHAR2(1);
+            v_task_id       VARCHAR2(300);
+        BEGIN
+            BEGIN
+                SELECT ATTENDANCE_ID, CHECKIN, CHECKOUT, COMPLETE, TOTAL_HOURS, TASK_ID
+                INTO v_attend_id, v_last_checkin, v_last_checkout, v_complete, v_total_hours, v_task_id
+                FROM AS_ATTENDANCE
+                WHERE USER_ID = v_user_id
+                ORDER BY CHECKIN DESC
+                FETCH FIRST 1 ROWS ONLY;
+        
+                :P228_ATTEND_ID := v_attend_id;
+                :P228_TASK_ID := v_task_id;  
+        
+                IF v_complete = 'F' THEN
+                    :P228_TIMEIN := TO_CHAR(v_last_checkin, 'HH24:MI');
+                    :P228_TIMEOUT := NULL;
+                    :P228_TOTALHOURS := NULL;
+                    :P228_CHECKIN_DISABLED := 'Y';
+                    :P228__CHECKOUT_DISABLED := 'F';
+                ELSE
+                    IF TRUNC(v_last_checkin) = TRUNC(SYSTIMESTAMP AT TIME ZONE 'Africa/Cairo') THEN
+                        :P228_TIMEIN := TO_CHAR(v_last_checkin, 'HH24:MI');
+                        :P228_TIMEOUT := TO_CHAR(v_last_checkout, 'HH24:MI');
+                        :P228_TOTALHOURS := FLOOR(v_total_hours) || ' ساعة ' || ROUND(MOD(v_total_hours*60,60)) || ' دقيقة' ;
+                        :P228_CHECKIN_DISABLED := 'Y';
+                        :P228__CHECKOUT_DISABLED := 'Y';
+                    ELSE
+                        :P228_TIMEIN := NULL;
+                        :P228_TIMEOUT := NULL;
+                        :P228_CHECKIN_DISABLED := 'F';
+                        :P228__CHECKOUT_DISABLED := 'Y';
+                    END IF;
+                END IF;
+        
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    :P228_ATTEND_ID := NULL;
+                    :P228_TASK_ID := NULL;
+                    :P228_TIMEIN := NULL;
+                    :P228_TIMEOUT := NULL;
+                    :P228_TOTALHOURS := NULL;
+                    :P228_CHECKIN_DISABLED := 'F';
+                    :P228__CHECKOUT_DISABLED := 'Y';
+            END;
+        END;
+        
+      items-to-submit: 
+      - P228_ATTEND_ID
+      items-to-return: 
+      - P228__CHECKOUT_DISABLED
+      - P228_CHECKIN_DISABLED
+      - P228_ATTEND_ID
+      - P228_TIMEIN
+      - P228_TIMEOUT
+      - P228_TOTALHOURS
+      - P228_TASK_ID
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: New_1 # 183342987990417038
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: New =================================
+  id: 187838668621702333
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CheckIn # 187836974352702316
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 187838780889702334
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            l_instance_id NUMBER;
+            l_params      apex_workflow.t_workflow_parameters;
+            l_task_id     VARCHAR2(4000);
+        BEGIN
+            l_params := apex_workflow.t_workflow_parameters(
+                           apex_workflow.t_workflow_parameter(
+                               static_id => 'USER_ID',
+                               string_value => :APP_USER_ID
+                           )
+                        );
+        
+            l_instance_id := apex_workflow.start_workflow(
+                p_application_id => :APP_ID,
+                p_static_id      => 'Attendance_Workflow',
+                p_parameters     => l_params,
+                p_initiator      => :APP_USER
+            );
+        
+            :P228_WORK_FLOW_ID := l_instance_id;
+        END;
+        
+      items-to-return: 
+      - P228_WORK_FLOW_ID
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: New # 187838668621702333
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: New_2 ======================================
+  id: 183342006635417028
+  identification: 
+    name: New_2
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: ':P228_WORK_FLOW_ID :=NULL;'
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CheckOut # 187837136216702317
+
+- # ====== Process: New ========================================
+  id: 187837169799702318
+  identification: 
+    name: New
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          l_instance_id NUMBER;
+          l_params      apex_workflow.t_workflow_parameters;
+          l_task_id     VARCHAR2(4000);
+      BEGIN
+          l_params := apex_workflow.t_workflow_parameters(
+                         apex_workflow.t_workflow_parameter(
+                             static_id => 'USER_ID',
+                             string_value => :APP_USER_ID
+                         )
+                      );
+      
+          l_instance_id := apex_workflow.start_workflow(
+              p_application_id => :APP_ID,
+              p_static_id      => 'Attendance_Workflow',
+              p_parameters     => l_params,
+              p_initiator      => :APP_USER
+          );
+      
+          :P228_WORK_FLOW_ID := l_instance_id;
+      
+              SELECT COALESCE(string_value, TO_CHAR(number_value))
+                INTO l_task_id
+                FROM apex_workflow_variables
+               WHERE workflow_id = l_instance_id
+                 AND label = 'TASK_ID'
+                 FETCH FIRST 1 ROWS ONLY;
+      
+              :P228_TASK_ID := l_task_id;
+      
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CheckIn # 187836974352702316
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: New_1 ======================================
+  id: 187837282922702319
+  identification: 
+    name: New_1
+    type: Human Task - Manage
+    execution-chain: None
+
+  settings: 
+    type: Approve
+    task-id-item: P228_TASK_ID
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CheckOut # 187837136216702317
+
+- # ====== Process: New_3 ======================================
+  id: 188630743645623540
+  identification: 
+    name: New_3
+    type: Workflow
+    execution-chain: None
+
+  settings: 
+    type: Start
+    definition: Attendance Workflow # 186804515818294943
+    details-primary-key-item: ':APP_USER_ID'
+    workflow-id-item: P228_WORK_FLOW_ID
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CheckIn # 187836974352702316
+
+  parameters: 
+  - # ====== Parameter: CHECKOUT_DISABLED ========================
+    id: 188630934554623541
+    identification: 
+      name: CHECKOUT_DISABLED # 187538207416422927
+
+    parameter: 
+      direction: In/Out
+      data-type: VARCHAR2
+
+    value: 
+      type: Null
+
+  - # ====== Parameter: USER_ID ==================================
+    id: 188631027135623542
+    identification: 
+      name: USER_ID # 187535511174422900
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+
+    value: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ':APP_USER_ID'
+

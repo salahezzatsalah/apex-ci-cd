@@ -1,0 +1,4250 @@
+---
+# ====== Page: PropReservationDetails ========================
+id: 804
+identification: 
+  name: PropReservationDetails
+  alias: PROPRESERVATIONDETAILS
+  title: PropReservationDetails
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    async function filePopup(element) {
+        const url = element.getAttribute('data-url');
+        const type = element.getAttribute('data-type');
+        const ext  = element.getAttribute('data-ext') || '';
+        const filename = element.getAttribute('title') || 'file';
+    
+        if (!url) return alert("No file available.");
+    
+        const finalFilename = filename.includes('.') ? filename : filename + (ext.startsWith('.') ? ext : '.' + ext);
+    
+        // Remove any existing modal
+        const existing = document.getElementById('file-display');
+        if (existing) existing.remove();
+        document.body.style.overflow = 'hidden';
+    
+        // Modal overlay
+        const modal = document.createElement('div');
+        modal.id = 'file-display';
+        Object.assign(modal.style, {
+            position:'fixed', top:0, left:0, width:'100%', height:'100%',
+            backgroundColor:'rgba(0,0,0,0.6)', display:'flex',
+            justifyContent:'center', alignItems:'center', zIndex:10000,
+            animation:'fadeIn 0.3s', overflow:'auto'
+        });
+    
+        // Modal card
+        const card = document.createElement('div');
+        Object.assign(card.style, {
+            position: 'relative',
+            backgroundColor: '#fff',
+            borderRadius: '12px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            width: '90%',
+            maxWidth: '900px',
+            maxHeight: '90%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            animation: 'slideIn 0.3s'
+        });
+        modal.appendChild(card);
+    
+        // Close button
+        const closeBtn = document.createElement('span');
+        closeBtn.innerHTML = '&times;';
+        Object.assign(closeBtn.style, {
+            position:'absolute', top:'15px', right:'20px', fontSize:'28px',
+            color:'#333', cursor:'pointer', fontWeight:'bold', zIndex:10
+        });
+        card.appendChild(closeBtn);
+    
+        // File info bar
+        const infoBar = document.createElement('div');
+        Object.assign(infoBar.style, {
+            padding: '12px 20px',
+            backgroundColor: '#f1f3f5',
+            borderBottom: '1px solid #ddd',
+            display: 'flex', justifyContent:'space-between', alignItems:'center'
+        });
+        const infoText = document.createElement('div');
+        infoText.innerHTML = `<strong>${finalFilename}</strong> (${type.toUpperCase()})`;
+        infoBar.appendChild(infoText);
+    
+        // Download button
+        const downloadBtn = document.createElement('button');
+        downloadBtn.innerText = '📥 Download';
+        Object.assign(downloadBtn.style, {
+            fontSize:'14px', color:'#fff', backgroundColor:'#1d72b8',
+            padding:'6px 14px', borderRadius:'6px', border:'none',
+            cursor:'pointer', fontWeight:'600', boxShadow:'0 3px 8px rgba(0,0,0,0.2)',
+            transition:'all 0.3s'
+        });
+        downloadBtn.onmouseover = () => { downloadBtn.style.backgroundColor='#155a8a'; downloadBtn.style.transform='scale(1.05)'; };
+        downloadBtn.onmouseout = () => { downloadBtn.style.backgroundColor='#1d72b8'; downloadBtn.style.transform='scale(1)'; };
+        downloadBtn.onclick = async () => {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = finalFilename;
+                link.click();
+                window.URL.revokeObjectURL(link.href);
+            } catch { alert('Download failed.'); }
+        };
+        infoBar.appendChild(downloadBtn);
+        card.appendChild(infoBar);
+    
+        // Content container
+        const content = document.createElement('div');
+        Object.assign(content.style, {
+            flex: '1', display:'flex', justifyContent:'center', alignItems:'center',
+            position:'relative', backgroundColor:'#000'
+        });
+        card.appendChild(content);
+    
+        const loading = document.createElement('div');
+        loading.innerHTML = '🔄 Loading...';
+        Object.assign(loading.style, { color:'#fff', fontSize:'18px', textAlign:'center' });
+        content.appendChild(loading);
+    
+        // Render based on file type
+        if(type === 'image'){
+            const img = document.createElement('img');
+            img.src = url;
+            img.crossOrigin = 'anonymous';
+            Object.assign(img.style, { maxWidth:'100%', maxHeight:'100%', objectFit:'contain' });
+            img.onload = () => { loading.remove(); content.appendChild(img); };
+            img.onerror = () => {
+                loading.remove();
+                const errMsg = document.createElement('div');
+                errMsg.innerHTML = '❌ Failed to load image.';
+                Object.assign(errMsg.style, { color:'#ff6b6b', fontSize:'18px', textAlign:'center' });
+                content.appendChild(errMsg);
+            };
+        }
+        else if(type === 'pdf'){
+            const canvas = document.createElement('canvas');
+            content.removeChild(loading);
+            content.appendChild(canvas);
+    
+            const pdf = await pdfjsLib.getDocument(url).promise;
+            let currentPage = 1, zoom = 1.2;
+    
+            const renderPage = (pageNum) => {
+                pdf.getPage(pageNum).then(page => {
+                    const viewport = page.getViewport({ scale: zoom });
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    page.render({ canvasContext: ctx, viewport: viewport });
+                });
+            };
+            renderPage(currentPage);
+    
+            // PDF toolbar
+            const toolbar = document.createElement('div');
+            Object.assign(toolbar.style, {
+                position:'absolute', bottom:'10px', left:'50%', transform:'translateX(-50%)',
+                display:'flex', gap:'8px', backgroundColor:'rgba(0,0,0,0.6)', padding:'6px 10px',
+                borderRadius:'6px'
+            });
+            const buttons = [
+                {text:'⬅', action:()=>{ if(currentPage>1) currentPage--; renderPage(currentPage); }},
+                {text:'➡', action:()=>{ if(currentPage<pdf.numPages) currentPage++; renderPage(currentPage); }},
+                {text:'➕', action:()=>{ zoom+=0.2; renderPage(currentPage); }},
+                {text:'➖', action:()=>{ zoom-=0.2; renderPage(currentPage); }}
+            ];
+            buttons.forEach(b=>{
+                const btn = document.createElement('button');
+                btn.textContent = b.text;
+                Object.assign(btn.style, {
+                    padding:'6px 10px', borderRadius:'6px', border:'none', cursor:'pointer',
+                    backgroundColor:'#1d72b8', color:'#fff', fontWeight:'600', boxShadow:'0 2px 6px rgba(0,0,0,0.2)',
+                    transition:'all 0.3s'
+                });
+                btn.onmouseover = ()=>{ btn.style.backgroundColor='#155a8a'; btn.style.transform='scale(1.1)'; };
+                btn.onmouseout = ()=>{ btn.style.backgroundColor='#1d72b8'; btn.style.transform='scale(1)'; };
+                btn.onclick = b.action;
+                toolbar.appendChild(btn);
+            });
+            card.appendChild(toolbar);
+        }
+        else if(['word','excel','powerpoint'].includes(type)){
+            const iframe = document.createElement('iframe');
+            iframe.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url);
+            Object.assign(iframe.style, { width:'100%', height:'100%', border:'none' });
+            loading.remove();
+            content.appendChild(iframe);
+        }
+        else {
+            loading.remove();
+            const msg = document.createElement('div');
+            msg.innerHTML = `<div style="text-align:center;color:#fff;"><div style="font-size:48px;margin-bottom:20px;">📄</div><h3>Preview Not Available</h3><p>Use download button to save the file.</p></div>`;
+            content.appendChild(msg);
+        }
+    
+        // Append modal
+        document.body.appendChild(modal);
+    
+        // Close function
+        const closeModal = () => {
+            modal.remove();
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', escListener);
+        };
+    
+        // Close events
+        modal.onclick = e => { if(e.target === modal) closeModal(); };
+        closeBtn.onclick = closeModal;
+    
+        // Escape key
+        const escListener = e => { if(e.key === 'Escape') closeModal(); };
+        document.addEventListener('keydown', escListener);
+    
+        // Animations
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+            @keyframes slideIn { from{transform:translateY(-20px);opacity:0} to{transform:translateY(0);opacity:1} }
+        `;
+        document.head.appendChild(style);
+    }
+    
+
+css: 
+  inline: |
+    /* Labels */
+    .t-AVPList dt.t-AVPList-label {
+        font-weight: 600;
+        text-align: right;          /* RTL support */
+        white-space: normal;        /* wrap long text */
+        overflow-wrap: break-word;  /* break long words */
+    }
+    
+    .t-AVPList dd.t-AVPList-value {
+        margin: 0;
+        color: #333;
+        font-size: 13px;
+        word-wrap: break-word;
+    }
+    
+    
+    /* Optional subtle separator */
+    
+    /* Optional subtle hover effect on AVP pair */
+    .t-AVPList dt.t-AVPList-label:hover,
+    .t-AVPList dd.t-AVPList-value:hover {
+        background-color: #f8f8f8;
+        border-radius: 4px;
+    }.menu-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      min-width: 120px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .menu a {
+      display: block;
+      padding: 8px 12px;
+      text-decoration: none;
+      color: #333;
+    }
+    .menu a:hover {
+      background: #f5f5f5;
+    }
+    
+    /* Container */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    
+    /* Hidden menu */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #fff;
+      min-width: 140px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      border-radius: 6px;
+      z-index: 1000;
+    }
+    
+    /* Menu links */
+    .dropdown-content a {
+      display: block;
+      padding: 8px 12px;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .dropdown-content a:hover {
+      background-color: #f5f5f5;
+    }
+    
+    /* Show menu when parent is active */
+    .dropdown.show .dropdown-content {
+      display: block;
+    }
+    
+
+html-header: 
+  html-header: |
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: New =========================================
+  id: 182213461219709724
+  identification: 
+    name: New
+    title: تفاصيل الحجز
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |2
+        select
+        R.RESERVATIONID,
+          R.REQUESTERID,
+          R.REQUESTER_NAME,
+          R.APARTMENTID,
+          R.APARTMENT_ADDRESS,
+          R.RESREQUESTER,
+          R.DATEFROM,
+          R.DATETO,
+          R.NIGHTS,
+          R.GUESTS,
+          R.COMPANIONSID,
+          R.CURRENCY,
+          R.CURRENCYRATES,
+                 F.CURRENCY_NAME_AR,           -- عمود اسم العملة بالعربية
+      
+          R.FEESNATURE,
+          R.SPONSERPRICE,
+          R.SPONSERPRICE_EGP,
+          R.COMPANYPRICE,
+          R.COMPANYPRICE_EGP,
+          R.NOTES,
+          R.STATUS,
+          R.REGISTEREDBY,
+          R.REGISTER_NAME,
+          R.POSTDATETIME,
+          R.CHECKIN_DOER_ID,
+          R.CHECKINPOSTDATE,
+          R.CHECKOUT_DOER_ID,
+          R.CHECKOUTPOSTDATE,
+          R.TOTAL_RESERVATION_PRICE,
+          R.TOTAL_RESERVATION_PRICE_EGP,
+          R.CALCULATION_METHOD,
+          R.REPORTDATE,
+          R.RESERVATION_DURATION_AR,
+          R.REGISTER_RESPONSIBLE_AR,
+          R.PAID_AMOUNTS_EGP,
+          R.TOTAL_ADDED_SERVICES_EGP,
+          R.TOTAL_WITH_ADDED_SERVICES_EGP,
+          R.REMAINING_AMOUNTS_EGP,
+          R.REMAINING_AMOUNTS_WITH_CURRENCY,
+          R.REMAINING_CALCULATION_METHOD_AR,
+          R.OFFICENETPRECOM,
+          R.OFFICENETPRECOM_EGP,
+          R.CONFIRMATIONSTATUS,
+          R.TOTAL_COMMISSIONS,
+          R.TOTAL_COMMISSIONS_EGP,
+          R.OFFICENETPOSTCOM,
+          R.OFFICENETPOSTCOM_EGP,
+      
+          REGEXP_REPLACE(
+            COALESCE(C.PHONE, B.DRIVER_NAME),
+            '[^0-9+]',
+            ''
+          ) AS REQUESTER_PHONE,
+      '<a href="#" onclick="window.open(' ||
+          '''https://api.whatsapp.com/send?phone=' || 
+          REGEXP_REPLACE(COALESCE(C.PHONE, B.DRIVER_NAME), '[^0-9]', '') || 
+          ''', ''_blank'')">💬</a>' ||
+      
+      '<a href="f?p=&APP_ID.:18:&SESSION.::&DEBUG.::P18_ENTITY_ID:' || R.REQUESTERID || 
+      '" title="عرض تفاصيل"><span style="margin: 0 8px; font-weight: bold;">' || 
+      R.REQUESTER_NAME || '</span></a>' ||
+      
+      '<a href="tel:' || 
+        REGEXP_REPLACE(COALESCE(C.PHONE, B.DRIVER_NAME), '[^0-9]', '') || 
+      '" title="اتصال مباشر">📞</a>' 
+      AS REQUESTER_CONTACT_INFO
+      
+      
+      
+      FROM APRT_RESERVATIONS_VIEW R
+      LEFT JOIN CURRENCIES F
+             ON r.CURRENCY = F.CURRENCY_CODE
+      
+      LEFT JOIN CRM_CLIENTS C
+          ON R.REQUESTERID = C.CLIENT_ID
+      LEFT JOIN COMPANY_DRIVERS B
+          ON R.REQUESTERID = B.DRIVER_ID
+      WHERE R.RESERVATIONID = :P804_RESERVATIONID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Value Attribute Pairs - Column
+      template-options: 
+      - '#DEFAULT#'
+      - t-AVPList--leftAligned
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: RESERVATIONID ===============================
+    id: 182213549775709725
+    identification: 
+      column-name: RESERVATIONID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REQUESTERID =================================
+    id: 182213705524709726
+    identification: 
+      column-name: REQUESTERID
+      type: Hidden
+
+    layout: 
+      sequence: 20
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REQUESTER_NAME ==============================
+    id: 182213744098709727
+    identification: 
+      column-name: REQUESTER_NAME
+      type: Hidden
+
+    layout: 
+      sequence: 60
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: APARTMENTID =================================
+    id: 182213844732709728
+    identification: 
+      column-name: APARTMENTID
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: APARTMENT_ADDRESS ===========================
+    id: 182213966432709729
+    identification: 
+      column-name: APARTMENT_ADDRESS
+      type: Plain Text
+
+    heading: 
+      heading: الوحدة
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NIGHTS ======================================
+    id: 182214429751709733
+    identification: 
+      column-name: NIGHTS
+      type: Plain Text
+
+    heading: 
+      heading: عدد الليالي
+      alignment: end
+
+    layout: 
+      sequence: 100
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GUESTS ======================================
+    id: 182214521161709734
+    identification: 
+      column-name: GUESTS
+      type: Plain Text
+
+    heading: 
+      heading: عدد الضيوف
+      alignment: end
+
+    layout: 
+      sequence: 110
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY ====================================
+    id: 182214684520709736
+    identification: 
+      column-name: CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FEESNATURE ==================================
+    id: 182214908585709738
+    identification: 
+      column-name: FEESNATURE
+      type: Plain Text
+
+    heading: 
+      heading: طريقة الحساب
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SPONSERPRICE ================================
+    id: 182214981133709739
+    identification: 
+      column-name: SPONSERPRICE
+      type: Plain Text
+
+    heading: 
+      heading: سعر الراعي
+      alignment: end
+
+    layout: 
+      sequence: 180
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMPANYPRICE ================================
+    id: 182215210515709741
+    identification: 
+      column-name: COMPANYPRICE
+      type: Plain Text
+
+    heading: 
+      heading: سعر البيع
+      alignment: end
+
+    layout: 
+      sequence: 190
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 182215365571709743
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 182215449349709744
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: حالة الحجز
+      alignment: center
+
+    layout: 
+      sequence: 30
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REGISTER_NAME ===============================
+    id: 182215692904709746
+    identification: 
+      column-name: REGISTER_NAME
+      type: Plain Text
+
+    heading: 
+      heading: القائم بتسجيل الحجز
+      alignment: start
+
+    layout: 
+      sequence: 240
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTDATETIME ================================
+    id: 182215834871709747
+    identification: 
+      column-name: POSTDATETIME
+      type: Hidden
+
+    layout: 
+      sequence: 260
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CHECKIN_DOER_ID =============================
+    id: 182293596697205198
+    identification: 
+      column-name: CHECKIN_DOER_ID
+      type: Hidden
+
+    layout: 
+      sequence: 270
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CHECKINPOSTDATE =============================
+    id: 182293654464205199
+    identification: 
+      column-name: CHECKINPOSTDATE
+      type: Hidden
+
+    layout: 
+      sequence: 280
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CHECKOUT_DOER_ID ============================
+    id: 182293753525205200
+    identification: 
+      column-name: CHECKOUT_DOER_ID
+      type: Hidden
+
+    layout: 
+      sequence: 290
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CHECKOUTPOSTDATE ============================
+    id: 182293885320205201
+    identification: 
+      column-name: CHECKOUTPOSTDATE
+      type: Hidden
+
+    layout: 
+      sequence: 300
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_RESERVATION_PRICE =====================
+    id: 182294021285205202
+    identification: 
+      column-name: TOTAL_RESERVATION_PRICE
+      type: Plain Text
+
+    heading: 
+      heading: اجمالي الفتورة
+      alignment: end
+
+    layout: 
+      sequence: 200
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_RESERVATION_PRICE_EGP =================
+    id: 182294113889205203
+    identification: 
+      column-name: TOTAL_RESERVATION_PRICE_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 360
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CALCULATION_METHOD ==========================
+    id: 182294172900205204
+    identification: 
+      column-name: CALCULATION_METHOD
+      type: Plain Text
+
+    heading: 
+      heading: طريقة الحساب
+      alignment: start
+
+    layout: 
+      sequence: 230
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REPORTDATE ==================================
+    id: 182294306406205205
+    identification: 
+      column-name: REPORTDATE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الدخول والخروج
+      alignment: center
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PAID_AMOUNTS_EGP ============================
+    id: 182294619514205208
+    identification: 
+      column-name: PAID_AMOUNTS_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 370
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REMAINING_AMOUNTS_EGP =======================
+    id: 182294932391205211
+    identification: 
+      column-name: REMAINING_AMOUNTS_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 380
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REMAINING_AMOUNTS_WITH_CURRENCY =============
+    id: 182295036175205212
+    identification: 
+      column-name: REMAINING_AMOUNTS_WITH_CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 310
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REMAINING_CALCULATION_METHOD_AR =============
+    id: 182295118262205213
+    identification: 
+      column-name: REMAINING_CALCULATION_METHOD_AR
+      type: Hidden
+
+    layout: 
+      sequence: 320
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICENETPRECOM =============================
+    id: 182295212783205214
+    identification: 
+      column-name: OFFICENETPRECOM
+      type: Plain Text
+
+    heading: 
+      heading: صافي حصة المكتب قبل خصم العمولات
+      alignment: end
+
+    layout: 
+      sequence: 210
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICENETPRECOM_EGP =========================
+    id: 182295310181205215
+    identification: 
+      column-name: OFFICENETPRECOM_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 390
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CONFIRMATIONSTATUS ==========================
+    id: 182295345450205216
+    identification: 
+      column-name: CONFIRMATIONSTATUS
+      type: Plain Text
+
+    heading: 
+      heading: حالة التأكيد (العربون)
+      alignment: start
+
+    layout: 
+      sequence: 250
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_COMMISSIONS ===========================
+    id: 182295466481205217
+    identification: 
+      column-name: TOTAL_COMMISSIONS
+      type: Hidden
+
+    layout: 
+      sequence: 330
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_COMMISSIONS_EGP =======================
+    id: 182295572503205218
+    identification: 
+      column-name: TOTAL_COMMISSIONS_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 400
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICENETPOSTCOM ============================
+    id: 182295696857205219
+    identification: 
+      column-name: OFFICENETPOSTCOM
+      type: Plain Text
+
+    heading: 
+      heading: صافي حصة المكتب بعد خصم العمولات
+      alignment: end
+
+    layout: 
+      sequence: 220
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICENETPOSTCOM_EGP ========================
+    id: 182295756111205220
+    identification: 
+      column-name: OFFICENETPOSTCOM_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 410
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REQUESTER_CONTACT_INFO ======================
+    id: 182295991861205222
+    identification: 
+      column-name: REQUESTER_CONTACT_INFO
+      type: Plain Text
+
+    heading: 
+      heading: طالب الحجز
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: CURRENCY_NAME_AR ============================
+    id: 182330920103145524
+    identification: 
+      column-name: CURRENCY_NAME_AR
+      type: Plain Text
+
+    heading: 
+      heading: عملة الحجز
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SPONSERPRICE_EGP ============================
+    id: 182331001466145525
+    identification: 
+      column-name: SPONSERPRICE_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 340
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMPANYPRICE_EGP ============================
+    id: 182331051182145526
+    identification: 
+      column-name: COMPANYPRICE_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 350
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RESREQUESTER ================================
+    id: 182892655508401934
+    identification: 
+      column-name: RESREQUESTER
+      type: Hidden
+
+    layout: 
+      sequence: 420
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATEFROM ====================================
+    id: 182892826406401935
+    identification: 
+      column-name: DATEFROM
+      type: Hidden
+
+    layout: 
+      sequence: 430
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATETO ======================================
+    id: 182892854112401936
+    identification: 
+      column-name: DATETO
+      type: Hidden
+
+    layout: 
+      sequence: 440
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMPANIONSID ================================
+    id: 182892970119401937
+    identification: 
+      column-name: COMPANIONSID
+      type: Hidden
+
+    layout: 
+      sequence: 450
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCYRATES ===============================
+    id: 182893066935401938
+    identification: 
+      column-name: CURRENCYRATES
+      type: Plain Text
+
+    heading: 
+      heading: سعر الصرف
+      alignment: end
+
+    layout: 
+      sequence: 160
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REGISTEREDBY ================================
+    id: 182893177252401939
+    identification: 
+      column-name: REGISTEREDBY
+      type: Hidden
+
+    layout: 
+      sequence: 470
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RESERVATION_DURATION_AR =====================
+    id: 182893258018401940
+    identification: 
+      column-name: RESERVATION_DURATION_AR
+      type: Hidden
+
+    layout: 
+      sequence: 480
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REGISTER_RESPONSIBLE_AR =====================
+    id: 182893345238401941
+    identification: 
+      column-name: REGISTER_RESPONSIBLE_AR
+      type: Hidden
+
+    layout: 
+      sequence: 490
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_ADDED_SERVICES_EGP ====================
+    id: 182893459646401942
+    identification: 
+      column-name: TOTAL_ADDED_SERVICES_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 500
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_WITH_ADDED_SERVICES_EGP ===============
+    id: 182893542288401943
+    identification: 
+      column-name: TOTAL_WITH_ADDED_SERVICES_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 510
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REQUESTER_PHONE =============================
+    id: 182893705015401944
+    identification: 
+      column-name: REQUESTER_PHONE
+      type: Hidden
+
+    layout: 
+      sequence: 520
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: reservation_Details =========================
+  id: 182296186419205224
+  identification: 
+    name: reservation_Details
+    title: خدمات مضافة على الحجز
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          R.ADDEDSERVICEID,
+          R.RELATEDRESERVATIONID,
+          R.SERVICEDATE,
+          R.COMMENTS,
+          R.CURRENCY,
+          C.CURRENCY_NAME_AR,
+          R.AMOUNT,
+          R.POSTED_BY,
+          B.FIRST_NAME || ' '|| B.LAST_NAME AS FULL_NAME,
+          R.POST_DATE,
+          R.CURRECYRATES,
+          R.AMOUNTEGP
+      FROM APRTADDEDSERVICES R
+      LEFT JOIN CURRENCIES C 
+          ON R.CURRENCY = C.CURRENCY_CODE
+          LEFT JOIN BS_EMPLOYEES B
+          ON R.POSTED_BY=B.ID
+      WHERE R.RELATEDRESERVATIONID = :P804_RESERVATIONID
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 5
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ADDEDSERVICEID ==============================
+    id: 182296265314205225
+    identification: 
+      column-name: ADDEDSERVICEID
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RELATEDRESERVATIONID ========================
+    id: 182296353597205226
+    identification: 
+      column-name: RELATEDRESERVATIONID
+      type: Plain Text
+
+    heading: 
+      heading: كود الحجز
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SERVICEDATE =================================
+    id: 182296536227205227
+    identification: 
+      column-name: SERVICEDATE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الخدمة
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMMENTS ====================================
+    id: 182296614823205228
+    identification: 
+      column-name: COMMENTS
+      type: Plain Text
+
+    heading: 
+      heading: تفاصيل الخدمة
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY ====================================
+    id: 182296665239205229
+    identification: 
+      column-name: CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT ======================================
+    id: 182296822491205230
+    identification: 
+      column-name: AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: المبلغ
+      alignment: end
+
+    layout: 
+      sequence: 80
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTED_BY ===================================
+    id: 182296844976205231
+    identification: 
+      column-name: POSTED_BY
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POST_DATE ===================================
+    id: 182296969113205232
+    identification: 
+      column-name: POST_DATE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التسجيل
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: DD-MON-YYYY
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRECYRATES ================================
+    id: 182297043074205233
+    identification: 
+      column-name: CURRECYRATES
+      type: Plain Text
+
+    heading: 
+      heading: سعر الصرف
+      alignment: end
+
+    layout: 
+      sequence: 90
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNTEGP ===================================
+    id: 182297236631205234
+    identification: 
+      column-name: AMOUNTEGP
+      type: Plain Text
+
+    heading: 
+      heading: المبلغ ج.م
+      alignment: end
+
+    layout: 
+      sequence: 100
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 182331298600145528
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:213:&SESSION.::&DEBUG.::P213_ADDEDSERVICEID:#ADDEDSERVICEID#'
+        page: 213
+        values: 
+          p213_addedserviceid: '#ADDEDSERVICEID#'
+
+      link-text: '#DERIVED$01#'
+      link-attributes: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY_NAME_AR ============================
+    id: 182890172118401909
+    identification: 
+      column-name: CURRENCY_NAME_AR
+      type: Plain Text
+
+    heading: 
+      heading: العملة
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FULL_NAME ===================================
+    id: 182890361737401911
+    identification: 
+      column-name: FULL_NAME
+      type: Plain Text
+
+    heading: 
+      heading: القائم بالتسجيل
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: ReservationComs =============================
+  id: 182297339853205235
+  identification: 
+    name: ReservationComs
+    title: عمولات على الحجز
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT  
+          C.COMID,  
+          C.RESERVATIONID,  
+          C.COMTYPE,  
+          C.COMNATURE,  
+          C.PERCENTAGE,  
+          C.CURRENCY,  
+          F.CURRENCY_NAME_AR,
+          C.CURRENCYRATES,  
+          C.AMOUNT,  
+          C.AMOUNT_EGP,  
+          C.NOTES,  
+          C.POSTEDBY,  
+          C.POSTTIMEDATE,  
+          C.RECEIVERID,  
+          E.FIRST_NAME||' '|| E.LAST_NAME AS FULLNAME,
+      
+          -- ✅ Directly from join
+          NVL(R.OfficeNetPreCom, 0)       AS OfficeNetPreCom,
+          NVL(R.OfficeNetPreCom_EGP, 0)   AS OfficeNetPreCom_EGP,
+          NVL(R.NIGHTS, 0)                AS NIGHTS,
+      
+          -- ✅ CommissionTotal in original currency
+          CASE  
+              WHEN C.COMNATURE = 'مبلغ محدد' THEN C.AMOUNT  
+              WHEN C.COMNATURE = 'فرق سعر'  THEN C.AMOUNT * NVL(R.NIGHTS, 0)  
+              WHEN C.COMNATURE = 'نسبة'     THEN (C.PERCENTAGE / 100) * NVL(R.OfficeNetPreCom, 0)  
+              ELSE 0  
+          END AS CommissionTotal,
+      
+          -- ✅ CommissionTotal in EGP
+          CASE  
+              WHEN C.COMNATURE = 'مبلغ محدد' THEN C.AMOUNT * C.CURRENCYRATES  
+              WHEN C.COMNATURE = 'فرق سعر'  THEN C.AMOUNT * NVL(R.NIGHTS, 0) * C.CURRENCYRATES  
+              WHEN C.COMNATURE = 'نسبة'     THEN (C.PERCENTAGE / 100) * NVL(R.OfficeNetPreCom_EGP, 0)  
+              ELSE 0  
+          END AS CommissionTotal_EGP,
+      
+          CASE 
+              WHEN C.COMNATURE = 'نسبة' THEN TO_CHAR(C.PERCENTAGE) || ' %'
+              ELSE TO_CHAR(C.AMOUNT) || ' ' || C.CURRENCY
+          END AS DISPLAY_AMOUNT
+      
+      FROM APRTRESCOMMISSIONS C
+      JOIN BS_EMPLOYEES E ON
+      C.POSTEDBY=E.ID
+      JOIN  CURRENCIES F ON
+      C.CURRENCY=F.CURRENCY_CODE
+      JOIN APARTMENTRESERVATIONS R 
+        ON R.RESERVATIONID = C.RESERVATIONID
+      WHERE R.RESERVATIONID = :P804_RESERVATIONID;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 5
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: COMID =======================================
+    id: 182297360117205236
+    identification: 
+      column-name: COMID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RESERVATIONID ===============================
+    id: 182297468268205237
+    identification: 
+      column-name: RESERVATIONID
+      type: Hidden
+
+    layout: 
+      sequence: 20
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMTYPE =====================================
+    id: 182297613566205238
+    identification: 
+      column-name: COMTYPE
+      type: Plain Text
+
+    heading: 
+      heading: 'عمولة من اجل '
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMNATURE ===================================
+    id: 182297682100205239
+    identification: 
+      column-name: COMNATURE
+      type: Plain Text
+
+    heading: 
+      heading: نوع العمولة
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PERCENTAGE ==================================
+    id: 182297759318205240
+    identification: 
+      column-name: PERCENTAGE
+      type: Plain Text
+
+    heading: 
+      heading: Percentage
+      alignment: end
+
+    layout: 
+      sequence: 70
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: CURRENCY ====================================
+    id: 182297941459205241
+    identification: 
+      column-name: CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT ======================================
+    id: 182298011929205242
+    identification: 
+      column-name: AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Amount
+      alignment: end
+
+    layout: 
+      sequence: 110
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: NOTES =======================================
+    id: 182298103042205243
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTEDBY ====================================
+    id: 182298214403205244
+    identification: 
+      column-name: POSTEDBY
+      type: Hidden
+
+    layout: 
+      sequence: 190
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTTIMEDATE ================================
+    id: 182298251581205245
+    identification: 
+      column-name: POSTTIMEDATE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التسجيل
+      alignment: start
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RECEIVERID ==================================
+    id: 182298378229205246
+    identification: 
+      column-name: RECEIVERID
+      type: Plain Text
+
+    heading: 
+      heading: ملف المستحق
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCYRATES ===============================
+    id: 182298486284205247
+    identification: 
+      column-name: CURRENCYRATES
+      type: Plain Text
+
+    heading: 
+      heading: سعر الصرف
+      alignment: end
+
+    layout: 
+      sequence: 130
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT_EGP ==================================
+    id: 182328262334145498
+    identification: 
+      column-name: AMOUNT_EGP
+      type: Plain Text
+
+    heading: 
+      heading: المبلغ ج.م
+      alignment: end
+
+    layout: 
+      sequence: 140
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICENETPRECOM =============================
+    id: 182513114977082529
+    identification: 
+      column-name: OFFICENETPRECOM
+      type: Hidden
+
+    layout: 
+      sequence: 170
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICENETPRECOM_EGP =========================
+    id: 182513164575082530
+    identification: 
+      column-name: OFFICENETPRECOM_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 180
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NIGHTS ======================================
+    id: 182513245720082531
+    identification: 
+      column-name: NIGHTS
+      type: Plain Text
+
+    heading: 
+      heading: Nights
+      alignment: end
+
+    layout: 
+      sequence: 220
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: COMMISSIONTOTAL =============================
+    id: 182513441426082532
+    identification: 
+      column-name: COMMISSIONTOTAL
+      type: Plain Text
+
+    heading: 
+      heading: اجمالي العمولة
+      alignment: end
+
+    layout: 
+      sequence: 120
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMMISSIONTOTAL_EGP =========================
+    id: 182513480852082533
+    identification: 
+      column-name: COMMISSIONTOTAL_EGP
+      type: Plain Text
+
+    heading: 
+      heading: اجمالي العمولة ج.م
+      alignment: end
+
+    layout: 
+      sequence: 150
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DISPLAY_AMOUNT ==============================
+    id: 182513598524082534
+    identification: 
+      column-name: DISPLAY_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: القيمة
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 182889831233401905
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:216:&SESSION.::&DEBUG.::P216_COMID:#COMID#'
+        page: 216
+        values: 
+          p216_comid: '#COMID#'
+
+      link-text: '#DERIVED$01#'
+      link-attributes: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"/>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY_NAME_AR ============================
+    id: 182890890467401916
+    identification: 
+      column-name: CURRENCY_NAME_AR
+      type: Plain Text
+
+    heading: 
+      heading: العملة
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FULLNAME ====================================
+    id: 182891006182401917
+    identification: 
+      column-name: FULLNAME
+      type: Plain Text
+
+    heading: 
+      heading: القائم بالتسجيل
+      alignment: start
+
+    layout: 
+      sequence: 200
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: ReservationCollection =======================
+  id: 182328353578145499
+  identification: 
+    name: ReservationCollection
+    title: تحصيلات على الحجز
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+             R.COLLECTIONID,
+             R.RELATEDRESID,
+             R.PAYMENTDATE,
+             R.CURRENCY,
+             R.AMOUNT,
+             R.NOTES,
+             R.COLLECTEDBY,
+             E1.FIRST_NAME || ' '|| E1.LAST_NAME AS COLLECTEDBY_NAME,
+             R.POSTEDBY,
+             E2.FIRST_NAME || ' '|| E2.LAST_NAME AS POSTEDBY_NAME,
+             R.POSTDATETIME,
+             R.METHOD,
+             R.CURRENCYRATES,
+             R.AMOUNT_EGP,
+             F.CURRENCY_NAME_AR
+      FROM COLLECTIONS R
+      LEFT JOIN CURRENCIES F 
+             ON R.CURRENCY = F.CURRENCY_CODE
+      LEFT JOIN BS_EMPLOYEES E1 
+             ON R.COLLECTEDBY = E1.ID
+      LEFT JOIN BS_EMPLOYEES E2 
+             ON R.POSTEDBY = E2.ID
+      WHERE R.RELATEDRESID = :P804_RESERVATIONID;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 5
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: COLLECTIONID ================================
+    id: 182328497612145500
+    identification: 
+      column-name: COLLECTIONID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RELATEDRESID ================================
+    id: 182328630893145501
+    identification: 
+      column-name: RELATEDRESID
+      type: Plain Text
+
+    heading: 
+      heading: Relatedresid
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PAYMENTDATE =================================
+    id: 182328700840145502
+    identification: 
+      column-name: PAYMENTDATE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ السداد
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY ====================================
+    id: 182328803812145503
+    identification: 
+      column-name: CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 60
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT ======================================
+    id: 182328896375145504
+    identification: 
+      column-name: AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: المبلغ
+      alignment: end
+
+    layout: 
+      sequence: 90
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 182328953046145505
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COLLECTEDBY =================================
+    id: 182329137513145506
+    identification: 
+      column-name: COLLECTEDBY
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTEDBY ====================================
+    id: 182329193812145507
+    identification: 
+      column-name: POSTEDBY
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTDATETIME ================================
+    id: 182329258304145508
+    identification: 
+      column-name: POSTDATETIME
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التسجيل على السيستم
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH24:MI'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: METHOD ======================================
+    id: 182329419962145509
+    identification: 
+      column-name: METHOD
+      type: Plain Text
+
+    heading: 
+      heading: ظريقة الحساب
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCYRATES ===============================
+    id: 182329518129145510
+    identification: 
+      column-name: CURRENCYRATES
+      type: Plain Text
+
+    heading: 
+      heading: سعر الصرف
+      alignment: end
+
+    layout: 
+      sequence: 80
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT_EGP ==================================
+    id: 182329565253145511
+    identification: 
+      column-name: AMOUNT_EGP
+      type: Plain Text
+
+    heading: 
+      heading: المبلغ ج.م
+      alignment: end
+
+    layout: 
+      sequence: 100
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 182512272294082521
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:207:&SESSION.::&DEBUG.::P207_COLLECTIONID:#COLLECTIONID#'
+        page: 207
+        values: 
+          p207_collectionid: '#COLLECTIONID#'
+
+      link-text: '#DERIVED$01#'
+      link-attributes: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"/>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY_NAME_AR ============================
+    id: 182512494246082523
+    identification: 
+      column-name: CURRENCY_NAME_AR
+      type: Plain Text
+
+    heading: 
+      heading: العمله
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COLLECTEDBY_NAME ============================
+    id: 182512570930082524
+    identification: 
+      column-name: COLLECTEDBY_NAME
+      type: Plain Text
+
+    heading: 
+      heading: القائم بالتحصيل
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTEDBY_NAME ===============================
+    id: 182512728046082525
+    identification: 
+      column-name: POSTEDBY_NAME
+      type: Plain Text
+
+    heading: 
+      heading: القائم بالتسجيل
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: DOCUMENTS ===================================
+  id: 182329690915145512
+  identification: 
+    name: DOCUMENTS
+    title: مستندات علي الحجز
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          R.ID,
+          R.RESERVATIONID,
+          R.DOCTYPE,
+          R.POSTEDBY,
+          E.FIRST_NAME || ' ' || E.LAST_NAME AS FULL_NAME,
+          R.POSTDATETIME,
+          COALESCE(JT.FILENAME_JSON, R.FILENAME) AS FILENAME,
+          COALESCE(JT.DOC_URL_JSON, R.DOC_URL) AS DOC_URL,
+          JT.JSON_ID AS JSON_ID,
+          COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) AS FILE_EXT,
+          CASE
+              WHEN COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) IN ('jpg','jpeg','png','gif','bmp','webp') THEN
+                  '<i class="fa fa-file-image-o fa-lg" style="color:#007bff; cursor:pointer;" ' ||
+                  'data-url="' || COALESCE(JT.DOC_URL_JSON, R.DOC_URL) || '" ' ||
+                  'data-type="image" ' ||
+                  'data-ext="' || COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) || '" ' ||
+                  'onclick="filePopup(this)" ' ||
+                  'title="' || COALESCE(JT.FILENAME_JSON, R.FILENAME) || '"></i>'
+              WHEN COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) = 'pdf' THEN
+                  '<i class="fa fa-file-pdf-o fa-lg" style="color:#d9534f; cursor:pointer;" ' ||
+                  'data-url="' || COALESCE(JT.DOC_URL_JSON, R.DOC_URL) || '" ' ||
+                  'data-type="pdf" ' ||
+                  'data-ext="pdf" ' ||
+                  'onclick="filePopup(this)" ' ||
+                  'title="' || COALESCE(JT.FILENAME_JSON, R.FILENAME) || '"></i>'
+              WHEN COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) IN ('doc','docx') THEN
+                  '<i class="fa fa-file-word-o fa-lg" style="color:#007bff; cursor:pointer;" ' ||
+                  'data-url="' || COALESCE(JT.DOC_URL_JSON, R.DOC_URL) || '" ' ||
+                  'data-type="word" ' ||
+                  'data-ext="docx" ' ||
+                  'onclick="filePopup(this)" ' ||
+                  'title="' || COALESCE(JT.FILENAME_JSON, R.FILENAME) || '"></i>'
+              WHEN COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) IN ('xls','xlsx','xlsm') THEN
+                  '<i class="fa fa-file-excel-o fa-lg" style="color:#28a745; cursor:pointer;" ' ||
+                  'data-url="' || COALESCE(JT.DOC_URL_JSON, R.DOC_URL) || '" ' ||
+                  'data-type="excel" ' ||
+                  'data-ext="xlsx" ' ||
+                  'onclick="filePopup(this)" ' ||
+                  'title="' || COALESCE(JT.FILENAME_JSON, R.FILENAME) || '"></i>'
+              WHEN COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) IN ('ppt','pptx') THEN
+                  '<i class="fa fa-file-powerpoint-o fa-lg" style="color:#ff5722; cursor:pointer;" ' ||
+                  'data-url="' || COALESCE(JT.DOC_URL_JSON, R.DOC_URL) || '" ' ||
+                  'data-type="powerpoint" ' ||
+                  'data-ext="pptx" ' ||
+                  'onclick="filePopup(this)" ' ||
+                  'title="' || COALESCE(JT.FILENAME_JSON, R.FILENAME) || '"></i>'
+      ELSE
+          '<i class="fa fa-file-o fa-lg" style="color:#6c757d; cursor:pointer;" ' ||
+          'data-url="' || COALESCE(JT.DOC_URL_JSON, R.DOC_URL) || '" ' ||
+          'data-type="other" ' ||
+          'data-ext="' || COALESCE(JT.FILE_EXT_JSON, R.FILE_EXT) || '" ' ||
+          'onclick="filePopup(this)" ' ||
+          'title="' || COALESCE(JT.FILENAME_JSON, R.FILENAME) || '"></i>'
+          END AS DISPLAY_IMAGE
+      FROM RESERVATIONDOCUMENT R
+      JOIN BS_EMPLOYEES E ON R.POSTEDBY = E.ID
+      LEFT JOIN JSON_TABLE(
+          R.FILES_JSON,
+          '$[*]' COLUMNS (
+              JSON_ID       VARCHAR2(60) PATH '$.json_id',
+              FILENAME_JSON VARCHAR2(200) PATH '$.filename',
+              DOC_URL_JSON  VARCHAR2(4000) PATH '$.url',
+              FILE_EXT_JSON VARCHAR2(20) PATH '$.file_ext'
+          )
+      ) JT ON 1=1
+      WHERE R.RESERVATIONID = :P804_RESERVATIONID;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 5
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: RESERVATIONID ===============================
+    id: 182329886363145514
+    identification: 
+      column-name: RESERVATIONID
+      type: Plain Text
+
+    heading: 
+      heading: كود الحجر
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DOCTYPE =====================================
+    id: 182330034773145515
+    identification: 
+      column-name: DOCTYPE
+      type: Plain Text
+
+    heading: 
+      heading: نوع الملف
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTEDBY ====================================
+    id: 182330122132145516
+    identification: 
+      column-name: POSTEDBY
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: POSTDATETIME ================================
+    id: 182330237722145517
+    identification: 
+      column-name: POSTDATETIME
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التسجيل
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: DD-MON-YYYY
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 182510993192082508
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DISPLAY_IMAGE ===============================
+    id: 182511367784082512
+    identification: 
+      column-name: DISPLAY_IMAGE
+      type: Plain Text
+
+    heading: 
+      heading: الملف
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: FILENAME ====================================
+    id: 182511476822082513
+    identification: 
+      column-name: FILENAME
+      type: Plain Text
+
+    heading: 
+      heading: اسف الملف
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DOC_URL =====================================
+    id: 182511594568082514
+    identification: 
+      column-name: DOC_URL
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 182511679425082515
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:210:&SESSION.::&DEBUG.::P210_ID,P210_JSON_ID:#ID#,#JSON_ID#'
+        page: 210
+        values: 
+          p210_id: '#ID#'
+          p210_json_id: '#JSON_ID#'
+
+      link-text: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+      link-attributes: '#DERIVED$01#'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FULL_NAME ===================================
+    id: 182891101020401918
+    identification: 
+      column-name: FULL_NAME
+      type: Plain Text
+
+    heading: 
+      heading: القائم بالتسجيل
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILE_EXT ====================================
+    id: 182891186515401919
+    identification: 
+      column-name: FILE_EXT
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: JSON_ID =====================================
+    id: 183341324968417021
+    identification: 
+      column-name: JSON_ID
+      type: Hidden
+
+    layout: 
+      sequence: 130
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 272554241554527099
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+page-items: 
+- # ====== Page Item: P804_RESERVATIONID =======================
+  id: 182296135321205223
+  identification: 
+    name: P804_RESERVATIONID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P804_APP_ID ==============================
+  id: 182330444915145520
+  identification: 
+    name: P804_APP_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: addservice ==================================
+  id: 182330405051145519
+  identification: 
+    button-name: addservice
+    label: اضافة خدمة على الحجز
+
+  layout: 
+    sequence: 10
+    region: reservation_Details # 182296186419205224
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--simple
+    - t-Button--iconLeft
+    - t-Button--hoverIconSpin
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:213:&SESSION.::&DEBUG.::P213_RELATEDRESERVATIONID:&P804_RESERVATIONID.'
+      page: 213
+      values: 
+        p213_relatedreservationid: '&P804_RESERVATIONID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: New =========================================
+  id: 182333146022145547
+  identification: 
+    button-name: New
+    label: اضافة مستند
+
+  layout: 
+    sequence: 10
+    region: DOCUMENTS # 182329690915145512
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:210:&SESSION.::&DEBUG.::P210_RESERVATIONID:&P804_RESERVATIONID.'
+      page: 210
+      values: 
+        p210_reservationid: '&P804_RESERVATIONID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: addpayment ==================================
+  id: 182511777297082516
+  identification: 
+    button-name: addpayment
+    label: اضافة تحصيلة على الحجز
+
+  layout: 
+    sequence: 10
+    region: ReservationCollection # 182328353578145499
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:207:&SESSION.::&DEBUG.::P207_RELATEDRESID:&P804_RESERVATIONID.'
+      page: 207
+      values: 
+        p207_relatedresid: '&P804_RESERVATIONID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: New_1 =======================================
+  id: 182513660998082535
+  identification: 
+    button-name: New_1
+    label: 'اضافة عمولة '
+
+  layout: 
+    sequence: 10
+    region: ReservationComs # 182297339853205235
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:216:&SESSION.::&DEBUG.::P216_RESERVATIONID:&P804_RESERVATIONID.'
+      page: 216
+      values: 
+        p216_reservationid: '&P804_RESERVATIONID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: New =========================================
+  id: 182964099805067972
+  identification: 
+    button-name: New
+    label: خروج من الملف
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 272554241554527099
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    - t-Button--gapRight
+    icon: fa-undo-alt
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:205:&SESSION.::&DEBUG.:::'
+      page: 205
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: New =================================
+  id: 182510231094082500
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: DOCUMENTS # 182329690915145512
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 182510277354082501
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: DOCUMENTS # 182329690915145512
+
+    execution: 
+      sequence: 10
+      event: New # 182510231094082500
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: New_1 ===============================
+  id: 182511935421082517
+  identification: 
+    name: New_1
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: ReservationCollection # 182328353578145499
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 182511983378082518
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: ReservationCollection # 182328353578145499
+
+    execution: 
+      sequence: 10
+      event: New_1 # 182511935421082517
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: New_2 ===============================
+  id: 182889226523401899
+  identification: 
+    name: New_2
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: New # 182213461219709724
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 182889266024401900
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: New # 182213461219709724
+
+    execution: 
+      sequence: 10
+      event: New_2 # 182889226523401899
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: New_3 ===============================
+  id: 182889423721401901
+  identification: 
+    name: New_3
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: reservation_Details # 182296186419205224
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 182889485138401902
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: reservation_Details # 182296186419205224
+
+    execution: 
+      sequence: 10
+      event: New_3 # 182889423721401901
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: New_4 ===============================
+  id: 182889631744401903
+  identification: 
+    name: New_4
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: ReservationComs # 182297339853205235
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 182889724664401904
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: ReservationComs # 182297339853205235
+
+    execution: 
+      sequence: 10
+      event: New_4 # 182889631744401903
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

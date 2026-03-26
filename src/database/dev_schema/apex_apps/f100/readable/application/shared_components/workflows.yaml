@@ -1,0 +1,654 @@
+---
+- # ====== Workflow: Attendance Workflow =======================
+  id: 186804515818294943
+  identification: 
+    name: Attendance Workflow
+    title: New
+
+  advanced: 
+    static-id: Attendance_Workflow
+
+  parameters: 
+  - # ====== Parameter: USER_ID ==================================
+    id: 187535511174422900
+    identification: 
+      static-id: USER_ID
+
+    label: 
+      label: USER_ID
+
+    parameter: 
+      data-type: VARCHAR2
+      direction: In
+
+    value: 
+      required: false
+
+  - # ====== Parameter: APP_USER_ATTEND_ID =======================
+    id: 187536333530422908
+    identification: 
+      static-id: APP_USER_ATTEND_ID
+
+    label: 
+      label: APP_USER_ATTEND_ID
+
+    parameter: 
+      data-type: VARCHAR2
+      direction: Out
+
+  - # ====== Parameter: CHECKIN_DISABLED =========================
+    id: 187538129561422926
+    identification: 
+      static-id: CHECKIN_DISABLED
+
+    label: 
+      label: CHECKIN_DISABLED
+
+    parameter: 
+      data-type: VARCHAR2
+      direction: Out
+
+  - # ====== Parameter: CHECKOUT_DISABLED ========================
+    id: 187538207416422927
+    identification: 
+      static-id: CHECKOUT_DISABLED
+
+    label: 
+      label: CHECKOUT_DISABLED
+
+    parameter: 
+      data-type: VARCHAR2
+      direction: In/Out
+
+    value: 
+      required: false
+
+  versions: 
+  - # ====== Version: Attendance Workflow ========================
+    id: 186804565437294944
+    identification: 
+      workflow-version: Attendance Workflow
+
+    settings: 
+      state: Active
+
+    activities: 
+    - # ====== Activity: CHEKOUT ===================================
+      id: 183341513638417023
+      identification: 
+        name: CHEKOUT
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          DECLARE
+            v_attend_id     VARCHAR2(300) := :APP_USER_ATTEND_ID;
+            v_checkout_time TIMESTAMP := SYSTIMESTAMP AT TIME ZONE 'Africa/Cairo';
+          BEGIN
+            UPDATE AS_ATTENDANCE
+            SET CHECKOUT = v_checkout_time,
+                COMPLETE = 'Y'
+            WHERE ATTENDANCE_ID = v_attend_id;
+          
+          
+            :CHECKIN_DISABLED := 'Y';
+            :CHECKOUT_DISABLED := 'Y';
+          
+          
+            COMMIT;
+          END;
+          
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 50
+
+      advanced: 
+        static-id: New_3
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 183341694905417025
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: CHEKOUT # 183341513638417023
+          to: End # 186804875003294947
+
+    - # ====== Activity: Start =====================================
+      id: 186804654986294945
+      identification: 
+        name: Start
+        type: Workflow Start
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 10
+
+      advanced: 
+        static-id: New
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 187535254197422898
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: Start # 186804654986294945
+          to: New_2 # 187537140383422916
+
+    - # ====== Activity: Activity ==================================
+      id: 186804767922294946
+      identification: 
+        name: Activity
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          DECLARE
+            v_user_id      VARCHAR2(300) := :USER_ID;
+            v_attend_id    VARCHAR2(300);
+            v_checkin_time TIMESTAMP := SYSTIMESTAMP AT TIME ZONE 'Africa/Cairo';
+          BEGIN
+            SELECT ATTENDANCE_ID
+            INTO v_attend_id
+            FROM AS_ATTENDANCE
+            WHERE USER_ID = v_user_id
+                AND TRUNC(CHECKIN) = TRUNC(SYSTIMESTAMP AT TIME ZONE 'Africa/Cairo')
+          
+            FETCH FIRST 1 ROWS ONLY;
+          
+            :APP_USER_ATTEND_ID := v_attend_id;
+            :CHECKIN_DISABLED := 'Y';
+          
+            SELECT CASE WHEN COMPLETE = 'F' THEN 'F' ELSE 'T' END
+            INTO :CHECKOUT_DISABLED
+            FROM AS_ATTENDANCE
+            WHERE ATTENDANCE_ID = v_attend_id;
+          
+          EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+              INSERT INTO AS_ATTENDANCE (ATTENDANCE_ID, USER_ID, CHECKIN, COMPLETE)
+              VALUES (SYS_GUID(), v_user_id, v_checkin_time, 'F')
+              RETURNING ATTENDANCE_ID INTO v_attend_id;
+          
+              :APP_USER_ATTEND_ID := v_attend_id;
+              :CHECKIN_DISABLED := 'Y';
+              :CHECKOUT_DISABLED := 'F';
+          END;
+          
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 30
+
+      advanced: 
+        static-id: New_1
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 187535981993422905
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: Activity # 186804767922294946
+          to: New # 187535908508422904
+
+    - # ====== Activity: End =======================================
+      id: 186804875003294947
+      identification: 
+        name: End
+        type: Workflow End
+
+      settings: 
+        end-state: Completed
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 60
+
+      advanced: 
+        static-id: New_2
+
+    - # ====== Activity: New =======================================
+      id: 187535908508422904
+      identification: 
+        name: New
+        type: Human Task - Create
+
+      settings: 
+        definition: Wait for Check-Out # 187744750407958687
+        task-id-item: TASK_ID
+        outcome: TASK_ID
+        owner: USER_ID
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 40
+
+      advanced: 
+        static-id: WAIT_FOR_CHECK_OUT_FLOW
+
+      comments: 
+        comments: A
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 183341604738417024
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: New # 187535908508422904
+          to: CHEKOUT # 183341513638417023
+
+      parameters: 
+      - # ====== Parameter: Checkin Disabled =========================
+        id: 187837496581702321
+        identification: 
+          name: Checkin Disabled # 187746341944944655
+
+        value: 
+          type: Null
+
+      - # ====== Parameter: Checkout Disabled ========================
+        id: 187837631813702322
+        identification: 
+          name: Checkout Disabled # 187746794935944654
+
+        value: 
+          type: Null
+
+      - # ====== Parameter: User Id ==================================
+        id: 187837669120702323
+        identification: 
+          name: User Id # 187745975956944657
+
+        value: 
+          type: Item
+          item: USER_ID
+
+      - # ====== Parameter: ATTEND_IDId ==============================
+        id: 189919059162048614
+        identification: 
+          name: ATTEND_IDId # 189918783984048635
+
+        value: 
+          type: Item
+          item: APP_USER_ATTEND_ID
+
+    - # ====== Activity: New_2 =====================================
+      id: 187537140383422916
+      identification: 
+        name: New_2
+        type: Execute Code
+
+      source: 
+        location: Local Database
+        language: PL/SQL
+        pl/sql-code: |
+          DECLARE 
+          V_RES VARCHAR2(700);
+          BEGIN
+          V_RES :=:APEX$WORKLOW_ID;
+          
+          END;
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 20
+
+      advanced: 
+        static-id: New_5
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 187537145688422917
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: New_2 # 187537140383422916
+          to: Activity # 186804767922294946
+
+    variables: 
+    - # ====== Variable: Approver ==================================
+      id: 187539272937422938
+      identification: 
+        static-id: APPROVER
+
+      label: 
+        label: Approver
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    - # ====== Variable: TaskOutcome ===============================
+      id: 187539435197422939
+      identification: 
+        static-id: TASK_OUTCOME
+
+      label: 
+        label: TaskOutcome
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    - # ====== Variable: TASK_ID ===================================
+      id: 187838604382702332
+      identification: 
+        static-id: TASK_ID
+
+      label: 
+        label: TASK_ID
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    participants: 
+    - # ====== Participant: Workflow Owner =========================
+      id: 187537249384422918
+      identification: 
+        name: New
+        type: Workflow Owner
+
+      value: 
+        type: Expression
+        language: PL/SQL
+        pl/sql-expression: ':APP_USER'
+
+- # ====== Workflow: Hotel Reservation - Booking Request =======
+  id: 262536898224796662
+  identification: 
+    name: Hotel Reservation - Booking Request
+    title: طلب حجز فندق - &RESERVATION_ID.
+
+  advanced: 
+    static-id: HRes_CONFIRMATION_FLOW
+
+  parameters: 
+  - # ====== Parameter: كود الحجز ================================
+    id: 262538066005796674
+    identification: 
+      static-id: RESERVATION_ID
+
+    label: 
+      label: كود الحجز
+
+    parameter: 
+      data-type: VARCHAR2
+      direction: In
+
+    value: 
+      required: true
+
+  - # ====== Parameter: مسؤول المبيعات ===========================
+    id: 264237785387085240
+    identification: 
+      static-id: SALES_REP_ID
+
+    label: 
+      label: مسؤول المبيعات
+
+    parameter: 
+      data-type: VARCHAR2
+      direction: In
+
+    value: 
+      required: true
+
+  versions: 
+  - # ====== Version: v 0.1 ======================================
+    id: 262536911448796663
+    identification: 
+      workflow-version: v 0.1
+
+    settings: 
+      state: In Development
+
+    activities: 
+    - # ====== Activity: انشاء طلب حجز  ============================
+      id: 262537087548796664
+      identification: 
+        name: 'انشاء طلب حجز '
+        type: Workflow Start
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 10
+
+      label: 
+        label: تم تسجيل الحجز
+
+      advanced: 
+        static-id: Hotel_Res_Booked
+
+      connections: 
+      - # ====== Connection: PendingOpsAssignment ====================
+        id: 262537386144796667
+        identification: 
+          name: PendingOpsAssignment
+          type: Normal
+
+        activity: 
+          from: 'انشاء طلب حجز ' # 262537087548796664
+          to: توزيع على مسؤول عمليات # 262537587638796669
+
+    - # ====== Activity: End =======================================
+      id: 262537279054796666
+      identification: 
+        name: End
+        type: Workflow End
+
+      settings: 
+        end-state: Completed
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 40
+
+      advanced: 
+        static-id: New_2
+
+    - # ====== Activity: توزيع على مسؤول عمليات ====================
+      id: 262537587638796669
+      identification: 
+        name: توزيع على مسؤول عمليات
+        type: Human Task - Create
+
+      settings: 
+        definition: إعداد العرض المالي # 264384440448513428
+        subject: تعين الحجز &RESERVATION_ID. الي مسؤل العمليات
+        initiator-can-complete: Yes
+        details-primary-key--item: RESERVATION_ID
+        outcome: TASK_OUTCOME
+        owner: APPROVER
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 20
+
+      advanced: 
+        static-id: New
+
+      activity-variables: 
+      - # ====== Activity Variable: Operations Rep Username ==========
+        id: 264237867750085241
+        identification: 
+          static-id: OPS_REP_ID
+
+        label: 
+          label: Operations Rep Username
+
+        parameter: 
+          data-type: VARCHAR2
+
+        value: 
+          type: SQL Query (return single value)
+          sql-query: 'select username from bs_employees where id = (select OPS_REP_ID from hotel_reservations where reservation_id = :reservation_id) '
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 262537871998796672
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: توزيع على مسؤول عمليات # 262537587638796669
+          to: Send to Sales # 264237321181085236
+
+      parameters: 
+      - # ====== Parameter: كود الحجز ================================
+        id: 264557324014303762
+        identification: 
+          name: كود الحجز # 264557052065303759
+
+        value: 
+          type: Item
+          item: RESERVATION_ID
+
+      - # ====== Parameter: مسؤول المبيعات ===========================
+        id: 264595514279836327
+        identification: 
+          name: مسؤول المبيعات # 264595278070836322
+
+        value: 
+          type: Item
+          item: SALES_REP_ID
+
+      - # ====== Parameter: مسؤول العمليات ===========================
+        id: 264603952576919118
+        identification: 
+          name: مسؤول العمليات # 264603636704919114
+
+        value: 
+          type: Item
+          item: OPS_REP_ID
+
+    - # ====== Activity: Send to Sales =============================
+      id: 264237321181085236
+      identification: 
+        name: Send to Sales
+        type: Send Push Notification
+
+      settings: 
+        to: '&SALES_REP_ID.'
+        title: تم تعين مسؤول عمليات
+        body: tes test test
+        link-target: 
+          url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:3:P3_RESERVATION_ID:&RESERVATION_ID.'
+          page: 3 # Create Identity
+          clear-cache: 3
+          values: 
+            p3_reservation_id: '&RESERVATION_ID.'
+
+      deadline: 
+        due-on-type: None
+
+      layout: 
+        sequence: 50
+
+      advanced: 
+        static-id: New_1
+
+      connections: 
+      - # ====== Connection: New =====================================
+        id: 264237429446085237
+        identification: 
+          name: New
+          type: Normal
+
+        activity: 
+          from: Send to Sales # 264237321181085236
+          to: End # 262537279054796666
+
+    variables: 
+    - # ====== Variable: Approver ==================================
+      id: 262537692827796670
+      identification: 
+        static-id: APPROVER
+
+      label: 
+        label: Approver
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    - # ====== Variable: TaskOutcome ===============================
+      id: 262537753073796671
+      identification: 
+        static-id: TASK_OUTCOME
+
+      label: 
+        label: TaskOutcome
+
+      parameter: 
+        data-type: VARCHAR2
+
+      value: 
+        type: Null
+
+    participants: 
+    - # ====== Participant: Workflow Owner =========================
+      id: 262538517709796679
+      identification: 
+        name: Operations Department
+        type: Workflow Owner
+
+      value: 
+        type: SQL Query
+        sql-query: select username from bs_employees where department_id = '4'
+
+    - # ====== Participant: Workflow Administrator =================
+      id: 264236755598085230
+      identification: 
+        name: Manager
+        type: Workflow Administrator
+
+      value: 
+        type: Static Value
+        static-value: amr
+

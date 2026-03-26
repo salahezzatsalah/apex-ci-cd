@@ -1,0 +1,1491 @@
+---
+# ====== Page: Driver's Application Home Page ================
+id: 6000
+identification: 
+  name: Driver's Application Home Page
+  alias: DRIVER-S-APPLICATION-HOME-PAGE
+  title: كباتن الوجهة الرائدة
+  page-group: Home # 18677563246010402822
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  execute-when-page-loads: |
+    function filterPreviousTrips(term) {
+      const cards = document.querySelectorAll('#previousTripsList .trip-card');
+      const normalizedTerm = term.trim().toLowerCase();
+    
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const matches = text.includes(normalizedTerm);
+        card.style.display = matches ? '' : 'none';
+      });
+    }
+    
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    .overline {
+      color: var(--ut-region-text-color, var(--ut-component-text-default-color));
+    }
+    
+    .a-FS-facetsDashboard {
+      --a-fs-chart-grid-gap: 0px;
+      --a-fs-chart-border-width: 0px;
+      --a-fs-chart-shadow: none;
+    }
+    
+    @media (max-width: 768px) {
+      .t-ContentRow-wrap.unassigned {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+    
+      .t-ContentRow-body,
+      .t-ContentRow-misc,
+      .t-ContentRow-actions {
+        width: 100%;
+        max-width: 100%;
+      }
+    
+      .t-ContentRow-misc {
+        order: 2; /* place after main body */
+      }
+    
+      .t-ContentRow-actions {
+        order: 3; /* actions come last */
+      }
+    }
+    
+    
+    .limo-overline {
+      font-size: 1em;
+      color: #030101;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 6px;
+    }
+    
+    .limo-overline .overline-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .limo-overline .label {
+      font-weight: 600;
+      color: #444;
+    }
+    .limo-overline .overline-separator {
+      color: #ccc;
+    }
+    
+    .limo-title.nowrap-wrap {
+      display: flex;
+      flex-wrap: wrap; /* allow wrapping on very small screens if needed */
+      direction: rtl;
+      gap: 10px;
+      font-size: clamp(0.8rem, 2vw, 0.95rem); /* ✅ responsive font size */
+      line-height: 1.4;
+    }
+    
+    .limo-title .title-group {
+      display: inline-flex;
+      align-items: center;
+      background: #f3f6f9;
+      border-radius: 10px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      max-width: 100%;
+      flex-shrink: 1; /* allow shrink within container */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .limo-title i {
+      margin-left: 6px;
+      color: #23598c;
+      font-size: 1em;
+    }
+    
+    .title-label {
+      font-weight: 600;
+      margin-left: 4px;
+      color: #333;
+    }
+    
+    .title-value {
+      color: #111;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    
+    /* Row layout: image + description */
+    .limo-row {
+      display: flex;
+    
+      gap: 1px;
+      align-items: flex-start;
+          margin-top: 10px;
+    
+      max-width: 900px;
+    }
+    
+    .limo-avatar {
+      justify-content: center;
+    }
+    
+    /* Avatar */
+    .limo-avatar img {
+      width: 120px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+    
+    
+    
+    /* Description container */
+    .limo-description {
+        flex: 1;
+        font-size: 0.95em;
+        line-height: 1.6;
+        color: #333;
+        direction: rtl;
+        margin-right: 20px;
+    
+        height: 90px;
+    }
+    
+    /* Trip card */
+    .trip-location-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+    .location-block {
+      display: flex;
+      flex-direction: column;
+    }
+    .location-name {
+      font-weight: 600;
+      color: #444;
+    }
+    .location-datetime {
+      font-size: 0.85em;
+      color: #888;
+    }
+    .location-arrow svg {
+      fill: #009688;
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Badges */
+    .limo-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .limo-meta .badge {
+      background: #008234;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size:0.85em;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      gap: 4px;
+    }
+    .badge-classification {
+      background: #e0f7fa;
+      color: #00695c;
+    }
+    .badge-triptype {
+      background: #f1f8e9;
+      color: #558b2f;
+    }
+    .badge-days {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+    
+    /* Ticket & Signage */
+    .limo-ticket,
+    .limo-signage {
+      font-size: 0.88em;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    .limo-ticket i,
+    .limo-signage i {
+      margin-left: 5px;
+      color: #7d4c18;
+    }
+    
+    .trip-location-card {
+        display: flex
+    ;
+        align-items: right;
+        /* justify-content: space-between; */
+        gap: 10px;
+        /* padding: 10px 16px; */
+        padding-bottom: 10px;
+        /* border: 1px solid #f5b400; */
+        border-radius: 8px;
+        /* background: #fff; */
+        direction: rtl;
+        font-family: 'Cairo', sans-serif;
+        width: fit-content;
+    }
+    
+    .trip-location-card .location-block {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+    
+    .trip-location-card .location-name {
+      font-weight: bold;
+      font-size: 1em;
+      color: #000;
+      margin-bottom: 4px;
+    }
+    
+    .trip-location-card .location-datetime {
+      font-size: 0.9em;
+      color: #555;
+    }
+    
+    .trip-location-card .location-arrow {
+      flex-shrink: 0;
+      color: #888;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .trip-location-card .location-arrow svg {
+      transform: scaleX(-1); /* Flip for RTL */
+      fill: #999;
+      width: 20px;
+      height: 20px;
+    }
+    
+    
+    
+    
+    
+    .limo-misc {
+      width: 250px;
+      max-width: 250px;
+      padding: 10px 12px;
+      padding-top: 25px;
+      background-color: transparent;
+    
+      font-size: 0.88em;
+      direction: rtl;
+      color: #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      gap: 12px;
+    }
+    
+    /* Group block with same margin/padding rules */
+    .misc-group {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e2e2e2;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    /* Attention group styling */
+    .misc-highlight {
+      border-color: #ffca28;
+      background-color: #fffde7;
+      box-shadow: inset 0 0 0 1px #ffe08244;
+    }
+    
+    /* Row layout */
+    .misc-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.6;
+    }
+    
+    /* Icons */
+    .misc-row i {
+      color: #23598c;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    /* Label */
+    .misc-label {
+      font-weight: 600;
+      color: #444;
+      white-space: nowrap;
+    }
+    
+    /* Value */
+    .misc-value {
+      flex: 1;
+      color: #111;
+      overflow-wrap: break-word;
+    }
+    
+    /* Notes (separated block style) */
+    .misc-notes {
+      background: #fff;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      padding: 6px 8px;
+      margin-top: 4px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+    
+    
+    
+    /* ===== Actions Wrapper Alignment ===== */
+    .t-ContentRow-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start; /* default is right in RTL */
+      gap: 8px;
+      direction: rtl;
+      margin-top: 6px;
+    }
+    
+    
+    /* ===== Shared Base Style for All Custom Buttons ===== */
+    .btn-menu,
+    .btn-favorite {
+      background-color: #f3f6f9;
+      border: 1px solid #ccd6e0;
+      color: #23598c;
+      font-size: 0.85em;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* ===== Menu Button (with label) ===== */
+    .btn-menu {
+      padding: 6px 12px;
+      gap: 6px;
+    }
+    
+    .btn-menu:hover {
+      background-color: #e6eef5;
+      border-color: #b0c3d2;
+    }
+    
+    /* ===== Favorite Button (icon-only, round) ===== */
+    .btn-favorite {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      padding: 0;
+    }
+    
+    .btn-favorite:hover {
+      background-color: #ffe9e9;
+      color: #c62828;
+      border-color: #f4c7c7;
+    }
+    
+    /* Icon inside buttons */
+    .btn-menu i,
+    .btn-favorite i {
+      font-size: 1em;
+    }
+    
+    .trip-group-header-bubbles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-start;
+      direction: rtl;
+      margin-bottom: 10px;
+    }
+    
+    .trip-bubble {
+      background-color: #f5f5f5;
+      border-radius: 16px;
+      padding: 5px 10px;
+      font-size: 0.82em;
+      font-weight: 500;
+      color: #2e2e2e;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .bubble-label {
+      margin-left: 4px;
+      color: #616161;
+      font-weight: 600;
+    }
+    
+    .bubble-value {
+      color: #212121;
+    }
+    
+    .unassigned {background-color: rgb(251, 249, 235);}
+    
+    
+    .spaceint {
+      display: block;
+      width: 100%;
+      height: 1px;
+      background-color: transparent; /* Material yellow */
+      border: none;
+        margin: 10px 0;
+    }
+    
+    /* Optional: make it more visible in print (or emulate break zones) */
+    @media print {
+      .spaceint {
+        break-before: always; /* Force page break */
+        height: 1px;
+        background-color: transparent;
+      }
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+comments: 
+  comments: home
+
+regions: 
+- # ====== Region: Current Trips ===============================
+  id: 270246556282186760
+  identification: 
+    name: Current Trips
+    title: رحلات نشطة
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Trips Current & Previous Tab Container # 277027640030043631
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trips Current & Previous Tab Container ======
+  id: 277027640030043631
+  identification: 
+    name: Trips Current & Previous Tab Container
+    title: رحلاتي
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--fillLabels
+    - t-TabsRegion-mod--pill
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Old Trips ===================================
+  id: 277027724817043632
+  identification: 
+    name: Old Trips
+    title: رحلات سابقة
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Trips Current & Previous Tab Container # 277027640030043631
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Current Active Trip =========================
+  id: 277027816414043633
+  identification: 
+    name: Current Active Trip
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html               CLOB;
+        v_trip_index         INTEGER := 0;
+        v_car_photo_url      VARCHAR2(1000);
+        v_is_active          INTEGER;
+        v_classification_ar  VARCHAR2(100);
+        v_trip_type_ar       VARCHAR2(100);
+          l_today_local DATE;
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+          l_today_local := TRUNC(CONVERT_TO_LOCAL_TIMEZONE(SYSTIMESTAMP));
+      
+        FOR rec IN (
+          SELECT *
+          FROM VW_LIMO_PRODUCT_OVERVIEW
+          WHERE CURRENT_DRIVER_ID = :APP_USER_ID
+            AND TRUNC(CONVERT_TO_LOCAL_TIMEZONE(SYSTIMESTAMP)) BETWEEN 
+                TRUNC(CONVERT_TO_LOCAL_TIMEZONE(TRIP_DATE_FROM)) 
+                AND TRUNC(NVL(CONVERT_TO_LOCAL_TIMEZONE(TRIP_DATE_TO), CONVERT_TO_LOCAL_TIMEZONE(TRIP_DATE_FROM)))
+          ORDER BY PICK_UP_TIME
+        ) LOOP
+          v_trip_index := v_trip_index + 1;
+      
+          -- Check if active trip exists for this product
+          SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END INTO v_is_active
+          FROM VW_CURRENT_ACTIVE_LIMO_TRIP
+          WHERE PRODUCT_ID = rec.PRODUCT_ID;
+      
+          -- Car image URL
+          v_car_photo_url := CASE
+            WHEN rec.CAR_TYPE_ID IS NOT NULL THEN
+              'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/profilephotosapi/car-catalog-pic/' || rec.CAR_TYPE_ID
+            ELSE
+              'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/profilephotosapi/car-catalog-pic/placeholder'
+          END;
+      
+          -- Translate trip and classification types
+          v_classification_ar := CASE rec.CLASSIFICATION_TYPE
+            WHEN 'WELCOME' THEN 'استقبال'
+            WHEN 'LOCAL' THEN 'داخلي'
+            ELSE rec.CLASSIFICATION_TYPE
+          END;
+      
+          v_trip_type_ar := CASE rec.TRIP_TYPE
+            WHEN 'TRANSFER' THEN 'توصيلة'
+            WHEN 'DAILY' THEN 'يومية'
+            ELSE rec.TRIP_TYPE
+          END;
+      
+          -- Append HTML
+          DBMS_LOB.APPEND(l_html, '
+          <a href="' || APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6001:' || :APP_SESSION || '::::P6001_PRODUCT_ID:' || rec.PRODUCT_ID) || '" 
+             class="block transition hover:shadow-md bg-white rounded-xl border border-gray-200 p-4 mb-4 space-y-2">
+            
+            <div class="flex items-center gap-3">
+              <img src="' || v_car_photo_url || '" class="w-14 h-12 object-contain rounded border">
+              <div class="flex-1 text-sm text-gray-800">
+                <div class="font-bold text-gray-900">' || rec.FULL_NAME || '</div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  <i class="fa6 fa6-id-card ml-1"></i> كود العميل: ' || rec.CLIENT_CODE || '
+                  &nbsp; <i class="fa6 fa6-hashtag ml-1"></i> رقم الرحلة: ' || rec.PRODUCT_ID || '
+                  ' || CASE WHEN rec.CLASSIFICATION_TYPE = 'WELCOME' THEN
+                    '<br><span class="text-gray-400 text-xs">🎟 ' || NVL(rec.TICKET_NUMBER,'') || 
+                    ' &nbsp; 🪧 ' || NVL(rec.SIGNAGE_DETAILS,'') || 
+                    ' &nbsp; 📝 ' || NVL(rec.TRIP_NOTES,'') || '</span>'
+                  ELSE '' END || '
+                </div>
+              </div>
+              ' || CASE WHEN v_is_active = 1 THEN
+                '<div class="ml-auto text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded-full">🚘 نشطة الآن</div>'
+              ELSE '' END || '
+            </div>
+      
+            <div class="flex flex-wrap items-center justify-between text-sm text-gray-700 gap-2 mt-2">
+              <div class="flex items-center gap-2">
+                <i class="fa6 fa6-clock ml-1 text-gray-500"></i> ' || TO_CHAR(rec.PICK_UP_TIME_LOCAL, 'HH24:MI') || '
+                <span class="text-gray-400 mx-1">|</span>
+                <i class="fa6 fa6-map-location-dot ml-1 text-gray-500"></i> ' || rec.FROM_LOCATION || '
+                <i class="fa6 fa6-arrow-left-long mx-1 text-gray-400"></i>
+                ' || rec.TO_LOCATION || '
+              </div>
+      
+              <div class="flex items-center gap-2 text-xs font-semibold">
+                <span class="bg-blue-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <i class="fa6 fa6-layer-group text-white"></i> ' || v_classification_ar || '
+                </span>
+                <span class="bg-blue-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <i class="fa6 fa6-car-side text-white"></i> ' || v_trip_type_ar || '
+                </span>
+                ' || CASE WHEN rec.TRIP_TYPE = 'DAILY' THEN
+                  '<span class="bg-gray-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                    <i class="fa6 fa6-calendar-day text-white"></i> ' || rec.TRIPS_COUNT || ' / ' || rec.TOTAL_DAYS || '
+                  </span>'
+                ELSE '' END || '
+              </div>
+            </div>
+      
+            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden mt-2">
+              <div class="h-full bg-blue-600 transition-all" style="width:' || rec.TRIP_PROGRESS_PCT || '%"></div>
+            </div>
+          </a>');
+        END LOOP;
+      
+        IF v_trip_index = 0 THEN
+          DBMS_LOB.APPEND(l_html, '
+          <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-center font-semibold flex flex-col items-center gap-2 mt-6">
+            <i class="fa6 fa6-circle-exclamation text-2xl"></i>
+            لا توجد أي رحلات نشطة حالياً.
+          </div>');
+        END IF;
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - APP_USER_ID
+
+  layout: 
+    sequence: 95
+    parent-region: Current Trips # 270246556282186760
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Previous Trips ==============================
+  id: 277027906580043634
+  identification: 
+    name: Previous Trips
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html               CLOB;
+        v_trip_index         INTEGER := 0;
+        v_classification_ar  VARCHAR2(100);
+        v_trip_type_ar       VARCHAR2(100);
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        -- Start container with required region ID
+        DBMS_LOB.APPEND(l_html, q'[
+          <div id="previous-trips-region">
+      
+            <div class="mb-3">
+              <input type="text" id="searchPreviousTrips" placeholder="ابحث عن الرحلة..." 
+                     class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 text-right" 
+                     onkeyup="filterPreviousTrips(this.value)">
+            </div>
+      
+            <script>
+              function filterPreviousTrips(term) {
+                const cards = document.querySelectorAll('#previous-trips-region .previous-trip-card');
+                term = term.trim().toLowerCase();
+                cards.forEach(card => {
+                  card.style.display = card.innerText.toLowerCase().includes(term) ? 'block' : 'none';
+                });
+              }
+            </script>
+        ]');
+      
+        FOR rec IN (
+      SELECT
+        p.*,
+        a.DRIVER_STATUS
+      FROM
+        VW_LIMO_PRODUCT_OVERVIEW p
+      JOIN
+        LIMO_PRODUCT_ASSIGNMENTS a
+        ON a.PRODUCT_ID = p.PRODUCT_ID
+      WHERE
+        a.DRIVER_ID = :APP_USER_ID
+        AND (
+          -- Either not current assignment
+          a.DRIVER_STATUS <> 'CURRENT'
+          OR
+          (
+            a.DRIVER_STATUS = 'CURRENT'
+            AND (
+              -- All trips completed
+              (p.TOTAL_DAYS IS NOT NULL AND p.TRIPS_COUNT >= p.TOTAL_DAYS)
+             
+            ) or TRIP_DATE_TO < SYSDATE
+          )
+        )
+      ORDER BY
+        p.PICK_UP_TIME DESC
+      
+        ) LOOP
+          v_trip_index := v_trip_index + 1;
+      
+          v_classification_ar := CASE rec.CLASSIFICATION_TYPE
+            WHEN 'WELCOME' THEN 'استقبال'
+            WHEN 'LOCAL' THEN 'داخلي'
+            ELSE rec.CLASSIFICATION_TYPE
+          END;
+      
+          v_trip_type_ar := CASE rec.TRIP_TYPE
+            WHEN 'TRANSFER' THEN 'توصيلة'
+            WHEN 'DAILY' THEN 'يومية'
+            ELSE rec.TRIP_TYPE
+          END;
+      
+          DBMS_LOB.APPEND(l_html, '
+          <a href="' || APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':6001:' || :APP_SESSION || '::::P6001_PRODUCT_ID:' || rec.PRODUCT_ID) || '" 
+             class="block previous-trip-card transition hover:shadow-md bg-white rounded-xl border border-gray-200 p-4 mb-4 space-y-2">
+            
+            <div class="flex items-center gap-3">
+              <img src="' || rec.CAR_PHOTO_URL || '" class="w-14 h-12 object-contain rounded border">
+              <div class="flex-1 text-sm text-gray-800">
+                <div class="font-bold text-gray-900">' || rec.FULL_NAME || '</div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  <i class="fa6 fa6-id-card ml-1"></i> كود العميل: ' || rec.CLIENT_CODE || '
+                  &nbsp; <i class="fa6 fa6-hashtag ml-1"></i> رقم الرحلة: ' || rec.PRODUCT_ID || '
+                  ' || CASE WHEN rec.CLASSIFICATION_TYPE = 'WELCOME' THEN
+                    '<br><span class="text-gray-400 text-xs">🎟 ' || NVL(rec.TICKET_NUMBER,'') || 
+                    ' &nbsp; 🪧 ' || NVL(rec.SIGNAGE_DETAILS,'') || 
+                    ' &nbsp; 📝 ' || NVL(rec.TRIP_NOTES,'') || '</span>'
+                  ELSE '' END || '
+                </div>
+              </div>
+            </div>
+      
+            <div class="flex flex-wrap items-center justify-between text-sm text-gray-700 gap-2 mt-2">
+              <div class="flex items-center gap-2">
+                <i class="fa6 fa6-clock ml-1 text-gray-500"></i> ' || TO_CHAR(rec.PICK_UP_TIME_LOCAL, 'HH24:MI') || '
+                <span class="text-gray-400 mx-1">|</span>
+                <i class="fa6 fa6-map-location-dot ml-1 text-gray-500"></i> ' || rec.FROM_LOCATION || '
+                <i class="fa6 fa6-arrow-left-long mx-1 text-gray-400"></i>
+                ' || rec.TO_LOCATION || '
+              </div>
+      
+              <div class="flex items-center gap-2 text-xs font-semibold">
+                <span class="bg-gray-500 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <i class="fa6 fa6-layer-group text-white"></i> ' || v_classification_ar || '
+                </span>
+                <span class="bg-gray-500 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <i class="fa6 fa6-car-side text-white"></i> ' || v_trip_type_ar || '
+                </span>
+                ' || CASE WHEN rec.TRIP_TYPE = 'DAILY' THEN
+                  '<span class="bg-gray-700 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                    <i class="fa6 fa6-calendar-day text-white"></i> ' || rec.TRIPS_COUNT || ' / ' || rec.TOTAL_DAYS || '
+                  </span>'
+                ELSE '' END || '
+              </div>
+            </div>
+      
+            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden mt-2">
+              <div class="h-full bg-gray-400 transition-all" style="width:' || rec.TRIP_PROGRESS_PCT || '%"></div>
+            </div>
+          </a>');
+        END LOOP;
+      
+        IF v_trip_index = 0 THEN
+          DBMS_LOB.APPEND(l_html, '
+          <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-center font-semibold flex flex-col items-center gap-2 mt-6">
+            <i class="fa6 fa6-circle-info text-2xl"></i>
+            لا توجد أي رحلات سابقة مرتبطة بك.
+          </div>');
+        END IF;
+      
+        -- Close outer region div
+        DBMS_LOB.APPEND(l_html, '</div>');
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - APP_USER_ID
+
+  layout: 
+    sequence: 10
+    parent-region: Old Trips # 277027724817043632
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    static-id: previous-trips-region
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 13776761511803225316
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 75
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 14641104866836240134
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 13776761511803225316
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14641105167415240137
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: سجل التسويات ==================================
+      id: 279057396137864259
+      identification: 
+        type: Menu Entry
+        label: سجل التسويات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:366:&SESSION.::&DEBUG.:366:P366_DRIVER_ID:&APP_USER_ID.'
+          page: 366 # Company Driver Profile Page
+          clear-cache: 366
+          values: 
+            p366_driver_id: '&APP_USER_ID.'
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 14641105873322240144
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:6000:&SESSION.::&DEBUG.:RP,1::'
+          page: 6000 # Driver's Application Home Page
+          clear-cache: RP,1
+
+      appearance: 
+        icon: fa-refresh
+
+  - # ====== Action: عرض حسابي ===================================
+    id: 22899662886122876786
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: عرض حسابي
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:366:&SESSION.::&DEBUG.:RP,:P366_DRIVER_ID:&APP_USER_ID.'
+        page: 366 # Company Driver Profile Page
+        clear-cache: RP
+        values: 
+          p366_driver_id: '&APP_USER_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+- # ====== Region: Notifications ===============================
+  id: 15028467440445548563
+  identification: 
+    name: Notifications
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         l_return clob;
+         l_count  int := 0;
+         l_user_tags varchar2(4000) := null;
+      begin
+         for c1 in (select upper(tags) tags from sp_team_members where id = :APP_USER_ID and tags is not null) loop
+             l_user_tags := c1.tags;
+         end loop;
+         for c1 in (
+            select notification_description 
+            from SP_APPLICATION_NOTIFICATIONS 
+            where (from_date is null or sysdate >= from_date) and
+                  (to_date   is null or sysdate <= to_date) and 
+                  (required_user_tag is null or instr(l_user_tags,required_user_tag) > 0) and
+                  is_active_yn = 'Y') loop
+            --
+            --
+            --
+            l_count := l_count + 1;
+            if l_count = 2 then 
+                l_return := '<ul><li>'||l_return||'</li>';
+            end if;
+            if l_count >= 2 then
+               l_return := l_return||'<li>';
+            end if;
+            l_return := l_return||apex_escape.html(c1.notification_description);
+            if l_count >= 2 then
+               l_return := l_return||'</li>';
+            end if;
+         end loop;
+         --
+         --
+         --
+         if l_count >= 2 then
+            l_return := l_return||'</ul>';
+         end if;
+         --
+         --
+         --
+         return l_return;
+      end;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--info
+    - t-Alert--accessibleHeading
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1 
+      from SP_APPLICATION_NOTIFICATIONS n
+      where (from_date is null or sysdate >= from_date) and
+            (to_date   is null or sysdate <= to_date) and 
+            is_active_yn = 'Y' and
+            (n.required_user_tag is null or exists (
+                select 1
+                from sp_team_members tm
+                where tm.id = :APP_USER_ID and 
+                      tm.tags is not null and
+                      instr(upper(tm.tags),upper(n.required_user_tag)) > 0
+            )
+            )
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Blitz Search ================================
+  id: 22653129544083071285
+  identification: 
+    name: Blitz Search
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+buttons: 
+- # ====== Button: SEARCH ======================================
+  id: 270432160316553267
+  identification: 
+    button-name: SEARCH
+    label: بحث في النظام
+
+  layout: 
+    sequence: 20
+    region: Blitz Search # 22653129544083071285
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--simple
+    - t-Button--iconLeft
+    - t-Button--stretch
+    - t-Button--gapTop
+    - t-Button--padBottom
+    css-classes: 
+    - margin-top-md
+    - u-textStart
+    - null
+    icon: fa-search
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: SEARCH
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+dynamic-actions: 
+- # ====== Dynamic Action: toggle favorite =====================
+  id: 270482528929553342
+  identification: 
+    name: toggle favorite
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6000_PROJECT_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 270483005349553342
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        sp_favorite_toggle(
+            p_project_id => :P6000_PROJECT_TO_FAVORITE, 
+            p_app_user_id => :APP_USER_ID
+            );
+      items-to-submit: 
+      - P6000_PROJECT_TO_FAVORITE
+
+    execution: 
+      sequence: 10
+      event: toggle favorite # 270482528929553342
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 270483586956553343
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-project-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-project-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('Project favorited!');
+        }
+        apex.items.P6000_PROJECT_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: toggle favorite # 270482528929553342
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: dismiss notif =======================
+  id: 270483949069553343
+  identification: 
+    name: dismiss notif
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6000_NOTIF_TO_DISMISS
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 270484459406553343
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        update sp_team_member_notifications
+           set dismissed_yn = 'Y'
+         where id = :P6000_NOTIF_TO_DISMISS
+           and team_member_id =  :APP_USER_ID;
+      items-to-submit: 
+      - P6000_NOTIF_TO_DISMISS
+
+    execution: 
+      sequence: 10
+      event: dismiss notif # 270483949069553343
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 270484944621553344
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.items.P6000_NOTIF_TO_DISMISS.setValue('',undefined,true);
+
+    execution: 
+      sequence: 20
+      event: dismiss notif # 270483949069553343
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 270487137346553345
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 13776761511803225316
+
+- # ====== Dynamic Action: Open Search Region ==================
+  id: 270488019746553345
+  identification: 
+    name: Open Search Region
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: SEARCH # 270432160316553267
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 270488585938553346
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.actions.invoke( 'open-search' );
+
+    execution: 
+      sequence: 10
+      event: Open Search Region # 270488019746553345
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

@@ -1,0 +1,1585 @@
+---
+# ====== Page: Trip Expenses Form ============================
+id: 6003
+identification: 
+  name: Trip Expenses Form
+  alias: TRIP-EXPENSES-FORM
+  title: استمارة مصروفات تشغيلة ليموزين - نموذج 6003
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Expense History =============================
+  id: 260936614843430164
+  identification: 
+    name: Expense History
+    title: مصروفات أخرى في نفس اليوم على الرحلة
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html           CLOB := '';
+        l_total_expense  NUMBER := 0;
+        l_amount_disp    VARCHAR2(32);
+        l_edit_url       VARCHAR2(4000);
+      BEGIN
+        l_html := l_html || '<div class="flex flex-col gap-1">';
+      
+        FOR e IN (
+          SELECT e.EXPENSE_ID,
+                 TO_CHAR(convert_to_local_timezone(e.UPDATED), 'DD/MM/YYYY HH24:MI') AS UPDATED_DATE,
+                 et.EXPENSE_TYPE_NAME,
+                 es.STATUS_NAME,
+                 es.STATUS_CODE,
+                 e.AMOUNT,
+                 e.CURRENCY,
+                 e.DETAILS,
+                 e.EXPENSE_DATE
+            FROM LIMO_TRIP_EXPENSES e
+            JOIN LIMO_EXPENSE_TYPES et ON e.EXPENSE_TYPE = et.EXPENSE_TYPE_CODE
+            JOIN LIMO_EXPENSE_STATUSES es ON e.STATUS = es.STATUS_CODE
+           WHERE e.trip_id = :P6003_TRIP_ID
+           AND e.expense_date = :P6003_EXPENSE_DATE
+           ORDER BY e.EXPENSE_DATE DESC
+        ) LOOP
+          l_total_expense := l_total_expense + NVL(e.AMOUNT, 0);
+      
+          -- Format amount: strip decimals if .00, else show with up to 2 decimals
+          IF MOD(e.AMOUNT, 1) = 0 THEN
+            l_amount_disp := TO_CHAR(e.AMOUNT, '999G999G990');
+          ELSE
+            l_amount_disp := TO_CHAR(e.AMOUNT, '999G999G990D00');
+          END IF;
+      
+          -- Build edit URL for modal dialog (page 6003)
+          l_edit_url := APEX_UTIL.PREPARE_URL(
+            p_url => 'f?p=' || :APP_ID || ':6003:' || :APP_SESSION ||
+                     '::::P6003_EXPENSE_ID:' || e.EXPENSE_ID,
+            p_checksum_type => 'SESSION'
+          );
+      
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800 rounded-xl p-2 shadow-sm border border-neutral-100 dark:border-neutral-700">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center">
+                <i class="fa6 fa6-receipt text-blue-600 text-[16px]"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="font-semibold text-xs text-black dark:text-white truncate">' || e.EXPENSE_TYPE_NAME || '</div>
+                  <div class="text-[10px] px-2 py-0.5 rounded-full ' ||
+                    CASE e.STATUS_CODE
+                      WHEN 'PAID' THEN 'bg-green-50 text-green-700 border border-green-200'
+                      WHEN 'PENDING' THEN 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                      WHEN 'REJECTED' THEN 'bg-red-50 text-red-700 border border-red-200'
+                      ELSE 'bg-gray-50 text-gray-700 border border-gray-200'
+                    END || '">' || e.STATUS_NAME || '</div>
+                </div>
+                <div class="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5">
+                  <i class="fa6 fa6-calendar text-gray-400"></i>
+                  <span>' || e.EXPENSE_DATE || '</span>
+                </div>';
+          IF e.DETAILS IS NOT NULL THEN
+            l_html := l_html || '
+                <div class="text-[11px] text-neutral-400 mt-1 flex items-center gap-1">
+                  <i class="fa6 fa6-sticky-note text-neutral-300"></i>
+                  <span>' || APEX_ESCAPE.HTML(e.DETAILS) || '</span>
+                </div>';
+          END IF;
+          l_html := l_html || '
+              </div>
+              <div class="flex flex-col items-end min-w-[54px]">
+                <div class="font-bold text-sm text-red-600">' || l_amount_disp || '</div>
+                <div class="text-[10px] text-gray-500">' || e.CURRENCY || '</div>
+              </div>
+      
+            </div>';
+        END LOOP;
+      
+        -- Summary tile (smaller, on mobile)
+        IF l_total_expense IS NOT NULL THEN
+          IF MOD(l_total_expense, 1) = 0 THEN
+            l_amount_disp := TO_CHAR(l_total_expense, '999G999G990');
+          ELSE
+            l_amount_disp := TO_CHAR(l_total_expense, '999G999G990D00');
+          END IF;
+      
+          l_html := l_html || '
+            <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900 rounded-xl p-2 shadow border border-green-200 dark:border-green-800 mt-1">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full bg-green-100 flex items-center justify-center">
+                <i class="fa6 fa6-sack-dollar text-green-700 text-[16px]"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-xs text-green-900 dark:text-green-100">إجمالي المصروفات</div>
+              </div>
+              <div class="font-extrabold text-sm text-green-700">' || l_amount_disp || ' EGP</div>
+            </div>';
+        END IF;
+      
+        l_html := l_html || '</div>';
+        RETURN l_html;
+      END;
+      
+      
+              -- <div class="flex items-center ml-2">
+              -- --   <a href="' || l_edit_url || '" target="dialog"
+              -- --     class="bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs px-2 py-1 rounded-lg shadow-sm border border-blue-200 transition"
+              -- --     data-dialog="6003" data-width="600" data-title="تعديل المصروف">
+              -- --     <i class="fa fa-edit"></i> تعديل
+              -- --   </a>
+              -- </div>
+    page-items-to-submit: 
+    - P6003_TRIP_ID
+    - P6003_EXPENSE_DATE
+
+  layout: 
+    sequence: 40
+    parent-region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Meta Data ===================================
+  id: 260936707351430165
+  identification: 
+    name: Meta Data
+    title: بيانات الرحلة
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Expense Details =============================
+  id: 260936877512430166
+  identification: 
+    name: Expense Details
+    title: تفاصيل المصاريف
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Expenses Form ==========================
+  id: 405369408592647511
+  identification: 
+    name: Trip Expenses Form
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_TRIP_EXPENSES
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 405382736788647523
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P6003_MANUALENTRY ========================
+  id: 405300102120474010
+  identification: 
+    name: P6003_MANUALENTRY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 130
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_EXPENSE_ID =========================
+  id: 405369626684647513
+  identification: 
+    name: P6003_EXPENSE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Expense Details # 260936877512430166
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: EXPENSE_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_TRIP_ID ============================
+  id: 405370063165647514
+  identification: 
+    name: P6003_TRIP_ID
+    type: Display Only
+
+  label: 
+    label: كود رحلة السائق
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Meta Data # 260936707351430165
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_TRIPS_TRACKER.PRODUCT_ID # 271462263082835038
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: TRIP_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_ASSIGNMENT_ID ======================
+  id: 405370434189647514
+  identification: 
+    name: P6003_ASSIGNMENT_ID
+    type: Display Only
+
+  label: 
+    label: كود التوزيعة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Meta Data # 260936707351430165
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_PRODUCT_ASSIGNMENTS.PRODUCT_ID # 271462951210835053
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: ASSIGNMENT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT assignment_id
+      FROM LIMO_TRIPS_TRACKER_v2
+      WHERE trip_id = :P6003_TRIP_ID;
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_EXPENSE_DATE =======================
+  id: 405370863525647515
+  identification: 
+    name: P6003_EXPENSE_DATE
+    type: Display Only
+
+  label: 
+    label: تاريخ الصرف
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 40
+    region: Expense Details # 260936877512430166
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: EXPENSE_DATE
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT TRUNC(executed_date) AS START_DATE
+      FROM LIMO_TRIPS_TRACKER_v2
+      WHERE TRIP_ID = :P6003_TRIP_ID;
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_AMOUNT =============================
+  id: 405371259914647515
+  identification: 
+    name: P6003_AMOUNT
+    type: Number Field
+
+  label: 
+    label: المبلغ
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 20
+    region: Expense Details # 260936877512430166
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: AMOUNT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_CURRENCY ===========================
+  id: 405371704019647515
+  identification: 
+    name: P6003_CURRENCY
+    type: Display Only
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: Meta Data # 260936707351430165
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: EGP
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_EXCHANGE_RATE ======================
+  id: 405372088578647515
+  identification: 
+    name: P6003_EXCHANGE_RATE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Meta Data # 260936707351430165
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: 1
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_DETAILS ============================
+  id: 405372483723647516
+  identification: 
+    name: P6003_DETAILS
+    type: Textarea
+
+  label: 
+    label: ملاحظات
+    alignment: Left
+
+  settings: 
+    resizable: false
+    auto-height: false
+    character-counter: true
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 30
+    region: Expense Details # 260936877512430166
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 500
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: DETAILS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_STATUS =============================
+  id: 405372901749647516
+  identification: 
+    name: P6003_STATUS
+    type: Display Only
+
+  label: 
+    label: حالة المراجعة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 60
+    region: Meta Data # 260936707351430165
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_EXPENSE_STATUSES.STATUS_NAME # 271465697534835056
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: PENDING
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_EXPENSE_TYPE =======================
+  id: 405373264909647517
+  identification: 
+    name: P6003_EXPENSE_TYPE
+    type: Select List
+
+  label: 
+    label: نوع بند المصروفات
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Expense Details # 260936877512430166
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--boldDisplay
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_EXPENSE_TYPES.EXPENSE_TYPE_NAME # 271466362044835057
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: EXPENSE_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_FROM_ACCOUNT =======================
+  id: 405373685685647517
+  identification: 
+    name: P6003_FROM_ACCOUNT
+    type: Display Only
+
+  label: 
+    label: خصم من حساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 70
+    region: Meta Data # 260936707351430165
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: FROM_ACCOUNT
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: حساب التشغيلة
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6003_APPROVED_BY ========================
+  id: 405374044879647517
+  identification: 
+    name: P6003_APPROVED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: APPROVED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: 387650029490892492
+
+- # ====== Page Item: P6003_APPROVAL_DATETIME ==================
+  id: 405374517388647518
+  identification: 
+    name: P6003_APPROVAL_DATETIME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: APPROVAL_DATETIME
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: 387650029490892492
+
+- # ====== Page Item: P6003_CREATED ============================
+  id: 405375277487647518
+  identification: 
+    name: P6003_CREATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: 387650029490892492
+
+- # ====== Page Item: P6003_CREATED_BY =========================
+  id: 405376074248647519
+  identification: 
+    name: P6003_CREATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 100
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: 387650029490892492
+
+- # ====== Page Item: P6003_UPDATED ============================
+  id: 405376487046647519
+  identification: 
+    name: P6003_UPDATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: 387650029490892492
+
+- # ====== Page Item: P6003_UPDATED_BY =========================
+  id: 405377318865647520
+  identification: 
+    name: P6003_UPDATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 120
+    region: Trip Expenses Form # 405369408592647511
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Trip Expenses Form # 405369408592647511
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: 387650029490892492
+
+buttons: 
+- # ====== Button: CREATEANOTHER ===============================
+  id: 260936517660430163
+  identification: 
+    button-name: CREATEANOTHER
+    label: اضافة بيان مصروف اخر
+
+  layout: 
+    sequence: 50
+    region: Expense Details # 260936877512430166
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--success
+    - t-Button--iconRight
+    - t-Button--hoverIconPush
+    - t-Button--stretch
+    - t-Button--gapTop
+    - t-Button--gapBottom
+    icon: fa-money-check-pen
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P6003_EXPENSE_ID
+
+- # ====== Button: CANCEL ======================================
+  id: 405383214364647523
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 405382736788647523
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 405384608786647525
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 405382736788647523
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P6003_EXPENSE_ID
+
+- # ====== Button: SAVE ========================================
+  id: 405384943811647525
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديل
+
+  layout: 
+    sequence: 30
+    region: Buttons # 405382736788647523
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P6003_EXPENSE_ID
+
+- # ====== Button: CREATEANDCLOSE ==============================
+  id: 405385326601647525
+  identification: 
+    button-name: CREATEANDCLOSE
+    label: اضافة البيان وغلق الاستمارة
+
+  layout: 
+    sequence: 60
+    region: Expense Details # 260936877512430166
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--primary
+    - t-Button--iconRight
+    - t-Button--hoverIconPush
+    - t-Button--stretch
+    - t-Button--gapTop
+    - t-Button--gapBottom
+    icon: fa-window-close
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P6003_EXPENSE_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 405383321636647523
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 405383214364647523
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 405384077200647524
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 405383321636647523
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: P6003_APPROVAL_DATETIME must be timestamp
+  id: 405375002657647518
+  identification: 
+    name: P6003_APPROVAL_DATETIME must be timestamp
+
+  execution: 
+    sequence: 120
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P6003_APPROVAL_DATETIME
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P6003_APPROVAL_DATETIME # 405374517388647518
+
+- # ====== Validation: P6003_CREATED must be timestamp =========
+  id: 405375755743647519
+  identification: 
+    name: P6003_CREATED must be timestamp
+
+  execution: 
+    sequence: 130
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P6003_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P6003_CREATED # 405375277487647518
+
+- # ====== Validation: P6003_UPDATED must be timestamp =========
+  id: 405377002926647519
+  identification: 
+    name: P6003_UPDATED must be timestamp
+
+  execution: 
+    sequence: 150
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P6003_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P6003_UPDATED # 405376487046647519
+
+processes: 
+- # ====== Process: Initialize form Trip Expenses Form =========
+  id: 405385823022647525
+  identification: 
+    name: Initialize form Trip Expenses Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Trip Expenses Form # 405369408592647511
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Trip Expenses Form ============
+  id: 405386143935647526
+  identification: 
+    name: Process form Trip Expenses Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Trip Expenses Form # 405369408592647511
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: |
+      تم إضافة بيان المصروفات
+      
+      &P6003_AMOUNT. - &P6003_EXPENSE_TYPE.
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 405386563754647526
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATEANDCLOSE,SAVE,DELETE
+
+branches: 
+- # ====== Branch: addanother ==================================
+  id: 260949780017769786
+  identification: 
+    name: addanother
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:6003:&SESSION.::&DEBUG.::P6003_TRIP_ID:&P6003_TRIP_ID.&success_msg=#SUCCESS_MSG#'
+      page: 6003 # Trip Expenses Form
+      values: 
+        p6003_trip_id: '&P6003_TRIP_ID.'
+
+  server-side-condition: 
+    when-button-pressed: CREATEANOTHER # 260936517660430163
+

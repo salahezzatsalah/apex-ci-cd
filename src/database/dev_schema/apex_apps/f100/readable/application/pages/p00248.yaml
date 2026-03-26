@@ -1,0 +1,2675 @@
+---
+# ====== Page: نظام التسوية - الاصدار الاول ==================
+id: 248
+identification: 
+  name: نظام التسوية - الاصدار الاول
+  alias: SETTLEMENT-GENERATOR
+  title: نظام التسوية - الاصدار الاول
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .trip-table th,
+    .trip-table td {
+      padding: 12px 14px;
+      white-space: nowrap;
+    }
+    
+    .trip-table th {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    
+    .mission-btn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all .15s ease;
+    }
+    .mission-btn:hover {
+      transform: scale(1.06);
+    }
+    
+    .mission-cleared {
+      background: #dcfce7;
+      color: #166534;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    
+    .edit-btn {
+      margin-right: 6px;
+      background: #f1f5f9;
+      color: #334155;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+    .edit-btn:hover {
+      background: #e2e8f0;
+    }
+    
+    .trip-row {
+      transition: background .2s ease;
+    }
+    
+    
+    /* Container */
+    .collections-cell {
+      line-height: 1.8;
+    }
+    /* تحصيلات الكابتن */
+    .collections-cell {
+      line-height: 1.8;
+    }
+    
+    .collection-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      color: #92400e;
+      padding: 4px 10px;
+      margin: 2px 4px 2px 0;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    
+    /* صافي المكتب */
+    .office-net-positive {
+      color: #166534;
+      background: #dcfce7;
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+    
+    .office-net-zero {
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+    
+    .office-net-negative {
+      color: #991b1b;
+      background: #fee2e2;
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+    
+    
+    .settlement-box{
+        max-width:760px;
+        margin:auto;
+        background:#fff;
+        border:1px solid #e5e7eb;
+        border-radius:14px;
+        padding:22px;
+        direction:rtl;
+        font-family:"Tahoma","Arial";
+    }
+    .settlement-title{
+        font-size:20px;
+        font-weight:800;
+        margin-bottom:4px;
+    }
+    .settlement-sub{
+        font-size:12px;
+        color:#6b7280;
+        margin-bottom:16px;
+    }
+    .settlement-table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:14px;
+    }
+    .settlement-table tr{
+        border-bottom:1px solid #e5e7eb;
+    }
+    .settlement-table td{
+        padding:10px 6px;
+    }
+    .label{
+        font-weight:600;
+        color:#374151;
+    }
+    .value{
+        text-align:left;
+        font-weight:700;
+    }
+    .currency-line{
+        display:block;
+        line-height:1.4;
+    }
+    .negative{color:#b91c1c;}
+    .positive{color:#047857;}
+    .total-row{
+        border-top:2px solid #111827;
+    }
+    .note{
+        margin-top:12px;
+        font-size:11px;
+        color:#6b7280;
+    }
+    .settle-warning{
+        padding:16px;
+        border-radius:12px;
+        background:#fffbeb;
+        border:1px solid #fde68a;
+        color:#92400e;
+        direction:rtl;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Bttns and Search ============================
+  id: 192743532389241793
+  identification: 
+    name: Bttns and Search
+    title: أدوات البحث والتحديد
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trips Report ================================
+  id: 192744089571241798
+  identification: 
+    name: Trips Report
+    title: ملخص الرحلات
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select TRIP_ID,
+             PRODUCT_ID,
+             ASSIGNMENT_ID,
+             DRIVER_ID,
+             STATUS,
+             START_DATETIME,
+             END_DATETIME,
+             USED_CAR_ID,
+             USED_CAR_TYPE,
+             EXECUTED_DATE,
+             TRIP_CURRENCY,
+             EXCHANGE_RATE,
+             BASE_PRICE_EGP,
+             ADDED_SERVICES_EGP,
+             ADDED_SERVICES_CURRENCY,
+            
+             'ج.م' || TRIP_EXPENSES_EGP AS TRIP_EXPENSES_EGP,
+             REVENUE_AFTER_EXPENSES_EGP,
+             DRIVER_SHARE_TYPE,
+             DRIVER_SHARE_VALUE,
+             DRIVER_SHARE_FROM_TRIP_EGP,
+             DRIVER_SHARE_FROM_SERVICES_EGP,
+             TOTAL_DRIVER_PAYOUT_EGP,
+             TOTAL_INVOICE_EGP,
+             TOTAL_INVOICE_CURRENCY,
+             OFFICE_NET_EGP,
+             OFFICE_NET_CURRENCY,
+             PAID_AMOUNT_EGP,
+             PAID_AMOUNT_ORIG_CURR,
+             OUTSTANDING_AMOUNT_EGP,
+             OUTSTANDING_AMOUNT_ORIG_CURR,
+             CREATED,
+             CREATED_BY,
+             UPDATED,
+             UPDATED_BY,
+             TRIP_PRICE,
+             SATTLE_STATUS
+        from LIMO_TRIPS_TRACKER_V2
+      
+        where 
+      
+                  (:P248_CARFILE IS NULL OR USED_CAR_ID = :P248_CARFILE)
+              AND (:P248_DRIVERID IS NULL OR DRIVER_ID = :P248_DRIVERID)
+      
+       
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: TRIP_ID =====================================
+    id: 192744178789241799
+    identification: 
+      column-name: TRIP_ID
+      type: Plain Text
+
+    heading: 
+      heading: Trip Id
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PRODUCT_ID ==================================
+    id: 195764420926387850
+    identification: 
+      column-name: PRODUCT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 111
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: ASSIGNMENT_ID ===============================
+    id: 195764575951387851
+    identification: 
+      column-name: ASSIGNMENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 121
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DRIVER_ID ===================================
+    id: 195764652149387852
+    identification: 
+      column-name: DRIVER_ID
+      type: Plain Text
+
+    heading: 
+      heading: السائق
+      alignment: center
+
+    layout: 
+      sequence: 91
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 195764695907387853
+    identification: 
+      column-name: STATUS
+      type: Hidden
+
+    layout: 
+      sequence: 131
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: START_DATETIME ==============================
+    id: 195764853102387854
+    identification: 
+      column-name: START_DATETIME
+      type: Hidden
+
+    layout: 
+      sequence: 141
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: END_DATETIME ================================
+    id: 195764923729387855
+    identification: 
+      column-name: END_DATETIME
+      type: Hidden
+
+    layout: 
+      sequence: 151
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: USED_CAR_ID =================================
+    id: 195765069178387856
+    identification: 
+      column-name: USED_CAR_ID
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: تنفيذ سيارة
+      alignment: center
+
+    layout: 
+      sequence: 71
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: SQL Query
+      sql-query: |
+        SELECT 
+            car_name || ' - ' || license_plate || ' - ' || year AS display_value,
+            id AS return_value
+        FROM COMPANY_REGISTERED_CARS
+        
+        
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USED_CAR_TYPE ===============================
+    id: 195765104228387857
+    identification: 
+      column-name: USED_CAR_TYPE
+      type: Hidden
+
+    layout: 
+      sequence: 161
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: EXECUTED_DATE ===============================
+    id: 195765207580387858
+    identification: 
+      column-name: EXECUTED_DATE
+      type: Plain Text
+
+    heading: 
+      heading: التاريخ
+      alignment: center
+
+    layout: 
+      sequence: 11
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TRIP_CURRENCY ===============================
+    id: 195765349240387859
+    identification: 
+      column-name: TRIP_CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 171
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 195765393043387860
+    identification: 
+      column-name: EXCHANGE_RATE
+      type: Hidden
+
+    layout: 
+      sequence: 181
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: BASE_PRICE_EGP ==============================
+    id: 195765589328387861
+    identification: 
+      column-name: BASE_PRICE_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 191
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: ADDED_SERVICES_EGP ==========================
+    id: 195765595234387862
+    identification: 
+      column-name: ADDED_SERVICES_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 201
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: ADDED_SERVICES_CURRENCY =====================
+    id: 195765714616387863
+    identification: 
+      column-name: ADDED_SERVICES_CURRENCY
+      type: Hidden
+
+    layout: 
+      sequence: 211
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: TRIP_EXPENSES_EGP ===========================
+    id: 195765853994387864
+    identification: 
+      column-name: TRIP_EXPENSES_EGP
+      type: Plain Text
+
+    heading: 
+      heading: المصروف
+      alignment: center
+
+    layout: 
+      sequence: 41
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REVENUE_AFTER_EXPENSES_EGP ==================
+    id: 195765950500387865
+    identification: 
+      column-name: REVENUE_AFTER_EXPENSES_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 221
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DRIVER_SHARE_TYPE ===========================
+    id: 195766053472387866
+    identification: 
+      column-name: DRIVER_SHARE_TYPE
+      type: Hidden
+
+    layout: 
+      sequence: 231
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DRIVER_SHARE_VALUE ==========================
+    id: 195766099883387867
+    identification: 
+      column-name: DRIVER_SHARE_VALUE
+      type: Hidden
+
+    layout: 
+      sequence: 241
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DRIVER_SHARE_FROM_TRIP_EGP ==================
+    id: 195766287966387868
+    identification: 
+      column-name: DRIVER_SHARE_FROM_TRIP_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 251
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DRIVER_SHARE_FROM_SERVICES_EGP ==============
+    id: 195766351617387869
+    identification: 
+      column-name: DRIVER_SHARE_FROM_SERVICES_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 261
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: TOTAL_DRIVER_PAYOUT_EGP =====================
+    id: 195766442917387870
+    identification: 
+      column-name: TOTAL_DRIVER_PAYOUT_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 271
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: TOTAL_INVOICE_EGP ===========================
+    id: 195766490534387871
+    identification: 
+      column-name: TOTAL_INVOICE_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 281
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: TOTAL_INVOICE_CURRENCY ======================
+    id: 195766644792387872
+    identification: 
+      column-name: TOTAL_INVOICE_CURRENCY
+      type: Plain Text
+
+    heading: 
+      heading: الإجمالي بالحوافز
+      alignment: center
+
+    layout: 
+      sequence: 61
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OFFICE_NET_EGP ==============================
+    id: 195766733094387873
+    identification: 
+      column-name: OFFICE_NET_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 291
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: OFFICE_NET_CURRENCY =========================
+    id: 195766858882387874
+    identification: 
+      column-name: OFFICE_NET_CURRENCY
+      type: Plain Text
+
+    heading: 
+      heading: المستحق
+      alignment: start
+
+    layout: 
+      sequence: 81
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PAID_AMOUNT_EGP =============================
+    id: 195766915296387875
+    identification: 
+      column-name: PAID_AMOUNT_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 311
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: PAID_AMOUNT_ORIG_CURR =======================
+    id: 195766994306387876
+    identification: 
+      column-name: PAID_AMOUNT_ORIG_CURR
+      type: Plain Text
+
+    heading: 
+      heading: التحصيل
+      alignment: center
+
+    layout: 
+      sequence: 51
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OUTSTANDING_AMOUNT_EGP ======================
+    id: 195767103954387877
+    identification: 
+      column-name: OUTSTANDING_AMOUNT_EGP
+      type: Hidden
+
+    layout: 
+      sequence: 321
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: OUTSTANDING_AMOUNT_ORIG_CURR ================
+    id: 195767242908387878
+    identification: 
+      column-name: OUTSTANDING_AMOUNT_ORIG_CURR
+      type: Hidden
+
+    layout: 
+      sequence: 331
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: CREATED =====================================
+    id: 195767305985387879
+    identification: 
+      column-name: CREATED
+      type: Hidden
+
+    layout: 
+      sequence: 341
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 195767484761387880
+    identification: 
+      column-name: CREATED_BY
+      type: Hidden
+
+    layout: 
+      sequence: 351
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: UPDATED =====================================
+    id: 195767555962387881
+    identification: 
+      column-name: UPDATED
+      type: Hidden
+
+    layout: 
+      sequence: 361
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 195767616736387882
+    identification: 
+      column-name: UPDATED_BY
+      type: Hidden
+
+    layout: 
+      sequence: 371
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: TRIP_PRICE ==================================
+    id: 195767757836387883
+    identification: 
+      column-name: TRIP_PRICE
+      type: Hidden
+
+    layout: 
+      sequence: 381
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: SATTLE_STATUS ===============================
+    id: 195767811725387884
+    identification: 
+      column-name: SATTLE_STATUS
+      type: Hidden
+
+    layout: 
+      sequence: 391
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 195830955300579185
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: تعديل
+      alignment: center
+
+    layout: 
+      sequence: 101
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:250:&SESSION.::&DEBUG.::P250_TRIP_ID:#TRIP_ID#'
+        page: 250 # Trip Price Edit Form
+        values: 
+          p250_trip_id: '#TRIP_ID#'
+
+      link-text: تعديل السعر
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 195763421981364308
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Expenses Break Down =========================
+  id: 195768010196387886
+  identification: 
+    name: Expenses Break Down
+    title: ملخص المصاريف
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          e.TRIP_ID,
+          TRUNC(e.EXPENSE_DATE) AS EXPENSE_DAY,
+      
+          /* إجمالي المصروفات لليوم (محولة) */
+          SUM(e.AMOUNT * NVL(e.EXCHANGE_RATE, 1)) AS TOTAL_EXPENSE_AMOUNT,
+      
+          /* تفصيل المصروفات حسب النوع والعملة */
+          LISTAGG(
+              e.EXPENSE_TYPE || ': ' ||
+              TO_CHAR(e.AMOUNT, 'FM999G999G990D00') || ' ' || e.CURRENCY,
+              ' | '
+          ) WITHIN GROUP (ORDER BY e.EXPENSE_TYPE) AS EXPENSE_BREAKDOWN
+      
+      FROM LIMO_TRIP_EXPENSES e
+      
+      JOIN LIMO_TRIPS_TRACKER_V2 t
+        ON t.TRIP_ID = e.TRIP_ID
+      
+      WHERE
+          e.STATUS = 'APPROVED'
+      AND (:P248_CARFILE IS NULL OR t.USED_CAR_ID = :P248_CARFILE)
+      AND (:P248_DRIVERID IS NULL OR t.DRIVER_ID = :P248_DRIVERID)
+      
+      GROUP BY
+          e.TRIP_ID,
+          TRUNC(e.EXPENSE_DATE)
+      
+      ORDER BY
+          e.TRIP_ID,
+          EXPENSE_DAY;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: TRIP_ID =====================================
+    id: 195768117845387887
+    identification: 
+      column-name: TRIP_ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EXPENSE_DAY =================================
+    id: 195830679089579182
+    identification: 
+      column-name: EXPENSE_DAY
+      type: Plain Text
+
+    heading: 
+      heading: يوم
+      alignment: center
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_EXPENSE_AMOUNT ========================
+    id: 195830770780579183
+    identification: 
+      column-name: TOTAL_EXPENSE_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: اجمالي مصاريف
+      alignment: center
+
+    layout: 
+      sequence: 30
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EXPENSE_BREAKDOWN ===========================
+    id: 195830849497579184
+    identification: 
+      column-name: EXPENSE_BREAKDOWN
+      type: Plain Text
+
+    heading: 
+      heading: بنود الصرف
+      alignment: center
+
+    layout: 
+      sequence: 40
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Trips Report ================================
+  id: 195831282290579188
+  identification: 
+    name: Trips Report
+    title: ملخص الرحلات
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html CLOB := '';
+      BEGIN
+          /* =====================================================
+             0. Guard clause – no filters selected
+             ===================================================== */
+          IF :P248_CARFILE IS NULL
+             AND :P248_DRIVERID IS NULL
+          THEN
+              RETURN '
+              <div class="p-6 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm">
+                  ⚠️ من فضلك اختر <b>السائق</b> أو <b>السيارة</b> لعرض الرحلات غير المُغلقة.
+              </div>';
+          END IF;
+      
+          l_html := '
+          <div class="overflow-x-auto">
+          <table class="trip-table w-full border-collapse text-sm text-right">
+              <thead>
+                  <tr class="bg-gray-100 text-gray-700">
+                      <th>📆 التاريخ</th>
+                      <th>🚗 السيارة</th>
+                      <th>🧑‍✈️ السائق</th>
+                      <th class="text-left">🎯 قيمة الرحلة</th>
+                      <th class="text-left">🪙 تحصيل الكابتن</th>
+                      <th class="text-left text-red-600">🔻 المصروفات</th>
+                      <th class="text-left font-semibold">🏆 المستحقات</th>
+                      <th class="text-center">🎮 المهمة</th>
+                  </tr>
+              </thead>
+              <tbody>';
+      
+          FOR r IN (
+              SELECT
+                  t.TRIP_ID,
+                  t.TRIP_CURRENCY,
+                  t.EXECUTED_DATE,
+                  COALESCE(
+                      d.DRIVER_NAME,
+                      s.SUPPLIER_NAME,
+                      'غير معروف'
+                  ) AS DRIVER_NAME,
+                  t.TOTAL_INVOICE_CURRENCY,
+                  NVL(t.TRIP_EXPENSES_EGP,0) AS TRIP_EXPENSES_EGP,
+                  t.SATTLE_STATUS,
+                  c.car_name || ' - ' || c.license_plate || ' - ' || c.year AS CAR_DISPLAY,
+                  NVL(driver_coll.COLLECTIONS_BY_CURR,'—') AS CAPTAIN_COLLECTIONS,
+                  NVL(office_coll.OFFICE_COLLECTIONS_TAGS,'—') AS OFFICE_COLLECTIONS
+              FROM LIMO_TRIPS_TRACKER_V2 t
+              LEFT JOIN COMPANY_REGISTERED_CARS c ON c.id = t.USED_CAR_ID
+              LEFT JOIN COMPANY_DRIVERS d ON d.DRIVER_ID = t.DRIVER_ID
+              LEFT JOIN SUPPLIERS s ON TO_CHAR(s.SUPPLIER_ID) = t.DRIVER_ID
+              LEFT JOIN (
+                  SELECT
+                      TRIP_ID,
+                      LISTAGG(
+                          '<span class="collection-tag">' ||
+                          TO_CHAR(TOTAL_AMOUNT,'FM999G999G999D00') || ' ' || CURRENCY ||
+                          '</span>',
+                          ' '
+                      ) WITHIN GROUP (ORDER BY CURRENCY) AS COLLECTIONS_BY_CURR
+                  FROM (
+                      SELECT TRIP_ID, CURRENCY, SUM(AMOUNT_COLLECTED) TOTAL_AMOUNT
+                      FROM LIMO_TRIP_COLLECTIONS
+                      GROUP BY TRIP_ID, CURRENCY
+                  )
+                  GROUP BY TRIP_ID
+              ) driver_coll ON driver_coll.TRIP_ID = t.TRIP_ID
+              LEFT JOIN (
+                  SELECT
+                      x.TRIP_ID,
+                      LISTAGG(
+                          '<span class="collection-tag ' ||
+                          CASE
+                              WHEN x.CURRENCY = 'EGP' AND x.NET_AMOUNT < 0 THEN 'office-net-negative'
+                              WHEN x.CURRENCY = 'EGP' AND x.NET_AMOUNT = 0 THEN 'office-net-zero'
+                              ELSE 'office-net-positive'
+                          END || '">' ||
+                          TO_CHAR(x.NET_AMOUNT,'FM999G999G999D00') || ' ' || x.CURRENCY ||
+                          '</span>',
+                          ' '
+                      ) WITHIN GROUP (ORDER BY x.CURRENCY) AS OFFICE_COLLECTIONS_TAGS
+                  FROM (
+                      SELECT
+                          col.TRIP_ID,
+                          col.CURRENCY,
+                          CASE
+                              WHEN col.CURRENCY = 'EGP'
+                              THEN col.TOTAL_AMOUNT - NVL(t.TOTAL_DRIVER_PAYOUT_EGP,0)
+                              ELSE col.TOTAL_AMOUNT
+                          END AS NET_AMOUNT
+                      FROM (
+                          SELECT TRIP_ID, CURRENCY, SUM(AMOUNT_COLLECTED) TOTAL_AMOUNT
+                          FROM LIMO_TRIP_COLLECTIONS
+                          GROUP BY TRIP_ID, CURRENCY
+                      ) col
+                      JOIN LIMO_TRIPS_TRACKER_V2 t
+                        ON t.TRIP_ID = col.TRIP_ID
+                      UNION ALL
+                      SELECT
+                          t.TRIP_ID,
+                          'EGP',
+                          - NVL(t.TOTAL_DRIVER_PAYOUT_EGP,0)
+                      FROM LIMO_TRIPS_TRACKER_V2 t
+                      WHERE t.TOTAL_DRIVER_PAYOUT_EGP > 0
+                        AND NOT EXISTS (
+                            SELECT 1
+                            FROM LIMO_TRIP_COLLECTIONS c
+                            WHERE c.TRIP_ID = t.TRIP_ID
+                              AND c.CURRENCY = 'EGP'
+                        )
+                  ) x
+                  GROUP BY x.TRIP_ID
+              ) office_coll ON office_coll.TRIP_ID = t.TRIP_ID
+              WHERE t.SATTLE_STATUS <> 'SETTLED'
+                AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+                AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+              ORDER BY t.EXECUTED_DATE
+          ) LOOP
+      
+              l_html := l_html || '
+              <tr class="border-b hover:bg-gray-50">
+                  <td>' || TO_CHAR(r.EXECUTED_DATE,'DD Mon YYYY') || '</td>
+                  <td>' || NVL(r.CAR_DISPLAY,'—') || '</td>
+                  <td>' || r.DRIVER_NAME || '</td>
+      
+                  <td class="text-left font-semibold">
+                      ' || TO_CHAR(NVL(r.TOTAL_INVOICE_CURRENCY,0),'FM999G999G999D00') || '
+                      <span class="text-xs text-gray-500">' || r.TRIP_CURRENCY || '</span>
+                  </td>
+      
+                  <td class="text-left">' || r.CAPTAIN_COLLECTIONS || '</td>
+      
+                  <td class="text-left text-red-600">
+                      EGP ' || TO_CHAR(r.TRIP_EXPENSES_EGP,'FM999G999G999D00') || '
+                  </td>
+      
+                  <td class="text-left">' || r.OFFICE_COLLECTIONS || '</td>
+      
+                  <td class="text-center">';
+      
+              IF r.SATTLE_STATUS = 'SETTLED' THEN
+                  l_html := l_html || '<span class="mission-cleared">✅ رحلة مُغلقة</span>';
+              ELSE
+                  l_html := l_html || '
+                      <button class="mission-btn" data-trip-id="'||r.TRIP_ID||'">
+                          🟢 إنهاء الرحلة
+                      </button>
+      
+                      <!-- زر تعديل الرحلة بعد الإصلاح -->
+                      <a class="edit-btn"
+                         href="f?p='||:APP_ID||':252:'||:APP_SESSION||
+                              '::NO::P252_TRIP_ID:'||r.TRIP_ID||'">
+                          ⚙️ تعديل
+                      </a>';
+              END IF;
+      
+              l_html := l_html || '</td></tr>';
+          END LOOP;
+      
+          l_html := l_html || '
+              </tbody>
+          </table>
+          </div>';
+      
+          RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P248_CARFILE
+    - P248_DRIVERID
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    footer-text: '#TIMING#'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Summary Breakdown ===========================
+  id: 195904121747899277
+  identification: 
+    name: Summary Breakdown
+    title: ملخص اجمالي التسويات المتبقية
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html CLOB := '';
+      
+          /* ===== Meta ===== */
+          l_trip_count      NUMBER := 0;
+          l_start_date      DATE;
+          l_end_date        DATE;
+          l_working_days    NUMBER := 0;
+      
+          /* ===== Core totals ===== */
+          l_total_expenses_egp        NUMBER := 0;
+          l_total_driver_payout_egp   NUMBER := 0;
+          l_collected_egp             NUMBER := 0;
+      
+          /* ===== Settlement results ===== */
+          l_company_due_egp           NUMBER := 0;
+          l_company_pay_driver_egp    NUMBER := 0;
+          l_egp_available             NUMBER := 0;
+      
+          /* ===== Display blocks ===== */
+          l_trip_totals_by_currency   CLOB := '';
+          l_collections_by_currency  CLOB := '';
+          l_company_currency_due     CLOB := '';
+      
+      BEGIN
+          /* =====================================================
+             0. Guard clause
+             ===================================================== */
+          IF :P248_CARFILE IS NULL
+             AND :P248_DRIVERID IS NULL
+          THEN
+              RETURN '
+              <div class="settle-warning">
+                  ⚠️ من فضلك اختر <b>السائق</b> أو <b>السيارة</b> لعرض ملخص التسوية.
+              </div>';
+          END IF;
+      
+          /* =====================================================
+             1. Trips meta + working days
+             ===================================================== */
+          SELECT
+              COUNT(*),
+              MIN(EXECUTED_DATE),
+              MAX(EXECUTED_DATE),
+              COUNT(DISTINCT EXECUTED_DATE),
+              SUM(NVL(TRIP_EXPENSES_EGP,0)),
+              SUM(NVL(TOTAL_DRIVER_PAYOUT_EGP,0))
+          INTO
+              l_trip_count,
+              l_start_date,
+              l_end_date,
+              l_working_days,
+              l_total_expenses_egp,
+              l_total_driver_payout_egp
+          FROM LIMO_TRIPS_TRACKER_V2 t
+          WHERE t.SATTLE_STATUS <> 'SETTLED'
+            AND t.EXECUTED_DATE IS NOT NULL
+            AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+            AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE );
+      
+          /* =====================================================
+             2. Trips invoice totals by currency
+             ===================================================== */
+          SELECT LISTAGG(
+              '<span class="currency-line">' ||
+              TO_CHAR(SUM(TOTAL_INVOICE_CURRENCY),'FM999G999G999D00') ||
+              ' ' || TRIP_CURRENCY || '</span>',
+              ''
+          ) WITHIN GROUP (ORDER BY TRIP_CURRENCY)
+          INTO l_trip_totals_by_currency
+          FROM LIMO_TRIPS_TRACKER_V2 t
+          WHERE t.SATTLE_STATUS <> 'SETTLED'
+            AND t.TRIP_CURRENCY IS NOT NULL
+            AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+            AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+          GROUP BY TRIP_CURRENCY;
+      
+          /* =====================================================
+             3. Collections by currency
+             ===================================================== */
+          SELECT LISTAGG(
+              '<span class="currency-line">' ||
+              TO_CHAR(SUM(AMOUNT_COLLECTED),'FM999G999G999D00') ||
+              ' ' || CURRENCY || '</span>',
+              ''
+          ) WITHIN GROUP (ORDER BY CURRENCY)
+          INTO l_collections_by_currency
+          FROM LIMO_TRIP_COLLECTIONS c
+          WHERE c.TRIP_ID IN (
+              SELECT t.TRIP_ID
+              FROM LIMO_TRIPS_TRACKER_V2 t
+              WHERE t.SATTLE_STATUS <> 'SETTLED'
+                AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+                AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+          )
+          GROUP BY CURRENCY;
+      
+          /* =====================================================
+             4. EGP collected
+             ===================================================== */
+          SELECT NVL(SUM(AMOUNT_COLLECTED),0)
+          INTO l_collected_egp
+          FROM LIMO_TRIP_COLLECTIONS c
+          WHERE c.CURRENCY = 'EGP'
+            AND c.TRIP_ID IN (
+              SELECT t.TRIP_ID
+              FROM LIMO_TRIPS_TRACKER_V2 t
+              WHERE t.SATTLE_STATUS <> 'SETTLED'
+                AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+                AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+          );
+      
+          /* =====================================================
+             5. Final settlement logic (CORRECT)
+             ===================================================== */
+          l_egp_available :=
+                l_collected_egp
+              - l_total_driver_payout_egp
+              - l_total_expenses_egp;
+      
+          IF l_egp_available >= 0 THEN
+              l_company_due_egp        := l_egp_available;
+              l_company_pay_driver_egp := 0;
+          ELSE
+              l_company_due_egp        := 0;
+              l_company_pay_driver_egp := ABS(l_egp_available);
+          END IF;
+      
+          /* =====================================================
+             6. Foreign currencies due to company
+             ===================================================== */
+          SELECT LISTAGG(
+              '<span class="currency-line">' ||
+              TO_CHAR(SUM(AMOUNT_COLLECTED),'FM999G999G999D00') ||
+              ' ' || CURRENCY || '</span>',
+              ''
+          ) WITHIN GROUP (ORDER BY CURRENCY)
+          INTO l_company_currency_due
+          FROM LIMO_TRIP_COLLECTIONS c
+          WHERE c.CURRENCY <> 'EGP'
+            AND c.TRIP_ID IN (
+              SELECT t.TRIP_ID
+              FROM LIMO_TRIPS_TRACKER_V2 t
+              WHERE t.SATTLE_STATUS <> 'SETTLED'
+                AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+                AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+          )
+          GROUP BY CURRENCY;
+      
+          /* =====================================================
+             7. Render HTML
+             ===================================================== */
+          l_html := '
+          <div class="settlement-box">
+              <div class="settlement-title">ملخص تسوية الرحلات</div>
+      
+              <div class="settlement-sub">
+                  عدد الرحلات: <b>'||l_trip_count||'</b><br>
+                  أيام التشغيل الفعلية: <b>'||l_working_days||'</b> يوم<br>
+                  الفترة: '||TO_CHAR(l_start_date,'DD Mon YYYY')||
+                  ' → '||TO_CHAR(l_end_date,'DD Mon YYYY')||'
+              </div>
+      
+              <table class="settlement-table">
+                  <tr>
+                      <td class="label">إجمالي قيمة الرحلات</td>
+                      <td class="value">'||NVL(l_trip_totals_by_currency,'—')||'</td>
+                  </tr>
+                  <tr>
+                      <td class="label">إجمالي التحصيلات</td>
+                      <td class="value">'||NVL(l_collections_by_currency,'—')||'</td>
+                  </tr>
+                  <tr>
+                      <td class="label">إجمالي المصروفات (تُعاد للسائق)</td>
+                      <td class="value negative">'||
+                          TO_CHAR(l_total_expenses_egp,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>
+                  <tr>
+                      <td class="label">إجمالي مستحقات السائق</td>
+                      <td class="value">'||
+                          TO_CHAR(l_total_driver_payout_egp,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>
+                  <tr class="total-row">
+                      <td class="label">نتيجة التسوية النهائية</td>
+                      <td class="value '||
+                      CASE WHEN l_company_pay_driver_egp>0 THEN 'negative' ELSE 'positive' END||'">'||
+                      CASE
+                          WHEN l_company_pay_driver_egp>0 THEN
+                              'على الشركة دفع '||
+                              TO_CHAR(l_company_pay_driver_egp,'FM999G999G999D00')||' EGP للسائق'
+                          ELSE
+                              'على السائق تسليم '||
+                              TO_CHAR(l_company_due_egp,'FM999G999G999D00')||' EGP للشركة'
+                      END||'</td>
+                  </tr>
+                  <tr>
+                      <td class="label">عملات أجنبية تُسلّم بالكامل للشركة</td>
+                      <td class="value">'||NVL(l_company_currency_due,'—')||'</td>
+                  </tr>
+              </table>
+      
+              <div class="note">
+                  * تم احتساب أيام التشغيل بناءً على تواريخ التنفيذ الفعلية للرحلات فقط.
+              </div>
+          </div>';
+      
+          RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P248_CARFILE
+    - P248_DRIVERID
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    footer-text: '#TIMING#'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Expenses Break Down =========================
+  id: 195904251676899278
+  identification: 
+    name: Expenses Break Down
+    title: ملخص المصاريف
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html            CLOB := '';
+          l_grand_total_egp NUMBER := 0;
+      BEGIN
+          /* =====================================================
+             Guard clause
+             ===================================================== */
+          IF :P248_CARFILE IS NULL
+             AND :P248_DRIVERID IS NULL
+          THEN
+              RETURN '
+              <div class="settle-warning">
+                  ⚠️ من فضلك اختر <b>السائق</b> أو <b>السيارة</b> لعرض تفصيل المصروفات.
+              </div>';
+          END IF;
+      
+          /* =====================================================
+             HTML + CSS (Settlement Table Style)
+             ===================================================== */
+          l_html := '
+          <style>
+              .settlement-box {
+                  max-width: 760px;
+                  margin: auto;
+                  background: #ffffff;
+                  border: 1px solid #e5e7eb;
+                  border-radius: 12px;
+                  padding: 20px;
+                  direction: rtl;
+                  font-family: Tahoma, Arial;
+              }
+              .settlement-title {
+                  font-size: 16px;
+                  font-weight: 800;
+                  margin-bottom: 14px;
+              }
+              table.settlement-table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-size: 13px;
+              }
+              table.settlement-table th {
+                  background: #f9fafb;
+                  color: #374151;
+                  font-weight: 700;
+                  text-align: right;
+                  padding: 8px;
+                  border-bottom: 1px solid #e5e7eb;
+              }
+              table.settlement-table td {
+                  padding: 8px;
+                  border-bottom: 1px solid #e5e7eb;
+                  vertical-align: top;
+              }
+              table.settlement-table td.amount {
+                  text-align: left;
+                  font-weight: 700;
+                  color: #b91c1c;
+                  white-space: nowrap;
+              }
+              table.settlement-table td.breakdown {
+                  font-size: 12px;
+                  color: #374151;
+                  line-height: 1.6;
+              }
+              tr.total-row td {
+                  border-top: 2px solid #111827;
+                  font-weight: 800;
+                  background: #f9fafb;
+              }
+              .settle-warning {
+                  padding: 16px;
+                  border-radius: 12px;
+                  background: #fffbeb;
+                  border: 1px solid #fde68a;
+                  color: #92400e;
+                  direction: rtl;
+              }
+          </style>
+      
+          <div class="settlement-box">
+              <div class="settlement-title">
+                  🔻 تفصيل مصروفات التشغيل (حسب أيام العمل)
+              </div>
+      
+              <table class="settlement-table">
+                  <thead>
+                      <tr>
+                          <th style="width:140px;">📆 تاريخ التشغيل</th>
+                          <th>تفصيل المصروفات</th>
+                          <th style="width:160px;text-align:left;">إجمالي اليوم (EGP)</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+          ';
+      
+          /* =====================================================
+             Loop – expenses grouped by working day
+             ===================================================== */
+          FOR r IN (
+              SELECT
+                  TRUNC(e.EXPENSE_DATE) AS EXPENSE_DAY,
+      
+                  /* إجمالي مصروفات اليوم (محولة) */
+                  SUM(NVL(e.AMOUNT,0) * NVL(e.EXCHANGE_RATE,1)) AS TOTAL_EXPENSE_EGP,
+      
+                  /* Breakdown باستخدام الاسم العربي */
+                  LISTAGG(
+                      '• ' || et.EXPENSE_TYPE_NAME || ': ' ||
+                      TO_CHAR(e.AMOUNT,'FM999G999G999D00') || ' ' || e.CURRENCY,
+                      '<br>'
+                  ) WITHIN GROUP (ORDER BY NVL(et.SORTNO,999), et.EXPENSE_TYPE_NAME)
+                  AS EXPENSE_BREAKDOWN
+      
+              FROM LIMO_TRIP_EXPENSES e
+              JOIN LIMO_TRIPS_TRACKER_V2 t
+                ON t.TRIP_ID = e.TRIP_ID
+              LEFT JOIN LIMO_EXPENSE_TYPES et
+                ON et.EXPENSE_TYPE_CODE = e.EXPENSE_TYPE
+      
+              WHERE e.EXPENSE_DATE IS NOT NULL
+                AND NVL(e.AMOUNT,0) > 0
+                AND t.SATTLE_STATUS <> 'SETTLED'
+                AND ( :P248_DRIVERID IS NULL OR t.DRIVER_ID   = :P248_DRIVERID )
+                AND ( :P248_CARFILE  IS NULL OR t.USED_CAR_ID = :P248_CARFILE )
+      
+              GROUP BY TRUNC(e.EXPENSE_DATE)
+              ORDER BY EXPENSE_DAY
+          ) LOOP
+      
+              l_grand_total_egp := l_grand_total_egp + NVL(r.TOTAL_EXPENSE_EGP,0);
+      
+              l_html := l_html || '
+                  <tr>
+                      <td>'||TO_CHAR(r.EXPENSE_DAY,'DD Mon YYYY')||'</td>
+                      <td class="breakdown">'||NVL(r.EXPENSE_BREAKDOWN,'—')||'</td>
+                      <td class="amount">'||
+                          TO_CHAR(r.TOTAL_EXPENSE_EGP,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>';
+          END LOOP;
+      
+          /* =====================================================
+             Grand total row
+             ===================================================== */
+          l_html := l_html || '
+                  <tr class="total-row">
+                      <td colspan="2">إجمالي المصروفات خلال فترة التسوية</td>
+                      <td class="amount">'||
+                          TO_CHAR(l_grand_total_egp,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>
+              </tbody>
+              </table>
+      
+              <div style="margin-top:8px;font-size:11px;color:#6b7280;">
+                  * تم تجميع المصروفات حسب أيام التشغيل الفعلية وباستخدام أنواع المصروفات المعتمدة.
+              </div>
+          </div>';
+      
+          RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P248_DRIVERID
+    - P248_CARFILE
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    footer-text: '#TIMING#'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+page-items: 
+- # ====== Page Item: P248_CARFILE =============================
+  id: 192743609790241794
+  identification: 
+    name: P248_CARFILE
+    type: Text Field
+
+  label: 
+    label: ملف السيارة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P248_FROMDATE ============================
+  id: 192743772626241795
+  identification: 
+    name: P248_FROMDATE
+    type: Date Picker
+
+  label: 
+    label: من تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P248_TODATE ==============================
+  id: 192743805722241796
+  identification: 
+    name: P248_TODATE
+    type: Date Picker
+
+  label: 
+    label: الي تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P248_USER ================================
+  id: 194086828205499771
+  identification: 
+    name: P248_USER
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':APP_USER'
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P248_CURRENTDATE =========================
+  id: 194086972733499772
+  identification: 
+    name: P248_CURRENTDATE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      SYSDATE
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P248_DRIVERID ============================
+  id: 195767920013387885
+  identification: 
+    name: P248_DRIVERID
+    type: Select One
+
+  label: 
+    label: ملف السائق
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 20
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      select driver_name as display,
+             driver_id   as return
+      from company_drivers
+      order by driver_name;
+      
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: LookupSearch ================================
+  id: 192743902494241797
+  identification: 
+    button-name: LookupSearch
+    label: عرض التسويات المتبقية
+
+  layout: 
+    sequence: 50
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    - t-Button--stretch
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: printreport =================================
+  id: 194086055609499763
+  identification: 
+    button-name: printreport
+    label: طباعة
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: SettleAll ===================================
+  id: 195906111431899297
+  identification: 
+    button-name: SettleAll
+    label: تسوية كل التشغيلات
+
+  layout: 
+    sequence: 20
+    region: Summary Breakdown # 195904121747899277
+    slot: BELOW_BOX
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    horizontal-alignment: Right
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: "select trip_id from limo_trips_tracker_v2 where driver_id = :P248_DRIVERID and SATTLE_STATUS <> 'SETTLED'"
+
+- # ====== Button: LookupOldSettlment ==========================
+  id: 196003358232942151
+  identification: 
+    button-name: LookupOldSettlment
+    label: عرض التسويات السابقة
+
+  layout: 
+    sequence: 60
+    region: Bttns and Search # 192743532389241793
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    - t-Button--stretch
+    - t-Button--gapTop
+    - t-Button--gapBottom
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: PrintReport =========================
+  id: 194086536458499768
+  identification: 
+    name: PrintReport
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: printreport # 194086055609499763
+
+  actions: 
+  - # ====== Action: Print Report ================================
+    id: 194086659794499769
+    identification: 
+      action: Print Report
+
+    settings: 
+      report-query: Trip Settlement Query # 196869955992163864
+      filename: تقرير التسوية
+      view-file-as: Attachment
+      items-to-submit: 
+      - P248_DRIVERID
+      - P248_TODATE
+      - P248_FROMDATE
+      - P248_USER
+      - P248_CURRENTDATE
+
+    execution: 
+      sequence: 10
+      event: PrintReport # 194086536458499768
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: SETTLE_ALL_TRIPS ===========================
+  id: 196003195123942150
+  identification: 
+    name: SETTLE_ALL_TRIPS
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: LIMO_DRIVER_SETTLEMENT_PKG
+    procedure-or-function: CREATE_DRIVER_SETTLEMENT
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SettleAll # 195906111431899297
+    type: Item is NOT NULL
+    item: P248_DRIVERID
+
+  parameters: 
+  - # ====== Parameter: p_driver_id ==============================
+    id: 196003621030942154
+    identification: 
+      name: p_driver_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P248_DRIVERID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_settlement_id ==========================
+    id: 196003709003942155
+    identification: 
+      name: p_settlement_id
+
+    parameter: 
+      direction: Out
+      data-type: VARCHAR2
+      ignore-output: true
+
+    advanced: 
+      display-sequence: 20
+

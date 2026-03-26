@@ -1,0 +1,2298 @@
+---
+# ====== Page: Fast Track Product Assignment Form ============
+id: 249
+identification: 
+  name: Fast Track Product Assignment Form
+  alias: FAST-TRACK-PRODUCT-ASSIGNMENT-FORM
+  title: Fast Track Product Assignment Form
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Fast Track Product Assignment Form ==========
+  id: 408744408453701772
+  identification: 
+    name: Fast Track Product Assignment Form
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select ASSIGNMENT_ID,
+             RESERVATION_ID,
+             VENDOR_ID,
+             ASSIGNMENT_TYPE,
+             CREATED_BY,
+             UPDATED_BY,
+             VENDOR_STATUS,
+             VENDOR_SHARE_TYPE,
+             VENDOR_SHARE_VALUE,
+             CURRENCY,
+             EXCHANGE_RATE,
+             CREATED,
+             UPDATED,
+             NOTES,
+             TOTAL_SERVICE_AMOUNT,
+             TOTAL_SERVICE_AMOUNT_EGP,
+             VENDOR_TOTAL_PAYOUT_EGP,
+             OFFICE_NET_EGP,
+             TOTAL_EXPENSES_EGP,
+             TOTAL_ADDED_SERVICES_EGP,
+             TOTAL_COLLECTED_EGP,
+             COLLECTIONS_BY_CURRENCY_JSON,
+             ACCOUNTING_UPDATED_AT
+        from FAST_TRACK_ASSIGNMENTS
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 408755564312701798
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: Driver File Selection =======================
+  id: 408807809240489931
+  identification: 
+    name: Driver File Selection
+    title: بيانات السائق والتوزيعة
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Fast Track Product Assignment Form # 408744408453701772
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Financial Info ==============================
+  id: 408807925965489932
+  identification: 
+    name: Financial Info
+    title: التفاصيل المالية
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: Fast Track Product Assignment Form # 408744408453701772
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Info ===================================
+  id: 408807993832489933
+  identification: 
+    name: Trip Info
+    title: تفاصيل الرحلة
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Fast Track Product Assignment Form # 408744408453701772
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P249_VENDOR_ID ===========================
+  id: 194087078875499773
+  identification: 
+    name: P249_VENDOR_ID
+    type: Text Field
+
+  label: 
+    label: Vendor Id
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: VENDOR_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_VENDOR_STATUS =======================
+  id: 194087179643499774
+  identification: 
+    name: P249_VENDOR_STATUS
+    type: Text Field
+
+  label: 
+    label: Vendor Status
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 20
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: VENDOR_STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_VENDOR_SHARE_TYPE ===================
+  id: 194087248604499775
+  identification: 
+    name: P249_VENDOR_SHARE_TYPE
+    type: Text Field
+
+  label: 
+    label: Vendor Share Type
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 80
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: VENDOR_SHARE_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_VENDOR_SHARE_VALUE ==================
+  id: 194087323853499776
+  identification: 
+    name: P249_VENDOR_SHARE_VALUE
+    type: Number Field
+
+  label: 
+    label: Vendor Share Value
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 90
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: VENDOR_SHARE_VALUE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_TOTAL_SERVICE_AMOUNT ================
+  id: 194087413805499777
+  identification: 
+    name: P249_TOTAL_SERVICE_AMOUNT
+    type: Number Field
+
+  label: 
+    label: Total Service Amount
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 100
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: TOTAL_SERVICE_AMOUNT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_TOTAL_SERVICE_AMOUNT_EGP ============
+  id: 194087585767499778
+  identification: 
+    name: P249_TOTAL_SERVICE_AMOUNT_EGP
+    type: Number Field
+
+  label: 
+    label: Total Service Amount Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 110
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: TOTAL_SERVICE_AMOUNT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_VENDOR_TOTAL_PAYOUT_EGP =============
+  id: 194087624027499779
+  identification: 
+    name: P249_VENDOR_TOTAL_PAYOUT_EGP
+    type: Number Field
+
+  label: 
+    label: Vendor Total Payout Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 120
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: VENDOR_TOTAL_PAYOUT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_OFFICE_NET_EGP ======================
+  id: 194087747588499780
+  identification: 
+    name: P249_OFFICE_NET_EGP
+    type: Number Field
+
+  label: 
+    label: Office Net Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 130
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: OFFICE_NET_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_TOTAL_EXPENSES_EGP ==================
+  id: 194087884658499781
+  identification: 
+    name: P249_TOTAL_EXPENSES_EGP
+    type: Number Field
+
+  label: 
+    label: Total Expenses Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 140
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: TOTAL_EXPENSES_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_TOTAL_ADDED_SERVICES_EGP ============
+  id: 194087986709499782
+  identification: 
+    name: P249_TOTAL_ADDED_SERVICES_EGP
+    type: Number Field
+
+  label: 
+    label: Total Added Services Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 150
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: TOTAL_ADDED_SERVICES_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_TOTAL_COLLECTED_EGP =================
+  id: 194088055392499783
+  identification: 
+    name: P249_TOTAL_COLLECTED_EGP
+    type: Number Field
+
+  label: 
+    label: Total Collected Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 160
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: TOTAL_COLLECTED_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_COLLECTIONS_BY_CURRENCY_JSON ========
+  id: 194088140000499784
+  identification: 
+    name: P249_COLLECTIONS_BY_CURRENCY_JSON
+    type: Textarea
+
+  label: 
+    label: Collections By Currency Json
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 170
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: COLLECTIONS_BY_CURRENCY_JSON
+    data-type: CLOB
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: CLOB
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_ACCOUNTING_UPDATED_AT ===============
+  id: 194088256395499785
+  identification: 
+    name: P249_ACCOUNTING_UPDATED_AT
+    type: Text Field
+
+  label: 
+    label: Accounting Updated At
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 180
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: ACCOUNTING_UPDATED_AT
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_SUB_RES_ID ==========================
+  id: 194088736406499790
+  identification: 
+    name: P249_SUB_RES_ID
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Trip Info # 408807993832489933
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_RESERVATION_ID ======================
+  id: 194088952753499792
+  identification: 
+    name: P249_RESERVATION_ID
+    type: Display Only
+
+  label: 
+    label: Reservation Id
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 190
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: RESERVATION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':P249_SUB_RES_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P249_NOTES ===============================
+  id: 369102672266764588
+  identification: 
+    name: P249_NOTES
+    type: Textarea
+
+  label: 
+    label: ملاحظات عن التوزيعة
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: true
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 40
+    region: Financial Info # 408807925965489932
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 300
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_ASSIGNMENT_ID =======================
+  id: 408745229112701831
+  identification: 
+    name: P249_ASSIGNMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: ASSIGNMENT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_ASSIGNMENT_TYPE =====================
+  id: 408752035200701882
+  identification: 
+    name: P249_ASSIGNMENT_TYPE
+    type: Radio Group
+
+  label: 
+    label: نوع التوزيعة
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: Driver File Selection # 408807809240489931
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: FAST_TRACK_TYPES.ASSIGNMENT_TYPE_NAME_AR # 177092153938527354
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: ASSIGNMENT_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_CURRENCY ============================
+  id: 408815315785490031
+  identification: 
+    name: P249_CURRENCY
+    type: Display Only
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Financial Info # 408807925965489932
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: EGP
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_EXCHANGE_RATE =======================
+  id: 408815402914490032
+  identification: 
+    name: P249_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 30
+    region: Financial Info # 408807925965489932
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990D00
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT EXCHANGE_RATE_VALUE
+      FROM V_CURRENCY_DETAILS
+      WHERE CURRENCY_CODE = :P249_CURRENCY
+      
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P249_CREATED_BY ==========================
+  id: 414461488921033079
+  identification: 
+    name: P249_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P249_UPDATED_BY ==========================
+  id: 414461571291033080
+  identification: 
+    name: P249_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P249_CREATED =============================
+  id: 414461671724033081
+  identification: 
+    name: P249_CREATED
+    type: Text Field
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P249_UPDATED =============================
+  id: 414461795776033082
+  identification: 
+    name: P249_UPDATED
+    type: Text Field
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Fast Track Product Assignment Form # 408744408453701772
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 199422001672258554
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 408755564312701798
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 199422489585258557
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 408755564312701798
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P249_ASSIGNMENT_ID is not null'
+
+- # ====== Button: SAVE ========================================
+  id: 199422880940258559
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 408755564312701798
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P249_ASSIGNMENT_ID is not null'
+
+- # ====== Button: CREATE ======================================
+  id: 199423245197258560
+  identification: 
+    button-name: CREATE
+    label: توزيع
+
+  layout: 
+    sequence: 40
+    region: Buttons # 408755564312701798
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P249_ASSIGNMENT_ID is null'
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 199424234940258589
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 199422001672258554
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 199424773093258595
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 199424234940258589
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show and Hide DriverID Field ========
+  id: 199425133833258597
+  identification: 
+    name: Show and Hide DriverID Field
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P249_ASSIGNMENT_TYPE
+
+  client-side-condition: 
+    type: Item is null
+    item: P249_ASSIGNMENT_TYPE
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 199425645224258598
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_DRIVER_ID
+
+    execution: 
+      sequence: 10
+      event: Show and Hide DriverID Field # 199425133833258597
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Show ========================================
+    id: 199426164992258600
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_DRIVER_ID
+
+    execution: 
+      sequence: 10
+      event: Show and Hide DriverID Field # 199425133833258597
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show and Hide Values Field ==========
+  id: 199426514633258601
+  identification: 
+    name: Show and Hide Values Field
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P249_DRIVER_SHARE_TYPE
+
+  client-side-condition: 
+    type: Item is null
+    item: P249_DRIVER_SHARE_TYPE
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 199427029853258602
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_DRIVER_SHARE_VALUE
+
+    execution: 
+      sequence: 10
+      event: Show and Hide Values Field # 199426514633258601
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 199427572093258604
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_DRIVER_SHARE_VALUE
+
+    execution: 
+      sequence: 10
+      event: Show and Hide Values Field # 199426514633258601
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Change Driver Share Value Field Label
+  id: 199427898815258605
+  identification: 
+    name: Change Driver Share Value Field Label
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P249_DRIVER_SHARE_TYPE
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 199428419249258607
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        // Update label and input field config based on share type
+        var selectedValue = $v('P249_DRIVER_SHARE_TYPE');
+        
+        if (selectedValue === 'FIXED') {
+            $('.share-label').text('المبلغ');
+        
+            $('#P249_DRIVER_SHARE_VALUE')
+                .attr('type', 'text') // use text for more flexible formatting
+                .removeAttr('max')
+                .attr('step', '0.01')
+                .val('')
+                .off('input') // remove previous input handler
+                .on('input', function () {
+                    let v = this.value.replace(/[^\d.]/g, ''); // allow digits and dot
+                    let parts = v.split('.');
+                    // restrict to 2 decimals
+                    if (parts.length > 1) {
+                        parts[1] = parts[1].substring(0, 2);
+                        v = parts[0] + '.' + parts[1];
+                    }
+                    this.value = v;
+                });
+        }
+        else if (selectedValue === 'PERCENT') {
+            $('.share-label').text('النسبة');
+        
+            $('#P249_DRIVER_SHARE_VALUE')
+                .attr('type', 'text')
+                .attr('step', '0.1')
+                .val('')
+                .off('input')
+                .on('input', function () {
+                    let v = this.value.replace(/[^\d.]/g, ''); // allow digits and dot
+                    let parts = v.split('.');
+                    // restrict to 1 decimal for percent
+                    if (parts.length > 1) {
+                        parts[1] = parts[1].substring(0, 1);
+                        v = parts[0] + '.' + parts[1];
+                    }
+        
+                    let percent = parseFloat(v);
+                    if (!isNaN(percent) && percent > 100) {
+                        percent = 100;
+                    }
+        
+                    this.value = isNaN(percent) ? '' : percent;
+                });
+        }
+        
+
+    execution: 
+      sequence: 10
+      event: Change Driver Share Value Field Label # 199427898815258605
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show Exchange Rates =================
+  id: 199428798797258608
+  identification: 
+    name: Show Exchange Rates
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P249_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P249_CURRENCY
+    value: EGP
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 199429380169258610
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: Show Exchange Rates # 199428798797258608
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 199429850487258611
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: Show Exchange Rates # 199428798797258608
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: SetCurrency Rates ===================
+  id: 199430261086258612
+  identification: 
+    name: SetCurrency Rates
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P249_CURRENCY
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 199430738020258614
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P249_CURRENCY
+        
+      items-to-submit: 
+      - P249_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: SetCurrency Rates # 199430261086258612
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: SetShareType ========================
+  id: 199431184337258615
+  identification: 
+    name: SetShareType
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P249_ASSIGNMENT_TYPE
+
+  client-side-condition: 
+    type: Item = Value
+    item: P249_ASSIGNMENT_TYPE
+    value: INSOURCE
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 199431625290258616
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      value: PERCENT
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_DRIVER_SHARE_TYPE
+
+    execution: 
+      sequence: 10
+      event: SetShareType # 199431184337258615
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 199432188309258618
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      value: FIXED
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P249_DRIVER_SHARE_TYPE
+
+    execution: 
+      sequence: 10
+      event: SetShareType # 199431184337258615
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P249_ASSIGNMENT_TYPE
+      value: OUTSOURCE
+
+processes: 
+- # ====== Process: saveData ===================================
+  id: 194089165011499794
+  identification: 
+    name: saveData
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+          -- Insert in FAST_TRACK_ASSIGNMENTS
+          INSERT INTO FAST_TRACK_ASSIGNMENTS (
+              RESERVATION_ID,
+              VENDOR_ID,
+              ASSIGNMENT_TYPE,
+              CREATED_BY,
+              VENDOR_STATUS
+          ) VALUES (
+              :P249_SUB_RES_ID,      -- Sub Res Id
+              :P249_VENDOR_ID,       -- Selected Vendor
+              'FAST_TRACK',          -- Type ثابت أو حسب اختيارك
+              :APP_USER,             -- اللي عامل العملية
+              'CURRENT'              -- Status افتراضي
+          );
+          
+          -- Optional: رسالة نجاح
+          APEX_UTIL.SET_SESSION_STATE('P249_SUCCESS_MSG', 'تم تعيين المورد بنجاح');
+      END;
+      
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 199423245197258560
+
+- # ====== Process: Initialize form Fast Track Product Assignmen
+  id: 199413134810258512
+  identification: 
+    name: Initialize form Fast Track Product Assignment Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Fast Track Product Assignment F
+  id: 199413506003258516
+  identification: 
+    name: Process form Fast Track Product Assignment Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Fast Track Product Assignment Form # 408744408453701772
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 199423807481258587
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

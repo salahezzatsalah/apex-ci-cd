@@ -1,0 +1,2290 @@
+---
+# ====== Page: Main Reservation Details Form =================
+id: 1499
+identification: 
+  name: Main Reservation Details Form
+  alias: MAIN-RESERVATION-DETAILS-FORM
+  title: قائمة استمارات الحجوزات
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Actions Menu ================================
+  id: 192345248245501273
+  identification: 
+    name: Actions Menu
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 192716785049718109
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: Actions Menu ================================
+  id: 192741014821241768
+  identification: 
+    name: Actions Menu
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: ORDER_ITEMS
+    include-rowid-column: false
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: MAIN_RES_ID =================================
+    id: 192741279712241770
+    identification: 
+      column-name: MAIN_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Main Res Id
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY ====================================
+    id: 192742221597241780
+    identification: 
+      column-name: CURRENCY
+      type: Plain Text
+
+    heading: 
+      heading: Currency
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 192742301501241781
+    identification: 
+      column-name: EXCHANGE_RATE
+      type: Plain Text
+
+    heading: 
+      heading: Exchange Rate
+      alignment: end
+
+    layout: 
+      sequence: 130
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 192743129906241789
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: start
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 192743260130241790
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Created By
+      alignment: start
+
+    layout: 
+      sequence: 220
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 192743366323241791
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: Updated
+      alignment: start
+
+    layout: 
+      sequence: 230
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 192743429968241792
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Updated By
+      alignment: start
+
+    layout: 
+      sequence: 240
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ORDER_ITEM_ID ===============================
+    id: 201238596459305468
+    identification: 
+      column-name: ORDER_ITEM_ID
+      type: Plain Text
+
+    heading: 
+      heading: Order Item Id
+      alignment: start
+
+    layout: 
+      sequence: 250
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ITEM_TYPE ===================================
+    id: 201238694863305469
+    identification: 
+      column-name: ITEM_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Item Type
+      alignment: start
+
+    layout: 
+      sequence: 260
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REF_TABLE ===================================
+    id: 201238817932305470
+    identification: 
+      column-name: REF_TABLE
+      type: Plain Text
+
+    heading: 
+      heading: Ref Table
+      alignment: start
+
+    layout: 
+      sequence: 270
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REF_ID ======================================
+    id: 201238944143305471
+    identification: 
+      column-name: REF_ID
+      type: Plain Text
+
+    heading: 
+      heading: Ref Id
+      alignment: start
+
+    layout: 
+      sequence: 280
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ITEM_STATUS =================================
+    id: 201239053269305472
+    identification: 
+      column-name: ITEM_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Item Status
+      alignment: start
+
+    layout: 
+      sequence: 290
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT_ORIG =================================
+    id: 201239176673305473
+    identification: 
+      column-name: AMOUNT_ORIG
+      type: Plain Text
+
+    heading: 
+      heading: Amount Orig
+      alignment: end
+
+    layout: 
+      sequence: 300
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AMOUNT_EGP ==================================
+    id: 201239276760305474
+    identification: 
+      column-name: AMOUNT_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Amount Egp
+      alignment: end
+
+    layout: 
+      sequence: 310
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Actions Menu ================================
+  id: 201241140106305493
+  identification: 
+    name: Actions Menu
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: SUBLEVEL_FAST_TRACK_RES
+    include-rowid-column: false
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: MAIN_RES_ID =================================
+    id: 201241234438305494
+    identification: 
+      column-name: MAIN_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Main Res Id
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY ====================================
+    id: 201241325992305495
+    identification: 
+      column-name: CURRENCY
+      type: Plain Text
+
+    heading: 
+      heading: Currency
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 201241432745305496
+    identification: 
+      column-name: EXCHANGE_RATE
+      type: Plain Text
+
+    heading: 
+      heading: Exchange Rate
+      alignment: end
+
+    layout: 
+      sequence: 30
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 201241576858305497
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 201241616220305498
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Created By
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 201241714051305499
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: Updated
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 201295914150149150
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Updated By
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SUB_RES_ID ==================================
+    id: 201296785021149158
+    identification: 
+      column-name: SUB_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Sub Res Id
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CAT_ITEM_ID =================================
+    id: 201296824347149159
+    identification: 
+      column-name: CAT_ITEM_ID
+      type: Plain Text
+
+    heading: 
+      heading: Cat Item Id
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RES_DATE ====================================
+    id: 201296915227149160
+    identification: 
+      column-name: RES_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Res Date
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RES_TIME ====================================
+    id: 201297007573149161
+    identification: 
+      column-name: RES_TIME
+      type: Plain Text
+
+    heading: 
+      heading: Res Time
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AIRPORT_ID ==================================
+    id: 201297114783149162
+    identification: 
+      column-name: AIRPORT_ID
+      type: Plain Text
+
+    heading: 
+      heading: Airport Id
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TERMINAL_NO =================================
+    id: 201297190433149163
+    identification: 
+      column-name: TERMINAL_NO
+      type: Plain Text
+
+    heading: 
+      heading: Terminal No
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TICKET_URL ==================================
+    id: 201297331218149164
+    identification: 
+      column-name: TICKET_URL
+      type: Plain Text
+
+    heading: 
+      heading: Ticket Url
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PASSENGERS_NO ===============================
+    id: 201297463281149165
+    identification: 
+      column-name: PASSENGERS_NO
+      type: Plain Text
+
+    heading: 
+      heading: Passengers No
+      alignment: end
+
+    layout: 
+      sequence: 150
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PASSENGERS_INFO =============================
+    id: 201297522441149166
+    identification: 
+      column-name: PASSENGERS_INFO
+      type: Plain Text
+
+    heading: 
+      heading: Passengers Info
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PRICE_PER_PERSON ============================
+    id: 201297645147149167
+    identification: 
+      column-name: PRICE_PER_PERSON
+      type: Plain Text
+
+    heading: 
+      heading: Price Per Person
+      alignment: end
+
+    layout: 
+      sequence: 170
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 201297722391149268
+    identification: 
+      column-name: TOTAL_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Total Amount
+      alignment: end
+
+    layout: 
+      sequence: 180
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 201297824182149269
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 190
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 201297905831149270
+    identification: 
+      column-name: SIGNAGE_DETAILS
+      type: Plain Text
+
+    heading: 
+      heading: Signage Details
+      alignment: start
+
+    layout: 
+      sequence: 200
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 201298083573149271
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: Notes
+      alignment: start
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IS_DELETED ==================================
+    id: 201298151916149272
+    identification: 
+      column-name: IS_DELETED
+      type: Plain Text
+
+    heading: 
+      heading: Is Deleted
+      alignment: start
+
+    layout: 
+      sequence: 220
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DELETED =====================================
+    id: 201298261882149273
+    identification: 
+      column-name: DELETED
+      type: Plain Text
+
+    heading: 
+      heading: Deleted
+      alignment: start
+
+    layout: 
+      sequence: 230
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DELETED_BY ==================================
+    id: 201298346993149274
+    identification: 
+      column-name: DELETED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Deleted By
+      alignment: start
+
+    layout: 
+      sequence: 240
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SERVICE_CLASS ===============================
+    id: 201298424825149275
+    identification: 
+      column-name: SERVICE_CLASS
+      type: Plain Text
+
+    heading: 
+      heading: Service Class
+      alignment: start
+
+    layout: 
+      sequence: 250
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Cart ========================================
+  id: 205456736985406174
+  identification: 
+    name: Cart
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html        CLOB := '';
+        l_total       NUMBER := 0;
+        l_currency    VARCHAR2(10);
+        l_items_count NUMBER := 0;
+        l_status_lbl  VARCHAR2(200);
+      BEGIN
+      /* ===============================
+         Load order header
+         =============================== */
+      IF :P1499_MAIN_RES_ID IS NULL THEN
+        RETURN '
+        <div style="direction:rtl;background:#fff7ed;border:1px solid #fed7aa;padding:14px;border-radius:14px;font-family:Tahoma,Arial">
+          <div style="font-weight:900;color:#9a3412">لا يوجد طلب نشط حالياً</div>
+          <div style="margin-top:6px;color:#7c2d12;font-size:12px">
+            يرجى إنشاء طلب جديد أو اختيار عميل لديه طلب جاري.
+          </div>
+        </div>';
+      END IF;
+      
+      BEGIN
+        SELECT
+          m.currency_code,
+          NVL(SUM(i.amount_orig),0),
+          NVL(s.status_label_ar,'غير معروف'),
+          COUNT(i.order_item_id)
+        INTO
+          l_currency,
+          l_total,
+          l_status_lbl,
+          l_items_count
+        FROM main_reservations m
+        LEFT JOIN vw_reservation_statuses s
+          ON s.status_code = m.status
+        LEFT JOIN order_items i
+          ON i.main_res_id = m.main_res_id
+         AND NVL(i.is_cancelled,'N')='N'
+        WHERE m.main_res_id = :P1499_MAIN_RES_ID
+        GROUP BY m.currency_code, NVL(s.status_label_ar,'غير معروف');
+      
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          RETURN '
+          <div style="direction:rtl;background:#fef2f2;border:1px solid #fecaca;padding:14px;border-radius:14px;font-family:Tahoma,Arial">
+            <div style="font-weight:900;color:#991b1b">الطلب غير موجود</div>
+            <div style="margin-top:6px;color:#7f1d1d;font-size:12px">
+              رقم الطلب: '||apex_escape.html(:P1499_MAIN_RES_ID)||'
+            </div>
+          </div>';
+      END;
+      
+        /* ===============================
+           STYLES – Friendly & Professional
+           =============================== */
+        l_html := '
+      <style>
+      .order-report{
+        direction:rtl;
+        font-family:Inter,Tahoma,Arial;
+        background:#f8fafc;
+        padding:14px;
+        border-radius:18px;
+      }
+      
+      /* Header */
+      .order-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        background:#ffffff;
+        border:1px solid #e5e7eb;
+        padding:14px 16px;
+        border-radius:16px;
+        margin-bottom:16px;
+      }
+      .order-title{
+        font-weight:900;
+        font-size:14px;
+      }
+      .order-sub{
+        font-size:12px;
+        color:#6b7280;
+      }
+      .order-total{
+        font-size:20px;
+        font-weight:900;
+        color:#0f766e;
+      }
+      .order-status{
+        font-size:12px;
+        font-weight:800;
+        color:#2563eb;
+      }
+      
+      /* Inventory Grid */
+      .inventory-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(135px,1fr));
+        gap:14px;
+      }
+      
+      /* Item Card */
+      .inv-item{
+        background:#ffffff;
+        border:1px solid #e5e7eb;
+        border-radius:14px;
+        padding:12px;
+        min-height:150px;
+      
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        text-align:center;
+      
+        transition:.2s ease;
+      }
+      .inv-item:hover{
+        box-shadow:0 10px 20px rgba(15,23,42,.08);
+        transform:translateY(-2px);
+      }
+      
+      /* Icon */
+      .inv-icon{
+        font-size:26px;
+        margin-bottom:6px;
+      }
+      
+      /* Text */
+      .inv-text{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+      }
+      .inv-title{
+        font-size:13px;
+        font-weight:800;
+        line-height:1.3;
+        color:#111827;
+      
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+      }
+      .inv-sub{
+        font-size:11.5px;
+        color:#6b7280;
+        line-height:1.3;
+      
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+      }
+      
+      /* Price */
+      .inv-price{
+        margin-top:8px;
+        padding-top:6px;
+        border-top:1px dashed #e5e7eb;
+        font-size:13px;
+        font-weight:900;
+        color:#047857;
+      }
+      
+      /* Mobile */
+      @media(max-width:480px){
+        .inventory-grid{
+          grid-template-columns:repeat(auto-fill,minmax(115px,1fr));
+        }
+        .inv-item{min-height:140px}
+      }
+      </style>
+      
+      <div class="order-report">
+      ';
+      
+        /* ===============================
+           HEADER
+           =============================== */
+        l_html := l_html || '
+      <div class="order-header">
+        <div>
+          <div class="order-title">طلب #'||:P1499_MAIN_RES_ID||'</div>
+          <div class="order-sub">عدد العناصر: '||l_items_count||'</div>
+        </div>
+        <div style="text-align:left">
+          <div class="order-status">'||l_status_lbl||'</div>
+          <div class="order-total">'||l_total||' '||l_currency||'</div>
+        </div>
+      </div>
+      
+      <div class="inventory-grid">
+      ';
+      
+        /* ===============================
+           ITEMS
+           =============================== */
+        FOR r IN (
+          SELECT
+            i.amount_orig,
+            i.currency,
+            i.ref_table,
+      
+            CASE
+              WHEN i.ref_table='SUBLEVEL_LIMO_RES' THEN '🚗'
+              WHEN i.ref_table='SUBLEVEL_FAST_TRACK_RES' THEN '✈️'
+              ELSE '🎟️'
+            END AS icon,
+      
+            CASE
+              WHEN i.ref_table='SUBLEVEL_LIMO_RES'
+                THEN NVL(ct.CAR_TYPE_NAME,'ليموزين')
+              WHEN i.ref_table='SUBLEVEL_FAST_TRACK_RES'
+                THEN sft.SERVICE_NAME
+              ELSE i.item_type
+            END AS title,
+      
+            CASE
+              WHEN i.ref_table='SUBLEVEL_LIMO_RES'
+                THEN NVL(l.FROM_LOCATION,'')||' → '||NVL(l.TO_LOCATION,'')
+              WHEN i.ref_table='SUBLEVEL_FAST_TRACK_RES'
+                THEN ap.AIRPORT_NAME||' – صالة '||ft.TERMINAL_NO
+            END AS sub_txt
+      
+          FROM order_items i
+          LEFT JOIN sublevel_limo_res l
+            ON i.ref_table='SUBLEVEL_LIMO_RES' AND l.SUB_RES_ID=i.ref_id
+          LEFT JOIN LIMO_CAR_TYPES ct
+            ON ct.CAR_TYPE_ID=l.CAT_ITEM_ID
+          LEFT JOIN sublevel_fast_track_res ft
+            ON i.ref_table='SUBLEVEL_FAST_TRACK_RES' AND ft.SUB_RES_ID=i.ref_id
+          LEFT JOIN FAST_TRACK_SERVICE_CATALOG sft
+            ON sft.SERVICE_ID=ft.CAT_ITEM_ID
+          LEFT JOIN AIRPORTS ap
+            ON ap.AIRPORT_ID=ft.AIRPORT_ID
+          WHERE i.main_res_id=:P1499_MAIN_RES_ID
+            AND NVL(i.is_cancelled,'N')='N'
+        ) LOOP
+      
+          l_html := l_html || '
+        <div class="inv-item">
+          <div class="inv-icon">'||r.icon||'</div>
+      
+          <div class="inv-text">
+            <div class="inv-title">'||r.title||'</div>
+            <div class="inv-sub">'||r.sub_txt||'</div>
+          </div>
+      
+          <div class="inv-price">'||r.amount_orig||' '||r.currency||'</div>
+        </div>';
+      
+        END LOOP;
+      
+        l_html := l_html || '
+      </div>
+      </div>';
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P1499_MAIN_RES_ID
+    - P1499_CUSTOMER_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+page-items: 
+- # ====== Page Item: P1499_MAIN_RES_ID ========================
+  id: 192709652686718068
+  identification: 
+    name: P1499_MAIN_RES_ID
+    type: Display Only
+
+  label: 
+    label: كود الحجز النشط الأن
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1499_MAIN_RES_ID
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1499_CUSTOMER_ID ========================
+  id: 205459192158406199
+  identification: 
+    name: P1499_CUSTOMER_ID
+    type: Display Only
+
+  label: 
+    label: كود العميل
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CRM_CLIENTS.FULL_NAME # 254031009602355585
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: AddLimo =====================================
+  id: 192345316757501274
+  identification: 
+    button-name: AddLimo
+    label: حجز ليموزين
+
+  layout: 
+    sequence: 10
+    region: Actions Menu # 192345248245501273
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:254:&SESSION.::&DEBUG.:254:P254_MAIN_RES_ID,P254_CUSTOMER_ID:&P1499_MAIN_RES_ID.,&P1499_CUSTOMER_ID.'
+      page: 254 # Limo-Sub-Level-Reservation Form
+      clear-cache: 254
+      values: 
+        p254_main_res_id: '&P1499_MAIN_RES_ID.'
+        p254_customer_id: '&P1499_CUSTOMER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: AddFastTrack ================================
+  id: 192345422482501275
+  identification: 
+    button-name: AddFastTrack
+    label: حجز مسار سريع
+
+  layout: 
+    sequence: 20
+    region: Actions Menu # 192345248245501273
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1500:&SESSION.::&DEBUG.:1500:P1500_MAIN_RES_ID,P1500_CUSTOMER_ID:&P1499_MAIN_RES_ID.,&P1499_CUSTOMER_ID.'
+      page: 1500 # FT-Sub-Level-Reservation Form
+      clear-cache: 1500
+      values: 
+        p1500_main_res_id: '&P1499_MAIN_RES_ID.'
+        p1500_customer_id: '&P1499_CUSTOMER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CANCEL ======================================
+  id: 192717176772718112
+  identification: 
+    button-name: CANCEL
+    label: 'اغلاق القائمة '
+
+  layout: 
+    sequence: 10
+    region: Buttons # 192716785049718109
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 192718540482718121
+  identification: 
+    button-name: DELETE
+    label: Delete
+
+  layout: 
+    sequence: 20
+    region: Buttons # 192716785049718109
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1499_MAIN_RES_ID
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Button: SAVE ========================================
+  id: 192718898130718123
+  identification: 
+    button-name: SAVE
+    label: Apply Changes
+
+  layout: 
+    sequence: 30
+    region: Buttons # 192716785049718109
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1499_MAIN_RES_ID
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Button: CREATE ======================================
+  id: 192719332363718124
+  identification: 
+    button-name: CREATE
+    label: Create
+
+  layout: 
+    sequence: 40
+    region: Buttons # 192716785049718109
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P1499_MAIN_RES_ID
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 192717227217718112
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 192717176772718112
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 192718078981718119
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 192717227217718112
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh =============================
+  id: 206737683502892950
+  identification: 
+    name: refresh
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Cart # 205456736985406174
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 206737704228892951
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Cart # 205456736985406174
+
+    execution: 
+      sequence: 10
+      event: refresh # 206737683502892950
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Close Dialog ===============================
+  id: 192720492124718130
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
+- # ====== Process: active order ===============================
+  id: 206739092585892965
+  identification: 
+    name: active order
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        :P1499_MAIN_RES_ID := get_active_main_res_id(:P1499_CUSTOMER_ID);
+      
+        IF :P1499_MAIN_RES_ID IS NULL THEN
+          :P1499_MAIN_RES_ID := NULL; -- optional (already null)
+          -- optional message:
+          -- APEX_ERROR.ADD_ERROR(
+          --   p_message => 'No active order found for this customer.',
+          --   p_display_location => apex_error.c_inline_in_notification
+          -- );
+        END IF;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+

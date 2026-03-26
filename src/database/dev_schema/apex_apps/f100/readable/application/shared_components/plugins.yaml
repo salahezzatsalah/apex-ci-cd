@@ -1,0 +1,4417 @@
+---
+- # ====== Plugin: Cards Menu App ==============================
+  id: 179324676239328614
+  identification: 
+    name: Cards Menu App
+    internal-name: THEME_42$CARDS_MENU_APP
+    theme: Universal Theme # 42
+    type: Template Component
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    version-number: 45554031751084
+
+  callbacks: 
+    api-interface: Function
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+- # ====== Plugin:  INCREASE&DECREASE ==========================
+  id: 180782702630419270
+  identification: 
+    name: ' INCREASE&DECREASE'
+    internal-name: THEME_42$INCREASE_DECREASE
+    theme: Universal Theme # 42
+    type: Template Component
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    version-number: 45586279882829
+
+  templates: 
+    available-as: 
+    - Single (Partial)
+    partial: |2
+          <div class="number-control" style="display:flex;justify-content:space-between;align-items:center;margin:10px 0;">
+            <label style="display:flex;align-items:center;gap:8px;">
+              <i class="fa #ICON#"></i> #MY_LABEL#
+            </label>
+            <div class="stepper" style="display:flex;align-items:center;gap:6px;">
+              <button type="button" onclick="decValue('#ID#')">-</button>
+              <input type="text" id="disp_P212_#ID#" value="NVL(#ID#,0)" readonly style="width:50px;text-align:center;" />
+              <button type="button" onclick="incValue('#ID#')">+</button>
+            </div>
+          </div>
+    translate-templates: false
+    default-escape-mode: HTML
+
+  callbacks: 
+    api-interface: Function
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  css: 
+    file-urls: 
+    - '#PLUGIN_FILES#style (4) (12)#MIN#.css	'
+
+  javascript: 
+    file-urls: 
+    - '#PLUGIN_FILES#js#MIN#.js	'
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Current Item Id ===================
+    id: 180867736297451859
+    identification: 
+      static-id: CURRENT_ITEM_ID
+      attribute: 1
+      name: Current Item Id
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+      escape-mode: HTML
+
+  - # ====== Custom Attribute: My Label ==========================
+    id: 180870435698447145
+    identification: 
+      static-id: MY_LABEL
+      attribute: 5
+      name: My Label
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML
+
+  - # ====== Custom Attribute: Id ================================
+    id: 180874443484900219
+    identification: 
+      static-id: ID
+      attribute: 6
+      name: Id
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML
+
+  - # ====== Custom Attribute: Icon ==============================
+    id: 180875604302895250
+    identification: 
+      static-id: ICON
+      attribute: 7
+      name: Icon
+      scope: Component
+
+    layout: 
+      sequence: 70
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML
+
+  files: 
+  - # ====== File: js.js =========================================
+    id: 180783176860404105
+    identification: 
+      file-name: js.js
+
+    attributes: 
+      mime-type: text/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: style (4) (12).css ============================
+    id: 180786844170383980
+    identification: 
+      file-name: style (4) (12).css
+
+    attributes: 
+      mime-type: text/css
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: js.min.js =====================================
+    id: 180861923392491766
+    identification: 
+      file-name: js.min.js
+
+    attributes: 
+      mime-type: text/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: style (4) (12).min.css ========================
+    id: 180877088910886584
+    identification: 
+      file-name: style (4) (12).min.css
+
+    attributes: 
+      mime-type: text/css
+      file-character-set: Unicode UTF-8
+
+- # ====== Plugin: INPUT_INCREASE&DEC ==========================
+  id: 198744761385985984
+  identification: 
+    name: INPUT_INCREASE&DEC
+    internal-name: THEME_42$INPUT_INCREASE_DEC
+    theme: Universal Theme # 42
+    type: Template Component
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    version-number: 45715421530808
+
+  templates: 
+    available-as: 
+    - Single (Partial)
+    partial: |
+      <style>
+        .stepper-container {
+          display: flex;
+          justify-content: center;
+          margin-top: 8px;
+        }
+      
+        .stepper {
+          display: inline-flex;
+          align-items: center;
+          background: #fff;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+          transition: box-shadow 0.2s ease;
+        }
+      
+        .stepper:hover {
+          box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+      
+        .stepper button {
+          background: #f5f5f5;
+          border: none;
+          color: #333;
+          font-size: 18px;
+          width: 38px;
+          height: 38px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: all 0.2s ease;
+        }
+      
+        .stepper button:hover:not(:disabled) {
+          background: #1976d2;
+          color: #fff;
+        }
+      
+        .stepper button:disabled {
+          background: #e0e0e0;
+          color: #aaa;
+          cursor: not-allowed;
+        }
+      
+        .stepper inputS {
+          width: 60px;
+          text-align: center;
+          font-size: 1rem;
+          font-weight: 600;
+          border: none;
+          outline: none;
+          color: #333;
+          background: transparent;
+        }
+      </style>
+      
+      <div class="stepper-container">
+        <div class="stepper">
+          <button type="button" id="#INPUTS#"  onclick="decValue('#INPUTS#')">−</button>
+          <input type="text" id="disp_#INPUTS#" value="1" readonly />
+          <button type="button" id="incBtn_#INPUTS#" onclick="incValue('#INPUTS#')">+</button>
+        </div>
+      </div>
+      
+    translate-templates: false
+    default-escape-mode: Raw
+
+  callbacks: 
+    api-interface: Function
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  css: 
+    file-urls: 
+    - '#PLUGIN_FILES#style (4) (11).css'
+
+  javascript: 
+    file-urls: 
+    - '#PLUGIN_FILES#New Text Document (2) (1).js'
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Input =============================
+    id: 198745409268978982
+    identification: 
+      static-id: INPUT
+      attribute: 1
+      name: Input
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+      escape-mode: HTML
+
+  - # ====== Custom Attribute: Inputs ============================
+    id: 198763426264831531
+    identification: 
+      static-id: INPUTS
+      attribute: 2
+      name: Inputs
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Number
+      escape-mode: HTML
+
+  files: 
+  - # ====== File: New Text Document (2) (1).js ==================
+    id: 198746830670968372
+    identification: 
+      file-name: New Text Document (2) (1).js
+
+    attributes: 
+      mime-type: text/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: style (4) (11).css ============================
+    id: 198747275279956660
+    identification: 
+      file-name: style (4) (11).css
+
+    attributes: 
+      mime-type: text/css
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: New Text Document (2) (1).min.js ==============
+    id: 198762302431857655
+    identification: 
+      file-name: New Text Document (2) (1).min.js
+
+    attributes: 
+      mime-type: text/javascript
+      file-character-set: Unicode UTF-8
+
+- # ====== Plugin: Intl Phone Number ===========================
+  id: 1744446715153883095
+  identification: 
+    name: Intl Phone Number
+    internal-name: SD_INTL_PHONE_NUMBER
+    type: Item
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    version-number: 44985152575124
+
+  source: 
+    pl/sql-code: |
+      procedure intl_phone_number_render
+          ( p_item   in            apex_plugin.t_item
+          , p_plugin in            apex_plugin.t_plugin
+          , p_param  in            apex_plugin.t_item_render_param
+          , p_result in out nocopy apex_plugin.t_item_render_result 
+          )
+      as
+          l_item_name         varchar2(1000) := apex_plugin.get_input_name_for_page_item(false);
+          p_item_label        varchar2(64);
+          l_escaped_value     VARCHAR2(4000);
+          l_idx_iso           pls_integer;
+          EC_CONTEXT          apex_exec.t_context; -- excludeCountries : attribute_05
+          OC_CONTEXT          apex_exec.t_context; -- onlyCountries : attribute_12
+          PC_CONTEXT          apex_exec.t_context; -- prefferedCountries : attribute_14
+          l_js_code varchar2(4000);
+          l_auto_placeholder        p_item.attribute_01%type := p_item.attribute_03;
+          l_geoIpLookup             p_item.attribute_01%type := nvl(p_item.attribute_09, p_plugin.attribute_03);
+          l_preferred_countries     p_item.attribute_01%type := nvl(p_item.attribute_14, p_plugin.attribute_01);
+          l_separate_dial_code_flag p_item.attribute_01%type := p_item.attribute_15;
+          l_messages                p_item.attribute_01%type := p_plugin.attribute_04; -- for MLS messages
+          
+          l_crlf              char(2) := chr(13)||chr(10);
+      
+      begin
+          --debug
+          if apex_application.g_debug then
+              apex_plugin_util.debug_item_render
+                  ( p_plugin => p_plugin
+                  , p_item   => p_item
+                  , p_param  => p_param
+                  );
+          end if;
+          
+          p_item_label := p_item.name||'_LABEL';
+          l_escaped_value := apex_escape.html(p_param.value);
+          htp.p('<input id="'||p_item.name||'" name="'||l_item_name||'" type="tel" placeholder="'||p_item.placeholder||'" class="text_field text_field apex-item-text '||p_item.element_css_classes||'" value="'||l_escaped_value||'" size="90%" />');
+          
+          
+          
+          apex_css.add (
+          p_css => '#'||p_item_label||' { padding-left: '||(case when l_separate_dial_code_flag = 'Y' then '87' else '52' end)||'px; }',
+          p_key => 'padding_label_'||p_item_label );
+          
+          
+          --initialize the plugin via JavaScript
+          apex_json.initialize_clob_output;
+          apex_json.open_object;
+          if p_item.attribute_01 is not null then
+            apex_json.write('allowDropdown', (p_item.attribute_01 = 'Y'));
+          end if;
+          if p_item.attribute_02 is not null then
+            apex_json.write('autoHideDialCode', (p_item.attribute_02 = 'Y'));
+          end if;
+          if l_auto_placeholder is not null then
+            apex_json.write('autoPlaceholder', l_auto_placeholder);
+          end if;
+          apex_json.write('dropdownContainer', 'document.body');
+          if p_item.attribute_05 is not null then
+            ec_context := apex_exec.open_query_context(
+              p_location          => apex_exec.c_location_local_db,
+              p_sql_query         => p_item.attribute_05 );
+            l_idx_iso := apex_exec.get_column_position(ec_context , 'ISO_ALPHA2');
+            apex_json.open_array('excludeCountries');
+            while apex_exec.next_row( ec_context ) loop
+              apex_json.write(apex_exec.get_varchar2( ec_context, l_idx_iso ));
+            end loop;
+            apex_json.close_array;
+          end if;
+          if p_item.attribute_06 is not null then
+            apex_json.write('formatOnDisplay', (p_item.attribute_06 = 'Y'));
+          end if;
+          apex_json.open_object('localizedCountries');
+          apex_json.write('sn','Sénégal');
+          apex_json.close_object;
+      
+          if p_item.attribute_12 is not null then
+            oc_context := apex_exec.open_query_context(
+              p_location          => apex_exec.c_location_local_db,
+              p_sql_query         => p_item.attribute_12 );
+            l_idx_iso := apex_exec.get_column_position(ec_context , 'ISO_ALPHA2');
+            apex_json.open_array('onlyCountries');
+            while apex_exec.next_row( oc_context ) loop
+              apex_json.write(apex_exec.get_varchar2( oc_context, l_idx_iso ));
+            end loop;
+            apex_json.close_array;
+          end if;
+          
+          if p_item.attribute_11 is not null then
+            apex_json.write('nationalMode',(p_item.attribute_11 = 'Y'));
+          end if;
+          apex_json.write('hiddenInput', 'full_number');
+          if l_preferred_countries is not null then
+            apex_json.write('placeholderNumberType', p_item.attribute_13);
+          end if;
+      
+          if l_preferred_countries is not null then
+            pc_context := apex_exec.open_query_context(
+              p_location          => apex_exec.c_location_local_db,
+              p_sql_query         => l_preferred_countries );
+            l_idx_iso := apex_exec.get_column_position(pc_context , 'ISO_ALPHA2');
+            apex_json.open_array('preferredCountries');
+            while apex_exec.next_row( pc_context ) loop
+              apex_json.write(apex_exec.get_varchar2( pc_context, l_idx_iso ));
+            end loop;
+            apex_json.close_array;
+          end if;
+      
+          if l_separate_dial_code_flag is not null then
+            apex_json.write('separateDialCode',(l_separate_dial_code_flag = 'Y'));
+          end if;
+          if p_item.attribute_08 is not null then
+            apex_json.write('initialCountry', p_item.attribute_08);
+          end if;
+          apex_json.write('geoIpLookup', '#geoIpLookup#');
+          apex_json.write('utilsScript',p_plugin.file_prefix||'utils.js');
+          apex_json.close_object;
+          l_js_code := apex_json.get_clob_output;
+          apex_json.free_output;
+          
+          l_js_code := replace(l_js_code,'"document.body"','document.body');
+      
+          l_js_code := replace(l_js_code,'"#geoIpLookup#"',l_geoIpLookup); -- plug this JS code with no escaping
+         
+          
+          apex_debug.error('l_js_code === '||l_js_code);
+          
+          apex_javascript.add_onload_code(p_code => 
+               'var input = document.getElementById("'||p_item.name||'");' || l_crlf
+            || p_item.name||'_iti = window.intlTelInput(input,'|| l_js_code || ');' || l_crlf
+            || p_item.name||'_iti.promise.then(function(){' || l_crlf  -- wait for the iti item to be set before setting up the APEX item
+            || '$("#'|| p_item.name || '").sdIntrlPhones({' || l_crlf
+            ||      apex_javascript.add_attribute('itemName', p_item.name, true, true) || l_crlf
+            ||      apex_javascript.add_attribute('storageFormat', p_plugin.attribute_02, true, true) || l_crlf
+            ||      apex_javascript.add_attribute('messages', l_messages, false, false) || l_crlf
+            || '});' || l_crlf
+            || '});' -- close iti.promise
+          );
+      
+      
+      end intl_phone_number_render;
+      
+
+  callbacks: 
+    api-interface: Procedure with Legacy Attributes [deprecated]
+    render-procedure/function-name: intl_phone_number_render
+
+  supported-for: 
+    component-type: 
+    - Page Items
+    - Interactive Grid Columns
+
+  standard-attributes: 
+    attributes: 
+    - Is Visible Widget
+    - Standard Form Element
+    - Session State Changeable
+    - Has Quick Pick Attributes
+    - Has Source Attributes
+    - Has Element Attributes
+    - Has Width Attributes
+    - Has Element Option Attribute
+    - Has Placeholder Attribute
+    - Has Icon Attribute
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  css: 
+    file-urls: 
+    - '#PLUGIN_FILES#intlTelInput.css'
+
+  javascript: 
+    file-urls: 
+    - '#PLUGIN_FILES#intlTelInput.js'
+    - '#PLUGIN_FILES#sdIntlPhones#MIN#.js'
+    - '#PLUGIN_FILES#utils.js'
+    - null
+
+  information: 
+    version: 1.1.2
+    about-url: 'https://github.com/sdembele/apex_intl_phone_number_item'
+
+  comments: 
+    comments: 'Build with love by Souleman DEMBELE sponsored by <a href="https://sitechgroupe.com">SITECH</a>'
+
+  custom-attributes: 
+  - # ====== Custom Attribute: preferredCountries ================
+    id: 1734743442874440272
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: preferredCountries
+      scope: Application
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: SQL Query
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      minimum-columns: 1
+      maximum-columns: 2
+
+    help: 
+      help-text: Specify a SQL statement that returns one column called `iso_alpha2`.  You can override this setting per instance of the plugin also.
+
+    examples: 
+      examples: |
+        select iso_alpha2
+          from country_list
+        where preferred_country_flag = 'Y'
+
+  - # ====== Custom Attribute: Storage Format ====================
+    id: 1738257827566016615
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: Storage Format
+      scope: Application
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: E164
+
+    help: 
+      help-text: |
+        Indicated how the phone value will be stored in the DB.
+        <ul>
+        <li>0 - E164</li>
+        <li>1 - INTERNATIONAL</li>
+        <li>2 - NATIONAL</li>
+        <li>3 - RFC3966</li>
+        </ul>
+
+    entries: 
+    - # ====== Entry: E164 =========================================
+      id: 1738259836455013379
+      entry: 
+        sequence: 10
+        display: E164
+        return: E164
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: |
+          A plus, country code, and phone.<br>
+          +18005551212
+
+    - # ====== Entry: INTERNATIONAL ================================
+      id: 1738260206553011698
+      entry: 
+        sequence: 20
+        display: INTERNATIONAL
+        return: INTERNATIONAL
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: |
+          +1 800 555-1212<br>
+          Country Code, space, phone separated by dashes.
+
+    - # ====== Entry: NATIONAL =====================================
+      id: 1738260696943010586
+      entry: 
+        sequence: 30
+        display: NATIONAL
+        return: NATIONAL
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: |
+          (800) 555 1212<br>
+          A more friendly representation based on the country.
+
+    - # ====== Entry: RFC3966 ======================================
+      id: 1738261005137008334
+      entry: 
+        sequence: 40
+        display: RFC3966
+        return: RFC3966
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: |
+          tel:+1-800-555-1212<br>
+          A format perfect for phone links.
+
+  - # ====== Custom Attribute: geoIpLookup =======================
+    id: 1743850730055788267
+    identification: 
+      static-id: attribute_09
+      attribute: 9
+      name: geoIpLookup
+      scope: Component
+
+    layout: 
+      sequence: 90
+
+    settings: 
+      type: JavaScript Code
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    help: 
+      help-text: |
+        It is recommended that you configure this option at the Component Level and not item by item.<br>
+        This code overrides the Plugin's Component attribute for geoIpLookup.
+        When setting `initialCountry` to "auto", you must use this option to specify a custom function that looks up the user's location, and then calls the success callback with the relevant country code. 
+        
+        <b>IMPORTANT:</b> You must specify a function for the callback, if you don't want a geoIpLookup function use something like this:
+        
+        <pre><code>
+        function(callback) {
+           callback("");
+        }
+        </code></pre>
+
+    examples: 
+      examples: |
+        <code>
+        function(callback) {
+         $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+           var countryCode = (resp && resp.country) ? resp.country : "";
+           callback(countryCode);
+         });
+        }
+        </code>
+        
+        or for now geoIP Lookup
+        
+        <pre><code>
+        function(callback) {
+           callback("");
+        }
+        </code></pre>
+
+  - # ====== Custom Attribute: geoIpLookup =======================
+    id: 1743852726884783465
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: geoIpLookup
+      scope: Application
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: JavaScript Code
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: |
+        function(callback) {
+         $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+           var countryCode = (resp && resp.country) ? resp.country : "";
+           callback(countryCode);
+         });
+        }
+
+    help: 
+      help-text: |
+        When setting initialCountry to "auto", you must use this option to specify a custom function that looks up the user's location, and then calls the success callback with the relevant country code.<br>
+        <b>IMPORTANT:</b> You must specify a function for the callback, if you don't want a geoIpLookup function use something like this:
+        
+        <pre><code>
+        function(callback) {
+           callback("");
+        }
+        </code></pre>
+
+    examples: 
+      examples: |
+        <pre><code>
+        function(callback) {
+         $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+           var countryCode = (resp && resp.country) ? resp.country : "";
+           callback(countryCode);
+         });
+        }
+        </code></pre>
+        or for now geoIP Lookup
+        
+        <pre><code>
+        function(callback) {
+           callback("");
+        }
+        </code></pre>
+
+  - # ====== Custom Attribute: allowDropdown =====================
+    id: 1744946978200203028
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: allowDropdown
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: Whether or not to allow the dropdown. If disabled, there is no dropdown arrow, and the selected flag is not clickable. Also we display the selected flag on the right instead because it is just a marker of state.
+
+  - # ====== Custom Attribute: autoHideDialCode ==================
+    id: 1744948142211207527
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: autoHideDialCode
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: 'If there is just a dial code in the input: remove it on blur or submit. This is to prevent just a dial code getting submitted with the form. Requires `nationalMode` to be set to false.'
+
+  - # ====== Custom Attribute: autoPlaceholder ===================
+    id: 1744949279016213132
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: autoPlaceholder
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: polite
+
+    help: 
+      help-text: |
+        Set the input's placeholder to an example number for the selected country, and update it if the country changes. You can specify the number type using the placeholderNumberType option. By default it is set to "polite", which means it will only set the placeholder if the input doesn't already have one. You can also set it to "aggressive", which will replace any existing placeholder, or "off". <br>
+        Requires the utilsScript option.
+
+    entries: 
+    - # ====== Entry: polite =======================================
+      id: 1744950442302214261
+      entry: 
+        sequence: 10
+        display: polite
+        return: polite
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: aggressive ===================================
+      id: 1744950857167216404
+      entry: 
+        sequence: 20
+        display: aggressive
+        return: aggressive
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: off ==========================================
+      id: 1744951310167217443
+      entry: 
+        sequence: 30
+        display: off
+        return: off
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: customContainer ===================
+    id: 1744951658923225271
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: customContainer
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    help: 
+      help-text: Additional classes to add to the parent div.
+
+  - # ====== Custom Attribute: formatOnDisplay ===================
+    id: 1744954034576388104
+    identification: 
+      static-id: attribute_06
+      attribute: 6
+      name: formatOnDisplay
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: |
+        Format the input value (according to the `nationalMode` option) during initialisation, and on `setNumber`. <br>
+        Requires the utilsScript option.
+
+  - # ====== Custom Attribute: initialCountry ====================
+    id: 1744956418846396056
+    identification: 
+      static-id: attribute_08
+      attribute: 8
+      name: initialCountry
+      scope: Component
+
+    layout: 
+      sequence: 80
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: auto
+
+    help: 
+      help-text: Set the initial country selection by specifying its country code. You can also set it to "auto", which will lookup the user's country based on their IP address (requires the geoIpLookup option). Note that the "auto" option will not update the country selection if the input already contains a number.
+
+  - # ====== Custom Attribute: localizedCountries ================
+    id: 1744958901822402978
+    identification: 
+      static-id: attribute_10
+      attribute: 10
+      name: localizedCountries
+      scope: Component
+
+    layout: 
+      sequence: 100
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+  - # ====== Custom Attribute: nationalMode ======================
+    id: 1744960019589404788
+    identification: 
+      static-id: attribute_11
+      attribute: 11
+      name: nationalMode
+      scope: Component
+
+    layout: 
+      sequence: 110
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: N
+
+    condition: 
+      depending-on-custom-attribute: separateDialCode # 1744964911646416010
+      depending-on-condition-type: equal to
+      expression: N
+      always-evaluate: true
+
+    help: 
+      help-text: Display the country dial code next to the selected flag so it's not part of the typed number. Note that this will disable `nationalMode` because technically we are dealing with international numbers, but with the dial code separated.
+
+  - # ====== Custom Attribute: placeholderNumberType =============
+    id: 1744962412441409569
+    identification: 
+      static-id: attribute_13
+      attribute: 13
+      name: placeholderNumberType
+      scope: Component
+
+    layout: 
+      sequence: 130
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: FIXED_LINE_OR_MOBILE
+
+    examples: 
+      examples: |
+        <pre>
+        FIXED_LINE
+        MOBILE
+        FIXED_LINE_OR_MOBILE
+        TOLL_FREE
+        PREMIUM_RATE
+        SHARED_COST
+        VOIP
+        PERSONAL_NUMBER
+        PAGER
+        UAN
+        VOICEMAIL
+        UNKNOWN
+        </pre>
+
+  - # ====== Custom Attribute: separateDialCode ==================
+    id: 1744964911646416010
+    identification: 
+      static-id: attribute_15
+      attribute: 15
+      name: separateDialCode
+      scope: Component
+
+    layout: 
+      sequence: 150
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: N
+
+    help: 
+      help-text: Display the country dial code next to the selected flag so it's not part of the typed number. Note that this will disable `nationalMode` because technically we are dealing with international numbers, but with the dial code separated.
+
+  - # ====== Custom Attribute: excludeCountries ==================
+    id: 1745548052659966784
+    identification: 
+      static-id: attribute_05
+      attribute: 5
+      name: excludeCountries
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: SQL Query
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    help: 
+      help-text: In the dropdown, display all countries except the ones you specify here.
+
+    examples: 
+      examples: select iso_alpha2 from exclude_countries_tab
+
+    comments: 
+      comments: select iso_alpha2 from countries
+
+  - # ====== Custom Attribute: onlyCountries =====================
+    id: 1745550980340994462
+    identification: 
+      static-id: attribute_12
+      attribute: 12
+      name: onlyCountries
+      scope: Component
+
+    layout: 
+      sequence: 120
+
+    settings: 
+      type: SQL Query
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+  - # ====== Custom Attribute: preferredCountries ================
+    id: 1745553843858005770
+    identification: 
+      static-id: attribute_14
+      attribute: 14
+      name: preferredCountries
+      scope: Component
+
+    layout: 
+      sequence: 140
+
+    settings: 
+      type: SQL Query
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    help: 
+      help-text: Specify a SQL statement that returns one column called `iso_alpha2`.  This SQL will override the plugin's global "preferredCountries"
+
+    examples: 
+      examples: select iso_alpha2 from preferred_countries_tab
+
+  - # ====== Custom Attribute: Messages ==========================
+    id: 1793943474107270456
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: Messages
+      scope: Application
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Textarea
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+
+    default: 
+      value: |
+        {
+          "INVALID_COUNTRY_CODE": "Invalid Country Code",
+          "TOO_SHORT": "Too Short",
+          "TOO_LONG": "Too Long",
+          "IS_POSSIBLE_LOCAL_ONLY": "Missing digits",
+          "INVALID_LENGTH": "Incorrect length",
+          "INVALID": "Invalid number"
+        }
+
+    help: 
+      help-text: |
+        Define a JSON object for translating error messages with the following format:
+        <pre>
+        {
+          "INVALID_COUNTRY_CODE": "Invalid Country Code",
+          "TOO_SHORT": "Too Short",
+          "TOO_LONG": "Too Long",
+          "IS_POSSIBLE_LOCAL_ONLY": "Missing digits",
+          "INVALID_LENGTH": "Incorrect length",
+          "INVALID": "Invalid number"
+        }
+        </pre>
+        
+        Translate the messages (values), but not the keys (in upper case).
+
+  files: 
+  - # ====== File: intlTelInput.min.js ===========================
+    id: 1733947242828017776
+    identification: 
+      file-name: intlTelInput.min.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: intlTelInput.js.map ===========================
+    id: 1733947697681017773
+    identification: 
+      file-name: intlTelInput.js.map
+
+    attributes: 
+      mime-type: application/json
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: sdIntlPhones.js ===============================
+    id: 1736243801505028462
+    identification: 
+      file-name: sdIntlPhones.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: sdIntlPhones.min.js ===========================
+    id: 1736245035925020543
+    identification: 
+      file-name: sdIntlPhones.min.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: sdIntlPhones.js.map ===========================
+    id: 1736245437964020541
+    identification: 
+      file-name: sdIntlPhones.js.map
+
+    attributes: 
+      mime-type: application/json
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: intlTelInput.css ==============================
+    id: 1744449064442055483
+    identification: 
+      file-name: intlTelInput.css
+
+    attributes: 
+      mime-type: text/css
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: intlTelInput.js ===============================
+    id: 1744449422911065393
+    identification: 
+      file-name: intlTelInput.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: img/flags@2x.png ==============================
+    id: 1744450874658885030
+    identification: 
+      file-name: img/flags@2x.png
+
+    attributes: 
+      mime-type: image/png
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: utils.js ======================================
+    id: 1744562630042724580
+    identification: 
+      file-name: utils.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+- # ====== Plugin: ClockPicker =================================
+  id: 11428601107885005401
+  identification: 
+    name: ClockPicker
+    internal-name: DE.DANIELH.CLOCKPICKER
+    type: Item
+
+  advanced: 
+    quick-pick: false
+
+  subscription: 
+    version-number: 44948100324795
+
+  source: 
+    pl/sql-code: |
+      /*-------------------------------------
+       * ClockPicker Functions
+       * Version: 1.7.0 (22.12.2016)
+       * Author:  Daniel Hochleitner
+       *-------------------------------------
+      */
+      FUNCTION render_clockpicker(p_item                IN apex_plugin.t_page_item,
+                                  p_plugin              IN apex_plugin.t_plugin,
+                                  p_value               IN VARCHAR2,
+                                  p_is_readonly         IN BOOLEAN,
+                                  p_is_printer_friendly IN BOOLEAN)
+        RETURN apex_plugin.t_page_item_render_result IS
+        -- plugin attributes
+        l_result                  apex_plugin.t_page_item_render_result;
+        l_placement               VARCHAR2(50) := p_item.attribute_01;
+        l_align                   VARCHAR2(50) := p_item.attribute_02;
+        l_autoclose               VARCHAR2(50) := p_item.attribute_03;
+        l_done_btn_text           VARCHAR2(100) := p_item.attribute_04;
+        l_12h_mode                VARCHAR2(50) := p_item.attribute_05;
+        l_suppress_soft_keyboards NUMBER := p_item.attribute_06;
+        l_show_clock_button       NUMBER := p_item.attribute_07;
+        l_logging                 VARCHAR2(50) := p_item.attribute_08;
+        -- other vars
+        l_name            VARCHAR2(30);
+        l_escaped_value   VARCHAR2(1000);
+        l_onload_string   VARCHAR2(2000);
+        l_html_string     VARCHAR2(2000);
+        l_element_item_id VARCHAR2(200);
+        --
+      BEGIN
+        --
+        -- Printer Friendly Display
+        IF p_is_printer_friendly THEN
+          apex_plugin_util.print_display_only(p_item_name        => p_item.name,
+                                              p_display_value    => p_value,
+                                              p_show_line_breaks => FALSE,
+                                              p_escape           => TRUE,
+                                              p_attributes       => p_item.element_attributes);
+          -- Read Only Display
+        ELSIF p_is_readonly THEN
+          apex_plugin_util.print_hidden_if_readonly(p_item_name           => p_item.name,
+                                                    p_value               => p_value,
+                                                    p_is_readonly         => p_is_readonly,
+                                                    p_is_printer_friendly => p_is_printer_friendly);
+          -- Normal Display
+        ELSE
+          --
+          l_element_item_id := p_item.name;
+          l_name            := apex_plugin.get_input_name_for_page_item(FALSE);
+          l_escaped_value   := apex_escape.html(p_value);
+          --
+          l_html_string := '<input ';
+          l_html_string := l_html_string || 'type="text" ';
+          l_html_string := l_html_string || 'name="' || l_name || '" ';
+          l_html_string := l_html_string || 'id="' || l_element_item_id || '" ';
+          l_html_string := l_html_string || 'value="' || l_escaped_value || '" ';
+          l_html_string := l_html_string || 'size="' || p_item.element_width || '" ';
+          -- suppress soft keyboard
+          IF l_suppress_soft_keyboards = 1 THEN
+            l_html_string := l_html_string || 'onfocus="blur();" ';
+          END IF;
+          --
+          l_html_string := l_html_string || 'maxlength="' ||
+                           p_item.element_max_length || '" ';
+          l_html_string := l_html_string || ' ' || p_item.element_attributes ||
+                           ' />';
+          -- show clock button
+          IF l_show_clock_button = 1 THEN
+            l_html_string := l_html_string ||
+                             '<span class="t-Form-itemText t-Form-itemText--post"><a id="' ||
+                             l_element_item_id ||
+                             '_button" class="a-Button a-Button--popupLOV clockpicker-btn" href="javascript:void(0);"><span class="fa fa-clock-o"></span></a></span>';
+            -- button style
+            apex_css.add(p_css => '.clockpicker-btn { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.125) inset !important; }',
+                         p_key => 'clockpicker_style');
+          END IF;
+          -- write item html
+          htp.p(l_html_string);
+          
+          -- Include the Bootstrap CSS
+          apex_css.add_file(p_name      => 'bootstrap.min',
+                            p_directory => p_plugin.file_prefix || 'css/');
+          -- Include the ClockPicker CSS
+          apex_css.add_file(p_name      => 'bootstrap-clockpicker.min',
+                            p_directory => p_plugin.file_prefix || 'css/');
+        
+          -- Include ClockPicker JS
+          apex_javascript.add_library(p_name           => 'bootstrap-clockpicker.min',
+                                      p_directory      => p_plugin.file_prefix ||
+                                                          'js/',
+                                      p_version        => NULL,
+                                      p_skip_extension => FALSE);
+          --
+          apex_javascript.add_library(p_name           => 'apexclockpicker.min',
+                                      p_directory      => p_plugin.file_prefix ||
+                                                          'js/',
+                                      p_version        => NULL,
+                                      p_skip_extension => FALSE);
+          --
+          -- JS Onload Code
+          l_onload_string := 'apexClockPicker.initClockPicker(' ||
+                             apex_javascript.add_value(l_element_item_id) || '{' ||
+                             apex_javascript.add_attribute(p_name      => 'placement',
+                                                           p_value     => l_placement,
+                                                           p_add_comma => TRUE) ||
+                             apex_javascript.add_attribute(p_name      => 'align',
+                                                           p_value     => l_align,
+                                                           p_add_comma => TRUE) ||
+                             apex_javascript.add_attribute(p_name      => 'autoclose',
+                                                           p_value     => l_autoclose,
+                                                           p_add_comma => TRUE) ||
+                             apex_javascript.add_attribute(p_name      => 'donetext',
+                                                           p_value     => l_done_btn_text,
+                                                           p_add_comma => TRUE) ||
+                             apex_javascript.add_attribute(p_name      => 'twelvehour',
+                                                           p_value     => l_12h_mode,
+                                                           p_add_comma => TRUE) ||
+                             apex_javascript.add_attribute(p_name      => 'showbutton',
+                                                           p_value     => l_show_clock_button,
+                                                           p_add_comma => TRUE) ||
+                             apex_javascript.add_attribute(p_name      => 'default',
+                                                           p_value     => 'now',
+                                                           p_add_comma => FALSE) || '},' ||
+                             apex_javascript.add_value(l_logging,
+                                                       FALSE) || ');';
+          --
+          apex_javascript.add_inline_code(p_code => l_onload_string);
+          --
+        END IF;
+        --
+        l_result.is_navigable := TRUE;
+        --
+        RETURN(l_result);
+        --
+      END render_clockpicker;
+
+  callbacks: 
+    api-interface: Function
+    render-procedure/function-name: render_clockpicker
+
+  supported-for: 
+    component-type: 
+    - Page Items
+
+  standard-attributes: 
+    attributes: 
+    - Is Visible Widget
+    - Session State Changeable
+    - Has Read Only Attribute
+    - Has Escape Special Characters Attribute
+    - Has Source Attributes
+    - Has Element Attributes
+    - Has Width Attributes
+    - Has Element Option Attribute
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    version: 1.7.0
+    about-url: 'https://github.com/Dani3lSun/apex-plugin-clockpicker'
+    help-text: |
+      Clockpicker item plugin for APEX
+      In 24h and 12h format.
+      Original from: http://weareoutman.github.io/clockpicker/
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Show clock button =================
+    id: 316267527349896727
+    identification: 
+      static-id: attribute_07
+      attribute: 7
+      name: Show clock button
+      scope: Component
+
+    layout: 
+      sequence: 45
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: 0
+
+    help: 
+      help-text: Choose if a small button with clock icon is shown on right side of item
+
+    entries: 
+    - # ====== Entry: Yes ==========================================
+      id: 316269346134897362
+      entry: 
+        sequence: 10
+        display: Yes
+        return: 1
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: No ===========================================
+      id: 316269776002897810
+      entry: 
+        sequence: 20
+        display: No
+        return: 0
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Logging ===========================
+    id: 331908777026924244
+    identification: 
+      static-id: attribute_08
+      attribute: 8
+      name: Logging
+      scope: Component
+
+    layout: 
+      sequence: 80
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: false
+
+    help: 
+      help-text: Whether to log events in the console.
+
+    entries: 
+    - # ====== Entry: True =========================================
+      id: 331910869209925149
+      entry: 
+        sequence: 10
+        display: True
+        return: true
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: False ========================================
+      id: 331911282322925941
+      entry: 
+        sequence: 20
+        display: False
+        return: false
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Placement =========================
+    id: 11428601284459005406
+    identification: 
+      static-id: attribute_01
+      attribute: 1
+      name: Placement
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: bottom
+
+    help: 
+      help-text: |
+        <strong>Placement:</strong><br>
+        - bottom (default)<br>
+        - top <br>
+
+    entries: 
+    - # ====== Entry: Bottom =======================================
+      id: 11428619316528140676
+      entry: 
+        sequence: 10
+        display: Bottom
+        return: bottom
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Top ==========================================
+      id: 11428619736229141140
+      entry: 
+        sequence: 20
+        display: Top
+        return: top
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Autoclose =========================
+    id: 11428602156985005409
+    identification: 
+      static-id: attribute_03
+      attribute: 3
+      name: Autoclose
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: true
+
+    help: 
+      help-text: |
+        <strong>Autoclose:</strong><br>
+        - True (default)<br>
+        - False <br>
+
+    entries: 
+    - # ====== Entry: True =========================================
+      id: 11428622318542159311
+      entry: 
+        sequence: 10
+        display: True
+        return: true
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: False ========================================
+      id: 11428622685519160006
+      entry: 
+        sequence: 20
+        display: False
+        return: false
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Align =============================
+    id: 11428657295454695757
+    identification: 
+      static-id: attribute_02
+      attribute: 2
+      name: Align
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+
+    default: 
+      value: left
+
+    help: 
+      help-text: |
+        <strong>Placement:</strong><br>
+        - Left (default)<br>
+        - Right <br>
+
+    entries: 
+    - # ====== Entry: Left =========================================
+      id: 11428657961613696299
+      entry: 
+        sequence: 10
+        display: Left
+        return: left
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Right ========================================
+      id: 11428658300014697021
+      entry: 
+        sequence: 20
+        display: Right
+        return: right
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Done Button Text ==================
+    id: 11428817647705729550
+    identification: 
+      static-id: attribute_04
+      attribute: 4
+      name: Done Button Text
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+
+    default: 
+      value: Done
+
+    help: 
+      help-text: |
+        <strong>Done Button Text:</strong><br>
+        When set to "autoclose false" a done button to close is displayed. Enter the displayed text.
+
+  - # ====== Custom Attribute: 12h mode ==========================
+    id: 11563873395974474655
+    identification: 
+      static-id: attribute_05
+      attribute: 5
+      name: 12h mode
+      scope: Component
+
+    layout: 
+      sequence: 35
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: false
+
+    help: 
+      help-text: Choose if 12h mode (am/pm) is on or off.
+
+    entries: 
+    - # ====== Entry: True =========================================
+      id: 11563875225458475469
+      entry: 
+        sequence: 10
+        display: True
+        return: true
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: False ========================================
+      id: 11563876094499476218
+      entry: 
+        sequence: 20
+        display: False
+        return: false
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Suppress Mobile Keyboards =========
+    id: 15662437871916510758
+    identification: 
+      static-id: attribute_06
+      attribute: 6
+      name: Suppress Mobile Keyboards
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+
+    default: 
+      value: 0
+
+    help: 
+      help-text: |
+        Suppress the default behavior on mobile devices to fade out the soft keyboard.<br>
+        If set to Yes no keyboard is shown on mobile devices, but the possibility to enter free text is also suppressed.
+
+    entries: 
+    - # ====== Entry: Yes ==========================================
+      id: 15662443284696515237
+      entry: 
+        sequence: 10
+        display: Yes
+        return: 1
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Suppress soft keyboards and free text input
+
+    - # ====== Entry: No ===========================================
+      id: 15662509311359518346
+      entry: 
+        sequence: 20
+        display: No
+        return: 0
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: 'Default: Don´t suppress soft keyboards and free text inputs'
+
+  files: 
+  - # ====== File: js/apexclockpicker.js =========================
+    id: 331913785689927734
+    identification: 
+      file-name: js/apexclockpicker.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: js/apexclockpicker.min.js =====================
+    id: 331914218264928347
+    identification: 
+      file-name: js/apexclockpicker.min.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: css/bootstrap-clockpicker.min.css =============
+    id: 11542117085000931247
+    identification: 
+      file-name: css/bootstrap-clockpicker.min.css
+
+    attributes: 
+      mime-type: text/css
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: js/bootstrap-clockpicker.min.js ===============
+    id: 11542117868351931258
+    identification: 
+      file-name: js/bootstrap-clockpicker.min.js
+
+    attributes: 
+      mime-type: application/javascript
+      file-character-set: Unicode UTF-8
+
+  - # ====== File: css/bootstrap.min.css =========================
+    id: 11823262085698241063
+    identification: 
+      file-name: css/bootstrap.min.css
+
+    attributes: 
+      mime-type: text/css
+      file-character-set: Unicode UTF-8
+
+- # ====== Plugin: Content Row Simple ==========================
+  id: 17213304467854518621
+  identification: 
+    name: Content Row Simple
+    internal-name: CONTENT_ROW
+    type: Template Component
+
+  advanced: 
+    quick-pick: true
+
+  subscription: 
+    version-number: 1
+
+  templates: 
+    available-as: 
+    - Single (Partial)
+    - Multiple (Report)
+    partial: |
+      {if APEX$IS_LAZY_LOADING/}
+        <div class="t-ContentRow-wrap" aria-hidden="true">
+          {if ?SELECTION%assigned/}<div class="t-ContentRow-selection is-placeholder"></div>{endif/}
+          {if DISPLAY_BADGE/}
+            <div class="t-ContentRow-badge #BADGE_COL_WIDTH!ATTR#">
+              {with/}
+                LABEL:=
+                VALUE:=
+                SIZE:=#BADGE_SIZE#
+                SHAPE:=#BADGE_SHAPE#
+              {apply THEME$BADGE/}
+            </div>
+          {endif/}
+          {if DISPLAY_AVATAR/}
+            <div class="t-ContentRow-avatar">
+              {with/}
+                SHAPE:=#AVATAR_SHAPE#
+                SIZE:=#AVATAR_SIZE#
+              {apply THEME$AVATAR/}
+            </div>
+          {endif/}
+          <div class="t-ContentRow-body">
+            <div class="t-ContentRow-content">
+              {if ?OVERLINE%assigned/}<div class="t-ContentRow-overline is-placeholder"></div>{endif/}
+              {if ?TITLE%assigned/}<div class="t-ContentRow-title is-placeholder"></div>{endif/}
+              {if ?DESCRIPTION%assigned/}<div class="t-ContentRow-description is-placeholder"></div>{endif/}
+            </div>
+            {if ?MISC%assigned/}<div class="t-ContentRow-misc is-placeholder"></div>{endif/}
+            {if ?PRIMARY_ACTIONS%assigned/}<div class="t-ContentRow-actions is-placeholder"></div>{endif/}
+          </div>
+        </div>
+      {else/}
+        {if ?FULL_ROW_LINK/}<a class="t-ContentRow-fullLink" href="#FULL_ROW_LINK!ATTR#" #FULL_ROW_LINK_ATTR!RAW#></a>{endif/}
+        <div class="t-ContentRow-wrap">
+          {if ?SELECTION%assigned/}<div class="t-ContentRow-selection">#SELECTION!RAW#</div>{endif/}
+          {if DISPLAY_BADGE/}
+            <div class="t-ContentRow-badge #BADGE_COL_WIDTH!ATTR#">
+              {with/}
+                LABEL_DISPLAY:=#BADGE_LABEL_DISPLAY#
+                LABEL:=#BADGE_LABEL#
+                VALUE:=#BADGE_VALUE#
+                ICON:=#BADGE_ICON#
+                STATE:=#BADGE_STATE#
+                SIZE:=#BADGE_SIZE#
+                STYLE:=#BADGE_STYLE#
+                SHAPE:=#BADGE_SHAPE#
+              {apply THEME$BADGE/}
+            </div>
+          {endif/}
+          {if DISPLAY_AVATAR/}
+            <div class="t-ContentRow-avatar" aria-hidden="true">
+              {with/}
+                TYPE:=#AVATAR_TYPE#
+                IMAGE:=#AVATAR_IMAGE#
+                IMAGE_ALT:=#AVATAR_IMAGE_ALT#
+                INITIALS:=#AVATAR_INITIALS#
+                ICON:=#AVATAR_ICON#
+                SHAPE:=#AVATAR_SHAPE#
+                SIZE:=#AVATAR_SIZE#
+                LINK:=#AVATAR_LINK#
+                LINK_ATTR:=#AVATAR_LINK_ATTR!RAW#
+              {apply THEME$AVATAR/}
+            </div>
+          {endif/}
+          <div class="t-ContentRow-body">
+            <div class="t-ContentRow-content">
+              {if ?OVERLINE/}<div class="t-ContentRow-overline">#OVERLINE!RAW#</div>{endif/}
+              {if ?TITLE/}<h3 class="t-ContentRow-title">{if ?TITLE_LINK/}<a href="#TITLE_LINK!ATTR#" #TITLE_LINK_ATTR!RAW#>{endif/}#TITLE!RAW#{if ?TITLE_LINK/}</a>{endif/}</h3>{endif/}
+              {if ?DESCRIPTION/}<div class="t-ContentRow-description">#DESCRIPTION!RAW#</div>{endif/}
+            </div>
+            {if ?MISC%assigned/}<div class="t-ContentRow-misc">#MISC!RAW#</div>{endif/}
+            {if ?PRIMARY_ACTIONS/}<div class="t-ContentRow-actions">#PRIMARY_ACTIONS#</div>{endif/}
+          </div>
+        </div>
+      {endif/}
+      
+    report-body: '<ul class="t-ContentRow{if ?STYLE/} #STYLE!ATTR#{endif/}{if ?ALIGN/} #ALIGN!ATTR#{endif/}{if APPLY_THEME_COLORS/} u-colors{endif/} #APEX$COMPONENT_CSS_CLASSES#">#APEX$ROWS#</ul>'
+    report-row: '<li class="t-ContentRow-item{if ?ITEM_CLASSES/} #ITEM_CLASSES#{endif/}" #APEX$ROW_IDENTIFICATION#>#APEX$PARTIAL#</li>'
+    translate-templates: false
+    default-escape-mode: HTML
+    number-of-lazy-loading-skeletons: 3
+
+  callbacks: 
+    api-interface: Function
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    help-text: Display content in a formatted row with a title, description, and more. Supports avatars and badges. Available for a single row or as a report with multiple rows.
+
+  attribute-groups: 
+  - # ====== Attribute Group: Badge ==============================
+    id: 19183990216689735480
+    identification: 
+      name: Badge
+      sequence: 20
+
+  - # ====== Attribute Group: Avatar =============================
+    id: 19183990771701735481
+    identification: 
+      name: Avatar
+      sequence: 10
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Overline ==========================
+    id: 17213305514251518639
+    identification: 
+      static-id: OVERLINE
+      attribute: 1
+      name: Overline
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter some text and/or column substitution strings to display at the top of each row above the title and description.
+
+    examples: 
+      demo-value: Category
+
+  - # ====== Custom Attribute: Title =============================
+    id: 17213305920935518641
+    identification: 
+      static-id: TITLE
+      attribute: 2
+      name: Title
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter some text and/or column substitution strings to be used as the title in each row.
+
+    examples: 
+      demo-value: Lorem ipsum dolor sit amet
+
+  - # ====== Custom Attribute: Description =======================
+    id: 17213306215887518643
+    identification: 
+      static-id: DESCRIPTION
+      attribute: 3
+      name: Description
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter some text and/or column substitution strings to be used as the description in each row.
+
+    examples: 
+      demo-value: Nunc sit amet nunc quis magna ornare suscipit. Etiam aliquet maximus sapien, at sagittis sem gravida nec.
+
+  - # ====== Custom Attribute: Miscellaneous =====================
+    id: 17213306640269518643
+    identification: 
+      static-id: MISC
+      attribute: 4
+      name: Miscellaneous
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter miscellaneous content such as additional text and/or column substitution strings to display in each row.
+
+  - # ====== Custom Attribute: Display Avatar ====================
+    id: 17213307011845518646
+    identification: 
+      static-id: DISPLAY_AVATAR
+      attribute: 5
+      name: Display Avatar
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+    help: 
+      help-text: Specify whether to display or hide the avatar for each row. When set to Yes, an avatar will be displayed with the assigned image, icon, or initials. When set to No, no avatar will be displayed.
+
+  - # ====== Custom Attribute: Display Badge =====================
+    id: 17213307461162518647
+    identification: 
+      static-id: DISPLAY_BADGE
+      attribute: 6
+      name: Display Badge
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+    help: 
+      help-text: Specify whether to display or hide the badge for each row. When set to Yes, a badge will be displayed in each row. When set to No, no badge will be displayed.
+
+  - # ====== Custom Attribute: Type ==============================
+    id: 17213307867115518647
+    identification: 
+      static-id: AVATAR_TYPE
+      attribute: 7
+      name: Type
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 70
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML
+
+    default: 
+      value: icon
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 17213307011845518646
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the type of content that will be displayed in the avatar.
+
+    examples: 
+      demo-value: icon
+
+    entries: 
+    - # ====== Entry: Image ========================================
+      id: 17213308293899518648
+      entry: 
+        sequence: 10
+        display: Image
+        return: image
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Initials =====================================
+      id: 17213308745887518650
+      entry: 
+        sequence: 20
+        display: Initials
+        return: initials
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Icon =========================================
+      id: 17213309213054518650
+      entry: 
+        sequence: 30
+        display: Icon
+        return: icon
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Image =============================
+    id: 17213309720190518650
+    identification: 
+      static-id: AVATAR_IMAGE
+      attribute: 8
+      name: Image
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 80
+
+    settings: 
+      type: Media
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Type # 17213307867115518647
+      depending-on-condition-type: equal to
+      expression: image
+      always-evaluate: true
+
+    help: 
+      help-text: |
+        <p>Use the Media popup dialog to select a source for the avatar image.</p>
+        
+        <p>Available options include:
+        <ul>
+        <li>URL</li>
+        <li>BLOB Column</li>
+        <li>URL Column</li>
+        </ul>
+        </p>
+
+  - # ====== Custom Attribute: Image Description =================
+    id: 17213310105190518651
+    identification: 
+      static-id: AVATAR_IMAGE_ALT
+      attribute: 9
+      name: Image Description
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 90
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Image # 17213309720190518650
+      depending-on-condition-type: NOT_NULL
+      always-evaluate: true
+
+    help: 
+      help-text: Enter a short description of the image or select a source column from the quick pick options. This will be used as alt text for the avatar image.
+
+  - # ====== Custom Attribute: Initials ==========================
+    id: 17213310524835518651
+    identification: 
+      static-id: AVATAR_INITIALS
+      attribute: 10
+      name: Initials
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 100
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Varchar2
+      escape-mode: Strip HTML
+
+    condition: 
+      depending-on-custom-attribute: Type # 17213307867115518647
+      depending-on-condition-type: equal to
+      expression: initials
+      always-evaluate: true
+
+    help: 
+      help-text: Select the source column to be displayed within each avatar. Only varchar2 data types are supported.
+
+  - # ====== Custom Attribute: Icon ==============================
+    id: 17213310950011518652
+    identification: 
+      static-id: AVATAR_ICON
+      attribute: 11
+      name: Icon
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 110
+
+    settings: 
+      type: Icon
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: fa-user
+
+    condition: 
+      depending-on-custom-attribute: Type # 17213307867115518647
+      depending-on-condition-type: equal to
+      expression: icon
+      always-evaluate: true
+
+    help: 
+      help-text: Enter an icon class or use the Pick Icon dialog to select the icon you want to add to display in the avatar.
+
+  - # ====== Custom Attribute: Shape =============================
+    id: 17213311341715518652
+    identification: 
+      static-id: AVATAR_SHAPE
+      attribute: 12
+      name: Shape
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 120
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: t-Avatar--rounded
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 17213307011845518646
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the shape of the avatar. Default inherits the shape set by the containing template.
+
+    entries: 
+    - # ====== Entry: Rounded ======================================
+      id: 17213311738235518653
+      entry: 
+        sequence: 10
+        display: Rounded
+        return: t-Avatar--rounded
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed within a square with rounded corners.
+
+    - # ====== Entry: Circular =====================================
+      id: 17213312224563518654
+      entry: 
+        sequence: 20
+        display: Circular
+        return: t-Avatar--circle
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed within a circular shape.
+
+    - # ====== Entry: Square =======================================
+      id: 17213312785318518654
+      entry: 
+        sequence: 30
+        display: Square
+        return: t-Avatar--square
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed within a square shape.
+
+    - # ====== Entry: No Shape =====================================
+      id: 17213313279321518654
+      entry: 
+        sequence: 40
+        display: No Shape
+        return: t-Avatar--noShape
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed inline without a containing shape.
+
+  - # ====== Custom Attribute: Label =============================
+    id: 17213313714505518655
+    identification: 
+      static-id: BADGE_LABEL
+      attribute: 13
+      name: Label
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 130
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+      escape-mode: HTML
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Enter a value for the badge label or select a source column from the quick pick options.
+
+  - # ====== Custom Attribute: Value =============================
+    id: 17213314190572518656
+    identification: 
+      static-id: BADGE_VALUE
+      attribute: 14
+      name: Value
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 140
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Varchar2
+      - Number
+      - Date
+      - Interval Year to Month
+      - Interval Day to Second
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select a source column for the badge value.
+
+  - # ====== Custom Attribute: State =============================
+    id: 17213314562003518656
+    identification: 
+      static-id: BADGE_STATE
+      attribute: 15
+      name: State
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 150
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the source column for the state of the badge. Substitute column value with "danger", "warning", "success" or "info" for default styling.
+
+  - # ====== Custom Attribute: Icon ==============================
+    id: 17213314941475518656
+    identification: 
+      static-id: BADGE_ICON
+      attribute: 16
+      name: Icon
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 160
+
+    settings: 
+      type: Icon
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Enter an icon class or use the Pick Icon dialog to select the icon you want to add to display in the badge.
+
+  - # ====== Custom Attribute: Display Label =====================
+    id: 17213315301145518657
+    identification: 
+      static-id: BADGE_LABEL_DISPLAY
+      attribute: 17
+      name: Display Label
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 170
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Specify whether to display or hide the badge label. When set to Yes, the badge label will be displayed in addition to the badge value. When set to No, only the badge value will be displayed.
+
+  - # ====== Custom Attribute: Style =============================
+    id: 17213315720043518657
+    identification: 
+      static-id: BADGE_STYLE
+      attribute: 18
+      name: Style
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 180
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the badge style. Default inherits the style set by the containing template.
+
+    entries: 
+    - # ====== Entry: Subtle =======================================
+      id: 17213316128120518658
+      entry: 
+        sequence: 10
+        display: Subtle
+        return: t-Badge--subtle
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Outline ======================================
+      id: 17213316673396518658
+      entry: 
+        sequence: 20
+        display: Outline
+        return: t-Badge--outline
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Shape =============================
+    id: 17213317142148518659
+    identification: 
+      static-id: BADGE_SHAPE
+      attribute: 19
+      name: Shape
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 190
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the shape of the badge. Default inherits the shape set by the containing template.
+
+    entries: 
+    - # ====== Entry: Rounded ======================================
+      id: 17213317551335518660
+      entry: 
+        sequence: 10
+        display: Rounded
+        return: t-Badge--rounded
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed with rounded corners.
+
+    - # ====== Entry: Circular =====================================
+      id: 17213318088624518660
+      entry: 
+        sequence: 20
+        display: Circular
+        return: t-Badge--circle
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed with circular edges.
+
+    - # ====== Entry: Square =======================================
+      id: 17213318577948518661
+      entry: 
+        sequence: 30
+        display: Square
+        return: t-Badge--square
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed with squared edges.
+
+  - # ====== Custom Attribute: Size ==============================
+    id: 17213319071526518661
+    identification: 
+      static-id: AVATAR_SIZE
+      attribute: 20
+      name: Size
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 19183990771701735481
+      sequence: 200
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 17213307011845518646
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Set the size of the avatar. The default inherits the sizing set by the containing template.
+
+    entries: 
+    - # ====== Entry: Extra Extra Small ============================
+      id: 17213319424956518662
+      entry: 
+        sequence: 10
+        display: Extra Extra Small
+        return: t-Avatar--xxs
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Extra Small ==================================
+      id: 17213319925091518662
+      entry: 
+        sequence: 20
+        display: Extra Small
+        return: t-Avatar--xs
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Small ========================================
+      id: 17213320460542518663
+      entry: 
+        sequence: 30
+        display: Small
+        return: t-Avatar--sm
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Medium =======================================
+      id: 17213320983287518663
+      entry: 
+        sequence: 40
+        display: Medium
+        return: t-Avatar--md
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Large ========================================
+      id: 17213321484212518664
+      entry: 
+        sequence: 50
+        display: Large
+        return: t-Avatar--lg
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Extra Large ==================================
+      id: 17213321975239518664
+      entry: 
+        sequence: 60
+        display: Extra Large
+        return: t-Avatar--xl
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Extra Extra Large ============================
+      id: 17213322402550518664
+      entry: 
+        sequence: 70
+        display: Extra Extra Large
+        return: t-Avatar--xxl
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Size ==============================
+    id: 17213322996162518665
+    identification: 
+      static-id: BADGE_SIZE
+      attribute: 21
+      name: Size
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 210
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Set the size of the badge. The default inherits the sizing set by the containing template.
+
+    entries: 
+    - # ====== Entry: Small ========================================
+      id: 17213323345233518665
+      entry: 
+        sequence: 10
+        display: Small
+        return: t-Badge--sm
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Medium =======================================
+      id: 17213323889049518666
+      entry: 
+        sequence: 20
+        display: Medium
+        return: t-Badge--md
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Large ========================================
+      id: 17213324393043518666
+      entry: 
+        sequence: 30
+        display: Large
+        return: t-Badge--lg
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Column Width ======================
+    id: 17213324825617518667
+    identification: 
+      static-id: BADGE_COL_WIDTH
+      attribute: 22
+      name: Column Width
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 19183990216689735480
+      sequence: 220
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    default: 
+      value: t-ContentRow-badge--md
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 17213307461162518647
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Set the width of the content row columns. Default width is medium.
+
+    entries: 
+    - # ====== Entry: Small ========================================
+      id: 17213325239365518667
+      entry: 
+        sequence: 10
+        display: Small
+        return: t-ContentRow-badge--sm
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Medium =======================================
+      id: 17213325770552518667
+      entry: 
+        sequence: 20
+        display: Medium
+        return: t-ContentRow-badge--md
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Large ========================================
+      id: 17213326206584518668
+      entry: 
+        sequence: 30
+        display: Large
+        return: t-ContentRow-badge--lg
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Auto =========================================
+      id: 17213326729522518668
+      entry: 
+        sequence: 40
+        display: Auto
+        return: t-ContentRow-badge--auto
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Apply Theme Colors ================
+    id: 17213327245383518669
+    identification: 
+      static-id: APPLY_THEME_COLORS
+      attribute: 23
+      name: Apply Theme Colors
+      scope: Report
+
+    layout: 
+      sequence: 230
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: Specify whether to use the Universal Theme colors for avatar and badge row items. When set to Yes, the u-colors class will be applied to each row. When set to No, a default color will be used instead.
+
+  action-positions: 
+  - # ====== Action Position: Title Link =========================
+    id: 19051611033243150362
+    identification: 
+      name: Title Link
+      static-id: TITLE_LINK
+      sequence: 30
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  - # ====== Action Position: Full Row Link ======================
+    id: 19052290333973233466
+    identification: 
+      name: Full Row Link
+      static-id: FULL_ROW_LINK
+      sequence: 40
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  - # ====== Action Position: Avatar Link ========================
+    id: 19065202726850512109
+    identification: 
+      name: Avatar Link
+      static-id: AVATAR_LINK
+      sequence: 10
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  - # ====== Action Position: Primary Actions ====================
+    id: 19065204060240525966
+    identification: 
+      name: Primary Actions
+      static-id: PRIMARY_ACTIONS
+      sequence: 20
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Template
+
+  action-templates: 
+  - # ====== Action Template: Button =============================
+    id: 19065204661917557095
+    identification: 
+      name: Button
+      type: Button
+
+    template: 
+      action-template: |
+        {with/}
+        LINK_URL:=#LINK_URL#
+        LINK_ATTR:=#LINK_ATTR!RAW#
+        LABEL:=#LABEL!RAW#
+        ICON_CLASSES:=#ICON_CLASSES#
+        CSS_CLASSES:=#CSS_CLASSES#
+        IS_HOT:=#IS_HOT#
+        IS_ICON_ONLY:=#IS_ICON_ONLY#
+        IS_DISABLED:=#IS_DISABLED#
+        {apply THEME$BUTTON/}
+
+    advanced: 
+      translatable: false
+
+  - # ====== Action Template: Menu ===============================
+    id: 19065205921437561243
+    identification: 
+      name: Menu
+      type: Menu
+
+    template: 
+      action-template: |
+        {with/}
+        MENU_ID:=#MENU_ID#
+        LABEL:=#LABEL#
+        ICON_CLASSES:=#ICON_CLASSES#
+        CSS_CLASSES:=#CSS_CLASSES#
+        IS_HOT:=#IS_HOT#
+        IS_DISABLED:=#IS_DISABLED#
+        IS_ICON_ONLY:=#IS_ICON_ONLY#
+        {apply THEME$BUTTON/}
+        #MENU#
+
+    advanced: 
+      translatable: false
+
+- # ====== Plugin: Content Row Minimum =========================
+  id: 21819815086296199232
+  identification: 
+    name: Content Row Minimum
+    internal-name: THEME_42$CONTENT_ROW64393
+    theme: Universal Theme # 42
+    type: Template Component
+
+  advanced: 
+    quick-pick: true
+
+  subscription: 
+    version-number: 41360581667416
+
+  templates: 
+    available-as: 
+    - Single (Partial)
+    - Multiple (Report)
+    partial: |2
+        <div class="t-ContentRow-wrap" aria-hidden="true">
+          {if ?SELECTION%assigned/}<div class="t-ContentRow-selection is-placeholder"></div>{endif/}
+      
+            <div class="t-ContentRow-badge #BADGE_COL_WIDTH!ATTR# #BADGE_POS!ATTR# #BADGE_ALIGNMENT!ATTR#">
+              {with/}
+                LABEL:=
+                VALUE:=
+                SIZE:=#BADGE_SIZE#
+                SHAPE:=#BADGE_SHAPE#
+              {apply THEME$BADGE/}
+            </div>
+      
+      
+            <div class="t-ContentRow-avatar">
+              {with/}
+                SHAPE:=#AVATAR_SHAPE#
+                SIZE:=#AVATAR_SIZE#
+              {apply THEME$AVATAR/}
+            </div>
+      
+          <div class="t-ContentRow-body">
+            <div class="t-ContentRow-content">
+              <div class="t-ContentRow-overline is-placeholder"></div>
+              <div class="t-ContentRow-title is-placeholder"></div>
+              <div class="t-ContentRow-description is-placeholder"></div>
+            </div>
+            <div class="t-ContentRow-misc is-placeholder"></div>
+            <div class="t-ContentRow-actions is-placeholder"></div>
+          </div>
+        </div>
+      
+    report-body: '<ul class="t-ContentRow{if ?STYLE/} #STYLE!ATTR#{endif/}{if REMOVE_PADDING/} t-ContentRow--removePadding{endif/}{if HIDE_BORDERS/} t-ContentRow--hideBorders{endif/}{if APPLY_THEME_COLORS/} u-colors{endif/} #APEX$COMPONENT_CSS_CLASSES#">#APEX$ROWS#</ul>'
+    report-row: '<li class="t-ContentRow-item{if ?ITEM_CLASSES/} #ITEM_CLASSES#{endif/}" #APEX$ROW_IDENTIFICATION#>#APEX$PARTIAL#</li>'
+    translate-templates: false
+    default-escape-mode: HTML
+    number-of-lazy-loading-skeletons: 3
+
+  callbacks: 
+    api-interface: Function
+
+  custom-attributes: 
+    substitute-attribute-values: true
+
+  information: 
+    help-text: Display content in a formatted row with a title, description, and more. Supports avatars and badges. Available for a single row or as a report with multiple rows.
+
+  attribute-groups: 
+  - # ====== Attribute Group: Appearance =========================
+    id: 24549017862805472813
+    identification: 
+      name: Appearance
+      sequence: 30
+
+  - # ====== Attribute Group: Badge ==============================
+    id: 24805909926535746326
+    identification: 
+      name: Badge
+      sequence: 20
+
+  - # ====== Attribute Group: Avatar =============================
+    id: 24805910481547746327
+    identification: 
+      name: Avatar
+      sequence: 10
+
+  custom-attributes: 
+  - # ====== Custom Attribute: Overline ==========================
+    id: 21819816676892199264
+    identification: 
+      static-id: OVERLINE
+      attribute: 1
+      name: Overline
+      scope: Component
+
+    layout: 
+      sequence: 10
+
+    settings: 
+      type: HTML
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter some text and/or column substitution strings to display at the top of each row above the title and description.
+
+    examples: 
+      demo-value: Category
+
+  - # ====== Custom Attribute: Title =============================
+    id: 21819817162875199267
+    identification: 
+      static-id: TITLE
+      attribute: 2
+      name: Title
+      scope: Component
+
+    layout: 
+      sequence: 20
+
+    settings: 
+      type: HTML
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: HTML
+
+    help: 
+      help-text: Enter some text and/or column substitution strings to be used as the title in each row.
+
+    examples: 
+      demo-value: Lorem ipsum dolor sit amet
+
+  - # ====== Custom Attribute: Description =======================
+    id: 21819817693005199269
+    identification: 
+      static-id: DESCRIPTION
+      attribute: 3
+      name: Description
+      scope: Component
+
+    layout: 
+      sequence: 30
+
+    settings: 
+      type: HTML
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter some text and/or column substitution strings to be used as the description in each row.
+
+    examples: 
+      demo-value: Nunc sit amet nunc quis magna ornare suscipit. Etiam aliquet maximus sapien, at sagittis sem gravida nec.
+
+  - # ====== Custom Attribute: Miscellaneous =====================
+    id: 21819818178901199270
+    identification: 
+      static-id: MISC
+      attribute: 4
+      name: Miscellaneous
+      scope: Component
+
+    layout: 
+      sequence: 40
+
+    settings: 
+      type: HTML
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: Raw
+
+    help: 
+      help-text: Enter miscellaneous content such as additional text and/or column substitution strings to display in each row.
+
+  - # ====== Custom Attribute: Display Avatar ====================
+    id: 21819818564796199271
+    identification: 
+      static-id: DISPLAY_AVATAR
+      attribute: 5
+      name: Display Avatar
+      scope: Component
+
+    layout: 
+      sequence: 50
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+    help: 
+      help-text: Specify whether to display or hide the avatar for each row. When set to Yes, an avatar will be displayed with the assigned image, icon, or initials. When set to No, no avatar will be displayed.
+
+  - # ====== Custom Attribute: Display Badge =====================
+    id: 21819819096054199272
+    identification: 
+      static-id: DISPLAY_BADGE
+      attribute: 6
+      name: Display Badge
+      scope: Component
+
+    layout: 
+      sequence: 60
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+    help: 
+      help-text: Specify whether to display or hide the badge for each row. When set to Yes, a badge will be displayed in each row. When set to No, no badge will be displayed.
+
+  - # ====== Custom Attribute: Type ==============================
+    id: 21819819536343199273
+    identification: 
+      static-id: AVATAR_TYPE
+      attribute: 7
+      name: Type
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 70
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML
+
+    default: 
+      value: icon
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 21819818564796199271
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the type of content that will be displayed in the avatar.
+
+    examples: 
+      demo-value: icon
+
+    entries: 
+    - # ====== Entry: Image ========================================
+      id: 21819820061270199274
+      entry: 
+        sequence: 10
+        display: Image
+        return: image
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Initials =====================================
+      id: 21819820665891199277
+      entry: 
+        sequence: 20
+        display: Initials
+        return: initials
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Icon =========================================
+      id: 21819821215865199279
+      entry: 
+        sequence: 30
+        display: Icon
+        return: icon
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Image =============================
+    id: 21819821813434199280
+    identification: 
+      static-id: AVATAR_IMAGE
+      attribute: 8
+      name: Image
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 80
+
+    settings: 
+      type: Media
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Type # 21819819536343199273
+      depending-on-condition-type: equal to
+      expression: image
+      always-evaluate: true
+
+    help: 
+      help-text: |
+        <p>Use the Media popup dialog to select a source for the avatar image.</p>
+        
+        <p>Available options include:
+        <ul>
+        <li>URL</li>
+        <li>BLOB Column</li>
+        <li>URL Column</li>
+        </ul>
+        </p>
+
+  - # ====== Custom Attribute: Description =======================
+    id: 21819822300313199282
+    identification: 
+      static-id: AVATAR_DESCRIPTION
+      attribute: 9
+      name: Description
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 115
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: true
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 21819818564796199271
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Enter a short description of the image or select a source column from the quick pick options. This will be used as alt text for the avatar image.
+
+  - # ====== Custom Attribute: Initials ==========================
+    id: 21819822861026199283
+    identification: 
+      static-id: AVATAR_INITIALS
+      attribute: 10
+      name: Initials
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 100
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Varchar2
+      escape-mode: Strip HTML
+
+    condition: 
+      depending-on-custom-attribute: Type # 21819819536343199273
+      depending-on-condition-type: equal to
+      expression: initials
+      always-evaluate: true
+
+    help: 
+      help-text: Select the source column to be displayed within each avatar. Only varchar2 data types are supported.
+
+  - # ====== Custom Attribute: Icon ==============================
+    id: 21819823299316199284
+    identification: 
+      static-id: AVATAR_ICON
+      attribute: 11
+      name: Icon
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 110
+
+    settings: 
+      type: Icon
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: fa-user
+
+    condition: 
+      depending-on-custom-attribute: Type # 21819819536343199273
+      depending-on-condition-type: equal to
+      expression: icon
+      always-evaluate: true
+
+    help: 
+      help-text: Enter an icon class or use the Pick Icon dialog to select the icon you want to add to display in the avatar.
+
+  - # ====== Custom Attribute: Shape =============================
+    id: 21819823805104199285
+    identification: 
+      static-id: AVATAR_SHAPE
+      attribute: 12
+      name: Shape
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 120
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: t-Avatar--rounded
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 21819818564796199271
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the shape of the avatar. Default inherits the shape set by the containing template.
+
+    entries: 
+    - # ====== Entry: Rounded ======================================
+      id: 21819824377849199286
+      entry: 
+        sequence: 10
+        display: Rounded
+        return: t-Avatar--rounded
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed within a square with rounded corners.
+
+    - # ====== Entry: Circular =====================================
+      id: 21819824901512199287
+      entry: 
+        sequence: 20
+        display: Circular
+        return: t-Avatar--circle
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed within a circular shape.
+
+    - # ====== Entry: Square =======================================
+      id: 21819825561226199288
+      entry: 
+        sequence: 30
+        display: Square
+        return: t-Avatar--square
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed within a square shape.
+
+    - # ====== Entry: No Shape =====================================
+      id: 21819826174067199290
+      entry: 
+        sequence: 40
+        display: No Shape
+        return: t-Avatar--noShape
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed inline without a containing shape.
+
+  - # ====== Custom Attribute: Label =============================
+    id: 21819826748040199291
+    identification: 
+      static-id: BADGE_LABEL
+      attribute: 13
+      name: Label
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 130
+
+    settings: 
+      type: Text
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: true
+      escape-mode: HTML
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Enter a value for the badge label or select a source column from the quick pick options.
+
+  - # ====== Custom Attribute: Value =============================
+    id: 21819827275324199292
+    identification: 
+      static-id: BADGE_VALUE
+      attribute: 14
+      name: Value
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 140
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      data-types: 
+      - Varchar2
+      - Number
+      - Date
+      - Interval Year to Month
+      - Interval Day to Second
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select a source column for the badge value.
+
+  - # ====== Custom Attribute: State =============================
+    id: 21819827715849199293
+    identification: 
+      static-id: BADGE_STATE
+      attribute: 15
+      name: State
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 150
+
+    settings: 
+      type: Session State Value
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      data-types: 
+      - Varchar2
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the source column for the state of the badge. Substitute column value with "danger", "warning", "success" or "info" for default styling.
+
+  - # ====== Custom Attribute: Icon ==============================
+    id: 21819828235818199295
+    identification: 
+      static-id: BADGE_ICON
+      attribute: 16
+      name: Icon
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 160
+
+    settings: 
+      type: Icon
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Enter an icon class or use the Pick Icon dialog to select the icon you want to add to display in the badge.
+
+  - # ====== Custom Attribute: Display Label =====================
+    id: 21819828762991199296
+    identification: 
+      static-id: BADGE_LABEL_DISPLAY
+      attribute: 17
+      name: Display Label
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 170
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Specify whether to display or hide the badge label. When set to Yes, the badge label will be displayed in addition to the badge value. When set to No, only the badge value will be displayed.
+
+  - # ====== Custom Attribute: Style =============================
+    id: 21819829292152199297
+    identification: 
+      static-id: BADGE_STYLE
+      attribute: 18
+      name: Style
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 180
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the badge style. Default inherits the style set by the containing template.
+
+    entries: 
+    - # ====== Entry: Subtle =======================================
+      id: 21819829796034199299
+      entry: 
+        sequence: 10
+        display: Subtle
+        return: t-Badge--subtle
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Outline ======================================
+      id: 21819830322952199300
+      entry: 
+        sequence: 20
+        display: Outline
+        return: t-Badge--outline
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Shape =============================
+    id: 21819830897548199301
+    identification: 
+      static-id: BADGE_SHAPE
+      attribute: 19
+      name: Shape
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 190
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Select the shape of the badge. Default inherits the shape set by the containing template.
+
+    entries: 
+    - # ====== Entry: Rounded ======================================
+      id: 21819831458245199302
+      entry: 
+        sequence: 10
+        display: Rounded
+        return: t-Badge--rounded
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed with rounded corners.
+
+    - # ====== Entry: Circular =====================================
+      id: 21819832022198199303
+      entry: 
+        sequence: 20
+        display: Circular
+        return: t-Badge--circle
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed with circular edges.
+
+    - # ====== Entry: Square =======================================
+      id: 21819832633242199305
+      entry: 
+        sequence: 30
+        display: Square
+        return: t-Badge--square
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed with squared edges.
+
+    - # ====== Entry: No Shape =====================================
+      id: 21819833284290199306
+      entry: 
+        sequence: 40
+        display: No Shape
+        return: t-Avatar--noShape
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Displayed inline without a containing shape.
+
+  - # ====== Custom Attribute: Size ==============================
+    id: 21819833838595199307
+    identification: 
+      static-id: AVATAR_SIZE
+      attribute: 20
+      name: Size
+      scope: Component
+
+    layout: 
+      attribute-group: Avatar # 24805910481547746327
+      sequence: 200
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Avatar # 21819818564796199271
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Set the size of the avatar. The default inherits the sizing set by the containing template.
+
+    entries: 
+    - # ====== Entry: Extra Extra Small ============================
+      id: 21819834394660199310
+      entry: 
+        sequence: 10
+        display: Extra Extra Small
+        return: t-Avatar--xxs
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Extra Small ==================================
+      id: 21819834930281199311
+      entry: 
+        sequence: 20
+        display: Extra Small
+        return: t-Avatar--xs
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Small ========================================
+      id: 21819835542408199312
+      entry: 
+        sequence: 30
+        display: Small
+        return: t-Avatar--sm
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Medium =======================================
+      id: 21819836184053199313
+      entry: 
+        sequence: 40
+        display: Medium
+        return: t-Avatar--md
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Large ========================================
+      id: 21819836706437199315
+      entry: 
+        sequence: 50
+        display: Large
+        return: t-Avatar--lg
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Extra Large ==================================
+      id: 21819837360939199316
+      entry: 
+        sequence: 60
+        display: Extra Large
+        return: t-Avatar--xl
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Extra Extra Large ============================
+      id: 21819837922564199317
+      entry: 
+        sequence: 70
+        display: Extra Extra Large
+        return: t-Avatar--xxl
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Size ==============================
+    id: 21819838536311199318
+    identification: 
+      static-id: BADGE_SIZE
+      attribute: 21
+      name: Size
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 210
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Set the size of the badge. The default inherits the sizing set by the containing template.
+
+    entries: 
+    - # ====== Entry: Small ========================================
+      id: 21819839083130199320
+      entry: 
+        sequence: 10
+        display: Small
+        return: t-Badge--sm
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Medium =======================================
+      id: 21819839615934199321
+      entry: 
+        sequence: 20
+        display: Medium
+        return: t-Badge--md
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Large ========================================
+      id: 21819840231647199323
+      entry: 
+        sequence: 30
+        display: Large
+        return: t-Badge--lg
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Column Width ======================
+    id: 21819840890318199324
+    identification: 
+      static-id: BADGE_COL_WIDTH
+      attribute: 22
+      name: Column Width
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 220
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: true
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML Attribute
+
+    default: 
+      value: t-ContentRow-badge--md
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Set the width of the content row columns. Default width is medium.
+
+    entries: 
+    - # ====== Entry: Small ========================================
+      id: 21819841356454199326
+      entry: 
+        sequence: 10
+        display: Small
+        return: t-ContentRow-badge--sm
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Medium =======================================
+      id: 21819841961882199327
+      entry: 
+        sequence: 20
+        display: Medium
+        return: t-ContentRow-badge--md
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Large ========================================
+      id: 21819842588411199328
+      entry: 
+        sequence: 30
+        display: Large
+        return: t-ContentRow-badge--lg
+
+      advanced: 
+        quick-pick: false
+
+    - # ====== Entry: Auto =========================================
+      id: 21819843104829199329
+      entry: 
+        sequence: 40
+        display: Auto
+        return: t-ContentRow-badge--auto
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Position ==========================
+    id: 21819843697703199330
+    identification: 
+      static-id: BADGE_POS
+      attribute: 24
+      name: Position
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 240
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Start
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Positions the Badge column to either the "Start" or "End" of the row.
+
+    entries: 
+    - # ====== Entry: End ==========================================
+      id: 21819844211870199331
+      entry: 
+        sequence: 10
+        display: End
+        return: t-ContentRow-badge--posEnd
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Positions the Badge column to the "end" of the row.
+
+  - # ====== Custom Attribute: Alignment =========================
+    id: 21819844875574199333
+    identification: 
+      static-id: BADGE_ALIGNMENT
+      attribute: 25
+      name: Alignment
+      scope: Component
+
+    layout: 
+      attribute-group: Badge # 24805909926535746326
+      sequence: 250
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Start
+      escape-mode: HTML Attribute
+
+    condition: 
+      depending-on-custom-attribute: Display Badge # 21819819096054199272
+      depending-on-condition-type: equal to
+      expression: Y
+      always-evaluate: true
+
+    help: 
+      help-text: Changes the alignment of the badge within its column.
+
+    entries: 
+    - # ====== Entry: Center =======================================
+      id: 21819845334652199334
+      entry: 
+        sequence: 10
+        display: Center
+        return: t-ContentRow-badge--alignCenter
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Aligns the badge to the "center" of its column.
+
+    - # ====== Entry: End ==========================================
+      id: 21819845968422199336
+      entry: 
+        sequence: 20
+        display: End
+        return: t-ContentRow-badge--alignEnd
+
+      advanced: 
+        quick-pick: false
+
+      help: 
+        help-text: Aligns the badge to the "end" of its column.
+
+  - # ====== Custom Attribute: Apply Theme Colors ================
+    id: 21819846504778199338
+    identification: 
+      static-id: APPLY_THEME_COLORS
+      attribute: 23
+      name: Apply Theme Colors
+      scope: Report
+
+    layout: 
+      attribute-group: Appearance # 24549017862805472813
+      sequence: 230
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: Y
+
+    help: 
+      help-text: Specify whether to use the Universal Theme colors for avatar and badge row items. When set to Yes, the u-colors class will be applied to each row. When set to No, a default color will be used instead.
+
+  - # ====== Custom Attribute: Style =============================
+    id: 21819847074921199339
+    identification: 
+      static-id: STYLE
+      attribute: 27
+      name: Style
+      scope: Report
+
+    layout: 
+      attribute-group: Appearance # 24549017862805472813
+      sequence: 270
+
+    settings: 
+      type: Select List
+      lov-type: Static
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      lov-null-text: Default
+      escape-mode: HTML
+
+    entries: 
+    - # ====== Entry: Compact ======================================
+      id: 21819847609237199340
+      entry: 
+        sequence: 10
+        display: Compact
+        return: t-ContentRow--styleCompact
+
+      advanced: 
+        quick-pick: false
+
+  - # ====== Custom Attribute: Hide Borders ======================
+    id: 21819848271434199341
+    identification: 
+      static-id: HIDE_BORDERS
+      attribute: 28
+      name: Hide Borders
+      scope: Report
+
+    layout: 
+      attribute-group: Appearance # 24549017862805472813
+      sequence: 280
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+  - # ====== Custom Attribute: Remove Padding ====================
+    id: 21819848760889199342
+    identification: 
+      static-id: REMOVE_PADDING
+      attribute: 30
+      name: Remove Padding
+      scope: Report
+
+    layout: 
+      attribute-group: Appearance # 24549017862805472813
+      sequence: 300
+
+    settings: 
+      type: Yes/No
+      common: true
+      show-in-wizard: true
+      required: false
+      translatable: false
+      escape-mode: HTML Attribute
+
+    default: 
+      value: N
+
+  action-positions: 
+  - # ====== Action Position: Title Link =========================
+    id: 23658121674085830980
+    identification: 
+      name: Title Link
+      static-id: TITLE_LINK
+      sequence: 30
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  - # ====== Action Position: Full Row Link ======================
+    id: 23658800974815914084
+    identification: 
+      name: Full Row Link
+      static-id: FULL_ROW_LINK
+      sequence: 40
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  - # ====== Action Position: Avatar Link ========================
+    id: 23671713367693192727
+    identification: 
+      name: Avatar Link
+      static-id: AVATAR_LINK
+      sequence: 10
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  - # ====== Action Position: Primary Actions ====================
+    id: 23671714701083206584
+    identification: 
+      name: Primary Actions
+      static-id: PRIMARY_ACTIONS
+      sequence: 20
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Template
+
+  - # ====== Action Position: Badge Link =========================
+    id: 24390172856867809511
+    identification: 
+      name: Badge Link
+      static-id: BADGE_LINK
+      sequence: 50
+
+    advanced: 
+      quick-pick: false
+
+    settings: 
+      type: Link
+
+  action-templates: 
+  - # ====== Action Template: Button =============================
+    id: 23671715302760237713
+    identification: 
+      name: Button
+      type: Button
+
+    template: 
+      action-template: |
+        {with/}
+        LINK_URL:=#LINK_URL#
+        LINK_ATTR:=#LINK_ATTR#
+        LABEL:=#LABEL#
+        ICON_CLASSES:=#ICON_CLASSES#
+        CSS_CLASSES:=#CSS_CLASSES#
+        IS_HOT:=#IS_HOT#
+        IS_ICON_ONLY:=#IS_ICON_ONLY#
+        IS_DISABLED:=#IS_DISABLED#
+        {apply THEME$BUTTON/}
+
+    advanced: 
+      translatable: false
+
+  - # ====== Action Template: Menu ===============================
+    id: 23671716562280241861
+    identification: 
+      name: Menu
+      type: Menu
+
+    template: 
+      action-template: |
+        {with/}
+        MENU_ID:=#MENU_ID#
+        LABEL:=#LABEL#
+        ICON_CLASSES:=#ICON_CLASSES#
+        CSS_CLASSES:=#CSS_CLASSES#
+        IS_HOT:=#IS_HOT#
+        IS_DISABLED:=#IS_DISABLED#
+        IS_ICON_ONLY:=#IS_ICON_ONLY#
+        {apply THEME$BUTTON/}
+        #MENU#
+
+    advanced: 
+      translatable: false
+

@@ -1,0 +1,1739 @@
+---
+# ====== Page: Employees Register Report  ====================
+id: 99
+identification: 
+  name: 'Employees Register Report '
+  alias: EMPLOYEES-REGISTER-REPORT
+  title: سجل الاعضاء
+  page-group: Users # 18677243577083824218
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: filters =====================================
+  id: 13455755786110965547
+  identification: 
+    name: filters
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 3
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-top-md
+    - margin-bottom-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 15180593602359602028
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 16044936957392616846
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 15180593602359602028
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 16044938190898616858
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: اضافة عضو ===================================
+    id: 12156464780190359470
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اضافة عضو
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:96:&SESSION.::&DEBUG.:RP,96::'
+        page: 96 # Employee Details
+        clear-cache: RP,96
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+    security: 
+      authorization-scheme: Administration Rights # 149832818388153023719
+
+  - # ====== Action: Actions =====================================
+    id: 16044937257971616849
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: Add Multiple &NOMENCLATURE_USERS. (admin) =====
+      id: 11871709569370722577
+      identification: 
+        type: Menu Entry
+        label: Add Multiple &NOMENCLATURE_USERS. (admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:54:&SESSION.::&DEBUG.:RP,54::'
+          page: 54
+          clear-cache: RP,54
+
+      appearance: 
+        icon: fa-users
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: اعادة ظبط =====================================
+      id: 13276257986998714115
+      identification: 
+        type: Menu Entry
+        label: اعادة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:99:&SESSION.::&DEBUG.:RP,19::'
+          page: 99 # Employees Register Report 
+          clear-cache: RP,19
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: About &NOMENCLATURE_USERS. ====================
+      id: 13276258178150714116
+      identification: 
+        type: Menu Entry
+        label: About &NOMENCLATURE_USERS.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:109:&SESSION.::&DEBUG.:RP,::'
+          page: 109
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-info
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض قائمة الفريق ==============================
+      id: 14632087670406861438
+      identification: 
+        type: Menu Entry
+        label: عرض قائمة الفريق
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:4:&SESSION.::&DEBUG.:RP,::'
+          page: 4 # Identities Department
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+    - # ====== Menu: Separator =====================================
+      id: 14632089562826861457
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 16044937963878616856
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:99:&SESSION.::&DEBUG.:RP,::'
+          page: 99 # Employees Register Report 
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: Separator =====================================
+      id: 21975046735749470938
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+- # ====== Region: Users  ======================================
+  id: 16498524075855681363
+  identification: 
+    name: 'Users '
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+         x.id, 
+         x.username,
+         x.name,
+         x.email_domain,
+         x.email,
+         x.phone_number,
+         x.tags,
+         x.updated,
+         x.created,
+         x.activities,
+         x.reviews,
+         x.competencies,
+         x.screen_name,
+         DECODE(x.screen_name, NULL, 'لا', 'نعم') AS has_screen_name,
+         x.total,
+         DECODE(NVL(x.project_leads, 0), 0, 'No', 'Yes') AS project_lead,
+         x.comment_mentions,
+         (
+           SELECT u.role_ids
+           FROM apex_appl_acl_users u
+           WHERE u.application_id = :APP_ID
+             AND LOWER(u.user_name) = LOWER(x.username)
+           FETCH FIRST 1 ROWS ONLY
+         ) AS app_role,
+         x.location,
+         NVL((SELECT department_name FROM bs_departments d WHERE d.id = x.department_id), 'غير محدد') AS department,
+         'N/A' AS region,
+         x.has_activities,
+         x.has_profile_photo,
+         DECODE(NVL(x.reviews, 0), 0, 'No', 'Yes') AS has_open_reviews,
+         x.group_membership
+      FROM (
+        SELECT 
+            t.ID,
+            t.USERNAME,
+            t.FIRST_NAME || ' ' || t.LAST_NAME AS name,
+            t.PHONE_NUMBER,
+            t.LOCATION,
+            t.DEPARTMENT_ID,
+            LOWER(t.TAGS) AS tags,
+            t.UPDATED,
+            t.CREATED,
+            t.EMAIL,
+            t.COMPETENCIES,
+            t.EMAIL_DOMAIN,
+            t.PHOTO,
+            t.PHOTO_MIMETYPE,
+            t.SCREEN_NAME,
+            (SELECT COUNT(*) 
+               FROM SP_ACTIVITIES ap 
+              WHERE TO_CHAR(ap.TEAM_MEMBER_ID) = t.id 
+                AND ap.END_DATE >= TRUNC(SYSDATE)
+            ) AS activities,
+            (SELECT COUNT(*) 
+               FROM SP_TASKS r, SP_TASK_TYPES tt, SP_TASK_STATUSES s
+              WHERE TO_CHAR(r.OWNER_ID) = t.ID 
+                AND NVL(r.TASK_SUB_TYPE_ID, r.TASK_TYPE_ID) = tt.ID
+                AND tt.STATIC_ID LIKE 'REVIEW%'
+                AND r.STATUS_ID = s.ID
+                AND s.INDICATES_COMPLETE_YN != 'Y'
+            ) AS reviews,
+            (SELECT COUNT(*) FROM SP_AREAS f WHERE TO_CHAR(f.OWNER_ID) = t.id) AS focus_area_leads,
+            (SELECT COUNT(*) FROM SP_INITIATIVES i WHERE TO_CHAR(i.SPONSOR_ID) = t.id) AS initiatives_leads,
+            (SELECT COUNT(*) FROM SP_PROJECTS p WHERE TO_CHAR(p.OWNER_ID) = t.id AND p.ARCHIVED_YN = 'N') AS project_leads,
+            (SELECT COUNT(*) 
+               FROM SP_TASKS tk, SP_PROJECTS p 
+              WHERE TO_CHAR(tk.OWNER_ID) = t.id 
+                AND tk.PROJECT_ID = p.id 
+                AND p.ARCHIVED_YN = 'N'
+            ) AS tasks,
+            (SELECT COUNT(*) FROM SP_PROJECT_DOCUMENTS d WHERE d.CREATED_BY = UPPER(t.EMAIL)) AS proj_docs,
+            (SELECT COUNT(*) FROM SP_RELEASE_DOCUMENTS d WHERE d.CREATED_BY = UPPER(t.EMAIL)) AS rel_docs,
+            (SELECT COUNT(*) FROM SP_TASK_DOCUMENTS d WHERE d.CREATED_BY = UPPER(t.EMAIL)) AS task_docs,
+            (SELECT COUNT(*) FROM SP_PROJECT_COMMENTS c WHERE TO_CHAR(c.AUTHOR_ID) = t.id) AS proj_comments,
+            (SELECT COUNT(*) FROM SP_RELEASE_COMMENTS c WHERE TO_CHAR(c.AUTHOR_ID) = t.id) AS rel_comments,
+            (SELECT COUNT(*) FROM SP_TASK_COMMENTS c WHERE TO_CHAR(c.AUTHOR_ID) = t.id) AS task_comments,
+            NVL((SELECT 'Yes' FROM dual WHERE EXISTS (
+                  SELECT 1 
+                    FROM SP_ACTIVITIES ap 
+                   WHERE TO_CHAR(ap.TEAM_MEMBER_ID) = t.id 
+                     AND ap.END_DATE >= TRUNC(SYSDATE)
+            )), 'No') AS has_activities,
+            DECODE(DBMS_LOB.GETLENGTH(t.PHOTO), NULL, 'لا', DECODE(DBMS_LOB.GETLENGTH(t.PHOTO), 0, 'لا', 'نعم')) AS has_profile_photo,
+            (SELECT COUNT(DISTINCT p.id)
+               FROM SP_PROJECT_COMMENTS_EMAILS e,
+                    SP_PROJECTS p, 
+                    BS_EMPLOYEES tm,
+                    SP_PROJECT_COMMENTS c
+              WHERE t.ID = tm.ID
+                AND e.EMAIL = tm.EMAIL
+                AND c.ID = e.COMMENT_ID
+                AND c.PROJECT_ID = p.ID
+            ) AS comment_mentions,
+            (SELECT LISTAGG(g.GROUP_NAME, ', ') WITHIN GROUP (ORDER BY 1)
+               FROM SP_GROUP_MEMBERS gm, SP_GROUPS g
+              WHERE gm.GROUP_ID = g.ID 
+                AND TO_CHAR(gm.TEAM_MEMBER_ID) = t.ID
+            ) AS group_membership,
+            (
+              NVL((SELECT COUNT(*) FROM SP_AREAS f WHERE TO_CHAR(f.OWNER_ID) = t.id), 0) +
+              NVL((SELECT COUNT(*) FROM SP_INITIATIVES i WHERE TO_CHAR(i.SPONSOR_ID) = t.id), 0) +
+              NVL((SELECT COUNT(*) FROM SP_PROJECTS p WHERE TO_CHAR(p.OWNER_ID) = t.id AND p.ARCHIVED_YN = 'N'), 0) +
+              NVL((SELECT COUNT(*) FROM SP_TASKS tk, SP_PROJECTS p 
+                    WHERE TO_CHAR(tk.OWNER_ID) = t.id 
+                      AND tk.PROJECT_ID = p.id 
+                      AND p.ARCHIVED_YN = 'N'), 0) +
+              NVL((SELECT COUNT(*) FROM SP_PROJECT_DOCUMENTS d WHERE d.CREATED_BY = UPPER(t.EMAIL)), 0) +
+              NVL((SELECT COUNT(*) FROM SP_RELEASE_DOCUMENTS d WHERE d.CREATED_BY = UPPER(t.EMAIL)), 0) +
+              NVL((SELECT COUNT(*) FROM SP_TASK_DOCUMENTS d WHERE d.CREATED_BY = UPPER(t.EMAIL)), 0) +
+              NVL((SELECT COUNT(*) FROM SP_PROJECT_COMMENTS c WHERE TO_CHAR(c.AUTHOR_ID) = t.id), 0) +
+              NVL((SELECT COUNT(*) FROM SP_RELEASE_COMMENTS c WHERE TO_CHAR(c.AUTHOR_ID) = t.id), 0) +
+              NVL((SELECT COUNT(*) FROM SP_TASK_COMMENTS c WHERE TO_CHAR(c.AUTHOR_ID) = t.id), 0) +
+              NVL((SELECT COUNT(*) FROM SP_ACTIVITIES ap 
+                    WHERE TO_CHAR(ap.TEAM_MEMBER_ID) = t.id 
+                      AND ap.END_DATE >= TRUNC(SYSDATE)
+              ), 0) +
+              NVL((SELECT COUNT(*) 
+                    FROM SP_TASKS r, SP_TASK_TYPES tt, SP_TASK_STATUSES s
+                   WHERE TO_CHAR(r.OWNER_ID) = t.ID 
+                     AND NVL(r.TASK_SUB_TYPE_ID, r.TASK_TYPE_ID) = tt.ID
+                     AND tt.STATIC_ID LIKE 'REVIEW%'
+                     AND r.STATUS_ID = s.ID
+                     AND s.INDICATES_COMPLETE_YN != 'Y'
+              ), 0) +
+              NVL((SELECT COUNT(DISTINCT p.ID)
+                     FROM SP_PROJECT_COMMENTS_EMAILS e,
+                          SP_PROJECTS p, 
+                          BS_EMPLOYEES tm,
+                          SP_PROJECT_COMMENTS c
+                    WHERE t.ID = tm.ID
+                      AND e.EMAIL = tm.EMAIL
+                      AND c.ID = e.COMMENT_ID
+                      AND c.PROJECT_ID = p.ID
+              ), 0)
+            ) AS total
+        FROM BS_EMPLOYEES t
+        WHERE NVL(t.IS_CURRENT_YN, 'Y') = 'Y'
+      ) x;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--noBorder
+    - t-Region--scrollBody
+    - margin-bottom-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 30
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+      - t-Report--inline
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      report-sum-label: Total
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CREATED =====================================
+    id: 252608415208912842
+    identification: 
+      column-name: CREATED
+      type: Hidden
+
+    layout: 
+      sequence: 210
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMPETENCIES ================================
+    id: 252608757728912845
+    identification: 
+      column-name: COMPETENCIES
+      type: Plain Text
+
+    heading: 
+      heading: الكفاءات
+      alignment: center
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SCREEN_NAME =================================
+    id: 252608864634912846
+    identification: 
+      column-name: SCREEN_NAME
+      type: Hidden
+
+    layout: 
+      sequence: 220
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HAS_SCREEN_NAME =============================
+    id: 252608918934912847
+    identification: 
+      column-name: HAS_SCREEN_NAME
+      type: Hidden
+
+    layout: 
+      sequence: 230
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LOCATION ====================================
+    id: 252609052851912848
+    identification: 
+      column-name: LOCATION
+      type: Hidden
+
+    layout: 
+      sequence: 240
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DEPARTMENT ==================================
+    id: 252609177137912849
+    identification: 
+      column-name: DEPARTMENT
+      type: Plain Text
+
+    heading: 
+      heading: القسم
+      alignment: center
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HAS_OPEN_REVIEWS ============================
+    id: 252609279986912850
+    identification: 
+      column-name: HAS_OPEN_REVIEWS
+      type: Hidden
+
+    layout: 
+      sequence: 250
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GROUP_MEMBERSHIP ============================
+    id: 252609386436912851
+    identification: 
+      column-name: GROUP_MEMBERSHIP
+      type: Hidden
+
+    layout: 
+      sequence: 260
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL =======================================
+    id: 252609637497912854
+    identification: 
+      column-name: TOTAL
+      type: Hidden
+
+    layout: 
+      sequence: 270
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 253775931271448407
+    identification: 
+      column-name: ID
+      type: Link
+
+    heading: 
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:96:&SESSION.::&DEBUG.:RP,96:P96_ID:#ID#'
+        page: 96 # Employee Details
+        clear-cache: RP,96
+        values: 
+          p96_id: '#ID#'
+
+      link-text: <span aria-hidden="true" class="fa fa-pencil-square-o"></span>
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      authorization-scheme: Administration Rights # 149832818388153023719
+      escape-special-characters: true
+
+  - # ====== Column: NAME ========================================
+    id: 253776333691448407
+    identification: 
+      column-name: NAME
+      type: Link
+
+    heading: 
+      heading: الاسم
+      alignment: center
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:73:&SESSION.::&DEBUG.:RP,73:P73_TEAM_MEMBER_ID:#ID#'
+        page: 73 # User Quick Look
+        clear-cache: RP,73
+        values: 
+          p73_team_member_id: '#ID#'
+
+      link-text: '#NAME#'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EMAIL_DOMAIN ================================
+    id: 253776741001448408
+    identification: 
+      column-name: EMAIL_DOMAIN
+      type: Hidden
+
+    layout: 
+      sequence: 150
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EMAIL =======================================
+    id: 253777172265448408
+    identification: 
+      column-name: EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: البريد الالكتروني
+      alignment: center
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TAGS ========================================
+    id: 253777600286448409
+    identification: 
+      column-name: TAGS
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 253778316265448409
+    identification: 
+      column-name: UPDATED
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    sorting: 
+      default-sequence: 1
+      direction: Descending
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ACTIVITIES ==================================
+    id: 253780739795448412
+    identification: 
+      column-name: ACTIVITIES
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: PROJECT_LEAD ================================
+    id: 253781518655448412
+    identification: 
+      column-name: PROJECT_LEAD
+      type: Hidden
+
+    layout: 
+      sequence: 160
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMMENT_MENTIONS ============================
+    id: 253781908198448413
+    identification: 
+      column-name: COMMENT_MENTIONS
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: APP_ROLE ====================================
+    id: 253782360996448413
+    identification: 
+      column-name: APP_ROLE
+      type: Hidden
+
+    layout: 
+      sequence: 170
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REGION ======================================
+    id: 253783113254448414
+    identification: 
+      column-name: REGION
+      type: Hidden
+
+    layout: 
+      sequence: 180
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REVIEWS =====================================
+    id: 253783956247448414
+    identification: 
+      column-name: REVIEWS
+      type: Hidden
+
+    layout: 
+      sequence: 130
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: HAS_ACTIVITIES ==============================
+    id: 253784775342448415
+    identification: 
+      column-name: HAS_ACTIVITIES
+      type: Hidden
+
+    layout: 
+      sequence: 190
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HAS_PROFILE_PHOTO ===========================
+    id: 253785933424448416
+    identification: 
+      column-name: HAS_PROFILE_PHOTO
+      type: Hidden
+
+    layout: 
+      sequence: 200
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHONE_NUMBER ================================
+    id: 253899016595057836
+    identification: 
+      column-name: PHONE_NUMBER
+      type: Plain Text
+
+    heading: 
+      heading: رقم الهاتف
+      alignment: center
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USERNAME ====================================
+    id: 253899389841057839
+    identification: 
+      column-name: USERNAME
+      type: Plain Text
+
+    heading: 
+      heading: اسم المستخدم
+      alignment: center
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Faceted Search ==============================
+  id: 17294267697641341133
+  identification: 
+    name: Faceted Search
+    type: Faceted Search
+
+  source: 
+    filtered-region: 'Users ' # 16498524075855681363
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 20
+
+  facets: 
+  - # ====== Facet: P99_COMPETENCIES =============================
+    id: 252609455692912852
+    identification: 
+      name: P99_COMPETENCIES
+      type: Checkbox Group
+
+    label: 
+      label: الكفاءات
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: COMPETENCIES
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P99_HAS_PROFILE_PHOTO ========================
+    id: 14623563069861544028
+    identification: 
+      name: P99_HAS_PROFILE_PHOTO
+      type: Checkbox Group
+
+    label: 
+      label: يوجد له صورة ملف
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 100
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P99_SEARCH ===================================
+    id: 17294285412257341190
+    identification: 
+      name: P99_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P99_TAGS =====================================
+    id: 17294285544306341191
+    identification: 
+      name: P99_TAGS
+      type: Checkbox Group
+
+    label: 
+      label: علامات مميزة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TAGS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P99_APP_ROLE =================================
+    id: 19744391438679359612
+    identification: 
+      name: P99_APP_ROLE
+      type: Checkbox Group
+
+    label: 
+      label: صلاحيات المستخدم
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: ACCESS_ROLES # 149832840835224023850
+      include-null-option: true
+      null-display-value: بدون صلاحية
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: APP_ROLE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P99_COMPETENCIES ============================
+    id: 252609455692912852
+    identification: 
+      name: P99_COMPETENCIES
+      type: Checkbox Group
+
+    label: 
+      label: الكفاءات
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: COMPETENCIES
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P99_HAS_PROFILE_PHOTO =======================
+    id: 14623563069861544028
+    identification: 
+      name: P99_HAS_PROFILE_PHOTO
+      type: Checkbox Group
+
+    label: 
+      label: يوجد له صورة ملف
+
+    layout: 
+      sequence: 100
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P99_SEARCH ==================================
+    id: 17294285412257341190
+    identification: 
+      name: P99_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P99_TAGS ====================================
+    id: 17294285544306341191
+    identification: 
+      name: P99_TAGS
+      type: Checkbox Group
+
+    label: 
+      label: علامات مميزة
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TAGS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P99_APP_ROLE ================================
+    id: 19744391438679359612
+    identification: 
+      name: P99_APP_ROLE
+      type: Checkbox Group
+
+    label: 
+      label: صلاحيات المستخدم
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: ACCESS_ROLES # 149832840835224023850
+      include-null-option: true
+      null-display-value: بدون صلاحية
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: APP_ROLE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 253770157521448391
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 15180593602359602028
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:4:&SESSION.::&DEBUG.:RP,::'
+      page: 4 # Identities Department
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 253790973047448434
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: 'Users ' # 16498524075855681363
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 253791486384448438
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: 'Users ' # 16498524075855681363
+
+    execution: 
+      sequence: 10
+      event: DC # 253790973047448434
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 253791930506448439
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 17294267697641341133
+
+    execution: 
+      sequence: 20
+      event: DC # 253790973047448434
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog closed ============
+  id: 253792311525448439
+  identification: 
+    name: refresh on dialog closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 15180593602359602028
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 253792851224448439
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: 'Users ' # 16498524075855681363
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog closed # 253792311525448439
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 253793314428448439
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 17294267697641341133
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog closed # 253792311525448439
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: sync roles =================================
+  id: 253790505026448432
+  identification: 
+    name: sync roles
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_members_app_role (
+          p_app_id => :APP_ID);
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Never
+

@@ -1,0 +1,2479 @@
+---
+# ====== Page: My Tasks ======================================
+id: 181
+identification: 
+  name: My Tasks
+  alias: MY-TASKS
+  title: My Tasks
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 264343263809674761
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: My Tasks - Smart Filters ====================
+  id: 264344325537674768
+  identification: 
+    name: My Tasks - Smart Filters
+    type: Smart Filters
+
+  source: 
+    filtered-region: My Tasks - Report # 264344487493674768
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 264343263809674761
+    slot: SMART_FILTERS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      maximum-suggestion-chips: 0
+      more-filters-suggestion-chip: false
+      compact-numbers-threshold: 10000
+      show-total-row-count: No
+
+  facets: 
+  - # ====== Facet: P181_SEARCH ==================================
+    id: 264344812038674769
+    identification: 
+      name: P181_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P181_DUE =====================================
+    id: 264345294055674769
+    identification: 
+      name: P181_DUE
+      type: Range
+
+    label: 
+      label: Due
+      show-label-for-current-facet: true
+
+    settings: 
+      select-multiple: true
+      manual-entry: false
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.DUE # 19867176161247810557
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: DUE_IN_HOURS
+      data-type: NUMBER
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P181_TYPE ====================================
+    id: 264345663669674770
+    identification: 
+      name: P181_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: Type
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.TYPE # 19867179228471810561
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: TASK_TYPE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_CATEGORY ================================
+    id: 264346074605674770
+    identification: 
+      name: P181_CATEGORY
+      type: Checkbox Group
+
+    label: 
+      label: Category
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: TASK_DEF_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_PRIORITY ================================
+    id: 264346406715674770
+    identification: 
+      name: P181_PRIORITY
+      type: Checkbox Group
+
+    label: 
+      label: Priority
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.PRIORITY # 19796056541925762400
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: PRIORITY
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_STATE ===================================
+    id: 264346861618674770
+    identification: 
+      name: P181_STATE
+      type: Checkbox Group
+
+    label: 
+      label: State
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.STATE # 19867180735117810562
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: STATE_CODE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_OUTCOME =================================
+    id: 264347280420674771
+    identification: 
+      name: P181_OUTCOME
+      type: Checkbox Group
+
+    label: 
+      label: Outcome
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: OUTCOME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_APPLICATION =============================
+    id: 264347619445674771
+    identification: 
+      name: P181_APPLICATION
+      type: Checkbox Group
+
+    label: 
+      label: Application
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 80
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: DETAILS_APP_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_INITIATOR ===============================
+    id: 264348093466674771
+    identification: 
+      name: P181_INITIATOR
+      type: Checkbox Group
+
+    label: 
+      label: Initiator
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 90
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: INITIATOR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P181_INITIATED ===============================
+    id: 264348439847674771
+    identification: 
+      name: P181_INITIATED
+      type: Range
+
+    label: 
+      label: Initiated
+      show-label-for-current-facet: true
+
+    settings: 
+      select-multiple: true
+      manual-entry: false
+
+    layout: 
+      sequence: 100
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.INITIATED # 19867182691425810565
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: CREATED_AGO_HOURS
+      data-type: NUMBER
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P181_OWNER ===================================
+    id: 264348885243674772
+    identification: 
+      name: P181_OWNER
+      type: Checkbox Group
+
+    label: 
+      label: Owner
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 110
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: false
+
+    advanced: 
+      collapsible: false
+
+    source: 
+      database-column: ACTUAL_OWNER
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P181_SEARCH =================================
+    id: 264344812038674769
+    identification: 
+      name: P181_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P181_DUE ====================================
+    id: 264345294055674769
+    identification: 
+      name: P181_DUE
+      type: Range
+
+    label: 
+      label: Due
+
+    settings: 
+      select-multiple: true
+      manual-entry: false
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.DUE # 19867176161247810557
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: DUE_IN_HOURS
+      data-type: NUMBER
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P181_TYPE ===================================
+    id: 264345663669674770
+    identification: 
+      name: P181_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: Type
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.TYPE # 19867179228471810561
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: TASK_TYPE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_CATEGORY ===============================
+    id: 264346074605674770
+    identification: 
+      name: P181_CATEGORY
+      type: Checkbox Group
+
+    label: 
+      label: Category
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: TASK_DEF_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_PRIORITY ===============================
+    id: 264346406715674770
+    identification: 
+      name: P181_PRIORITY
+      type: Checkbox Group
+
+    label: 
+      label: Priority
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.PRIORITY # 19796056541925762400
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: PRIORITY
+      data-type: NUMBER
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_STATE ==================================
+    id: 264346861618674770
+    identification: 
+      name: P181_STATE
+      type: Checkbox Group
+
+    label: 
+      label: State
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.STATE # 19867180735117810562
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: false
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: STATE_CODE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_OUTCOME ================================
+    id: 264347280420674771
+    identification: 
+      name: P181_OUTCOME
+      type: Checkbox Group
+
+    label: 
+      label: Outcome
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: OUTCOME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_APPLICATION ============================
+    id: 264347619445674771
+    identification: 
+      name: P181_APPLICATION
+      type: Checkbox Group
+
+    label: 
+      label: Application
+
+    layout: 
+      sequence: 80
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: DETAILS_APP_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_INITIATOR ==============================
+    id: 264348093466674771
+    identification: 
+      name: P181_INITIATOR
+      type: Checkbox Group
+
+    label: 
+      label: Initiator
+
+    layout: 
+      sequence: 90
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: INITIATOR
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P181_INITIATED ==============================
+    id: 264348439847674771
+    identification: 
+      name: P181_INITIATED
+      type: Range
+
+    label: 
+      label: Initiated
+
+    settings: 
+      select-multiple: true
+      manual-entry: false
+
+    layout: 
+      sequence: 100
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: UNIFIED_TASK_LIST.LOV.INITIATED # 19867182691425810565
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: CREATED_AGO_HOURS
+      data-type: NUMBER
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P181_OWNER ==================================
+    id: 264348885243674772
+    identification: 
+      name: P181_OWNER
+      type: Checkbox Group
+
+    label: 
+      label: Owner
+
+    layout: 
+      sequence: 110
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: Dynamic
+      show-label: true
+
+    source: 
+      database-column: ACTUAL_OWNER
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+- # ====== Region: My Tasks - Report ===========================
+  id: 264344487493674768
+  identification: 
+    name: My Tasks - Report
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select task_id,
+             task_type,
+             task_def_name,
+             details_app_name,
+             details_link_target,
+             subject,
+             initiator,
+             actual_owner,
+             priority,
+             due_on,
+             due_in,
+             due_in_hours,
+             due_code,
+             state_code,
+             is_completed,
+             outcome,
+             created_on,
+             created_ago,
+             created_ago_hours,
+             last_updated_on,
+             badge_text,
+             badge_state
+        from table ( apex_human_task.get_tasks (
+                         p_context            => 'MY_TASKS',
+                         p_show_expired_tasks => :P181_SHOW_EXPIRED
+                         --, p_application_id => :APP_ID
+                         ) )
+    page-items-to-submit: 
+    - P181_SHOW_EXPIRED
+    optimizer-hint: APEX$USE_NO_GROUPING_SETS
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P181_SORT_BY
+      order-bys: 
+      - key: CREATED_ON
+        clause: created_on desc
+
+      - key: DUE_ON
+        clause: priority asc, due_on asc nulls last
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Main
+
+  advanced: 
+    static-id: my-tasks-report
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      title: '&SUBJECT.'
+      description: |
+        <strong>&TASK_DEF_NAME!HTML.</strong>
+        {if INITIATOR/}
+            <span role="separator" aria-label="&middot;"> &middot; </span>
+            &{APEX.TASK.INITIATED_BY_USER_SINCE 0=&INITIATOR!HTML. 1=&CREATED_AGO.}.
+        {endif/}
+        {if !IS_COMPLETED/}
+            {case DUE_CODE/}
+                {when OVERDUE/}
+                    <span role="separator" aria-label="&middot;"> &middot; </span>
+                    <strong class="u-danger-text">&{APEX.TASK.DUE_SINCE 0=&DUE_IN.}.</strong>
+                {when NEXT_HOUR/}
+                    <span role="separator" aria-label="&middot;"> &middot; </span>
+                    <strong class="u-danger-text">&{APEX.TASK.DUE_SINCE 0=&DUE_IN.}.</strong>
+                {when NEXT_24_HOURS/}
+                    <span role="separator" aria-label="&middot;"> &middot; </span>
+                    <span class="u-danger-text">&{APEX.TASK.DUE_SINCE 0=&DUE_IN.}.</span>
+                {otherwise/}
+                    {if DUE_IN/}
+                        <span role="separator" aria-label="&middot;"> &middot; </span>
+                        &{APEX.TASK.DUE_SINCE 0=&DUE_IN.}.
+                    {endif/}
+            {endcase/}
+        {endif/}
+        {if !IS_COMPLETED/}
+            <span role="separator" aria-label="&middot;"> &middot; </span>
+            {case PRIORITY/}
+                {when 1/}
+                    <strong class="u-danger-text">&{APEX.TASK.PRIORITY.1.DESCRIPTION}.</strong>
+                {when 2/}
+                    <span class="u-danger-text">&{APEX.TASK.PRIORITY.2.DESCRIPTION}.</span>
+                {when 3/}
+                    &{APEX.TASK.PRIORITY.3.DESCRIPTION}.
+                {when 4/}
+                    &{APEX.TASK.PRIORITY.4.DESCRIPTION}.
+                {when 5/}
+                    &{APEX.TASK.PRIORITY.5.DESCRIPTION}.
+            {endcase/}
+        {endif/}
+        
+      display-avatar: false
+      display-badge: true
+
+    badge: 
+      label: State
+      value: BADGE_TEXT
+      state: BADGE_STATE
+      display-label: false
+      style: Default
+      shape: Default
+      size: Default
+      column-width: Medium
+      position: START
+      alignment: START
+
+    appearance: 
+      apply-theme-colors: false
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+    entity-title: 
+      singular: task
+      plural: tasks
+
+    messages: 
+      when-no-data-found: No Tasks
+      no-data-found-icon: fa-clipboard-check-alt fa-lg
+
+  columns: 
+  - # ====== Column: TASK_ID =====================================
+    id: 264349545391674774
+    identification: 
+      name: TASK_ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: TASK_ID
+      data-type: NUMBER
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TASK_TYPE ===================================
+    id: 264350011306674775
+    identification: 
+      name: TASK_TYPE
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: TASK_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TASK_DEF_NAME ===============================
+    id: 264350566921674775
+    identification: 
+      name: TASK_DEF_NAME
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: TASK_DEF_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DETAILS_APP_NAME ============================
+    id: 264351043597674775
+    identification: 
+      name: DETAILS_APP_NAME
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: DETAILS_APP_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DETAILS_LINK_TARGET =========================
+    id: 264351568573674776
+    identification: 
+      name: DETAILS_LINK_TARGET
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: DETAILS_LINK_TARGET
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SUBJECT =====================================
+    id: 264352094057674776
+    identification: 
+      name: SUBJECT
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: SUBJECT
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: true
+
+    appearance: 
+      group: false
+
+  - # ====== Column: INITIATOR ===================================
+    id: 264352577390674776
+    identification: 
+      name: INITIATOR
+
+    layout: 
+      sequence: 70
+
+    source: 
+      type: Database Column
+      database-column: INITIATOR
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ACTUAL_OWNER ================================
+    id: 264353062870674777
+    identification: 
+      name: ACTUAL_OWNER
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: ACTUAL_OWNER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRIORITY ====================================
+    id: 264353560122674777
+    identification: 
+      name: PRIORITY
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: PRIORITY
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DUE_ON ======================================
+    id: 264354090213674777
+    identification: 
+      name: DUE_ON
+
+    layout: 
+      sequence: 100
+
+    source: 
+      type: Database Column
+      database-column: DUE_ON
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+      group: false
+
+  - # ====== Column: DUE_IN ======================================
+    id: 264354589813674778
+    identification: 
+      name: DUE_IN
+
+    layout: 
+      sequence: 110
+
+    source: 
+      type: Database Column
+      database-column: DUE_IN
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DUE_IN_HOURS ================================
+    id: 264355080836674778
+    identification: 
+      name: DUE_IN_HOURS
+
+    layout: 
+      sequence: 120
+
+    source: 
+      type: Database Column
+      database-column: DUE_IN_HOURS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DUE_CODE ====================================
+    id: 264355582807674778
+    identification: 
+      name: DUE_CODE
+
+    layout: 
+      sequence: 130
+
+    source: 
+      type: Database Column
+      database-column: DUE_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATE_CODE ==================================
+    id: 264356062014674779
+    identification: 
+      name: STATE_CODE
+
+    layout: 
+      sequence: 140
+
+    source: 
+      type: Database Column
+      database-column: STATE_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IS_COMPLETED ================================
+    id: 264356526601674779
+    identification: 
+      name: IS_COMPLETED
+
+    layout: 
+      sequence: 150
+
+    source: 
+      type: Database Column
+      database-column: IS_COMPLETED
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: OUTCOME =====================================
+    id: 264357094952674780
+    identification: 
+      name: OUTCOME
+
+    layout: 
+      sequence: 160
+
+    source: 
+      type: Database Column
+      database-column: OUTCOME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_ON ==================================
+    id: 264357531437674780
+    identification: 
+      name: CREATED_ON
+
+    layout: 
+      sequence: 170
+
+    source: 
+      type: Database Column
+      database-column: CREATED_ON
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+      group: false
+
+  - # ====== Column: CREATED_AGO =================================
+    id: 264358021909674780
+    identification: 
+      name: CREATED_AGO
+
+    layout: 
+      sequence: 180
+
+    source: 
+      type: Database Column
+      database-column: CREATED_AGO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_AGO_HOURS ===========================
+    id: 264358583673674781
+    identification: 
+      name: CREATED_AGO_HOURS
+
+    layout: 
+      sequence: 190
+
+    source: 
+      type: Database Column
+      database-column: CREATED_AGO_HOURS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: LAST_UPDATED_ON =============================
+    id: 264359013630674783
+    identification: 
+      name: LAST_UPDATED_ON
+
+    layout: 
+      sequence: 200
+
+    source: 
+      type: Database Column
+      database-column: LAST_UPDATED_ON
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+      group: false
+
+  - # ====== Column: BADGE_TEXT ==================================
+    id: 264359407948674783
+    identification: 
+      name: BADGE_TEXT
+
+    layout: 
+      sequence: 210
+
+    source: 
+      type: Database Column
+      database-column: BADGE_TEXT
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: BADGE_STATE =================================
+    id: 264359915585674783
+    identification: 
+      name: BADGE_STATE
+
+    layout: 
+      sequence: 220
+
+    source: 
+      type: Database Column
+      database-column: BADGE_STATE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Title Link ==================================
+    id: 264360498762674784
+    identification: 
+      position: Title Link # 348722977165395441
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to URL
+      target: '&DETAILS_LINK_TARGET.'
+
+  - # ====== Action: قبول التعيين ================================
+    id: 264360988391674786
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: قبول التعيين
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to URL
+      target: '#'
+      link-attributes: data-id="&TASK_ID."
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-user-plus u-hot-text
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - claim
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ":STATE_CODE = 'UNASSIGNED'"
+      execute-condition: For Each Row
+
+  - # ====== Action: Approve =====================================
+    id: 264361496666674787
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: Approve
+
+    layout: 
+      sequence: 30
+
+    link: 
+      type: Redirect to URL
+      target: '#'
+      link-attributes: data-id="&TASK_ID."
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-check-square u-success-text
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - approve
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ":TASK_TYPE = 'APPROVAL' and :STATE_CODE != 'INFO_REQUESTED'"
+      execute-condition: For Each Row
+
+  - # ====== Action: Reject ======================================
+    id: 264361915932674788
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: Reject
+
+    layout: 
+      sequence: 40
+
+    link: 
+      type: Redirect to URL
+      target: '#'
+      link-attributes: data-id="&TASK_ID."
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-times u-danger-text
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - reject
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ":TASK_TYPE = 'APPROVAL' and :STATE_CODE != 'INFO_REQUESTED'"
+      execute-condition: For Each Row
+
+page-items: 
+- # ====== Page Item: P181_TASK_ID =============================
+  id: 264343930619674766
+  identification: 
+    name: P181_TASK_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P181_SORT_BY =============================
+  id: 264362485734674788
+  identification: 
+    name: P181_SORT_BY
+    type: Select List
+
+  label: 
+    label: Sort by
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: My Tasks - Report # 264344487493674768
+    slot: ORDER_BY_ITEM
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 0
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-desc
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:Create Date;CREATED_ON,Due Date;DUE_ON'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - mnw160
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Static Value
+    static-value: DUE_ON
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per User (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P181_SHOW_EXPIRED ========================
+  id: 264362861975674789
+  identification: 
+    name: P181_SHOW_EXPIRED
+    type: Checkbox
+
+  label: 
+    label: Show expired tasks
+    alignment: Left
+
+  settings: 
+    use-defaults: false
+    checked-value: Y
+    unchecked-value: N
+
+  layout: 
+    sequence: 20
+    region: My Tasks - Report # 264344487493674768
+    slot: ORDER_BY_ITEM
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - u-nowrap
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Static Value
+    static-value: N
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per User (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+dynamic-actions: 
+- # ====== Dynamic Action: Claim ===============================
+  id: 264363250211674790
+  identification: 
+    name: Claim
+
+  execution: 
+    sequence: 10
+    event-scope: Dynamic
+    static-container-(jquery-selector): body
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: a.claim
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 264363633701674790
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: this.triggeringElement.dataset.id
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P181_TASK_ID
+
+    execution: 
+      sequence: 10
+      event: Claim # 264363250211674790
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 264364673136674792
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var taskId = this.triggeringElement.dataset.id;
+        
+        // حفظ في عنصر الصفحة
+        apex.item("P181_TASK_ID").setValue(taskId);
+        
+        // استدعاء Ajax Process
+        apex.server.process("CLAIM_TASK", {
+          x01: taskId
+        }, {
+          success: function(pData) {
+            if (pData.success === "Y") {
+              apex.message.showPageSuccess("تم قبول التعيين بنجاح");
+              apex.region("my-tasks-report").refresh(); // اسم الـ region الحقيقي
+            } else {
+              apex.message.alert("لم يتم قبول التعيين. ربما تم تعيينه من قبل.");
+            }
+          },
+          error: function(request, status, error) {
+            apex.message.alert("حدث خطأ في الاتصال بالخادم.");
+          }
+        });
+        
+
+    execution: 
+      sequence: 30
+      event: Claim # 264363250211674790
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264365176814674792
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Smart Filters # 264344325537674768
+
+    execution: 
+      sequence: 40
+      event: Claim # 264363250211674790
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264365609007674793
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Report # 264344487493674768
+
+    execution: 
+      sequence: 50
+      event: Claim # 264363250211674790
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 276642686437756960
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+          l_result VARCHAR2(20);
+        BEGIN
+          BEGIN
+            apex_human_task.claim_task(p_task_id => :P181_TASK_ID);
+            l_result := 'Y';
+          EXCEPTION
+            WHEN OTHERS THEN
+              IF SQLCODE = -20987 THEN
+                l_result := 'N';
+              ELSE
+                RAISE;
+              END IF;
+          END;
+        
+          owa_util.mime_header('application/json', FALSE);
+          owa_util.http_header_close;
+        
+          htp.p('{ "success": "' || l_result || '" }');
+        END;
+        
+
+    execution: 
+      sequence: 20
+      event: Claim # 264363250211674790
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+- # ====== Dynamic Action: Approve =============================
+  id: 264366149397674793
+  identification: 
+    name: Approve
+
+  execution: 
+    sequence: 30
+    event-scope: Dynamic
+    static-container-(jquery-selector): body
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: a.approve
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 264366526350674794
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: this.triggeringElement.dataset.id
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P181_TASK_ID
+
+    execution: 
+      sequence: 10
+      event: Approve # 264366149397674793
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 264367088365674794
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        apex_human_task.approve_task (
+            p_task_id   => :P181_TASK_ID,
+            p_autoclaim => true );
+      items-to-submit: 
+      - P181_TASK_ID
+
+    execution: 
+      sequence: 20
+      event: Approve # 264366149397674793
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 264367550591674794
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Task approved' );
+
+    affected-elements: 
+      selection-type: Region
+
+    execution: 
+      sequence: 30
+      event: Approve # 264366149397674793
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264368099184674794
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Smart Filters # 264344325537674768
+
+    execution: 
+      sequence: 40
+      event: Approve # 264366149397674793
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264368518827674795
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Report # 264344487493674768
+
+    execution: 
+      sequence: 50
+      event: Approve # 264366149397674793
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Reject ==============================
+  id: 264369089719674795
+  identification: 
+    name: Reject
+
+  execution: 
+    sequence: 50
+    event-scope: Dynamic
+    static-container-(jquery-selector): body
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: a.reject
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 264369501293674795
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: this.triggeringElement.dataset.id
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P181_TASK_ID
+
+    execution: 
+      sequence: 10
+      event: Reject # 264369089719674795
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 264369907213674795
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        apex_human_task.reject_task (
+            p_task_id   => :P181_TASK_ID,
+            p_autoclaim => true );
+      items-to-submit: 
+      - P181_TASK_ID
+
+    execution: 
+      sequence: 20
+      event: Reject # 264369089719674795
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 264370484651674795
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Task rejected' );
+
+    affected-elements: 
+      selection-type: Region
+
+    execution: 
+      sequence: 30
+      event: Reject # 264369089719674795
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264370955572674796
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Smart Filters # 264344325537674768
+
+    execution: 
+      sequence: 40
+      event: Reject # 264369089719674795
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264371461607674796
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Report # 264344487493674768
+
+    execution: 
+      sequence: 50
+      event: Reject # 264369089719674795
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh - My Tasks - Report =========
+  id: 264371967747674796
+  identification: 
+    name: Refresh - My Tasks - Report
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: My Tasks - Report # 264344487493674768
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 264372310385674796
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Report # 264344487493674768
+
+    execution: 
+      sequence: 10
+      event: Refresh - My Tasks - Report # 264371967747674796
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264372894479674796
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Smart Filters # 264344325537674768
+
+    execution: 
+      sequence: 20
+      event: Refresh - My Tasks - Report # 264371967747674796
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh - My Tasks - Report =========
+  id: 264373359746674797
+  identification: 
+    name: Refresh - My Tasks - Report
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P181_SHOW_EXPIRED
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 264373741867674797
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Report # 264344487493674768
+
+    execution: 
+      sequence: 10
+      event: Refresh - My Tasks - Report # 264373359746674797
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 264374227647674797
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: My Tasks - Smart Filters # 264344325537674768
+
+    execution: 
+      sequence: 20
+      event: Refresh - My Tasks - Report # 264373359746674797
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Claim_1 =============================
+  id: 276642979098756963
+  identification: 
+    name: Claim_1
+
+  execution: 
+    sequence: 20
+    event-scope: Dynamic
+    static-container-(jquery-selector): a.claim
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: a.claim
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 276643537587756969
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var taskId = this.triggeringElement.dataset.id;
+        
+        // خزّنه في العنصر المخفي
+        apex.item("P181_TASK_ID").setValue(taskId);
+        
+        // نفّذ عملية Ajax
+        apex.server.process("CLAIM_TASK", {
+          x01: taskId
+        }, {
+          success: function(pData) {
+            if (pData.success === "Y") {
+              apex.message.showPageSuccess("✅ تم قبول التعيين بنجاح");
+              apex.region("my-tasks-report").refresh(); // عدّل الـ Static ID لو مختلف
+            } else {
+              apex.message.showErrors([{
+                type: "error",
+                location: "page",
+                message: "❗ لم يتم قبول التعيين. ربما تم تعيينه من قبل.",
+                unsafe: false
+              }]);
+            }
+          },
+          error: function() {
+            apex.message.showErrors([{
+              type: "error",
+              location: "page",
+              message: "❌ حدث خطأ في الاتصال بالخادم.",
+              unsafe: false
+            }]);
+          }
+        });
+        
+
+    execution: 
+      sequence: 10
+      event: Claim_1 # 276642979098756963
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: CLAIM_TASK =================================
+  id: 276642541499756959
+  identification: 
+    name: CLAIM_TASK
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_result VARCHAR2(1);
+      BEGIN
+        BEGIN
+          apex_human_task.claim_task(p_task_id => apex_application.g_x01);
+          l_result := 'Y';
+        EXCEPTION
+          WHEN OTHERS THEN
+            IF SQLCODE = -20987 THEN
+              l_result := 'N';
+            ELSE
+              RAISE;
+            END IF;
+        END;
+      
+        owa_util.mime_header('application/json', FALSE);
+        owa_util.http_header_close;
+      
+        htp.p('{ "success": "' || l_result || '" }');
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+

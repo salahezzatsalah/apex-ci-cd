@@ -1,0 +1,1123 @@
+---
+# ====== Page: FastTrack Report Generator ====================
+id: 199
+identification: 
+  name: FastTrack Report Generator
+  alias: FASTTRACK-REPORT-GENERATOR
+  title: تقرير المسار السريع
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Container ===================================
+  id: 326406603213807983
+  identification: 
+    name: Container
+    title: ادارة البحث والتنزيل
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: FastTrack Classic Report Region =============
+  id: 326407343051807991
+  identification: 
+    name: FastTrack Classic Report Region
+    title: تقرير التشغيلات
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          ROW_NUMBER() OVER (
+              ORDER BY ftr.RESERVATION_DATE ASC, ftr.RES_TIME ASC
+          ) AS "Row Number",
+          
+          ftr.RESERVATION_ID AS "Reservation ID",                       
+          c.CLIENT_CODE AS "Client Code",                       
+          c.PHONE AS "Client Number",                    
+          NVL(ftc.SERVICE_NAME, ftr.RESERVATION_TYPE) AS "Reservation Type",                  
+          ftr.notes AS "Reservation Details",             
+          ftr.TICKET_NO AS "Ticket Number",                       
+          TO_CHAR(ftr.RESERVATION_DATE, 'DD/MM/YYYY') || ' ' || ftr.RES_TIME AS "Reservation Date/Time",                    
+          TO_CHAR(ftr.PRICE_PER_PERSON, 'FM999,990.00') || ' ' || ftr.CURRENCY AS "Price per Person (with Currency)",   
+          ftr.PASSENGERS_NO AS "Passengers No",
+          TO_CHAR(ftr.PRICE_PER_PERSON * ftr.PASSENGERS_NO, 'FM999,990.00') || ' ' || ftr.CURRENCY AS "Total Price (with Currency)",
+          ftr.SIGNAGE_DETAILS AS "Signage Details"
+      
+      FROM 
+          FAST_TRACK_RESERVATIONS ftr
+      LEFT JOIN 
+          CRM_CLIENTS c ON ftr.CLIENT_ID = c.CLIENT_ID
+      LEFT JOIN 
+          FAST_TRACK_SERVICE_CATALOG ftc ON ftr.SERVICE_ID = ftc.SERVICE_ID
+      
+      WHERE 
+          TRUNC(ftr.RESERVATION_DATE) BETWEEN TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY') 
+                                         AND TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY')
+      ORDER BY 
+          ftr.RESERVATION_DATE ASC, 
+          ftr.RES_TIME ASC;
+      
+    page-items-to-submit: 
+    - P199_STARTDATE
+    - P199_ENDDATE
+    - P199_REPORT_DATE
+    - P199_FILTER_DATE_RANGE
+    - P199_EMPLOYEE_NAME
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: Row Number ==================================
+    id: 230127938284470531
+    identification: 
+      column-name: Row Number
+      type: Plain Text
+
+    heading: 
+      heading: Row Number
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Reservation ID ==============================
+    id: 230128075129470532
+    identification: 
+      column-name: Reservation ID
+      type: Plain Text
+
+    heading: 
+      heading: كود الحجز
+      alignment: center
+
+    layout: 
+      sequence: 130
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Client Code =================================
+    id: 230128111495470533
+    identification: 
+      column-name: Client Code
+      type: Plain Text
+
+    heading: 
+      heading: كود العميل
+      alignment: center
+
+    layout: 
+      sequence: 30
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Client Number ===============================
+    id: 230128181801470534
+    identification: 
+      column-name: Client Number
+      type: Plain Text
+
+    heading: 
+      heading: رقم العميل
+      alignment: center
+
+    layout: 
+      sequence: 40
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Reservation Type ============================
+    id: 230128340261470535
+    identification: 
+      column-name: Reservation Type
+      type: Plain Text
+
+    heading: 
+      heading: نوع الخدمة
+      alignment: center
+
+    layout: 
+      sequence: 20
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Reservation Details =========================
+    id: 230530818806461286
+    identification: 
+      column-name: Reservation Details
+      type: Plain Text
+
+    heading: 
+      heading: تفاصيل الخدمة
+      alignment: center
+
+    layout: 
+      sequence: 120
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Ticket Number ===============================
+    id: 230530966138461287
+    identification: 
+      column-name: Ticket Number
+      type: Plain Text
+
+    heading: 
+      heading: رقم التذكرة
+      alignment: center
+
+    layout: 
+      sequence: 70
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Reservation Date/Time =======================
+    id: 230531038784461288
+    identification: 
+      column-name: Reservation Date/Time
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الرحلة
+      alignment: center
+
+    layout: 
+      sequence: 60
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Price per Person (with Currency) ============
+    id: 230531082404461289
+    identification: 
+      column-name: Price per Person (with Currency)
+      type: Plain Text
+
+    heading: 
+      heading: سعر الفرد
+      alignment: center
+
+    layout: 
+      sequence: 100
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Passengers No ===============================
+    id: 230531255484461290
+    identification: 
+      column-name: Passengers No
+      type: Plain Text
+
+    heading: 
+      heading: عدد الافراد
+      alignment: center
+
+    layout: 
+      sequence: 90
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Total Price (with Currency) =================
+    id: 230531321224461291
+    identification: 
+      column-name: Total Price (with Currency)
+      type: Plain Text
+
+    heading: 
+      heading: الاجمالي
+      alignment: center
+
+    layout: 
+      sequence: 110
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: Signage Details =============================
+    id: 230531413705461292
+    identification: 
+      column-name: Signage Details
+      type: Plain Text
+
+    heading: 
+      heading: بيانات اللافتة
+      alignment: center
+
+    layout: 
+      sequence: 80
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: breadcrumb ==================================
+  id: 328371487502019272
+  identification: 
+    name: breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+page-items: 
+- # ====== Page Item: P199_STARTDATE ===========================
+  id: 326408118723807989
+  identification: 
+    name: P199_STARTDATE
+    type: Date Picker
+
+  label: 
+    label: بحث من تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 10
+    region: Container # 326406603213807983
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P199_ENDDATE =============================
+  id: 326408214023807990
+  identification: 
+    name: P199_ENDDATE
+    type: Date Picker
+
+  label: 
+    label: بحث الي تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: Item
+    minimum-item: P199_STARTDATE
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Container # 326406603213807983
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: DD-MM-YYYY
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P199_REPORT_DATE =========================
+  id: 326408493702807993
+  identification: 
+    name: P199_REPORT_DATE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Container # 326406603213807983
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      TO_CHAR(
+        CAST(FROM_TZ(CAST(SYSDATE AS TIMESTAMP), 'UTC') AT TIME ZONE 'Africa/Cairo' AS DATE),
+        'DD/MM/YYYY HH24:MI'
+      )
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P199_FILTER_DATE_RANGE ===================
+  id: 326408621043807994
+  identification: 
+    name: P199_FILTER_DATE_RANGE
+    type: Display Only
+
+  label: 
+    label: تاريخ تقرير الشغل
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 70
+    region: Container # 326406603213807983
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      CASE
+        WHEN TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY') = TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY') THEN
+          TO_CHAR(TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+        ELSE
+          'من ' || TO_CHAR(TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY') ||
+          ' إلى ' || TO_CHAR(TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+      END
+    used: Always, replacing any existing value in session state
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      CASE
+        WHEN TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY') = TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY') THEN
+          TO_CHAR(TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+        ELSE
+          'من ' || TO_CHAR(TO_DATE(:P199_STARTDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY') ||
+          ' إلى ' || TO_CHAR(TO_DATE(:P199_ENDDATE, 'DD-MM-YYYY'), 'DD-MM-YYYY')
+      END
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P199_EMPLOYEE_NAME =======================
+  id: 326408714914807995
+  identification: 
+    name: P199_EMPLOYEE_NAME
+    type: Display Only
+
+  label: 
+    label: اسم المستخدم
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 80
+    region: Container # 326406603213807983
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT USERNAME
+      FROM BS_EMPLOYEES
+      WHERE UPPER(USERNAME) = UPPER(:APP_USER)
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: SearchPeriod ================================
+  id: 281165827195175273
+  identification: 
+    button-name: SearchPeriod
+    label: بحث
+
+  layout: 
+    sequence: 90
+    region: Container # 326406603213807983
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--small
+    - t-Button--stretch
+    - t-Button--gapTop
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: DownloadReport ==============================
+  id: 281166266116175274
+  identification: 
+    button-name: DownloadReport
+    label: تحميل التقرير
+
+  layout: 
+    sequence: 100
+    region: Container # 326406603213807983
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+    - t-Button--gapTop
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh =============================
+  id: 281173097188175290
+  identification: 
+    name: refresh
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P199_ENDDATE
+
+  actions: 
+  - # ====== Action: Submit Page =================================
+    id: 281173511929175291
+    identification: 
+      action: Submit Page
+
+    settings: 
+      show-processing: true
+
+    execution: 
+      sequence: 10
+      event: refresh # 281173097188175290
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: PrintReport =========================
+  id: 281173970658175291
+  identification: 
+    name: PrintReport
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: DownloadReport # 281166266116175274
+
+  actions: 
+  - # ====== Action: Print Report ================================
+    id: 281174416628175292
+    identification: 
+      action: Print Report
+
+    settings: 
+      report-query: FastTrack Report Query # 281215017882546998
+      filename: تقرير مسار سريع - &P199_REPORT_DATE.
+      view-file-as: Attachment
+      items-to-submit: 
+      - P199_REPORT_DATE
+      - P199_FILTER_DATE_RANGE
+      - P199_EMPLOYEE_NAME
+
+    execution: 
+      sequence: 10
+      event: PrintReport # 281173970658175291
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Update EndDate ======================
+  id: 281174897662175292
+  identification: 
+    name: Update EndDate
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P199_STARTDATE
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 281175309167175293
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: ':P199_STARTDATE'
+      items-to-submit: 
+      - P199_STARTDATE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P199_ENDDATE
+
+    execution: 
+      sequence: 10
+      event: Update EndDate # 281174897662175292
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: RefreshFieldsREPORT =================
+  id: 281175768894175293
+  identification: 
+    name: RefreshFieldsREPORT
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P199_STARTDATE
+    - P199_ENDDATE
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 281176253712175294
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P199_FILTER_DATE_RANGE
+      - P199_REPORT_DATE
+
+    execution: 
+      sequence: 10
+      event: RefreshFieldsREPORT # 281175768894175293
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+

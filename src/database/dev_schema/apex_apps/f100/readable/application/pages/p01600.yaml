@@ -1,0 +1,624 @@
+---
+# ====== Page: Fast Track Profile Service ====================
+id: 1600
+identification: 
+  name: Fast Track Profile Service
+  alias: FAST-TRACK-PROFILE-SERVICE
+  title: 'تفاصيل نوع الخدمة '
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .sp-tag {
+      padding: .125rem .25rem;
+      display: inline-block;
+      vertical-align: text-bottom;
+      border-radius: .1875rem;
+      background-color: rgba(0, 0, 0, .1);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .sp-tags-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .25rem;
+      justify-content: flex-start;
+    }
+    
+    h3:first-of-type {
+      margin-block-start: 0;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: New =========================================
+  id: 193031247860522157
+  identification: 
+    name: New
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Menubar =====================================
+  id: 193032258798522167
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 194049318486070126
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 193032374070522168
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: اضافة تسعيرة ================================
+    id: 193032425420522169
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اضافة تسعيرة
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:1601:&SESSION.::&DEBUG.::P1601_SERVICE_ID:&P1600_SERVICE_ID.'
+        page: 1601 # Fast Track Type Price Form
+        values: 
+          p1601_service_id: '&P1600_SERVICE_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 194049318486070126
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Fast Track Profile Service ==================
+  id: 194050079512070130
+  identification: 
+    name: Fast Track Profile Service
+    title: تفاصيل نوع الخدمة - &P1600_NAME
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select SERVICE_PRICE_ID,
+             SERVICE_ID,
+             PRICE,
+             CURRENCY_CODE,
+             EFFECTIVE_DATE,
+             CREATED_BY,
+             CREATED,
+             UPDATED_BY,
+             UPDATED
+        from FAST_TRACK_SERVICE_PRICES
+        WHERE
+        SERVICE_ID = :P1600_SERVICE_ID
+        
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: '&SERVICE_ID.'
+      title: |
+        &PRICE.&CURRENCY_CODE.
+        
+        
+      description: |
+        &CREATED_BY.
+        
+        
+      miscellaneous: '&EFFECTIVE_DATE.'
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: SERVICE_PRICE_ID ============================
+    id: 193031348018522158
+    identification: 
+      name: SERVICE_PRICE_ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_PRICE_ID
+      data-type: NUMBER
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: SERVICE_ID ==================================
+    id: 193031442893522159
+    identification: 
+      name: SERVICE_ID
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PRICE =======================================
+    id: 193031588690522160
+    identification: 
+      name: PRICE
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: PRICE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 193031644685522161
+    identification: 
+      name: CURRENCY_CODE
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: EFFECTIVE_DATE ==============================
+    id: 193031765704522162
+    identification: 
+      name: EFFECTIVE_DATE
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: EFFECTIVE_DATE
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 193031860020522163
+    identification: 
+      name: CREATED_BY
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+      display-extra-values: true
+
+  - # ====== Column: CREATED =====================================
+    id: 193031950111522164
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 70
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 193032072284522165
+    identification: 
+      name: UPDATED_BY
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED =====================================
+    id: 193032092952522166
+    identification: 
+      name: UPDATED
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: TIMESTAMP
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+page-items: 
+- # ====== Page Item: P1600_NAME ===============================
+  id: 194084872423499751
+  identification: 
+    name: P1600_NAME
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Fast Track Profile Service # 194050079512070130
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: SERVICE_ID
+    used: Always, replacing any existing value in session state
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'SELECT SERVICE_NAME FROM FAST_TRACK_SERVICE_CATALOG WHERE SERVICE_ID = :P1600_SERVICE_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1600_SERVICE_ID =========================
+  id: 194084941645499752
+  identification: 
+    name: P1600_SERVICE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Fast Track Profile Service # 194050079512070130
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Database Column
+    database-column: SERVICE_ID
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+

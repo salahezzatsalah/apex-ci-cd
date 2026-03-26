@@ -1,0 +1,2406 @@
+---
+# ====== Page: choose service type ===========================
+id: 273
+identification: 
+  name: choose service type
+  alias: CHOOSE-SERVICE-TYPE
+  title: choose service type
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  file-urls: 
+  - 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCHHyMsTG-SA9k9A4WKo_jGMd3e7uR5zxU&libraries=places&loading=async'
+  execute-when-page-loads: |
+    (function () {
+      // --- 1. دوال المساعدة (الخاصة بجوجل ماب والـ Slots) ---
+      async function waitForGoogle() {
+        for (let i = 0; i < 60; i++) {
+          if (window.google && google.maps && google.maps.importLibrary) return;
+          await new Promise(r => setTimeout(r, 200));
+        }
+        throw new Error("Google Maps JS not ready");
+      }
+    
+      function norm(v) { return String(v || "").trim().toUpperCase(); }
+    
+      async function waitForEl(id, tries = 40, ms = 100) {
+        for (let i = 0; i < tries; i++) {
+          const el = document.getElementById(id);
+          if (el) return el;
+          await new Promise(r => setTimeout(r, ms));
+        }
+        return null;
+      }
+    
+      // --- 2. دالة الـ PAC (جوجل ماب) ---
+      async function mountPAC(slotId, textItem, placeIdItem, placeholder, cfg) {
+        const slot = await waitForEl(slotId, 60, 100);
+        if (!slot) {
+          console.warn("❌ Slot not found:", slotId);
+          return;
+        }
+    
+        await waitForGoogle();
+        const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+    
+        slot.innerHTML = "";
+        const pac = new PlaceAutocompleteElement();
+    
+        if (cfg?.includedPrimaryTypes) pac.includedPrimaryTypes = cfg.includedPrimaryTypes;
+        if (cfg?.includedRegionCodes)  pac.includedRegionCodes  = cfg.includedRegionCodes;
+    
+        pac.placeholder = placeholder || "";
+        pac.style.width = "100%";
+        slot.appendChild(pac);
+    
+        pac.addEventListener("gmp-select", async (e) => {
+          const pred = e.placePrediction;
+          if (!pred) return;
+          const place = pred.toPlace();
+          await place.fetchFields({ fields: ["formattedAddress", "displayName", "id"] });
+          const label = place.formattedAddress || place.displayName || "";
+          const pid   = place.id || pred.placeId || "";
+    
+          apex.item(textItem).setValue(label);
+          apex.item(placeIdItem).setValue(pid);
+        });
+        console.log("✅ Mounted PAC in:", slotId);
+      }
+    
+      // --- 3. دوال الـ Slots (نقل حقول أبكس الـ Hidden) ---
+      function moveItemsToSlots() {
+        const items = ['P273_ARRIVAL_DATE', 'P273_ARRIVAL_TIME', 'P273_PASSENGERS', 'P273_LAGUAGE', 'P273_RETURN_DATE', 'P273_IS_RETURN'];
+        items.forEach(item => {
+            const slot = document.getElementById(item + '_SLOT');
+            const container = document.getElementById(item + '_CONTAINER');
+            if (slot && container) {
+                slot.appendChild(container);
+                container.style.display = 'block';
+                const lb = container.querySelector('.t-Form-labelContainer');
+                if (lb) lb.style.display = 'none';
+            }
+        });
+      }
+    
+      // --- 4. دالة التحكم في السويتش (تاريخ العودة) ---
+      function handleReturnSwitch() {
+        const sw = apex.item("P273_IS_RETURN");
+        const rd = document.getElementById("return-date-wrapper");
+        if (sw && rd) {
+            const toggleRD = () => {
+                const val = String(sw.getValue()).toUpperCase();
+                if (val === 'Y' || val === '1' || val === 'ON' || val === 'YES') {
+                    apex.jQuery(rd).stop(true, true).fadeIn(300);
+                } else {
+                    apex.jQuery(rd).stop(true, true).fadeOut(300);
+                }
+            };
+            toggleRD();
+            apex.jQuery(sw.node).on('change', toggleRD);
+        }
+      }
+    
+      // --- 5. تهيئة الخدمات ---
+      async function mountByService() {
+        const st = norm(apex.item("P273_SERVICETYPE").getValue());
+        console.log("🔎 ServiceType =", st);
+    
+        if (st === "AIRPORT") {
+          await mountPAC("PAC_FROM_SLOT", "P273_AIRPORT_FROM", "P273_FROM_PLACE_ID", "من (مطار داخل مصر)", { includedPrimaryTypes: ["airport"], includedRegionCodes: ["eg"] });
+          await mountPAC("PAC_TO_SLOT", "P273_AIRPORT_TO", "P273_TO_PLACE_ID", "إلى (أي مكان)", {});
+        } else if (st === "TRANSFER") {
+          await mountPAC("PAC_TR_FROM_SLOT", "P273_TR_FROM_LOCATION", "P273_TR_FROM_PLACE_ID", "من", {});
+          await mountPAC("PAC_TR_TO_SLOT", "P273_TR_TO_LOCATION", "P273_TR_TO_PLACE_ID", "إلى", {});
+        }
+      }
+    
+      window.initPACByService = function () {
+        setTimeout(() => { mountByService(); }, 200);
+      };
+    
+      // --- 6. نقطة الانطلاق (Execution) ---
+      apex.jQuery(function () {
+        moveItemsToSlots();    // 1. نقل الحقول للأماكن الجديدة
+        handleReturnSwitch();  // 2. تفعيل السويتش
+        window.initPACByService(); // 3. تفعيل جوجل ماب
+    
+        // التعامل مع تغيير نوع الخدمة
+        try {
+          const node = apex.item("P273_SERVICETYPE").node;
+          apex.jQuery(node).on("change", function () {
+            window.initPACByService();
+          });
+        } catch (e) {}
+    
+        // إعادة التشغيل عند الـ Refresh
+        apex.jQuery(document).on("apexafterrefresh", function () {
+          moveItemsToSlots();
+          window.initPACByService();
+        });
+      });
+    })();
+    
+
+css: 
+  inline: |
+    /* الحاوية الأساسية */
+    .booking-main-wrapper {
+        direction: rtl;
+        padding: 15px;
+        background: transparent !important;
+    }
+    
+    /* --- تنسيق المسار (من وإلى) بنظام الأعمدة --- */
+    .route-section-flex {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .route-visual-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 30px;
+        padding-top: 10px;
+        flex-shrink: 0;
+    }
+    
+    .dot-start { width: 12px; height: 12px; background: #b07d2b; border-radius: 50%; }
+    .dashed-line { flex-grow: 1; border-right: 2px dashed #f29d38; margin: 5px 0; min-height: 45px; }
+    .loc-end { 
+        width: 22px; height: 22px; 
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b07d2b'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E") no-repeat center;
+        background-size: contain;
+    }
+    
+    .route-inputs-column { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
+    
+    /* --- تنسيق الـ Grid (حقلين جنب بعض) --- */
+    .details-row-flex {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    .flex-item {
+        flex: 1;
+        min-width: 0; /* بيمنع الحقول إنها تخرج بره الشاشة */
+    }
+    
+    /* الحقول شفافة بحد سفلي فقط */
+    #PAC_FROM_SLOT input, #PAC_TO_SLOT input, 
+    .flex-item div[id*="_SLOT"] {
+        border-bottom: 1.5px solid #eee !important;
+        background: transparent !important;
+        min-height: 40px;
+    }
+    
+    /* تنسيق العناوين (Labels) */
+    .custom-label {
+        display: block;
+        font-size: 13px;
+        color: #888;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    
+    .section-divider { border: 0; border-top: 1px solid #f0f0f0; margin: 25px 0; }
+    
+    /* تظبيط السويتش */
+    .switch-container {
+        max-width: 100px; /* بيخلي السويتش ما ياخدش مساحة كبيرة */
+    }
+    
+    
+    /* إضافة الـ Slots الجديدة للـ Style */
+    #PAC_TR_FROM_SLOT input, #PAC_TR_TO_SLOT input,
+    div[id*="TR_"][id$="_SLOT"] {
+        border-bottom: 1.5px solid #eee !important;
+        background: transparent !important;
+        min-height: 40px;
+    }
+    
+    
+    /* إخفاء الحقول في مكانها الأصلي */
+    .hide-me { 
+        display: none !important; 
+    }
+    
+    /* إجبار الحقل على الظهور فور دخوله جوه الـ Slot */
+    div[id$="_SLOT"] .hide-me, 
+    div[id$="_SLOT"] .t-Form-fieldContainer {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* تنسيق إضافي لضمان ظهور الـ Input نفسه */
+    .flex-item input {
+        display: inline-block !important;
+        width: 100% !important;
+    }
+    
+    
+    /* تنسيق الحاوية لضمان ترتيب الأيقونات فوق الحقول */
+    .booking-main-wrapper { 
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: choose service type =========================
+  id: 220276312424280330
+  identification: 
+    name: choose service type
+    type: List
+
+  source: 
+    list: limo search result # 220275477752280322
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Wizard Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-Wizard--hideStepsXSmall
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      list-template: Wizard Progress
+
+- # ====== Region: choose service type =========================
+  id: 220276391048280330
+  identification: 
+    name: choose service type
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: choose service type # 220276312424280330
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: RG_TRANSFER =================================
+  id: 220390698351441886
+  identification: 
+    name: RG_TRANSFER
+    type: Static Content
+
+  source: 
+    html-code: |
+      <div class="transfer-grid">
+        <div class="transfer-field">
+          <label class="transfer-label">من</label>
+          <div id="PAC_TR_FROM_SLOT"></div>
+        </div>
+      
+        <div class="transfer-field">
+          <label class="transfer-label">إلى</label>
+          <div id="PAC_TR_TO_SLOT"></div>
+        </div>
+      </div>
+
+  layout: 
+    sequence: 30
+    parent-region: choose service type # 220276391048280330
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Hero
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-car
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: LIMO_SEARCH_CARD
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: New =========================================
+  id: 220391627508441895
+  identification: 
+    name: New
+    type: Static Content
+
+  source: 
+    html-code: |
+      <div class="booking-main-wrapper">
+        <div class="route-section-flex">
+          <div class="route-visual-column">
+            <div class="dot-start"></div>
+            <div class="dashed-line"></div>
+            <div class="loc-end"></div>
+          </div>
+          <div class="route-inputs-column">
+            <div class="input-group">
+              <label class="custom-label">من (نقطة الالتقاء)</label>
+              <div id="PAC_TR_FROM_SLOT"></div>
+            </div>
+            <div class="input-group">
+              <label class="custom-label">إلى (نقطة الوصول)</label>
+              <div id="PAC_TR_TO_SLOT"></div>
+            </div>
+          </div>
+        </div>
+      
+        <hr class="section-divider">
+      
+        <div class="details-grid-flex">
+          <div class="details-row-flex">
+            <div class="flex-item">
+              <label class="custom-label">تاريخ التوصيلة</label>
+              <div id="P273_TR_DATE_SLOT"></div>
+            </div>
+            <div class="flex-item">
+              <label class="custom-label">ساعة التوصيلة</label>
+              <div id="P273_TR_TIME_SLOT"></div>
+            </div>
+          </div>
+      
+          <div class="details-row-flex">
+            <div class="flex-item">
+              <label class="custom-label">عدد الركاب</label>
+              <div id="P273_TR_PASSENGERS_SLOT"></div>
+            </div>
+            <div class="flex-item">
+              <label class="custom-label">عدد الحقائب</label>
+              <div id="P273_TR_LUGGAGE_SLOT"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  layout: 
+    sequence: 10
+    parent-region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: RG_DAILY ====================================
+  id: 220392056790441899
+  identification: 
+    name: RG_DAILY
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: choose service type # 220276391048280330
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: RG_CITYTOCITY ===============================
+  id: 220983710740987850
+  identification: 
+    name: RG_CITYTOCITY
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: choose service type # 220276391048280330
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: RG_AIRPORT ==================================
+  id: 379692204613458253
+  identification: 
+    name: RG_AIRPORT
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: choose service type # 220276391048280330
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Hero
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--standardPadding
+    icon: fa-plane
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: REG_AIRPORT_HTML.
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: New =========================================
+  id: 379692832168458259
+  identification: 
+    name: New
+    type: Static Content
+
+  source: 
+    html-code: |
+      <div class="booking-main-wrapper">
+        
+        <div class="route-section-flex">
+          <div class="route-visual-column">
+            <div class="dot-start"></div>
+            <div class="dashed-line"></div>
+            <div class="loc-end"></div>
+          </div>
+          <div class="route-inputs-column">
+            <div class="input-group">
+              <label class="custom-label">من (مطار داخل مصر)</label>
+              <div id="PAC_FROM_SLOT"></div>
+            </div>
+            <div class="input-group">
+              <label class="custom-label">إلى (أي مكان)</label>
+              <div id="PAC_TO_SLOT"></div>
+            </div>
+          </div>
+        </div>
+      
+        <hr class="section-divider">
+      
+        <div class="details-grid-flex">
+          <div class="details-row-flex">
+            <div class="flex-item">
+              <label class="custom-label">تاريخ الوصول</label>
+              <div id="P273_ARRIVAL_DATE_SLOT"></div>
+            </div>
+            <div class="flex-item">
+              <label class="custom-label">ساعة الوصول</label>
+              <div id="P273_ARRIVAL_TIME_SLOT"></div>
+            </div>
+          </div>
+      
+          <div class="details-row-flex">
+            <div class="flex-item">
+              <label class="custom-label">عدد الركاب</label>
+              <div id="P273_PASSENGERS_SLOT"></div>
+            </div>
+            <div class="flex-item">
+              <label class="custom-label">عدد الحقائب</label>
+              <div id="P273_LAGUAGE_SLOT"></div>
+            </div>
+          </div>
+      
+          <div class="details-row-flex return-align">
+            <div class="flex-item switch-container">
+              <label class="custom-label">رحلة عودة؟</label>
+              <div id="P273_IS_RETURN_SLOT"></div>
+            </div>
+            <div class="flex-item" id="return-date-wrapper" style="display:none;">
+              <label class="custom-label">تاريخ العودة</label>
+              <div id="P273_RETURN_DATE_SLOT"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  layout: 
+    sequence: 10
+    parent-region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: PAGE_273_CONTAINER
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P273_SERVICETYPE =========================
+  id: 220295857254397019
+  identification: 
+    name: P273_SERVICETYPE
+    type: Radio Group
+
+  label: 
+    label: نوع الخدمة
+    alignment: Left
+
+  settings: 
+    number-of-columns: 4
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: choose service type # 220276391048280330
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--large
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--slimPadding
+    - t-Form-fieldContainer--boldDisplay
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:استقبال;AIRPORT,يومية;DAILY,توصيلة;TRANSFER,مدينة الي مدينة;CITYTOCITY'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - service-type-pills
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_FROM_PLACE_ID ====================
+  id: 220390823453441887
+  identification: 
+    name: P273_TR_FROM_PLACE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_TO_PLACE_ID ======================
+  id: 220390904281441888
+  identification: 
+    name: P273_TR_TO_PLACE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 50
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_FROM_LOCATION ====================
+  id: 220391034887441889
+  identification: 
+    name: P273_TR_FROM_LOCATION
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 70
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_TO_LOCATION ======================
+  id: 220391182434441890
+  identification: 
+    name: P273_TR_TO_LOCATION
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 80
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_DATE =============================
+  id: 220391274615441891
+  identification: 
+    name: P273_TR_DATE
+    type: Date Picker
+
+  label: 
+    label: Tr Date
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 110
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_PASSENGERS =======================
+  id: 220391489016441893
+  identification: 
+    name: P273_TR_PASSENGERS
+    type: Text Field
+
+  label: 
+    label: Tr Passengers
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 120
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 6
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_LUGGAGE ==========================
+  id: 220391500202441894
+  identification: 
+    name: P273_TR_LUGGAGE
+    type: Text Field
+
+  label: 
+    label: Tr Luggage
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 130
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 6
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TR_TIME =============================
+  id: 220984156944987854
+  identification: 
+    name: P273_TR_TIME
+    type: ClockPicker
+
+  label: 
+    label: ساعة الوصول
+    alignment: Left
+
+  settings: 
+    placement: Bottom
+    align: Left
+    autoclose: True
+    12h-mode: False
+    done-button-text: Done
+    show-clock-button: No
+    suppress-mobile-keyboards: No
+    logging: False
+
+  layout: 
+    sequence: 100
+    region: RG_TRANSFER # 220390698351441886
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    custom-attributes: 
+    - type="time"
+    - 'min="00:00"'
+    - 'max="23:59"'
+    - step="60"
+    - class="apex-item-text"
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_DAILY_DATE_FROM =====================
+  id: 220985330725987866
+  identification: 
+    name: P273_DAILY_DATE_FROM
+    type: Date Picker
+
+  label: 
+    label: Daily Date From
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 10
+    region: RG_DAILY # 220392056790441899
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_DAILY_DATE_TO =======================
+  id: 220985403389987867
+  identification: 
+    name: P273_DAILY_DATE_TO
+    type: Date Picker
+
+  label: 
+    label: Daily Date To
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 20
+    region: RG_DAILY # 220392056790441899
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_DAILY_HOURS =========================
+  id: 220985567710987868
+  identification: 
+    name: P273_DAILY_HOURS
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 30
+    region: RG_DAILY # 220392056790441899
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Static Value
+    static-value: 12
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_DAILY_PRICE_HOUR ====================
+  id: 220985675563987869
+  identification: 
+    name: P273_DAILY_PRICE_HOUR
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: RG_DAILY # 220392056790441899
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_DISTANCE_KM =========================
+  id: 379693021889458264
+  identification: 
+    name: P273_DISTANCE_KM
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_DURATION_MIN ========================
+  id: 379762018460071214
+  identification: 
+    name: P273_DURATION_MIN
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_FROM_PLACE_ID =======================
+  id: 379762376520072868
+  identification: 
+    name: P273_FROM_PLACE_ID
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 60
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_TO_PLACE_ID =========================
+  id: 379762600344074319
+  identification: 
+    name: P273_TO_PLACE_ID
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 70
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_AIRPORT_FROM ========================
+  id: 379762939425075646
+  identification: 
+    name: P273_AIRPORT_FROM
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 80
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_AIRPORT_TO ==========================
+  id: 379763206711076964
+  identification: 
+    name: P273_AIRPORT_TO
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 90
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_ARRIVAL_DATE ========================
+  id: 379764635454080437
+  identification: 
+    name: P273_ARRIVAL_DATE
+    type: Date Picker
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 100
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hide-me.
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_PASSENGERS ==========================
+  id: 379765215782083104
+  identification: 
+    name: P273_PASSENGERS
+    type: Text Field
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 120
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hide-me.
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_LAGUAGE =============================
+  id: 379765503846084620
+  identification: 
+    name: P273_LAGUAGE
+    type: Text Field
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 130
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hide-me.
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_RETURN_DATE =========================
+  id: 379765846665086637
+  identification: 
+    name: P273_RETURN_DATE
+    type: Date Picker
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 150
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hide-me.
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_IS_RETURN ===========================
+  id: 379766103370089000
+  identification: 
+    name: P273_IS_RETURN
+    type: Switch
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 160
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hide-me.
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P273_ARRIVAL_TIME ========================
+  id: 379769554474172086
+  identification: 
+    name: P273_ARRIVAL_TIME
+    type: ClockPicker
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    placement: Bottom
+    align: Left
+    autoclose: True
+    12h-mode: False
+    done-button-text: Done
+    show-clock-button: No
+    suppress-mobile-keyboards: No
+    logging: False
+
+  layout: 
+    sequence: 110
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - hide-me.
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 220277755641280339
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: choose service type # 220276312424280330
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--primary
+    - t-Button--simple
+    css-classes: 
+    - cancel-btn
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::'
+      page: 1 # home
+
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: B_CANCEL
+
+- # ====== Button: NEXT ========================================
+  id: 220278024304280339
+  identification: 
+    button-name: NEXT
+    label: Next
+
+  layout: 
+    sequence: 30
+    region: choose service type # 220276312424280330
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - t-Button--primary
+    - t-Button--simple
+    - t-Button--iconRight
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: BTN_CALC ====================================
+  id: 220311365374603422
+  identification: 
+    button-name: BTN_CALC
+    label: بحث عن الاسعار
+
+  layout: 
+    sequence: 170
+    region: RG_AIRPORT # 379692204613458253
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--stretch
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+dynamic-actions: 
+- # ====== Dynamic Action: New =================================
+  id: 220305712381546851
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P273_SERVICETYPE
+
+  actions: 
+  - # ====== Action: show_arport =================================
+    id: 220305830539546852
+    identification: 
+      name: show_arport
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_AIRPORT # 379692204613458253
+
+    execution: 
+      sequence: 10
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: apex.item("P273_SERVICETYPE").getValue() === "AIRPORT"
+
+  - # ====== Action: hide_airport ================================
+    id: 220305988951546853
+    identification: 
+      name: hide_airport
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_AIRPORT # 379692204613458253
+
+    execution: 
+      sequence: 20
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: apex.item("P273_SERVICETYPE").getValue() !== "AIRPORT"
+
+  - # ====== Action: show_transfer ===============================
+    id: 220391781316441896
+    identification: 
+      name: show_transfer
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_TRANSFER # 220390698351441886
+
+    execution: 
+      sequence: 30
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: apex.item("P273_SERVICETYPE").getValue() === "TRANSFER"
+
+  - # ====== Action: hide_transfer ===============================
+    id: 220391805948441897
+    identification: 
+      name: hide_transfer
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_TRANSFER # 220390698351441886
+
+    execution: 
+      sequence: 40
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: apex.item("P273_SERVICETYPE").getValue() !== "TRANSFER"
+
+  - # ====== Action: show_daily ==================================
+    id: 220391906442441898
+    identification: 
+      name: show_daily
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_DAILY # 220392056790441899
+
+    execution: 
+      sequence: 50
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: |
+        apex.item("P273_SERVICETYPE").getValue() === "DAILY"
+        
+
+  - # ====== Action: hide_daily ==================================
+    id: 220983878662987851
+    identification: 
+      name: hide_daily
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_DAILY # 220392056790441899
+
+    execution: 
+      sequence: 60
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: apex.item("P273_SERVICETYPE").getValue() !== "DAILY"
+
+  - # ====== Action: show_city ===================================
+    id: 220983951063987852
+    identification: 
+      name: show_city
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_CITYTOCITY # 220983710740987850
+
+    execution: 
+      sequence: 70
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: hide_city ===================================
+    id: 220984078792987853
+    identification: 
+      name: hide_city
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: RG_CITYTOCITY # 220983710740987850
+
+    execution: 
+      sequence: 80
+      event: New # 220305712381546851
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: New_1 ===============================
+  id: 220306080076546854
+  identification: 
+    name: New_1
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P273_IS_RETURN
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 220306180377546855
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var v = apex.item("P273_IS_RETURN").getValue();
+        if (v === "Y") {
+          apex.jQuery("#P273_RETURN_DATE_CONTAINER").show();
+        } else {
+          apex.jQuery("#P273_RETURN_DATE_CONTAINER").hide();
+          apex.item("P273_RETURN_DATE").setValue("");
+        }
+        
+
+    execution: 
+      sequence: 10
+      event: New_1 # 220306080076546854
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: New ========================================
+  id: 220306284415546856
+  identification: 
+    name: New
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_km  NUMBER;
+        l_min NUMBER;
+        l_raw CLOB;
+      
+        l_from_pid VARCHAR2(200);
+        l_to_pid   VARCHAR2(200);
+      BEGIN
+        IF :P273_IS_RETURN IS NULL THEN
+          :P273_IS_RETURN := 'N';
+        END IF;
+      
+        /* ======================
+           AIRPORT / TRANSFER
+        ====================== */
+        IF :P273_SERVICETYPE IN ('AIRPORT','TRANSFER') THEN
+      
+          IF :P273_SERVICETYPE = 'AIRPORT' THEN
+            l_from_pid := :P273_FROM_PLACE_ID;
+            l_to_pid   := :P273_TO_PLACE_ID;
+          ELSE
+            l_from_pid := :P273_TR_FROM_PLACE_ID;
+            l_to_pid   := :P273_TR_TO_PLACE_ID;
+          END IF;
+      
+          IF l_from_pid IS NULL OR l_to_pid IS NULL THEN
+            raise_application_error(-20001,'FROM/TO place_id is required');
+          END IF;
+      
+          maps_pkg.compute_route_by_place_id(
+            p_from_place_id => l_from_pid,
+            p_to_place_id   => l_to_pid,
+            o_distance_km   => l_km,
+            o_duration_min  => l_min,
+            o_raw_json      => l_raw
+          );
+      
+          :P273_DISTANCE_KM  := l_km;
+          :P273_DURATION_MIN := l_min;
+      
+        /* ======================
+              DAILY
+        ====================== */
+        ELSIF :P273_SERVICETYPE = 'DAILY' THEN
+      
+          IF :P273_DAILY_DATE_FROM IS NULL
+             OR :P273_DAILY_DATE_TO IS NULL THEN
+            raise_application_error(-20002,'Daily dates are required');
+          END IF;
+      
+          :P273_DISTANCE_KM  := NULL;
+          :P273_DURATION_MIN := NULL;
+      
+          :P273_DAILY_HOURS := 12;
+      
+        END IF;
+      
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: NEXT # 220278024304280339
+    type: Request = Value
+    value: NEXT
+
+- # ====== Process: SAVE_LIMO_RUNTIME ==========================
+  id: 220387780394441856
+  identification: 
+    name: SAVE_LIMO_RUNTIME
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_runtime_id limo_search_runtime.runtime_id%TYPE;
+        l_user_id    NUMBER;
+      BEGIN
+        -- مهم جداً: تهيئة إخراج JSON كـ CLOB عشان يرجع نظيف
+        apex_json.initialize_clob_output;
+      
+        -- user_id: لو APP_USER_ID مش رقم، خليه NULL بدل ما يعمل exception
+        BEGIN
+          l_user_id := TO_NUMBER(NULLIF(v('APP_USER_ID'), ''));
+        EXCEPTION WHEN OTHERS THEN
+          l_user_id := NULL;
+        END;
+      
+        INSERT INTO limo_search_runtime (
+          session_id,
+          user_id,
+          service_type,
+          car_type_id,
+          distance_km,
+          duration_min,
+          hours,
+          base_price,
+          final_price,
+          currency,
+          route_json,
+          status,
+          valid_until
+        )
+        VALUES (
+          v('APP_SESSION'),
+          l_user_id,
+          apex_application.g_x02,                          -- service_type
+          apex_application.g_x01,                          -- car_type_id
+          TO_NUMBER(NVL(apex_application.g_x03,'0')),      -- distance_km
+          TO_NUMBER(NVL(apex_application.g_x04,'0')),      -- duration_min
+          TO_NUMBER(NVL(apex_application.g_x05,'0')),      -- hours
+          TO_NUMBER(NVL(apex_application.g_x06,'0')),      -- base_price
+          TO_NUMBER(NVL(apex_application.g_x07,'0')),      -- final_price
+          apex_application.g_x08,                          -- currency
+          apex_application.g_x09,                          -- route_json
+          'NEW',
+          SYSTIMESTAMP + INTERVAL '30' MINUTE
+        )
+        RETURNING runtime_id INTO l_runtime_id;
+      
+        apex_json.open_object;
+        apex_json.write('ok', true);
+        apex_json.write('runtime_id', l_runtime_id);
+        apex_json.close_object;
+      
+        -- اطبع الـ JSON للـ response
+        htp.p(apex_json.get_clob_output);
+        apex_json.free_output;
+      
+      EXCEPTION
+        WHEN OTHERS THEN
+          -- رجّعي JSON حتى في الخطأ (بدل HTML)
+          apex_json.initialize_clob_output;
+          apex_json.open_object;
+          apex_json.write('ok', false);
+          apex_json.write('message', SQLERRM);
+          apex_json.close_object;
+      
+          htp.p(apex_json.get_clob_output);
+          apex_json.free_output;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: New_1 ======================================
+  id: 220985879028987871
+  identification: 
+    name: New_1
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        -- لو عندك place ids
+        APEX_UTIL.SET_SESSION_STATE('P273_FROM_ID', :P273_FROM_PLACE_ID);
+        APEX_UTIL.SET_SESSION_STATE('P273_TO_ID',   :P273_TO_PLACE_ID);
+      
+        -- لو عندك تواريخ
+        APEX_UTIL.SET_SESSION_STATE('P273_DATE_FROM', :P273_ARRIVAL_DATE);
+        APEX_UTIL.SET_SESSION_STATE('P273_DATE_TO',   :P273_RETURN_DATE);
+      END;
+      
+
+  execution: 
+    sequence: 30
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+branches: 
+- # ====== Branch: Go To Page 274 ==============================
+  id: 220278693091280342
+  identification: 
+    name: Go To Page 274
+
+  execution: 
+    sequence: 20
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:274:&APP_SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 274 # enter info
+
+  server-side-condition: 
+    when-button-pressed: NEXT # 220278024304280339
+
