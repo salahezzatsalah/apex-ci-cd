@@ -4,4 +4,5 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 <include file="dev_schema/tables/salah_ultimate_success.sql" relativeToChangelogFile="true"/>
+<include file="dev_schema/tables/salah_final_success_v10.sql" relativeToChangelogFile="true"/> <!-- action="create" -->
 </databaseChangeLog>
