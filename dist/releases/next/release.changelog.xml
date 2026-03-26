@@ -5,4 +5,5 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 <!--CHANGES-->
 <include file="changes/featureinitial-sync/stage.changelog.xml" relativeToChangelogFile="true"/>
+<include file="changes/featuretest-automatic-salah/stage.changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
