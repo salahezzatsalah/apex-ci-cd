@@ -1,0 +1,89 @@
+---
+- # ====== Page Group: User Settings ===========================
+  id: 251478209839477840
+  identification: 
+    name: User Settings
+
+- # ====== Page Group: Hotels Group ============================
+  id: 260042932976148573
+  identification: 
+    name: Hotels Group
+
+  description: 
+    description: For Hotel Reservations System
+
+- # ====== Page Group: Activities ==============================
+  id: 11921708294661895156
+  identification: 
+    name: Activities
+
+- # ====== Page Group: Areas ===================================
+  id: 18677197412987822340
+  identification: 
+    name: Areas
+
+- # ====== Page Group: Initiatives =============================
+  id: 18677228112334823126
+  identification: 
+    name: Initiatives
+
+- # ====== Page Group: Projects ================================
+  id: 18677231987453823719
+  identification: 
+    name: Projects
+
+- # ====== Page Group: Users ===================================
+  id: 18677243577083824218
+  identification: 
+    name: Users
+
+- # ====== Page Group: Home ====================================
+  id: 18677563246010402822
+  identification: 
+    name: Home
+
+- # ====== Page Group: Documents Cross-Project =================
+  id: 18678305392069835789
+  identification: 
+    name: Documents Cross-Project
+
+- # ====== Page Group: Releases ================================
+  id: 18684879096643001689
+  identification: 
+    name: Releases
+
+- # ====== Page Group: About App ===============================
+  id: 18688321179583675178
+  identification: 
+    name: About App
+
+- # ====== Page Group: Login ===================================
+  id: 18688774448636128278
+  identification: 
+    name: Login
+
+- # ====== Page Group: Feedback ================================
+  id: 18694660648803266157
+  identification: 
+    name: Feedback
+
+- # ====== Page Group: Groups ==================================
+  id: 20728698646522624540
+  identification: 
+    name: Groups
+
+- # ====== Page Group: Reporting ===============================
+  id: 21379671089306548688
+  identification: 
+    name: Reporting
+
+- # ====== Page Group: Administrative Utilities ================
+  id: 21866651530067752709
+  identification: 
+    name: Administrative Utilities
+
+- # ====== Page Group: Administration ==========================
+  id: 149832819600226023728
+  identification: 
+    name: Administration
+

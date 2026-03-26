@@ -1,0 +1,1023 @@
+---
+# ====== Page: Tasks =========================================
+id: 500
+identification: 
+  name: Tasks
+  alias: TASKS
+  title: Tasks
+  page-group: Documents Cross-Project # 18678305392069835789
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 29349805466280454676
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Search Results ==============================
+  id: 29349806111300454681
+  identification: 
+    name: Search Results
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select task_type task_type,
+             apex_page.get_url (
+                 p_page   => 502,
+                 p_items  => 'P502_TASK_ID,P502_RESERVATION_ID,P502_PREV_PAGE',
+                 p_values => t.ID||','||p.reservation_id||',500') link,
+             p.reservation_id,
+             rt.task_type ||
+                 case when t.task_sub_type_id is not null then ': ' end ||
+                 (select task_type from res_task_types rt where rt.id = t.task_sub_type_id) name,
+             task task_name,
+             substr(t.description,1,200)||case when length(t.description) > 200 then '...' end details,
+             t.UPDATED,
+             lower(t.updated_by) updated_by,
+             t.created,
+             to_char(t.created,'YYYY.MM') month,
+             lower(t.created_by) added_by,
+             t.tags,
+             case when t.owner_id is not null
+                  then 'موكلة الى '||
+                        (select first_name ||' '||last_name from bs_employees
+                         where id = t.owner_id) 
+                  end assigned_to_display,
+            (select first_name ||' '||last_name from bs_employees
+              where id = t.owner_id) assigned_to
+        from RESERVATION_TASKS t,
+             HOTEL_RESERVATIONS p,
+             RES_TASK_TYPES rt
+       where t.reservation_id = p.reservation_id
+         and t.task_type_id = rt.id
+         and p.ARCHIVED_YN = 'N'
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: طلب حجز فندق
+      title: '&NAME.'
+      description: |
+        {if TASK_NAME/}&TASK_NAME.<br/>{endif/}
+        &ASSIGNED_TO_DISPLAY.
+      miscellaneous: |
+        <small class="overline">اخر تحديث &UPDATED.<br/>
+        بوساطة &UPDATED_BY.</small>
+      display-avatar: false
+      display-badge: true
+
+    badge: 
+      label: '&RESERVATION_ID.'
+      value: RESERVATION_ID
+      display-label: false
+      style: Default
+      shape: Default
+      size: Default
+      column-width: Medium
+      position: START
+      alignment: START
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 266201998755526271
+    identification: 
+      name: RESERVATION_ID
+
+    layout: 
+      sequence: 220
+
+    source: 
+      type: Database Column
+      database-column: RESERVATION_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TASK_NAME ===================================
+    id: 20511676439379919840
+    identification: 
+      name: TASK_NAME
+
+    layout: 
+      sequence: 210
+
+    source: 
+      type: Database Column
+      database-column: TASK_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TASK_TYPE ===================================
+    id: 29062453753106313610
+    identification: 
+      name: TASK_TYPE
+
+    layout: 
+      sequence: 150
+
+    source: 
+      type: Database Column
+      database-column: TASK_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DETAILS =====================================
+    id: 29062453802798313611
+    identification: 
+      name: DETAILS
+
+    layout: 
+      sequence: 160
+
+    source: 
+      type: Database Column
+      database-column: DETAILS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ASSIGNED_TO =================================
+    id: 29062454059478313613
+    identification: 
+      name: ASSIGNED_TO
+
+    layout: 
+      sequence: 180
+
+    source: 
+      type: Database Column
+      database-column: ASSIGNED_TO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 29062454164329313614
+    identification: 
+      name: UPDATED_BY
+
+    layout: 
+      sequence: 190
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: BS_EMPLOYEES.USERNAME # 256625940367935825
+      display-extra-values: true
+
+  - # ====== Column: ASSIGNED_TO_DISPLAY =========================
+    id: 29062454252107313615
+    identification: 
+      name: ASSIGNED_TO_DISPLAY
+
+    layout: 
+      sequence: 200
+
+    source: 
+      type: Database Column
+      database-column: ASSIGNED_TO_DISPLAY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: LINK ========================================
+    id: 45321019505275968872
+    identification: 
+      name: LINK
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: LINK
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NAME ========================================
+    id: 45321019617174968873
+    identification: 
+      name: NAME
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED =====================================
+    id: 45321019860900968876
+    identification: 
+      name: UPDATED
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 45321019978957968877
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 70
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+      group: false
+
+  - # ====== Column: MONTH =======================================
+    id: 46182969046792237028
+    identification: 
+      name: MONTH
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: MONTH
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ADDED_BY ====================================
+    id: 46182969174524237030
+    identification: 
+      name: ADDED_BY
+
+    layout: 
+      sequence: 100
+
+    source: 
+      type: Database Column
+      database-column: ADDED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TAGS ========================================
+    id: 46182969544728237033
+    identification: 
+      name: TAGS
+
+    layout: 
+      sequence: 130
+
+    source: 
+      type: Database Column
+      database-column: TAGS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Title Link ==================================
+    id: 46182969636572237034
+    identification: 
+      position: Title Link # 348722977165395441
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to URL
+      target: '&LINK.'
+
+- # ====== Region: Search ======================================
+  id: 29349806215340454681
+  identification: 
+    name: Search
+    type: Faceted Search
+
+  source: 
+    filtered-region: Search Results # 29349806111300454681
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 4
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+    landmark-label: Filters
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: Yes
+      show-charts: Dialog
+      display-chart-for-top-n-values: 10
+
+  facets: 
+  - # ====== Facet: P500_SEARCH ==================================
+    id: 29349815356665454715
+    identification: 
+      name: P500_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): DOC_TYPE,NAME,DOCUMENT_FILENAME,DOC_DESCRIPTION,ADDED_BY,FILE_EXTENSION,TAGS
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P500_ASSIGNED_TO =============================
+    id: 29349816148109454717
+    identification: 
+      name: P500_ASSIGNED_TO
+      type: Checkbox Group
+
+    label: 
+      label: المختص بالمهمة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: ASSIGNED_TO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P500_TASK_TYPE ===============================
+    id: 45321025486251968877
+    identification: 
+      name: P500_TASK_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع المهمة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TASK_TYPE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P500_TAGS ====================================
+    id: 58813275634098544676
+    identification: 
+      name: P500_TAGS
+      type: Checkbox Group
+
+    label: 
+      label: علامات مميزة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: TAGS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P500_MONTH ===================================
+    id: 61959580744929181705
+    identification: 
+      name: P500_MONTH
+      type: Checkbox Group
+
+    label: 
+      label: الشهر
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 80
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: MONTH
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P500_SEARCH =================================
+    id: 29349815356665454715
+    identification: 
+      name: P500_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      database-column(s): DOC_TYPE,NAME,DOCUMENT_FILENAME,DOC_DESCRIPTION,ADDED_BY,FILE_EXTENSION,TAGS
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P500_ASSIGNED_TO ============================
+    id: 29349816148109454717
+    identification: 
+      name: P500_ASSIGNED_TO
+      type: Checkbox Group
+
+    label: 
+      label: المختص بالمهمة
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: ASSIGNED_TO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P500_TASK_TYPE ==============================
+    id: 45321025486251968877
+    identification: 
+      name: P500_TASK_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع المهمة
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TASK_TYPE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P500_TAGS ===================================
+    id: 58813275634098544676
+    identification: 
+      name: P500_TAGS
+      type: Checkbox Group
+
+    label: 
+      label: علامات مميزة
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: TAGS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P500_MONTH ==================================
+    id: 61959580744929181705
+    identification: 
+      name: P500_MONTH
+      type: Checkbox Group
+
+    label: 
+      label: الشهر
+
+    layout: 
+      sequence: 80
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: MONTH
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 29285293577278389836
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 29349805466280454676
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:185:&SESSION.::&DEBUG.:RP,::'
+      page: 185
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: RESET =======================================
+  id: 29285294028731389837
+  identification: 
+    button-name: RESET
+    label: اعادة ضبط
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 29349805466280454676
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-undo-alt
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:RR,500::'
+      page: 500 # Tasks
+      clear-cache: RR,500
+
+    warn-on-unsaved-changes: Do Not Check
+

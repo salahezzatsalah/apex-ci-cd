@@ -1,0 +1,4963 @@
+---
+# ====== Page: Trip Request Details ==========================
+id: 6001
+identification: 
+  name: Trip Request Details
+  alias: TRIP-REQUEST-DETAILS
+  title: تفاصيل خدمة - &P6001_PRODUCT_ID.
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    
+    /* === Base Card Layout === */
+    .limo-card {
+      direction: rtl;
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+    }
+    
+    /* === Overline === */
+    .limo-overline span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+    .limo-overline .label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .limo-overline .overline-separator {
+      color: #9ca3af;
+    }
+    
+    /* === Title === */
+    .limo-title .title-group {
+      background-color: #f3f4f6;
+      border-radius: 0.75rem;
+      padding: 0.375rem 0.75rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .limo-title .title-label {
+      font-weight: 600;
+      color: #1f2937;
+      margin-left: 0.3rem;
+    }
+    .limo-title .title-value {
+      color: #111827;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* === Image & Avatar === */
+    .limo-avatar img {
+      width: 120px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* === Progress Badge === */
+    .trip-progress-badge {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 1px solid #facc15;
+      background-color: #fef08a;
+      border-radius: 0.75rem;
+      padding: 0.125rem 0.5rem;
+      font-size: 0.75rem;
+      text-align: center;
+      color: #7c2d12;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      min-width: 60px;
+    }
+    .trip-progress-badge .progress-value {
+      font-weight: 600;
+      color: #b45309;
+    }
+    .trip-progress-badge .progress-label {
+      font-size: 0.65em;
+      color: #78350f;
+    }
+    
+    /* === Location Card Row === */
+    .trip-location-card .location-block {
+      text-align: right;
+    }
+    .trip-location-card .location-name {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #000;
+    }
+    .trip-location-card .location-datetime {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+    .trip-location-card .location-arrow svg {
+      fill: #6b7280;
+    }
+    
+    /* === Mobile Improvements === */
+    @media (max-width: 639px) {
+      .limo-avatar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    
+      .trip-progress-badge {
+        position: relative;
+        transform: none;
+        left: auto;
+        bottom: auto;
+        margin-top: 0.5rem;
+      }
+    }
+    
+    
+    /* === Meta Badges === */
+    .limo-meta .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      background-color: #1e3a8a;
+      color: white;
+      padding: 0.25rem 0.625rem;
+    }
+    
+    /* === Misc Panel === */
+    .limo-misc .misc-group {
+      background-color: #fff;
+      border-radius: 0.75rem;
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .misc-group.misc-highlight {
+      border-color: #facc15;
+      background-color: #fefce8;
+      box-shadow: inset 0 0 0 1px rgba(255, 224, 130, 0.27);
+    }
+    .misc-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      line-height: 1.625;
+    }
+    .misc-row i {
+      color: #0f172a;
+      margin-top: 0.125rem;
+    }
+    .misc-label {
+      font-weight: 600;
+      color: #374151;
+    }
+    .misc-value {
+      flex: 1;
+      color: #111827;
+      overflow-wrap: break-word;
+    }
+    .misc-notes {
+      border: 1px dashed #d1d5db;
+      background-color: #ffffff;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-style: italic;
+      line-height: 1.625;
+    }
+    
+    
+    #start-trip-container {
+      direction: rtl;
+      background: linear-gradient(to left, #e0f7fa, #b2ebf2);
+      border-radius: 9999px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      transition: background 0.3s ease;
+    }
+    
+    #start-swipe {
+      background-color: #007c91;
+      color: white;
+      border-radius: 9999px;
+      transition: right 0.2s ease-out, background-color 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    #start-swipe:hover {
+      background-color: #006878;
+    }
+    
+    #start-trip-container span {
+      font-weight: 600;
+      font-size: 16px;
+      color: #004d55;
+    }
+    
+    #swipe-loader,
+    #swipe-success {
+      backdrop-filter: blur(4px);
+    }
+    
+    
+    
+    
+    
+    .block-container {
+      transition: all 0.2s ease-in-out;
+    }
+    .block-container:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .metric-tag {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      background-color: #f9fafb;
+    }
+    .avatar-wrapper {
+      background: #f8f8f8;
+    }
+    
+    
+    .trip-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background-color: #4f46e5; 
+      color: white;
+      border-radius: 0.5rem;
+      transition: background-color 0.2s ease;
+    }
+    .trip-btn:hover {
+      background-color: #4338ca; 
+    }
+    
+    .trip-status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      border: 1px solid;
+    }
+    
+    .status-active {
+      background-color: #ecfdf5;
+      color: #047857;
+      border-color: #d1fae5;
+    }
+    .status-finished {
+      background-color: #f3f4f6;
+      color: #4b5563;
+      border-color: #e5e7eb;
+    }
+    .status-paused {
+      background-color: #fef3c7;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+    
+    
+    
+    
+    
+    
+    #current-trip-region .trip-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.3rem;
+      margin-top: 1.8rem;
+      margin-bottom: 0.7rem;
+    }
+    
+    #current-trip-region .trip-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.65rem 1.6rem;
+      border-radius: 0.7rem; /* reduced from pill */
+      background: #2563eb;   /* Tailwind blue-600 */
+      color: #fff;
+      transition: background 0.17s, box-shadow 0.17s;
+      text-decoration: none;
+      min-width: 146px;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.09);
+      border: none;
+      gap: 0.48rem;
+    }
+    #current-trip-region .trip-btn i {
+      margin-left: 0.52rem;
+      font-size: 1.09em;
+    }
+    #current-trip-region .trip-btn:focus-visible,
+    #current-trip-region .trip-btn:hover {
+      background: #1d4ed8; /* blue-700 */
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37,99,235,0.12);
+    }
+    
+    #current-trip-region .limo-trip-card {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 2rem;
+      padding: 2rem 2rem 1.5rem 2rem;
+      border-radius: 1rem;
+    }
+    #current-trip-region .tile-section {
+      width: 100%;
+    }
+    #current-trip-region .tile {
+      background: #f8fafc;
+      border-radius: 0.7rem;
+      padding: 1rem 1.2rem;
+      min-width: 130px;
+      min-height: 60px;
+      box-shadow: 0 1px 6px 0 rgba(37, 99, 235, 0.05);
+      border: 1.5px solid #e0e7ef;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    @media (max-width: 900px) {
+    
+      #current-trip-region .limo-trip-card {
+        flex-direction: column;
+        gap: 1.1rem;
+        padding: 1.2rem;
+      }
+      #current-trip-region .tile-section {
+        grid-template-columns: 1fr !important;
+        gap: 0.85rem;
+      }
+      #current-trip-region .trip-btn-group {
+        flex-direction: column;
+        gap: 0.9rem;
+        margin-top: 1.2rem;
+        margin-bottom: 0.7rem;
+      }
+    }
+    
+    #current-trip-region .trip-number-label {
+      margin-bottom: 0.2rem; /* tighter, or remove for even tighter spacing */
+    }
+    
+    
+    #current-trip-region .trip-card {
+      transition: box-shadow .2s;
+    }
+    #current-trip-region .trip-card:hover {
+      box-shadow: 0 4px 24px 0 rgba(24,24,84,0.09);
+    }
+    #current-trip-region .trip-badge {
+      font-weight: 700;
+      letter-spacing: .01em;
+      margin-bottom: 4px;
+    }
+    #current-trip-region .tile {
+      min-width: 0;
+    }
+    #current-trip-region .desktop-btn-group a {
+      min-width: 142px;
+      margin: 0.25rem 0;
+    }
+    @media (min-width: 768px) {
+      #current-trip-region .desktop-btn-group {
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        gap: 10px !important;
+      }
+      #current-trip-region .trip-card {
+        align-items: flex-start !important;
+      }
+    }
+    
+    
+    /* Trip Control Button Group Wrapper */
+    .trip-control-action-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;        /* Center on mobile */
+      gap: 0.75rem;                   /* 12px spacing between buttons */
+      padding: 1rem;                  /* 16px padding */
+      direction: rtl;                /* RTL support */
+    }
+    
+    @media (min-width: 768px) {
+      .trip-control-action-group {
+        justify-content: flex-end;   /* Align right on desktop */
+      }
+    }
+    
+    /* Pause Trip Button */
+    .pausetrip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;           /* Tailwind text-sm */
+      font-weight: 500;
+      color: #fff;
+      background-color: #eab308;     /* Tailwind yellow-500 */
+      border-radius: 1rem;           /* Tailwind rounded-2xl */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .pausetrip:hover {
+      background-color: #ca8a04;     /* Tailwind yellow-600 */
+    }
+    
+    /* Resume Trip Button */
+    .resumetrip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #fff;
+      background-color: #16a34a;     /* Tailwind green-600 */
+      border-radius: 1rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .resumetrip:hover {
+      background-color: #15803d;     /* Tailwind green-700 */
+    }
+    
+    /* End Trip Button */
+    .endtrip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #fff;
+      background-color: #dc2626;     /* Tailwind red-600 */
+      border-radius: 1rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      transition: background-color 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .endtrip:hover {
+      background-color: #b91c1c;     /* Tailwind red-700 */
+    }
+    
+    /* Optional: Icon Styling (Font Awesome 6) */
+    .pausetrip i,
+    .resumetrip i,
+    .endtrip i {
+      font-size: 1rem;
+      line-height: 1;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Trip Details ================================
+  id: 210188301467154796
+  identification: 
+    name: Trip Details
+    title: تفاصيل الطلب
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select SUB_RES_ID,
+             ORDER_ITEM_ID,
+             CAT_ITEM_ID,
+             TRIP_TYPE,
+             FROM_LOCATION,
+             TO_LOCATION,
+             RES_DATE_FROM,
+             RES_TIME,
+             RES_DATE_TO,
+             SERVICE_CLASS,
+             TICKET_NUMBER,
+             SIGNAGE_DETAILS,
+             TRIP_PRICE,
+             CURRENCY,
+             EXCHANGE_RATE,
+             NOD,
+             TOTAL_AMOUNT,
+             TOTAL_AMOUNT_EGP,
+      
+      
+       
+             STATUS,
+             NOTES,
+             CREATED,
+             CREATED_BY,
+             UPDATED,
+             UPDATED_BY,
+             IS_DELETED,
+             DELETED,
+             DELETED_BY,
+             MAIN_RES_ID,
+             STATUS_CODE,
+             PASSENGERS_NO,
+             LUGGAGE_NO,
+             REQUEST_TYPE
+        from SUBLEVEL_LIMO_RES
+        where sub_res_id = :P6001_PRODUCT_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: Product Request Details # 276692781861178469
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: SUB_RES_ID ==================================
+    id: 212105680140323152
+    identification: 
+      column-name: SUB_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Sub Res Id
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ORDER_ITEM_ID ===============================
+    id: 212105718157323153
+    identification: 
+      column-name: ORDER_ITEM_ID
+      type: Plain Text
+
+    heading: 
+      heading: Order Item Id
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CAT_ITEM_ID =================================
+    id: 212105856060323154
+    identification: 
+      column-name: CAT_ITEM_ID
+      type: Plain Text
+
+    heading: 
+      heading: Cat Item Id
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TRIP_TYPE ===================================
+    id: 212105910977323155
+    identification: 
+      column-name: TRIP_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Trip Type
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FROM_LOCATION ===============================
+    id: 212106016108323156
+    identification: 
+      column-name: FROM_LOCATION
+      type: Plain Text
+
+    heading: 
+      heading: From Location
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TO_LOCATION =================================
+    id: 212106145841323157
+    identification: 
+      column-name: TO_LOCATION
+      type: Plain Text
+
+    heading: 
+      heading: To Location
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RES_DATE_FROM ===============================
+    id: 212106229171323158
+    identification: 
+      column-name: RES_DATE_FROM
+      type: Plain Text
+
+    heading: 
+      heading: Res Date From
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RES_TIME ====================================
+    id: 212106323624323159
+    identification: 
+      column-name: RES_TIME
+      type: Plain Text
+
+    heading: 
+      heading: Res Time
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RES_DATE_TO =================================
+    id: 212106415890323160
+    identification: 
+      column-name: RES_DATE_TO
+      type: Plain Text
+
+    heading: 
+      heading: Res Date To
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SERVICE_CLASS ===============================
+    id: 212106517867323161
+    identification: 
+      column-name: SERVICE_CLASS
+      type: Plain Text
+
+    heading: 
+      heading: Service Class
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TICKET_NUMBER ===============================
+    id: 212106685137323162
+    identification: 
+      column-name: TICKET_NUMBER
+      type: Plain Text
+
+    heading: 
+      heading: Ticket Number
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 212106716121323163
+    identification: 
+      column-name: SIGNAGE_DETAILS
+      type: Plain Text
+
+    heading: 
+      heading: Signage Details
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TRIP_PRICE ==================================
+    id: 212106817251323164
+    identification: 
+      column-name: TRIP_PRICE
+      type: Plain Text
+
+    heading: 
+      heading: Trip Price
+      alignment: end
+
+    layout: 
+      sequence: 130
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY ====================================
+    id: 212106959249323165
+    identification: 
+      column-name: CURRENCY
+      type: Plain Text
+
+    heading: 
+      heading: Currency
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 212107062817323166
+    identification: 
+      column-name: EXCHANGE_RATE
+      type: Plain Text
+
+    heading: 
+      heading: Exchange Rate
+      alignment: end
+
+    layout: 
+      sequence: 150
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOD =========================================
+    id: 212107099734323167
+    identification: 
+      column-name: NOD
+      type: Plain Text
+
+    heading: 
+      heading: Nod
+      alignment: end
+
+    layout: 
+      sequence: 160
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 212107255136323168
+    identification: 
+      column-name: TOTAL_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Total Amount
+      alignment: end
+
+    layout: 
+      sequence: 170
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_AMOUNT_EGP ============================
+    id: 212107379756323169
+    identification: 
+      column-name: TOTAL_AMOUNT_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Total Amount Egp
+      alignment: end
+
+    layout: 
+      sequence: 180
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 212108818883323184
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 330
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 212108933004323185
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: Notes
+      alignment: start
+
+    layout: 
+      sequence: 340
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 212109056231323186
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: start
+
+    layout: 
+      sequence: 350
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 212109153583323187
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Created By
+      alignment: start
+
+    layout: 
+      sequence: 360
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 212109231867323188
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: Updated
+      alignment: start
+
+    layout: 
+      sequence: 370
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 212109314646323189
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Updated By
+      alignment: start
+
+    layout: 
+      sequence: 380
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IS_DELETED ==================================
+    id: 212109432590323190
+    identification: 
+      column-name: IS_DELETED
+      type: Plain Text
+
+    heading: 
+      heading: Is Deleted
+      alignment: start
+
+    layout: 
+      sequence: 390
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DELETED =====================================
+    id: 212109525507323191
+    identification: 
+      column-name: DELETED
+      type: Plain Text
+
+    heading: 
+      heading: Deleted
+      alignment: start
+
+    layout: 
+      sequence: 400
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DELETED_BY ==================================
+    id: 212109629490323192
+    identification: 
+      column-name: DELETED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Deleted By
+      alignment: start
+
+    layout: 
+      sequence: 410
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: MAIN_RES_ID =================================
+    id: 212109751957323193
+    identification: 
+      column-name: MAIN_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Main Res Id
+      alignment: start
+
+    layout: 
+      sequence: 420
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS_CODE =================================
+    id: 212109879921323194
+    identification: 
+      column-name: STATUS_CODE
+      type: Plain Text
+
+    heading: 
+      heading: Status Code
+      alignment: start
+
+    layout: 
+      sequence: 430
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PASSENGERS_NO ===============================
+    id: 212109970946323195
+    identification: 
+      column-name: PASSENGERS_NO
+      type: Plain Text
+
+    heading: 
+      heading: Passengers No
+      alignment: end
+
+    layout: 
+      sequence: 440
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LUGGAGE_NO ==================================
+    id: 212110060594323196
+    identification: 
+      column-name: LUGGAGE_NO
+      type: Plain Text
+
+    heading: 
+      heading: Luggage No
+      alignment: end
+
+    layout: 
+      sequence: 450
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REQUEST_TYPE ================================
+    id: 212110132141323197
+    identification: 
+      column-name: REQUEST_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Request Type
+      alignment: start
+
+    layout: 
+      sequence: 460
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Product's Trip Report =======================
+  id: 270247607790186771
+  identification: 
+    name: Product's Trip Report
+    title: تقرير الرحلات
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html     CLOB;
+        l_index    INTEGER := 0;
+        l_count    INTEGER := 0;
+        l_driver   VARCHAR2(4000);
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        -- Count trips for the product
+        SELECT COUNT(*) INTO l_count
+        FROM LIMO_TRIPS_TRACKER_V2
+        WHERE PRODUCT_ID = :P6001_PRODUCT_ID;
+      
+        -- Get assigned driver (current)
+        BEGIN
+          SELECT 
+            CASE a.ASSIGNMENT_TYPE
+              WHEN 'INSOURCE' THEN d.DRIVER_NAME || ' (' || d.DRIVER_ID || ')'
+              WHEN 'OUTSOURCE' THEN s.SUPPLIER_NAME || ' (' || s.SUPPLIER_ID || ')'
+              ELSE 'غير معروف'
+            END
+          INTO l_driver
+          FROM LIMO_PRODUCT_ASSIGNMENTS a
+          LEFT JOIN COMPANY_DRIVERS d
+            ON a.ASSIGNMENT_TYPE = 'INSOURCE'
+           AND d.DRIVER_ID = a.DRIVER_ID
+          LEFT JOIN SUPPLIERS s
+            ON a.ASSIGNMENT_TYPE = 'OUTSOURCE'
+           AND TO_CHAR(s.SUPPLIER_ID) = a.DRIVER_ID
+          WHERE a.PRODUCT_ID = :P6001_PRODUCT_ID
+            AND a.DRIVER_STATUS = 'CURRENT'
+            AND ROWNUM = 1;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            l_driver := NULL;
+        END;
+      
+        DBMS_LOB.APPEND(l_html, '<div class="space-y-4" id="tripAccordion">');
+      
+        IF l_count = 0 THEN
+      
+          DBMS_LOB.APPEND(l_html, '
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-sm">
+              <div class="font-medium">🚫 لا توجد رحلات مسجلة</div>
+              <div class="text-xs mt-1">' || 
+              CASE 
+                WHEN l_driver IS NOT NULL THEN
+                  'تم تعيين السائق: <strong>' || l_driver || '</strong> ولكن لم تسجل أي رحلات.'
+                ELSE
+                  'لم يتم تسجيل أي سائق أو رحلة على هذه التشغيلة.'
+              END || '</div>
+            </div>');
+      
+        ELSE
+      
+          FOR rec IN (
+      
+            SELECT
+              t.*,
+      
+              CASE a.assignment_type
+                WHEN 'INSOURCE' THEN cd.driver_name
+                WHEN 'OUTSOURCE' THEN s.supplier_name
+                ELSE 'غير معروف'
+              END AS driver_name,
+      
+              CASE a.assignment_type
+                WHEN 'INSOURCE' THEN NVL(cd.driver_avatar, '#APP_FILES#placeholders/companydriver.png')
+                WHEN 'OUTSOURCE' THEN '#APP_FILES#placeholders/suppliers.png'
+                ELSE '#APP_FILES#placeholders/unknown.png'
+              END AS driver_avatar,
+      
+              (SELECT car_name || ' - ' || license_plate || ' - ' || year
+               FROM company_registered_cars c
+               WHERE c.id = t.used_car_id) AS used_car_display,
+      
+              -- NEW: Accounting
+              acc.expenses_egp,
+              acc.added_services_egp,
+              acc.driver_payout_egp,
+              acc.office_net_egp,
+      
+              NVL(t.executed_date, t.start_datetime) AS trip_sort_date
+      
+            FROM LIMO_TRIPS_TRACKER_V2 t
+      
+            JOIN limo_product_assignments a
+              ON a.assignment_id = t.assignment_id
+      
+            LEFT JOIN company_drivers cd
+              ON a.assignment_type = 'INSOURCE'
+             AND cd.driver_id = a.driver_id
+      
+            LEFT JOIN suppliers s
+              ON a.assignment_type = 'OUTSOURCE'
+             AND TO_CHAR(s.supplier_id) = a.driver_id
+      
+            -- NEW
+            LEFT JOIN limo_trip_accounting acc
+              ON acc.trip_id = t.trip_id
+      
+            WHERE t.product_id = :P6001_PRODUCT_ID
+      
+            ORDER BY NVL(t.executed_date, t.start_datetime)
+      
+          ) LOOP
+      
+            l_index := l_index + 1;
+      
+            DBMS_LOB.APPEND(l_html, '
+            <div class="accordion-item border border-gray-200 rounded-lg overflow-hidden">
+              <!-- Header -->
+              <button type="button" 
+                      class="accordion-header w-full flex justify-between items-center p-4 text-sm font-bold text-gray-800 bg-gray-50 hover:bg-gray-100"
+                      onclick="toggleAccordion(this)">
+                <span><i class="fa6 fa6-car-side text-indigo-600"></i> الرحلة رقم ' || l_index || 
+                ' - ' || 
+                  CASE 
+                    WHEN rec.executed_date IS NOT NULL THEN TO_CHAR(rec.executed_date, 'DD-MM-YYYY')
+                    WHEN rec.start_datetime IS NOT NULL THEN TO_CHAR(rec.start_datetime, 'DD-MM-YYYY')
+                    ELSE '-'
+                  END || '</span>
+                <span>' ||
+                  CASE UPPER(NVL(rec.STATUS, 'UNKNOWN'))
+                    WHEN 'FINISHED' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">منتهية</span>'
+                    WHEN 'ACTIVE' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">نشطة</span>'
+                    WHEN 'PAUSED' THEN '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">متوقفة</span>'
+                    ELSE '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">غير معروف</span>'
+                  END || '</span>
+              </button>
+      
+              <!-- Content -->
+              <div class="accordion-content hidden p-4 bg-white">
+      
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+      
+                  <div class="bg-gray-50 p-3 rounded-lg border">
+                    <div class="text-xs text-gray-500 mb-1"><i class="fa6 fa6-money-bill text-red-500"></i> المصروفات</div>
+                    <div class="font-semibold text-red-700">' ||
+                      TO_CHAR(NVL(rec.expenses_egp,0),'999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="bg-gray-50 p-3 rounded-lg border">
+                    <div class="text-xs text-gray-500 mb-1"><i class="fa6 fa6-bell-concierge text-yellow-600"></i> الخدمات</div>
+                    <div class="font-semibold text-yellow-700">' ||
+                      TO_CHAR(NVL(rec.added_services_egp,0),'999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="bg-gray-50 p-3 rounded-lg border">
+                    <div class="text-xs text-gray-500 mb-1"><i class="fa6 fa6-wallet text-green-600"></i> نصيب السائق</div>
+                    <div class="font-semibold text-green-700">' ||
+                      TO_CHAR(NVL(rec.driver_payout_egp,0),'999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="bg-gray-50 p-3 rounded-lg border"> 
+                    <div class="text-xs text-gray-500 mb-1"><i class="fa6 fa6-building-columns text-indigo-600"></i> صافي المكتب</div> 
+                    <div class="font-semibold text-indigo-700">' ||
+                      TO_CHAR(NVL(rec.office_net_egp,0),'999G990D00') || ' EGP</div> 
+                  </div> 
+      
+                </div>
+      
+              </div>
+            </div>');
+      
+          END LOOP;
+      
+        END IF;
+      
+        DBMS_LOB.APPEND(l_html, '</div>');
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6001_PRODUCT_ID
+
+  layout: 
+    sequence: 10
+    parent-region: Product's Trip Report # 276692654210178468
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 270592915217699341
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Product's Trip Status =======================
+  id: 270629987735999868
+  identification: 
+    name: Product's Trip Status
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    row-css-classes: 
+    - trip-control-btns-row
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    column-css-classes: 
+    - trip-control-btns-column
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - trip-control-btns
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: Trip-Action-Group
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Assignment Reports ==========================
+  id: 276382876280639959
+  identification: 
+    name: Assignment Reports
+    title: الكباتن المعينة على الرحلة
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html   CLOB;
+        l_last_assignment_type VARCHAR2(20) := NULL;
+        l_count INTEGER := 0;
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        -- Count assignments
+        SELECT COUNT(*) INTO l_count
+        FROM VW_DRIVER_ASSIGNMENT_ACCOUNTING
+        WHERE PRODUCT_ID = :P6001_PRODUCT_ID;
+      
+        IF l_count = 0 THEN
+          l_html := '
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-sm mt-6">
+              <div class="font-medium">🚫 لا توجد بيانات تعيين للسائقين</div>
+              <div class="text-xs mt-1">لم يتم تسجيل أي تعيينات سائقين حتى الآن على هذه التشغيلة.</div>
+            </div>';
+        ELSE
+          FOR rec IN (
+            SELECT * FROM VW_DRIVER_ASSIGNMENT_ACCOUNTING
+            WHERE PRODUCT_ID = :P6001_PRODUCT_ID
+            ORDER BY ASSIGNMENT_TYPE, CREATED_AT DESC
+          ) LOOP
+      
+            IF l_last_assignment_type IS NULL OR l_last_assignment_type != rec.ASSIGNMENT_TYPE THEN
+              l_html := l_html || '
+                <div class="driver-group-label mb-4 mt-10 text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <i class="fa6 fa6-' || 
+                  CASE rec.ASSIGNMENT_TYPE
+                    WHEN 'INSOURCE' THEN 'car text-indigo-600'
+                    WHEN 'OUTSOURCE' THEN 'globe text-blue-600'
+                    ELSE 'circle-question text-gray-400'
+                  END || '"></i>
+                  <span>' || 
+                  CASE rec.ASSIGNMENT_TYPE
+                    WHEN 'INSOURCE' THEN 'سائق داخلي'
+                    WHEN 'OUTSOURCE' THEN 'سائق خارجي'
+                    ELSE 'تعيين غير معروف'
+                  END || '</span>
+                </div>';
+              l_last_assignment_type := rec.ASSIGNMENT_TYPE;
+            END IF;
+      
+            -- Driver Card
+            l_html := l_html || '
+            <div class="driver-card block-container mb-6 shadow-sm rounded-2xl border border-gray-200 bg-white overflow-hidden flex flex-col lg:flex-row rtl text-right">
+      
+              <!-- Avatar -->
+              <div class="avatar-wrapper bg-gray-50 lg:w-40 flex items-center justify-center p-4">
+                <img src="' || rec.DRIVER_AVATAR || '" class="rounded-full w-24 h-24 object-cover border border-gray-300 shadow-sm" alt="Driver" />
+              </div>
+      
+              <!-- Driver Content -->
+              <div class="flex-1 p-4 flex flex-col gap-4">
+      
+                <!-- Overline -->
+                <div class="text-xs text-gray-500 flex items-center gap-1">
+                  <i class="fa6 fa6-id-card text-indigo-500"></i>
+                  <span>بيانات السائق</span>
+                </div>
+      
+                <!-- Title -->
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <div class="text-lg font-bold text-gray-900">' || rec.DRIVER_NAME || '</div>
+                  <span class="text-xs font-medium px-2 py-0.5 rounded-full ' || 
+                    CASE rec.DRIVER_STATUS
+                      WHEN 'حالي' THEN 'bg-emerald-100 text-emerald-700'
+                      WHEN 'سابق' THEN 'bg-gray-100 text-gray-600'
+                      ELSE 'bg-yellow-100 text-yellow-700'
+                    END || '">' || rec.DRIVER_STATUS || '</span>
+                </div>
+      
+                <!-- Description -->
+                <div class="text-xs text-gray-500">
+                  ' || rec.SHARE_TYPE_AR || ' — ' || rec.SHARE_DISPLAY || '
+                </div>
+      
+                <!-- Metrics -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm pt-2 border-t border-gray-100">
+      
+                  <div class="metric-tag">
+                    <div class="text-xs text-gray-500"><i class="fa6 fa6-road"></i> عدد الرحلات</div>
+                    <div class="font-semibold text-gray-900">' || rec.TRIPS_MADE || '</div>
+                  </div>
+      
+                  <div class="metric-tag">
+                    <div class="text-xs text-gray-500"><i class="fa6 fa6-money-bill-wave text-green-600"></i> نصيب السائق</div>
+                    <div class="font-semibold text-green-700">' || TO_CHAR(rec.DRIVER_TOTAL_PAYOUT_EGP, '999G999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="metric-tag">
+                    <div class="text-xs text-gray-500"><i class="fa6 fa6-building-columns text-gray-500"></i> صافي المكتب</div>
+                    <div class="font-semibold text-gray-700">' || TO_CHAR(rec.OFFICE_NET_EGP, '999G999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="metric-tag">
+                    <div class="text-xs text-gray-500"><i class="fa6 fa6-screwdriver-wrench text-red-600"></i> المصروفات</div>
+                    <div class="font-semibold text-red-600">' || TO_CHAR(rec.TOTAL_EXPENSES_EGP, '999G999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="metric-tag">
+                    <div class="text-xs text-gray-500"><i class="fa6 fa6-bell-concierge text-yellow-600"></i> الخدمات</div>
+                    <div class="font-semibold text-yellow-700">' || TO_CHAR(rec.TOTAL_ADDED_SERVICES_EGP, '999G999G990D00') || ' EGP</div>
+                  </div>
+      
+                  <div class="metric-tag">
+                    <div class="text-xs text-gray-500"><i class="fa6 fa6-cash-register text-green-600"></i> إجمالي التحصيل</div>
+                    <div class="font-semibold text-green-600">' || TO_CHAR(rec.TOTAL_COLLECTED_EGP, '999G999G990D00') || ' EGP</div>
+                  </div>
+                </div>';
+      
+            -- Currency Breakdown
+            IF rec.COLLECTIONS_BY_CURRENCY_JSON IS NOT NULL AND rec.COLLECTIONS_BY_CURRENCY_JSON != '[]' THEN
+              l_html := l_html || '
+                <div class="mt-4">
+                  <div class="text-xs font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <i class="fa6 fa6-coins text-amber-600"></i><span>التحصيل حسب العملة</span>
+                  </div>
+                  <table class="w-full text-sm bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <thead class="bg-gray-50 text-xs text-gray-600">
+                      <tr>
+                        <th class="px-3 py-2 text-right">العملة</th>
+                        <th class="px-3 py-2 text-right">المبلغ</th>
+                        <th class="px-3 py-2 text-right">بالجنيه</th>
+                      </tr>
+                    </thead>
+                    <tbody>';
+      
+              FOR curr_rec IN (
+                SELECT jt.*
+                FROM JSON_TABLE(
+                  rec.COLLECTIONS_BY_CURRENCY_JSON,
+                  '$[*]'
+                  COLUMNS (
+                    currency     VARCHAR2(10)  PATH '$.currency',
+                    amount       VARCHAR2(50)  PATH '$.amount',
+                    amount_egp   VARCHAR2(50)  PATH '$.amount_egp'
+                  )
+                ) jt
+              ) LOOP
+                l_html := l_html || '
+                      <tr class="border-t border-gray-100 hover:bg-gray-50 transition">
+                        <td class="px-3 py-2 text-right">' || curr_rec.currency || '</td>
+                        <td class="px-3 py-2 text-right">' || curr_rec.amount || '</td>
+                        <td class="px-3 py-2 text-right text-gray-600">' || curr_rec.amount_egp || ' EGP</td>
+                      </tr>';
+              END LOOP;
+      
+              l_html := l_html || '
+                    </tbody>
+                  </table>
+                </div>';
+            END IF;
+      
+            -- Assignment buttons (if ASSIGNMENT_ID exists)
+            IF rec.ASSIGNMENT_ID IS NOT NULL THEN
+              l_html := l_html || '
+                <div class="flex flex-row gap-3 mt-6">
+                  <a href="' || APEX_UTIL.PREPARE_URL('f?p='||:APP_ID||':363:'||:APP_SESSION||'::::P363_ASSIGNMENT_ID:'||rec.ASSIGNMENT_ID) || '" 
+                     class="btn btn-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-semibold rounded-xl px-4 py-2 flex items-center gap-1"
+                     style="text-decoration:none;">
+                    <i class="fa6 fa6-user-edit"></i> تعديل التوزيعة
+                  </a>
+                  <a href="' || APEX_UTIL.PREPARE_URL('f?p='||:APP_ID||':6007:'||:APP_SESSION||'::::P6007_ASSIGNMENT_ID:'||rec.ASSIGNMENT_ID) || '" 
+                     class="btn btn-sm bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold rounded-xl px-4 py-2 flex items-center gap-1"
+                     style="text-decoration:none;">
+                    <i class="fa6 fa6-address-card"></i> عرض تفاصيل التوزيعة
+                  </a>
+                </div>
+              ';
+            END IF;
+      
+            l_html := l_html || '</div></div>'; -- Close card
+      
+          END LOOP;
+        END IF;
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P6001_PRODUCT_ID
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: driverCards
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Product's Trip Report =======================
+  id: 276692654210178468
+  identification: 
+    name: Product's Trip Report
+    title: تقرير الرحلات
+    type: Static Content
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: USER_TYPE
+    value: EMPLOYEE
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Product Request Details =====================
+  id: 276692781861178469
+  identification: 
+    name: Product Request Details
+    title: تفاصيل طلب العميل وبيانات الخدمة
+    type: Static Content
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Control and Active Current Trip ========
+  id: 276692843978178470
+  identification: 
+    name: Trip Control and Active Current Trip
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--removeHeader js-removeLandmark
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: trip-control-region
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Items Holder Container ======================
+  id: 276692954393178471
+  identification: 
+    name: Items Holder Container
+    title: قسم التحكم باعدادات السائق في الرحلة
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Active Trip Region ==========================
+  id: 276693067686178472
+  identification: 
+    name: Active Trip Region
+    title: تقرير الرحلات
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html        CLOB;
+        l_product_id  VARCHAR2(100) := :P6001_PRODUCT_ID;
+        l_count       INTEGER := 0;
+      
+        c_btn_primary   CONSTANT VARCHAR2(4000) :=
+          'flex items-center justify-center gap-2 min-h-[48px] h-12 px-4 rounded-lg text-base font-semibold bg-black text-white hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-black transition';
+      
+        c_btn_secondary CONSTANT VARCHAR2(4000) :=
+          'flex items-center justify-center gap-2 min-h-[48px] h-12 px-4 rounded-lg text-base font-semibold bg-gray-200 text-black hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-black transition';
+      
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        /* Count active/paused trips */
+        SELECT COUNT(*)
+        INTO l_count
+        FROM LIMO_TRIPS_TRACKER_V2 t
+        JOIN LIMO_PRODUCT_ASSIGNMENTS a
+          ON a.ASSIGNMENT_ID = t.ASSIGNMENT_ID
+        WHERE t.PRODUCT_ID = l_product_id
+          AND t.STATUS IN ('ACTIVE','PAUSED')
+          AND ( :P6001_USER_TYPE <> 'DRIVER'
+                OR UPPER(a.DRIVER_ID) = UPPER(:P6001_DRIVER_ID) );
+      
+        /* No trips */
+        IF l_count = 0 THEN
+      
+          l_html := '
+      <div class="w-full flex justify-center items-center my-2">
+        <section class="space-y-4 mt-4 max-w-md w-full">
+          <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-2xl text-center font-semibold flex flex-col items-center gap-2">
+            <i class="fa6 fa6-circle-exclamation text-2xl"></i>
+            لا توجد أي رحلات نشطة حالياً.
+          </div>
+        </section>
+      </div>';
+      
+          RETURN l_html;
+      
+        END IF;
+      
+        DBMS_LOB.APPEND(l_html, '<div class="w-full flex flex-col gap-3">');
+      
+        /* Main loop */
+        FOR rec IN (
+      
+          SELECT
+            t.TRIP_ID,
+            t.STATUS,
+            t.EXECUTED_DATE,
+            t.USED_CAR_ID,
+      
+            /* Accounting */
+            acc.EXPENSES_EGP,
+            acc.ADDED_SERVICES_EGP,
+            acc.DRIVER_PAYOUT_EGP,
+            acc.OFFICE_NET_EGP,
+            acc.OUTSTANDING_EGP,
+            acc.OUTSTANDING_ORIG_CURR,
+            acc.CURRENCY,
+      
+            /* Driver name */
+            CASE a.ASSIGNMENT_TYPE
+              WHEN 'INSOURCE'  THEN NVL(cd.DRIVER_NAME,'غير معروف')
+              WHEN 'OUTSOURCE' THEN NVL(s.SUPPLIER_NAME,'غير معروف')
+              ELSE 'غير معروف'
+            END AS DRIVER_NAME,
+      
+            /* Driver type AR */
+            CASE a.ASSIGNMENT_TYPE
+              WHEN 'INSOURCE'  THEN 'سائق داخلي'
+              WHEN 'OUTSOURCE' THEN 'سائق خارجي'
+              ELSE 'غير محدد'
+            END AS DRIVER_TYPE_AR,
+      
+            /* Avatar */
+            CASE a.ASSIGNMENT_TYPE
+              WHEN 'INSOURCE' THEN
+                CASE
+                  WHEN cd.PROFILE_PHOTO IS NOT NULL THEN
+                    'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/profilephotosapi/company-drivers-pic/' || cd.DRIVER_ID
+                  ELSE '#APP_FILES#placeholders/companydriver.png'
+                END
+      
+              WHEN 'OUTSOURCE' THEN
+                CASE
+                  WHEN s.PROFILE_PHOTO IS NOT NULL THEN
+                    'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/profilephotosapi/suppliers-pic/' || s.SUPPLIER_ID
+                  ELSE '#APP_FILES#placeholders/suppliers.png'
+                END
+      
+              ELSE '#APP_FILES#placeholders/unknown.png'
+            END AS DRIVER_AVATAR,
+      
+            /* Car display */
+            ( SELECT c.car_name || ' - ' || c.license_plate || ' - ' || c.year
+                FROM COMPANY_REGISTERED_CARS c
+               WHERE c.id = t.USED_CAR_ID
+            ) AS USED_CAR_DISPLAY
+      
+          FROM LIMO_TRIPS_TRACKER_V2 t
+      
+          JOIN LIMO_PRODUCT_ASSIGNMENTS a
+            ON a.ASSIGNMENT_ID = t.ASSIGNMENT_ID
+      
+          LEFT JOIN COMPANY_DRIVERS cd
+            ON a.ASSIGNMENT_TYPE = 'INSOURCE'
+           AND cd.DRIVER_ID = a.DRIVER_ID
+      
+          LEFT JOIN SUPPLIERS s
+            ON a.ASSIGNMENT_TYPE = 'OUTSOURCE'
+           AND TO_CHAR(s.SUPPLIER_ID) = a.DRIVER_ID
+      
+          /* Accounting join */
+          LEFT JOIN LIMO_TRIP_ACCOUNTING acc
+            ON acc.TRIP_ID = t.TRIP_ID
+      
+          WHERE t.PRODUCT_ID = l_product_id
+            AND t.STATUS IN ('ACTIVE','PAUSED')
+            AND ( :P6001_USER_TYPE <> 'DRIVER'
+                  OR UPPER(a.DRIVER_ID) = UPPER(:P6001_DRIVER_ID) )
+      
+          ORDER BY NVL(t.EXECUTED_DATE, DATE '1900-01-01') DESC,
+                   t.CREATED DESC
+        )
+      
+        LOOP
+      
+          DBMS_LOB.APPEND(l_html, '
+      
+      <div class="w-full flex justify-center items-center my-2">
+      
+        <section class="w-full sm:max-w-lg lg:max-w-xl bg-white border border-gray-200 shadow-lg rounded-2xl p-4 flex flex-col gap-3">
+      
+          <header class="flex flex-row items-center gap-3 pb-2 border-b border-gray-100">
+      
+            <div class="flex-shrink-0">
+              <img src="' || rec.DRIVER_AVATAR || '"
+                   onerror="this.onerror=null;this.src=''#APP_FILES#placeholders/unknown.png'';"
+                   class="w-14 h-14 rounded-xl object-cover border border-gray-200 shadow-sm" />
+            </div>
+      
+            <div class="flex flex-col flex-1 gap-1">
+      
+              <div class="flex items-center gap-1 text-xs text-gray-500">
+                <i class="fa6 fa6-location-dot text-black"></i>
+                <span class="font-bold">رحلة</span>
+              </div>
+      
+              <span class="text-[1.05rem] font-bold text-gray-900 flex items-center gap-1">
+                <i class="fa6 fa6-car-side text-black"></i> ' || rec.DRIVER_NAME || '
+              </span>
+      
+              <span class="text-xs text-gray-400">' || rec.DRIVER_TYPE_AR || '</span>
+      
+            </div>
+      
+            <div class="flex flex-col items-end">
+      
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ' ||
+      
+                CASE rec.STATUS
+                  WHEN 'ACTIVE' THEN 'bg-black text-white'
+                  WHEN 'PAUSED' THEN 'bg-yellow-400 text-black'
+                  ELSE 'bg-gray-200 text-gray-600'
+                END ||
+      
+              '">
+      
+                <i class="fa6 fa6-circle-dot mr-1"></i>' || rec.STATUS || '
+      
+              </span>
+      
+            </div>
+      
+          </header>
+      
+      
+          <section class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+      
+            <div class="bg-gray-50 rounded-lg p-3 border">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-calendar-day text-indigo-500"></i> تاريخ التنفيذ
+              </label>
+      
+              <span class="font-semibold text-gray-900">' ||
+      
+                CASE
+                  WHEN rec.EXECUTED_DATE IS NOT NULL
+                  THEN TO_CHAR(rec.EXECUTED_DATE, 'DD-MM-YYYY')
+                  ELSE '-'
+                END ||
+      
+              '</span>
+      
+            </div>
+      
+      
+            <div class="bg-gray-50 rounded-lg p-3 border">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-car text-rose-500"></i> السيارة المستخدمة
+              </label>
+      
+              <span class="font-semibold text-gray-900">' ||
+                NVL(rec.USED_CAR_DISPLAY,'-') || '</span>
+      
+            </div>
+      
+      
+            <div class="bg-gray-50 rounded-lg p-3 border">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-money-bill text-red-500"></i> المصروفات
+              </label>
+      
+              <span class="font-semibold text-red-700">' ||
+                TO_CHAR(NVL(rec.EXPENSES_EGP,0),'999G999G990D00') || ' EGP</span>
+      
+            </div>
+      
+      
+            <div class="bg-gray-50 rounded-lg p-3 border">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-bell-concierge text-yellow-600"></i> الخدمات
+              </label>
+      
+              <span class="font-semibold text-yellow-700">' ||
+                TO_CHAR(NVL(rec.ADDED_SERVICES_EGP,0),'999G999G990D00') || ' EGP</span>
+      
+            </div>
+      
+      
+            <div class="bg-gray-50 rounded-lg p-3 border">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-wallet text-green-600"></i> نصيب السائق
+              </label>
+      
+              <span class="font-semibold text-green-700">' ||
+                TO_CHAR(NVL(rec.DRIVER_PAYOUT_EGP,0),'999G999G990D00') || ' EGP</span>
+      
+            </div>
+      
+      
+            <div class="bg-gray-50 rounded-lg p-3 border">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-building-columns text-gray-600"></i> صافي المكتب
+              </label>
+      
+              <span class="font-semibold text-gray-800">' ||
+                TO_CHAR(NVL(rec.OFFICE_NET_EGP,0),'999G999G990D00') || ' EGP</span>
+      
+            </div>
+      
+      
+            <div class="bg-gray-50 rounded-lg p-3 border col-span-2 sm:col-span-3">
+      
+              <label class="text-xs text-gray-500 mb-1">
+                <i class="fa6 fa6-calculator text-emerald-600"></i> التحصيلات المتبقية
+              </label>
+      
+              <span class="font-semibold text-emerald-700">' ||
+                TO_CHAR(NVL(rec.OUTSTANDING_ORIG_CURR,0),'999G999G990D00') ||
+                ' ' || rec.CURRENCY || '</span>
+      
+              <div class="text-xs text-gray-400 mt-1">(≈ ' ||
+                TO_CHAR(NVL(rec.OUTSTANDING_EGP,0),'999G999G990D00') || ' EGP)</div>
+      
+            </div>
+      
+          </section>
+      
+      
+          <section class="w-full mt-2">
+      
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      
+      
+              <a class="' || c_btn_primary || '" href="' ||
+                APEX_UTIL.PREPARE_URL(
+                  'f?p='||:APP_ID||':6002:'||:APP_SESSION||
+                  '::::P6002_TRIP_ID:'||rec.TRIP_ID
+                ) || '">
+      
+                <i class="fa6 fa6-file-lines"></i> عرض التفاصيل
+      
+              </a>
+      
+      
+              <a class="' || c_btn_secondary || '" href="' ||
+                APEX_UTIL.PREPARE_URL(
+                  'f?p='||:APP_ID||':6005:'||:APP_SESSION||
+                  '::::P6005_TRIP_ID:'||rec.TRIP_ID
+                ) || '">
+      
+                <i class="fa6 fa6-cash-register"></i> تسجيل تحصيل
+      
+              </a>
+      
+      
+              <a class="' || c_btn_secondary || '" href="' ||
+                APEX_UTIL.PREPARE_URL(
+                  'f?p='||:APP_ID||':6003:'||:APP_SESSION||
+                  '::::P6003_TRIP_ID:'||rec.TRIP_ID
+                ) || '">
+      
+                <i class="fa6 fa6-money-bill-transfer"></i> اضافة مصروفات
+      
+              </a>
+      
+      
+              <a class="' || c_btn_secondary || '" href="' ||
+                APEX_UTIL.PREPARE_URL(
+                  'f?p='||:APP_ID||':6004:'||:APP_SESSION||
+                  '::::P6004_TRIP_ID:'||rec.TRIP_ID
+                ) || '">
+      
+                <i class="fa6 fa6-bell-concierge"></i> اضافة خدمة
+      
+              </a>
+      
+      
+            </div>
+      
+          </section>
+      
+        </section>
+      
+      </div>');
+      
+        END LOOP;
+      
+        DBMS_LOB.APPEND(l_html, '</div>');
+      
+        RETURN l_html;
+      
+      END;
+      
+    page-items-to-submit: 
+    - P6001_PRODUCT_ID
+    - P6001_USER_TYPE
+    - P6001_ASSIGNMENT_ID
+    - P6001_APP_USER_ASSIGNMENT_ID
+    - P6001_DRIVER_ID
+
+  layout: 
+    sequence: 10
+    parent-region: Trip Control and Active Current Trip # 276692843978178470
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: current-trip-region
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: loader ======================================
+  id: 279057814021864264
+  identification: 
+    name: loader
+    type: Static Content
+
+  source: 
+    html-code: |
+      
+      <!-- Loader Overlay -->
+      <div id="swipe-loader"
+           class="fixed inset-0 bg-white bg-opacity-90 z-[9999] hidden flex flex-col items-center justify-center text-xl font-bold text-emerald-700 space-y-4 transition-opacity duration-500 backdrop-blur-md">
+        <div class="flex items-center space-x-2 rtl:space-x-reverse">
+          <i class="fa6 fa6-car fa-bounce text-3xl"></i>
+          <span>جاري بدء الرحلة...</span>
+        </div>
+      </div>
+      
+      <!-- Success Overlay -->
+      <div id="swipe-success"
+           class="fixed inset-0 bg-white bg-opacity-90 z-[9999] hidden flex flex-col items-center justify-center text-xl font-bold text-green-700 space-y-4 transition-opacity duration-500 backdrop-blur-md">
+        <div class="flex items-center space-x-2 rtl:space-x-reverse">
+          <i class="fa6 fa6-circle-check fa-beat text-3xl"></i>
+          <span>تم بدء الرحلة بنجاح</span>
+        </div>
+      </div>
+      
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_05
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    static-id: start-loader
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Details ================================
+  id: 10981179589263010997
+  identification: 
+    name: Trip Details
+    title: تفاصيل الطلب
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select SUB_RES_ID,
+             ORDER_ITEM_ID,
+             CAT_ITEM_ID,
+             TRIP_TYPE,
+             FROM_LOCATION,
+             TO_LOCATION,
+             RES_DATE_FROM,
+             RES_TIME,
+             RES_DATE_TO,
+             SERVICE_CLASS,
+             TICKET_NUMBER,
+             SIGNAGE_DETAILS,
+             TRIP_PRICE,
+             CURRENCY,
+             EXCHANGE_RATE,
+             NOD,
+             TOTAL_AMOUNT,
+             TOTAL_AMOUNT_EGP,
+      
+             STATUS,
+             NOTES,
+             CREATED,
+             CREATED_BY,
+             UPDATED,
+             UPDATED_BY,
+             IS_DELETED,
+             DELETED,
+             DELETED_BY,
+             MAIN_RES_ID,
+             STATUS_CODE,
+             PASSENGERS_NO,
+             LUGGAGE_NO,
+             REQUEST_TYPE
+        from SUBLEVEL_LIMO_RES
+        where sub_res_id = :P6001_PRODUCT_ID
+    page-items-to-submit: 
+    - APP_USER_ID
+    - P6001_PRODUCT_ID
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P6001_ORDER_BY
+      order-bys: 
+      - key: PICK_UP_TIME
+        clause: PICK_UP_TIME
+
+      - key: RESERVATION_ID
+        clause: RESERVATION_ID
+
+  layout: 
+    sequence: 10
+    parent-region: Product Request Details # 276692781861178469
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    static-id: limo-request-details
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+      css-classes: 
+      - limo-card
+
+    settings: 
+      overline: |2
+          <div class="limo-overline flex flex-wrap items-center gap-2 text-sm text-gray-900 mb-1">
+            <span class="flex items-center gap-1 whitespace-nowrap">
+              <span class="label font-semibold text-gray-700">كود العميل:</span> &CLIENT_CODE.
+            </span>
+            <span class="overline-separator text-gray-400">|</span>
+            <span class="flex items-center gap-1 whitespace-nowrap">
+              <span class="label font-semibold text-gray-700">رقم الحجز:</span> &RESERVATION_ID.
+            </span>
+            <span class="overline-separator text-gray-400">|</span>
+            <span class="flex items-center gap-1 whitespace-nowrap">
+              <span class="label font-semibold text-gray-700">كود الرحلة:</span> &PRODUCT_ID.
+            </span>
+          </div>
+      title: |
+        <div class="limo-title flex flex-col sm:flex-row sm:flex-wrap gap-2 text-[clamp(0.85rem,2vw,0.95rem)] leading-snug">
+          <!-- Client Name -->
+          <div class="title-group inline-flex items-center bg-gray-100 rounded-xl px-3 py-1 max-w-full truncate">
+            <i class="fa6 fa6-user text-blue-800 ml-2"></i>
+            <span class="title-label font-semibold text-gray-700 ml-1">العميل:</span>
+            <span class="title-value text-gray-900 truncate">&FULL_NAME.</span>
+          </div>
+        
+          <!-- Client Phone with Actions -->
+          <div class="title-group inline-flex items-center bg-gray-100 rounded-xl px-3 py-1 max-w-full truncate gap-2">
+            <span class="title-label font-semibold text-gray-700">جوال العميل:</span>
+            <span class="title-value text-gray-900 truncate">&PHONE.</span>
+            <a href="tel:&PHONE_CLEAN." class="text-blue-700 hover:text-blue-900" title="اتصال">
+              <span class="sr-only">اتصال</span>
+              <i class="fa6 fa6-phone-volume"></i>
+            </a>
+            <a href="https://wa.me/&PHONE_CLEAN.?text=مرحباً%20&FULL_NAME." class="text-green-600 hover:text-green-800" title="واتساب" target="_blank">
+              <span class="sr-only">واتساب</span>
+              <i class="fa6 fa6-paper-plane"></i>
+            </a>
+          </div>
+        
+          <!-- Trip Time -->
+          <div class="title-group inline-flex items-center bg-gray-100 rounded-xl px-3 py-1 max-w-full truncate">
+            <i class="fa6 fa6-clock text-blue-800 ml-2"></i>
+            <span class="title-label font-semibold text-gray-700 ml-1">الموعد:</span>
+            <span class="title-value text-gray-900">&PICK_UP_TIME.</span>
+          </div>
+        </div>
+        
+      description: |
+        <div class="limo-row flex flex-col sm:flex-row gap-4 mt-4 max-w-full">
+          <!-- Car Image -->
+          <div class="limo-avatar relative flex items-center justify-center sm:block w-full sm:w-auto">
+            <img src="&CAR_PHOTO_URL." alt="صورة السيارة"
+                 onerror="this.onerror=null;this.src='#APP_FILES#placeholders/unknown-car.png'"
+                 class="w-[120px] h-[90px] object-contain rounded-md shadow" />
+            <div class="trip-progress-badge absolute -bottom-2 left-1/2 -translate-x-1/2 bg-yellow-50 border border-yellow-300 text-brown-700 rounded-xl px-2 py-0.5 text-xs text-center shadow min-w-[60px]">
+              <div class="progress-value font-semibold text-orange-600">&TRIPS_COUNT./&TOTAL_DAYS.</div>
+              <div class="progress-label text-[0.65em] text-brown-600">رحلات</div>
+            </div>
+          </div>
+        
+          <!-- Description -->
+          <div class="limo-description flex-1 text-sm text-gray-800 leading-relaxed">
+            <!-- Location Inline Row -->
+            <div class="trip-location-card flex flex-row items-center justify-center flex-wrap gap-4 rounded-md px-3 py-2 mb-3 text-center sm:justify-start">
+              <div class="location-block flex flex-col min-w-[120px]">
+                <div class="location-name font-bold text-base text-black">&FROM_LOCATION.</div>
+                <div class="location-datetime text-xs text-gray-600">&PICK_UP_TIME.</div>
+              </div>
+              <div class="location-arrow flex items-center justify-center text-gray-400">
+                <svg viewBox="0 0 24 24" class="w-5 h-5 fill-gray-500">
+                  <path d="M14.55 6c-.2 0-.39.078-.53.22l-5 5a1.1 1.1 0 0 0 0 1.56l5 5a.75.75 0 0 0 1.06-1.06L10.36 12l4.72-4.72a.75.75 0 0 0-.53-1.28z"/>
+                </svg>
+              </div>
+              <div class="location-block flex flex-col min-w-[120px]">
+                <div class="location-name font-bold text-base text-black">&TO_LOCATION.</div>
+                <div class="location-datetime text-xs text-gray-600">&TRIP_DATE_TO.</div>
+              </div>
+            </div>
+        
+            <!-- Meta Badges -->
+            <div class="limo-meta flex flex-wrap gap-2">
+              <span class="badge inline-flex items-center gap-1 bg-blue-900 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                <i class="fa6 fa6-tag"></i> &CLASSIFICATION_TYPE.
+              </span>
+              <span class="badge inline-flex items-center gap-1 bg-blue-900 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                <i class="fa6 fa6-car-side"></i> &TRIP_TYPE.
+              </span>
+              <span class="badge inline-flex items-center gap-1 bg-blue-900 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                <i class="fa6 fa6-calendar-day"></i> &NUMBER_OF_DAYS. يوم
+              </span>
+              <span class="badge inline-flex items-center gap-1 bg-blue-900 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+                <i class="fa6 fa6-car"></i> &REQUESTED_CAR.
+              </span>
+            </div>
+          </div>
+        </div>
+        
+      miscellaneous: |2
+          <div class="limo-misc w-full lg:w-[270px] flex flex-col gap-3 mt-5 text-sm text-gray-900">
+            <div class="misc-group bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2">
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-money-bill-wave text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">سعر الرحلة:</span><span class="misc-value flex-1 text-gray-900">&PRODUCT_PRICE. &PRODUCT_CURRENCY.</span></div>
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-file-invoice text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">إجمالي الرحلات:</span><span class="misc-value flex-1 text-gray-900">&TOTAL_AMOUNT. &PRODUCT_CURRENCY.</span></div>
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-plus-circle text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">الخدمات الإضافية:</span><span class="misc-value flex-1 text-gray-900">&TOTAL_ADDED_SERVICES_EGP. EGP</span></div>
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-file-invoice text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">إجمالي الفتورة:</span><span class="misc-value flex-1 text-gray-900">&TOTAL_INVOICE_ORIG_CURR. &PRODUCT_CURRENCY.</span></div>
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-sack-dollar text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">المدفوع:</span><span class="misc-value flex-1 text-gray-900">&TOTAL_PAID_ORIG_CURR. &PRODUCT_CURRENCY.</span></div>
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-wallet text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">المتبقي:</span><span class="misc-value flex-1 text-gray-900">&TOTAL_OUTSTANDING_ORIG_CURR. &PRODUCT_CURRENCY.</span></div>
+            </div>
+        
+            <div class="misc-group bg-white rounded-xl border border-gray-200 p-4 flex flex-col gap-2">
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-user-check text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">السائق الحالي:</span><span class="misc-value flex-1 text-gray-900">&CURRENT_DRIVER_NAME.</span></div>
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-phone text-blue-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">جوال السائق:</span><span class="misc-value flex-1 text-gray-900">&CURRENT_DRIVER_PHONE.</span></div>
+            </div>
+        
+            {if TICKET_NUMBER/}
+            <div class="misc-group misc-highlight border-yellow-400 bg-yellow-50 shadow-inner px-4 py-3 rounded-xl">
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-ticket-alt text-yellow-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">رقم التذكرة:</span><span class="misc-value flex-1 text-gray-900">&TICKET_NUMBER.</span></div>
+              {if SIGNAGE_DETAILS/}
+              <div class="misc-row flex items-start gap-2"><i class="fa6 fa6-sign text-yellow-800 mt-0.5"></i><span class="misc-label font-semibold text-gray-700">لافتة الترحيب:</span><span class="misc-value flex-1 text-gray-900">&SIGNAGE_DETAILS.</span></div>
+              {endif/}
+            </div>
+            {endif/}
+        
+            {if TRIP_NOTES/}
+            <div class="misc-notes border border-dashed border-gray-300 bg-white rounded-md px-3 py-2 italic leading-relaxed flex items-start gap-2">
+              <i class="fa6 fa6-sticky-note text-blue-800 mt-0.5"></i>
+              <span class="misc-label font-semibold text-gray-700">ملاحظات:</span>
+              <span class="misc-value flex-1 text-gray-900">&TRIP_NOTES.</span>
+            </div>
+            {endif/}
+          </div>
+        
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: false
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: true
+
+    pagination: 
+      type: Page
+      entities-per-page: 100
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: SUB_RES_ID ==================================
+    id: 210185662492154769
+    identification: 
+      name: SUB_RES_ID
+
+    layout: 
+      sequence: 1200
+
+    source: 
+      type: Database Column
+      database-column: SUB_RES_ID
+      data-type: VARCHAR2
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ORDER_ITEM_ID ===============================
+    id: 210185741783154770
+    identification: 
+      name: ORDER_ITEM_ID
+
+    layout: 
+      sequence: 1210
+
+    source: 
+      type: Database Column
+      database-column: ORDER_ITEM_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CAT_ITEM_ID =================================
+    id: 210185827128154771
+    identification: 
+      name: CAT_ITEM_ID
+
+    layout: 
+      sequence: 1220
+
+    source: 
+      type: Database Column
+      database-column: CAT_ITEM_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RES_DATE_FROM ===============================
+    id: 210185911216154772
+    identification: 
+      name: RES_DATE_FROM
+
+    layout: 
+      sequence: 1230
+
+    source: 
+      type: Database Column
+      database-column: RES_DATE_FROM
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RES_TIME ====================================
+    id: 210186042907154773
+    identification: 
+      name: RES_TIME
+
+    layout: 
+      sequence: 1240
+
+    source: 
+      type: Database Column
+      database-column: RES_TIME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RES_DATE_TO =================================
+    id: 210186097316154774
+    identification: 
+      name: RES_DATE_TO
+
+    layout: 
+      sequence: 1250
+
+    source: 
+      type: Database Column
+      database-column: RES_DATE_TO
+      data-type: DATE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SERVICE_CLASS ===============================
+    id: 210186203455154775
+    identification: 
+      name: SERVICE_CLASS
+
+    layout: 
+      sequence: 1260
+
+    source: 
+      type: Database Column
+      database-column: SERVICE_CLASS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_PRICE ==================================
+    id: 210186312056154776
+    identification: 
+      name: TRIP_PRICE
+
+    layout: 
+      sequence: 1270
+
+    source: 
+      type: Database Column
+      database-column: TRIP_PRICE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CURRENCY ====================================
+    id: 210186405576154777
+    identification: 
+      name: CURRENCY
+
+    layout: 
+      sequence: 1280
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 210186529030154778
+    identification: 
+      name: EXCHANGE_RATE
+
+    layout: 
+      sequence: 1290
+
+    source: 
+      type: Database Column
+      database-column: EXCHANGE_RATE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOD =========================================
+    id: 210186619194154779
+    identification: 
+      name: NOD
+
+    layout: 
+      sequence: 1300
+
+    source: 
+      type: Database Column
+      database-column: NOD
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS ======================================
+    id: 210186918360154782
+    identification: 
+      name: STATUS
+
+    layout: 
+      sequence: 1330
+
+    source: 
+      type: Database Column
+      database-column: STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 210187024634154783
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 1340
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 210187097587154784
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 1350
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 210187235994154785
+    identification: 
+      name: CREATED_BY
+
+    layout: 
+      sequence: 1360
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED =====================================
+    id: 210187329828154786
+    identification: 
+      name: UPDATED
+
+    layout: 
+      sequence: 1370
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 210187489334154787
+    identification: 
+      name: UPDATED_BY
+
+    layout: 
+      sequence: 1380
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IS_DELETED ==================================
+    id: 210187556067154788
+    identification: 
+      name: IS_DELETED
+
+    layout: 
+      sequence: 1390
+
+    source: 
+      type: Database Column
+      database-column: IS_DELETED
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DELETED =====================================
+    id: 210187632424154789
+    identification: 
+      name: DELETED
+
+    layout: 
+      sequence: 1400
+
+    source: 
+      type: Database Column
+      database-column: DELETED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DELETED_BY ==================================
+    id: 210187702760154790
+    identification: 
+      name: DELETED_BY
+
+    layout: 
+      sequence: 1410
+
+    source: 
+      type: Database Column
+      database-column: DELETED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: MAIN_RES_ID =================================
+    id: 210187889253154791
+    identification: 
+      name: MAIN_RES_ID
+
+    layout: 
+      sequence: 1420
+
+    source: 
+      type: Database Column
+      database-column: MAIN_RES_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS_CODE =================================
+    id: 210187944154154792
+    identification: 
+      name: STATUS_CODE
+
+    layout: 
+      sequence: 1430
+
+    source: 
+      type: Database Column
+      database-column: STATUS_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PASSENGERS_NO ===============================
+    id: 210188057679154793
+    identification: 
+      name: PASSENGERS_NO
+
+    layout: 
+      sequence: 1440
+
+    source: 
+      type: Database Column
+      database-column: PASSENGERS_NO
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: LUGGAGE_NO ==================================
+    id: 210188184649154794
+    identification: 
+      name: LUGGAGE_NO
+
+    layout: 
+      sequence: 1450
+
+    source: 
+      type: Database Column
+      database-column: LUGGAGE_NO
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: REQUEST_TYPE ================================
+    id: 210188236989154795
+    identification: 
+      name: REQUEST_TYPE
+
+    layout: 
+      sequence: 1460
+
+    source: 
+      type: Database Column
+      database-column: REQUEST_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_AMOUNT_EGP ============================
+    id: 270816539910053637
+    identification: 
+      name: TOTAL_AMOUNT_EGP
+
+    layout: 
+      sequence: 940
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_AMOUNT_EGP
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 270816897421053640
+    identification: 
+      name: TOTAL_AMOUNT
+
+    layout: 
+      sequence: 970
+
+    source: 
+      type: Database Column
+      database-column: TOTAL_AMOUNT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: FROM_LOCATION ===============================
+    id: 352763318077987174
+    identification: 
+      name: FROM_LOCATION
+
+    layout: 
+      sequence: 580
+
+    source: 
+      type: Database Column
+      database-column: FROM_LOCATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TO_LOCATION =================================
+    id: 352763440650987175
+    identification: 
+      name: TO_LOCATION
+
+    layout: 
+      sequence: 590
+
+    source: 
+      type: Database Column
+      database-column: TO_LOCATION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TRIP_TYPE ===================================
+    id: 352763540728987176
+    identification: 
+      name: TRIP_TYPE
+
+    layout: 
+      sequence: 600
+
+    source: 
+      type: Database Column
+      database-column: TRIP_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LIMOPRODUCTS TRIP TYPES # 267647733503170392
+      display-extra-values: true
+
+  - # ====== Column: SIGNAGE_DETAILS =============================
+    id: 352957298818381983
+    identification: 
+      name: SIGNAGE_DETAILS
+
+    layout: 
+      sequence: 840
+
+    source: 
+      type: Database Column
+      database-column: SIGNAGE_DETAILS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TICKET_NUMBER ===============================
+    id: 352957468887381984
+    identification: 
+      name: TICKET_NUMBER
+
+    layout: 
+      sequence: 850
+
+    source: 
+      type: Database Column
+      database-column: TICKET_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: اتصال بالعميل ===============================
+    id: 270819495568053666
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اتصال بالعميل
+
+    layout: 
+      sequence: 11
+
+    link: 
+      type: Redirect to URL
+      target: '#'
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa6 fa6-phone
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - btn-menu
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: قائمة الإجرائات =============================
+    id: 11233111802245933378
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: قائمة الإجرائات
+
+    layout: 
+      sequence: 1
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-chevron-down
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - btn-menu
+
+    menus: 
+    - # ====== Menu: تغير السائق ===================================
+      id: 270820210979053674
+      identification: 
+        type: Menu Entry
+        label: تغير السائق
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:363:&SESSION.::&DEBUG.::P363_PRODUCT_ID:&PRODUCT_ID.'
+          page: 363 # Limo Product Assignment Form
+          values: 
+            p363_product_id: '&PRODUCT_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-start
+
+    - # ====== Menu: إضافة مصروفات =================================
+      id: 311861907508918162
+      identification: 
+        type: Menu Entry
+        label: إضافة مصروفات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:363:&SESSION.::&DEBUG.::P363_PRODUCT_ID,P363_RESERVATION_ID:&PRODUCT_ID.,&RESERVATION_ID.'
+          page: 363 # Limo Product Assignment Form
+          values: 
+            p363_product_id: '&PRODUCT_ID.'
+            p363_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-share-nodes
+
+      server-side-condition: 
+        type: Rows returned
+        sql-query: |
+          SELECT 1
+          FROM LIMO_PRODUCTS p
+          WHERE p.PRODUCT_ID = :PRODUCT_ID
+            AND NOT EXISTS (
+              SELECT 1 FROM LIMO_PRODUCT_ASSIGNMENTS a
+              WHERE a.PRODUCT_ID = p.PRODUCT_ID
+            )
+          
+        execute-condition: For Each Row
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: تقيم العميل ===================================
+      id: 311862012779918163
+      identification: 
+        type: Menu Entry
+        label: تقيم العميل
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:363:&SESSION.::&DEBUG.::P363_PRODUCT_ID,P363_RESERVATION_ID:&PRODUCT_ID.,&RESERVATION_ID.'
+          page: 363 # Limo Product Assignment Form
+          values: 
+            p363_product_id: '&PRODUCT_ID.'
+            p363_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-share-nodes
+
+      server-side-condition: 
+        type: Rows returned
+        sql-query: |
+          SELECT 1
+          FROM LIMO_PRODUCTS p
+          WHERE p.PRODUCT_ID = :PRODUCT_ID
+            AND NOT EXISTS (
+              SELECT 1 FROM LIMO_PRODUCT_ASSIGNMENTS a
+              WHERE a.PRODUCT_ID = p.PRODUCT_ID
+            )
+          
+        execute-condition: For Each Row
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: تعديل الحجز ===================================
+      id: 311862171500918164
+      identification: 
+        type: Menu Entry
+        label: تعديل الحجز
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:359:&SESSION.::&DEBUG.:359:P359_PRODUCT_ID:&PRODUCT_ID.'
+          page: 359 # Limo Product Reservation Form
+          clear-cache: 359
+          values: 
+            p359_product_id: '&PRODUCT_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-start
+
+    - # ====== Menu: Separator =====================================
+      id: 311862199610918165
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+    - # ====== Menu: عرض تفاصيل الطلب ==============================
+      id: 352255173764693419
+      identification: 
+        type: Menu Entry
+        label: عرض تفاصيل الطلب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:363:&SESSION.::&DEBUG.::P363_PRODUCT_ID,P363_RESERVATION_ID:&PRODUCT_ID.,&RESERVATION_ID.'
+          page: 363 # Limo Product Assignment Form
+          values: 
+            p363_product_id: '&PRODUCT_ID.'
+            p363_reservation_id: '&RESERVATION_ID.'
+
+      appearance: 
+        icon: fa6-solid fa6-share-nodes
+
+      server-side-condition: 
+        type: Rows returned
+        sql-query: |
+          SELECT 1
+          FROM LIMO_PRODUCTS p
+          WHERE p.PRODUCT_ID = :PRODUCT_ID
+            AND NOT EXISTS (
+              SELECT 1 FROM LIMO_PRODUCT_ASSIGNMENTS a
+              WHERE a.PRODUCT_ID = p.PRODUCT_ID
+            )
+          
+        execute-condition: For Each Row
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Separator =====================================
+      id: 11806712390379419863
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+page-items: 
+- # ====== Page Item: P6001_PRODUCT_ID =========================
+  id: 270247524449186770
+  identification: 
+    name: P6001_PRODUCT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_ASSIGNMENT_ID ======================
+  id: 270247783946186772
+  identification: 
+    name: P6001_ASSIGNMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_DRIVER_ID ==========================
+  id: 270247879262186773
+  identification: 
+    name: P6001_DRIVER_ID
+    type: Select One
+
+  label: 
+    label: السائق المعين في التوزيعة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 90
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        CASE a.ASSIGNMENT_TYPE
+          WHEN 'INSOURCE' THEN d.DRIVER_NAME || ' (' || d.DRIVER_ID || ' - ' || a.DRIVER_STATUS || ')'
+          WHEN 'OUTSOURCE' THEN s.SUPPLIER_NAME || ' (' || TO_CHAR(s.SUPPLIER_ID) || ' - ' || a.DRIVER_STATUS || ')'
+          ELSE 'غير معروف'
+        END AS display_value,
+        a.DRIVER_ID AS return_value
+      FROM LIMO_PRODUCT_ASSIGNMENTS a
+      LEFT JOIN COMPANY_DRIVERS d ON a.ASSIGNMENT_TYPE = 'INSOURCE' AND d.DRIVER_ID = a.DRIVER_ID
+      LEFT JOIN SUPPLIERS s ON a.ASSIGNMENT_TYPE = 'OUTSOURCE' AND TO_CHAR(s.SUPPLIER_ID) = a.DRIVER_ID
+      WHERE a.ASSIGNMENT_ID = :P6001_APP_USER_ASSIGNMENT_ID
+      
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P6001_APP_USER_ASSIGNMENT_ID
+    items-to-submit: 
+    - P6001_APP_USER_ASSIGNMENT_ID
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select driver_id from limo_product_assignments where assignment_id = :P6001_APP_USER_ASSIGNMENT_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  read-only: 
+    type: Item = Value
+    item: P6001_USER_TYPE
+    value: DRIVER
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P6001_ACTIVETRIP =========================
+  id: 270628299584999851
+  identification: 
+    name: P6001_ACTIVETRIP
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':APP_USER_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_APP_USER_ASSIGNMENT_ID =============
+  id: 270628590507999854
+  identification: 
+    name: P6001_APP_USER_ASSIGNMENT_ID
+    type: Select One
+
+  label: 
+    label: التوزيعة التي سيتم عليها بدء الرحلة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 80
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        driver_name || ' (' || driver_id || ' - ' || driver_status || ')' AS display_value,
+        assignment_id AS return_value
+      FROM (
+        /* ================= OUTSOURCE drivers ================= */
+        SELECT 
+          s.SUPPLIER_NAME AS driver_name,
+          a.DRIVER_ID,
+          a.DRIVER_STATUS,
+          a.ASSIGNMENT_ID
+        FROM LIMO_PRODUCT_ASSIGNMENTS a
+        JOIN SUPPLIERS s 
+          ON TO_CHAR(s.SUPPLIER_ID) = a.DRIVER_ID
+        WHERE a.ASSIGNMENT_TYPE = 'OUTSOURCE'
+          AND a.PRODUCT_ID = :P6001_PRODUCT_ID
+      
+        UNION ALL
+      
+        /* ================= INSOURCE drivers ================= */
+        SELECT 
+          d.DRIVER_NAME AS driver_name,
+          a.DRIVER_ID,
+          a.DRIVER_STATUS,
+          a.ASSIGNMENT_ID
+        FROM LIMO_PRODUCT_ASSIGNMENTS a
+        JOIN COMPANY_DRIVERS d 
+          ON d.DRIVER_ID = a.DRIVER_ID
+        WHERE a.ASSIGNMENT_TYPE = 'INSOURCE'
+          AND a.PRODUCT_ID = :P6001_PRODUCT_ID
+      )
+      ORDER BY
+        /* 🔥 Current driver always first */
+        CASE 
+          WHEN DRIVER_STATUS = 'CURRENT' THEN 0
+          ELSE 1
+        END,
+        /* Then alphabetical */
+        driver_name;
+      
+
+  advanced: 
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): "select assignment_id from limo_product_assignments where product_id = :P6001_PRODUCT_ID and DRIVER_STATUS = 'CURRENT';"
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  read-only: 
+    type: Item = Value
+    item: P6001_USER_TYPE
+    value: DRIVER
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_START_CONFIRMED ====================
+  id: 270816137110053633
+  identification: 
+    name: P6001_START_CONFIRMED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_END_CONFIRMED ======================
+  id: 270816440630053636
+  identification: 
+    name: P6001_END_CONFIRMED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_ACTIVETRIP_STATUS ==================
+  id: 271685840686380634
+  identification: 
+    name: P6001_ACTIVETRIP_STATUS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6001_DRIVER_USER_ID =====================
+  id: 271686049938380636
+  identification: 
+    name: P6001_DRIVER_USER_ID
+    type: Display Only
+
+  label: 
+    label: اسم المستخدم الخاص بالسائق
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 100
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: SUPPLIERS NAMES # 255823814764227133
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: select supplier_id from suppliers where suppiner_id in limo assignments
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P6001_USER_TYPE ==========================
+  id: 275900605350729861
+  identification: 
+    name: P6001_USER_TYPE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Items Holder Container # 276692954393178471
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: StartTripView ===============================
+  id: 176324868314440409
+  identification: 
+    button-name: StartTripView
+    label: بدء الرحلة
+
+  layout: 
+    sequence: 20
+    region: Trip Control and Active Current Trip # 276692843978178470
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--success
+    - t-Button--stretch
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.::P2_PRODUCT_ID,P2_ASSIGNMENT_ID:&P6001_PRODUCT_ID.,&P6001_APP_USER_ASSIGNMENT_ID.'
+      page: 2 # Identity Profile
+      values: 
+        p2_product_id: '&P6001_PRODUCT_ID.'
+        p2_assignment_id: '&P6001_APP_USER_ASSIGNMENT_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      SELECT 1
+      FROM DUAL
+      WHERE 
+        -- 🟥 Ensure no active or paused trips exist
+        NOT EXISTS (
+          SELECT 1
+          FROM LIMO_TRIPS_TRACKER_V2
+          WHERE PRODUCT_ID = :P6001_PRODUCT_ID
+            AND STATUS IN ('ACTIVE', 'PAUSED')
+        )
+      
+        -- 🟩 Ensure product is accessible (employee or current driver)
+        AND EXISTS (
+          SELECT 1
+          FROM sublevel_limo_res p
+          WHERE p.sub_res_id = :P6001_PRODUCT_ID
+      
+            AND (
+              -- ✅ EMPLOYEE: always access
+              :P6001_USER_TYPE = 'EMPLOYEE'
+      
+              -- ✅ DRIVER: must be current driver and trip date not expired
+              OR EXISTS (
+                SELECT 1
+                FROM LIMO_PRODUCT_ASSIGNMENTS a
+                WHERE a.PRODUCT_ID = p.SUB_RES_ID
+                  AND a.DRIVER_ID = :P6001_DRIVER_ID
+                  AND a.DRIVER_STATUS = 'CURRENT'
+      
+              )
+            )
+      
+            -- 🟨 Ensure fewer trips than days
+            AND (
+              SELECT COUNT(*)
+              FROM LIMO_TRIPS_TRACKER_V2 t
+              WHERE t.PRODUCT_ID = p.SUB_RES_ID
+                AND t.STATUS = 'FINISHED'
+            ) < (TRUNC(p.RES_DATE_TO) - TRUNC(p.RES_DATE_FROM) + 1)
+      
+            -- ✅ Ensure at least one assignment exists (any status)
+            AND EXISTS (
+              SELECT 1
+              FROM LIMO_PRODUCT_ASSIGNMENTS x
+              WHERE x.PRODUCT_ID = p.SUB_RES_ID
+            )
+        );
+
+- # ====== Button: EndTripView =================================
+  id: 176324993557440410
+  identification: 
+    button-name: EndTripView
+    label: انهاء الرحلة
+
+  layout: 
+    sequence: 30
+    region: Trip Control and Active Current Trip # 276692843978178470
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--danger
+    - t-Button--stretch
+    - t-Button--gapTop
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  confirmation: 
+    message: تأكيد الإنهاء
+    style: Default
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      SELECT 1
+      FROM LIMO_TRIPS_TRACKER_V2
+      WHERE PRODUCT_ID = :P6001_PRODUCT_ID
+        AND STATUS IN ('ACTIVE', 'PAUSED')
+
+- # ====== Button: Up_Driver ===================================
+  id: 277029860119043653
+  identification: 
+    button-name: Up_Driver
+    label: Up Driver
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 270592915217699341
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:6000:&SESSION.::&DEBUG.:::'
+      page: 6000 # Driver's Application Home Page
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item = Value
+    item: USER_TYPE
+    value: DRIVER
+
+- # ====== Button: Up_Employee =================================
+  id: 277030170808043656
+  identification: 
+    button-name: Up_Employee
+    label: Up
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 270592915217699341
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:::'
+      page: 350 # Limousine Department Home
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item = Value
+    item: USER_TYPE
+    value: EMPLOYEE
+
+- # ====== Button: RefreshPage =================================
+  id: 277030233469043657
+  identification: 
+    button-name: RefreshPage
+    label: Refreshpage
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 270592915217699341
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-refresh
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: EndTripV2 ===========================
+  id: 176325077454440411
+  identification: 
+    name: EndTripV2
+
+  execution: 
+    sequence: 101
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: EndTripView # 176324993557440410
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 176325214731440412
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+          v_trip_id VARCHAR2(50) := :P6001_ACTIVETRIP;
+        BEGIN
+          -- 🟢 Step 1: Mark the trip as FINISHED
+          UPDATE limo_trips_tracker_v2
+          SET status      = 'FINISHED',
+              end_datetime = NVL(end_datetime, SYSTIMESTAMP)  -- ensure end time is set
+          WHERE trip_id = v_trip_id
+            AND status IN ('ACTIVE', 'PAUSED');
+        
+          COMMIT;
+        END;
+        
+
+    execution: 
+      sequence: 10
+      event: EndTripV2 # 176325077454440411
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Refresh Region ======================
+  id: 271414740036671068
+  identification: 
+    name: Refresh Region
+
+  execution: 
+    sequence: 51
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Product's Trip Report # 270247607790186771
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 271414888859671069
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Product's Trip Report # 270247607790186771
+
+    execution: 
+      sequence: 10
+      event: Refresh Region # 271414740036671068
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh page ========================
+  id: 272524734332453941
+  identification: 
+    name: refresh page
+
+  execution: 
+    sequence: 1
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Product Request Details # 276692781861178469
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 272524825092453942
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Assignment Reports # 276382876280639959
+
+    execution: 
+      sequence: 10
+      event: refresh page # 272524734332453941
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Change Driver ID ====================
+  id: 275899820892729853
+  identification: 
+    name: Change Driver ID
+
+  execution: 
+    sequence: 81
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6001_APP_USER_ASSIGNMENT_ID
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 275900487301729859
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select driver_id from limo_product_assignments where assignment_id = :P6001_APP_USER_ASSIGNMENT_ID'
+      items-to-submit: 
+      - P6001_APP_USER_ASSIGNMENT_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P6001_DRIVER_ID
+
+    execution: 
+      sequence: 10
+      event: Change Driver ID # 275899820892729853
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: refresh assignments =================
+  id: 276558544151953359
+  identification: 
+    name: refresh assignments
+
+  execution: 
+    sequence: 91
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6001_DRIVER_STATUS_TAB
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 276558645400953360
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Assignment Reports # 276382876280639959
+
+    execution: 
+      sequence: 10
+      event: refresh assignments # 276558544151953359
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Region Active Trip ==========
+  id: 276693147353178473
+  identification: 
+    name: Refresh Region Active Trip
+
+  execution: 
+    sequence: 71
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Active Trip Region # 276693067686178472
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 276693220251178474
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Active Trip Region # 276693067686178472
+
+    execution: 
+      sequence: 10
+      event: Refresh Region Active Trip # 276693147353178473
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 276693332273178475
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Product's Trip Report # 270247607790186771
+
+    execution: 
+      sequence: 20
+      event: Refresh Region Active Trip # 276693147353178473
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: P6001_ACTIVETRIP =======================
+  id: 270628364400999852
+  identification: 
+    item-name: P6001_ACTIVETRIP
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT trip_id
+      FROM limo_trips_tracker_v2
+      WHERE product_id = :P6001_PRODUCT_ID
+        AND status = 'ACTIVE' 
+      FETCH FIRST 1 ROWS ONLY
+      
+
+- # ====== Computation: P6001_ACTIVETRIP_STATUS ================
+  id: 271685929016380635
+  identification: 
+    item-name: P6001_ACTIVETRIP_STATUS
+
+  execution: 
+    sequence: 20
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT STATUS FROM LIMO_TRIPS_TRACKER_V2 WHERE TRIP_ID = :P6001_ACTIVETRIP
+      
+
+- # ====== Computation: P6001_DRIVER_USER_ID ===================
+  id: 271686105736380637
+  identification: 
+    item-name: P6001_DRIVER_USER_ID
+
+  execution: 
+    sequence: 30
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT :APP_USER_ID FROM DUAL
+      
+
+- # ====== Computation: P6001_APP_USER_ASSIGNMENT_ID ===========
+  id: 275899662255729851
+  identification: 
+    item-name: P6001_APP_USER_ASSIGNMENT_ID
+
+  execution: 
+    sequence: 40
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: "select assignment_id from limo_product_assignments where product_id = :P6001_PRODUCT_ID and DRIVER_STATUS = 'CURRENT';"
+
+- # ====== Computation: P6001_USER_TYPE ========================
+  id: 275900727113729862
+  identification: 
+    item-name: P6001_USER_TYPE
+
+  execution: 
+    sequence: 50
+    point: Before Regions
+
+  computation: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :USER_TYPE
+      
+

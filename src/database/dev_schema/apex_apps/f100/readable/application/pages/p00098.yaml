@@ -1,0 +1,5744 @@
+---
+# ====== Page: Client Details Full Page ======================
+id: 98
+identification: 
+  name: Client Details Full Page
+  alias: CLIENT-DETAILS-FULL-PAGE
+  title: '&P98_NAME.'
+  page-group: Users # 18677243577083824218
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: |
+    function imagepopup(element) {
+      // Get the image URL from the data-url attribute
+      const imageUrl = element.getAttribute('data-url');
+      
+      // Remove existing popup if one is already open
+      const existingPopup = document.getElementById('image-display');
+      if (existingPopup) existingPopup.remove();
+    
+      // Create the popup container
+      const div = document.createElement('div');
+      div.id = 'image-display';
+      Object.assign(div.style, {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        zIndex: 10000,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      });
+    
+      // Create the image element
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      Object.assign(img.style, {
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        border: '3px solid white',
+        objectFit: 'contain',
+      });
+    
+      // Create close button
+      const closeBtn = document.createElement('span');
+      closeBtn.innerHTML = '&times;';
+      Object.assign(closeBtn.style, {
+        position: 'absolute',
+        top: '20px',
+        right: '30px',
+        fontSize: '30px',
+        color: '#fff',
+        cursor: 'pointer',
+      });
+      closeBtn.onclick = () => div.remove();
+    
+      // Close when clicking outside the image
+      div.onclick = (e) => {
+        if (e.target === div) div.remove();
+      };
+    
+      // Append content and close button to the popup container
+      div.appendChild(img);
+      div.appendChild(closeBtn);
+    
+      // Add the popup container to the body
+      document.body.appendChild(div);
+    
+      // Prevent scrolling when popup is open
+      document.body.style.overflow = 'hidden';
+      
+      // Restore scrolling when popup is closed
+      div.addEventListener('remove', () => {
+        document.body.style.overflow = '';
+      });
+    }
+
+css: 
+  inline: |
+    .sp-tag {
+      padding: .125rem .25rem;
+      display: inline-block;
+      vertical-align: text-bottom;
+      border-radius: .1875rem;
+      background-color: rgba(0, 0, 0, .1);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .sp-tags-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .25rem;
+      justify-content: flex-start;
+    }
+    
+    h3:first-of-type {
+      margin-block-start: 0;
+    }
+    .PHONE{display: none;}
+    
+    /* ===============================
+       ORDER CARD
+       =============================== */
+    .order-card{
+      border:1px solid #e5e7eb;
+      border-radius:20px;
+      padding:16px;
+      margin-bottom:18px;
+      background:#ffffff;
+      direction:rtl;
+      font-family:Tahoma, Arial;
+      box-shadow:0 6px 16px rgba(0,0,0,.06);
+    }
+    
+    /* ===============================
+       HEADER
+       =============================== */
+    .order-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .order-title{
+      font-size:16px;
+      font-weight:800;
+    }
+    .order-date{
+      font-size:12px;
+      color:#6b7280;
+      margin-top:2px;
+    }
+    
+    /* ===============================
+       BADGES
+       =============================== */
+    .order-badge{
+      padding:6px 14px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    
+    /* Generic badge colors */
+    .badge-active{background:#fde68a;color:#92400e;}
+    .badge-warning{background:#fed7aa;color:#9a3412;}
+    .badge-info{background:#bfdbfe;color:#1e3a8a;}
+    .badge-done{background:#bbf7d0;color:#065f46;}
+    .badge-cancel{background:#fecaca;color:#7f1d1d;}
+    .badge-missing{background:#fef3c7;color:#92400e;}
+    
+    /* ===============================
+       TOGGLE
+       =============================== */
+    .items-toggle{
+      margin-top:14px;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:800;
+      font-size:14px;
+    }
+    .toggle-arrow{
+      transition:.25s;
+      font-size:16px;
+    }
+    .items-toggle.active .toggle-arrow{
+      transform:rotate(180deg);
+    }
+    
+    /* ===============================
+       ITEMS CONTAINER
+       =============================== */
+    .items-box{
+      display:none;
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px dashed #e5e7eb;
+    }
+    
+    /* ===============================
+       ITEM CARD
+       =============================== */
+    .item-row{
+      position:relative;
+      background:#fafafa;
+      border-radius:14px;
+      padding:12px 14px;
+      margin-bottom:10px;
+      border:1px solid #e5e7eb;
+    }
+    
+    .item-title{
+      font-weight:800;
+      font-size:14px;
+      margin-bottom:6px;
+    }
+    
+    .item-meta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      color:#6b7280;
+      gap:8px;
+    }
+    
+    .item-price{
+      margin-top:8px;
+      font-weight:900;
+      font-size:14px;
+      color:#111827;
+    }
+    
+    /* ===============================
+       FOOTER
+       =============================== */
+    .order-footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:16px;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .order-total{
+      font-size:20px;
+      font-weight:900;
+      color:#f59e0b;
+    }
+    .order-btn{
+      background:#f59e0b;
+      color:#fff;
+      padding:10px 18px;
+      border-radius:14px;
+      font-weight:900;
+      text-decoration:none;
+      font-size:14px;
+    }
+    
+    /* ===============================
+       MOBILE
+       =============================== */
+    @media (max-width:480px){
+      .order-header{
+        flex-direction:column;
+        gap:6px;
+      }
+      .order-footer{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .order-btn{
+        text-align:center;
+      }
+    }
+    
+    
+    .client-events-timeline {
+      position: relative;
+      padding-left: 24px;
+      border-left: 2px solid #e5e7eb;
+    }
+    
+    .event-row {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .event-dot {
+      position: absolute;
+      left: -7px;
+      top: 14px;
+      width: 12px;
+      height: 12px;
+      background: #2563eb;
+      border-radius: 50%;
+    }
+    
+    .event-card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.04);
+    }
+    
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .event-type {
+      color: #111827;
+    }
+    
+    .event-source {
+      font-size: 12px;
+      background: #eef2ff;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: #3730a3;
+    }
+    
+    .event-meta {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+      display: flex;
+      gap: 12px;
+    }
+    
+    .event-json summary {
+      cursor: pointer;
+      font-size: 12px;
+      color: #2563eb;
+      margin-top: 6px;
+    }
+    
+    .event-json pre {
+      background: #f9fafb;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      white-space: pre-wrap;
+    }
+    
+    .event-footer {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Main Reservations ===========================
+  id: 201397469460641769
+  identification: 
+    name: Main Reservations
+    title: طلبات العميل
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html CLOB := '';
+      
+        FUNCTION esc(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN apex_escape.html(NVL(p_txt,''));
+        END;
+      
+        FUNCTION jsq(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN REPLACE(NVL(p_txt,''), '''', '\''' );
+        END;
+      
+      BEGIN
+        /* ===============================
+           If no customer selected
+           =============================== */
+        IF :P98_ID IS NULL THEN
+          RETURN '<div style="text-align:center;color:#64748b;padding:20px;font-weight:1000">
+                    اختر عميل أولاً لعرض سجل الطلبات
+                  </div>';
+        END IF;
+      
+        l_html := l_html || '
+        <style>
+          .tb-wrap{display:flex;flex-direction:column;gap:14px;}
+      
+          .tb-card{
+            background:#fff;border:1px solid rgba(15,23,42,.10);
+            border-radius:18px;overflow:hidden;
+            box-shadow:0 10px 30px rgba(15,23,42,.06);
+          }
+      
+          .tb-head{
+            padding:14px 14px 10px 14px;
+            display:flex;justify-content:space-between;gap:12px;
+            cursor:pointer;user-select:none;
+            background:linear-gradient(180deg, rgba(15,23,42,.02), rgba(255,255,255,1) 60%);
+          }
+      
+          .tb-left{min-width:0;display:flex;flex-direction:column;gap:6px;}
+      
+          .tb-title{
+            display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+            font-size:13px;font-weight:1000;color:#0f172a;
+          }
+      
+          .tb-id{
+            font-size:11px;font-weight:900;color:#64748b;
+            padding:2px 8px;border-radius:999px;
+            background:rgba(15,23,42,.06);
+            border:1px solid rgba(15,23,42,.10);
+          }
+      
+          .tb-pill{
+            display:inline-flex;align-items:center;gap:6px;
+            padding:5px 10px;border-radius:999px;
+            font-size:11px;font-weight:900;
+            border:1px solid rgba(15,23,42,.12);
+            background:#fff;white-space:nowrap;
+          }
+          .tb-dot{width:6px;height:6px;border-radius:999px;background:#94a3b8;}
+      
+          .tb-sub{
+            display:flex;gap:10px;flex-wrap:wrap;
+            font-size:11px;font-weight:800;color:#334155;
+          }
+      
+          .tb-right{
+            flex:0 0 auto;display:flex;flex-direction:column;
+            align-items:flex-end;justify-content:space-between;
+            gap:8px;min-width:170px;
+          }
+      
+          .tb-total{text-align:left;font-size:13px;font-weight:1000;color:#0b2a4a;}
+          .tb-total small{
+            display:block;font-size:10px;font-weight:800;color:#64748b;margin-top:2px;
+          }
+      
+          .tb-action{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:1000;color:#0b2a4a;}
+          .tb-arrow{
+            width:34px;height:34px;border-radius:14px;
+            border:1px solid rgba(15,23,42,.12);
+            display:flex;align-items:center;justify-content:center;
+            background:#fff;transition:.15s;
+            font-size:14px;font-weight:900;
+          }
+          .tb-card.open .tb-arrow{transform:rotate(180deg);}
+      
+          .tb-body{
+            display:none;padding:10px 14px 14px 14px;
+            border-top:1px dashed rgba(15,23,42,.18);background:#fff;
+          }
+          .tb-card.open .tb-body{display:block;}
+      
+          .tb-items{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+      
+          .tb-item{
+            display:flex;justify-content:space-between;gap:12px;
+            padding:10px 12px;border-radius:14px;
+            border:1px solid rgba(15,23,42,.08);
+            background:rgba(15,23,42,.02);
+            cursor:pointer;
+            transition:.12s;
+          }
+          .tb-item:hover{
+            transform: translateY(-1px);
+            box-shadow:0 10px 24px rgba(15,23,42,.06);
+            background:rgba(245,158,11,.08);
+          }
+      
+          .tb-item-left{min-width:0;display:flex;flex-direction:column;gap:6px;}
+      
+          .tb-item-title-row{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+          }
+      
+          .tb-item-title{
+            font-size:12px;font-weight:1000;color:#0f172a;line-height:1.25;
+            min-width:0;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+          }
+      
+          .tb-item-time{
+            flex:0 0 auto;
+            font-size:11px;
+            font-weight:900;
+            color:#64748b;
+            white-space:nowrap;
+            text-align:left;
+          }
+      
+          .tb-item-subtitle{
+            font-size:11px;
+            font-weight:800;
+            color:#334155;
+            line-height:1.25;
+            opacity:.95;
+          }
+      
+          /* ===== Compact pills under subtitle (ticket-style) ===== */
+          .tb-mini-pills{
+            display:flex;
+            gap:6px;
+            flex-wrap:wrap;
+            margin-top:2px;
+          }
+          .tb-mini-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:3px 8px;
+            border-radius:999px;
+            border:1px solid rgba(15,23,42,.10);
+            background:#fff;
+            font-size:10px;
+            font-weight:900;
+            color:#334155;
+            line-height:1;
+            white-space:nowrap;
+            max-width:100%;
+          }
+          .tb-mini-dot{
+            width:6px;height:6px;border-radius:999px;background:#94a3b8;
+            flex:0 0 auto;
+          }
+      
+          .tb-item-pricebox{
+            text-align:left;
+            min-width:150px;
+            display:flex;
+            flex-direction:column;
+            align-items:flex-end;
+            gap:4px;
+            white-space:nowrap;
+          }
+      
+          .tb-item-price{
+            font-size:12px;font-weight:1000;color:#0b2a4a;
+          }
+      
+          .tb-item-price-orig{
+            font-size:10px;
+            font-weight:900;
+            color:#64748b;
+          }
+      
+          .tb-item-qty-right{
+            font-size:10px;
+            font-weight:1000;
+            color:#64748b;
+          }
+      
+          .tb-summary{
+            margin-top:12px;padding:12px;border-radius:16px;
+            border:1px solid rgba(15,23,42,.10);
+            background:rgba(245,158,11,.10);
+            display:flex;flex-direction:column;gap:6px;
+          }
+          .tb-row{display:flex;justify-content:space-between;gap:10px;font-size:11px;font-weight:900;color:#334155;}
+          .tb-row strong{font-size:12px;font-weight:1000;color:#0f172a;}
+        </style>
+      
+        <script>
+          function tbToggle(el){
+            var card = el.closest(".tb-card");
+            if(!card){ return; }
+            card.classList.toggle("open");
+          }
+      
+          function goToUrl(url){
+            if(!url){ return; }
+            apex.navigation.redirect(url);
+          }
+        </script>
+        ';
+      
+        l_html := l_html || '<div class="tb-wrap" dir="rtl">';
+      
+        /* ===============================
+           MAIN ORDERS
+           =============================== */
+        FOR m IN (
+          SELECT
+            m.main_res_id,
+            m.customer_id,
+            m.status,
+            m.created,
+            m.opened_at,
+      
+            ( SELECT NVL(SUM(NVL(i.amount_egp,0)),0)
+                FROM order_items i
+               WHERE i.main_res_id = m.main_res_id
+                 AND NVL(i.is_cancelled,'N') = 'N'
+            ) AS total_amount_egp,
+      
+            ( SELECT COUNT(*)
+                FROM order_items i
+               WHERE i.main_res_id = m.main_res_id
+                 AND NVL(i.is_cancelled,'N') = 'N'
+            ) AS items_count
+      
+          FROM main_reservations m
+          WHERE m.customer_id = :P98_ID
+          ORDER BY m.created DESC
+        ) LOOP
+      
+          DECLARE
+            v_status_ar VARCHAR2(100);
+            v_dot       VARCHAR2(20);
+            v_when_txt  VARCHAR2(200);
+          BEGIN
+            IF UPPER(NVL(m.status,'X')) IN ('COMPLETED','DONE','FINISHED') THEN
+              v_status_ar := 'مكتمل';
+              v_dot := '#22c55e';
+            ELSIF UPPER(NVL(m.status,'X')) IN ('CANCELLED','CANCELED') THEN
+              v_status_ar := 'ملغي';
+              v_dot := '#ef4444';
+            ELSE
+              v_status_ar := NVL(m.status,'نشط');
+              v_dot := '#f59e0b';
+            END IF;
+      
+            v_when_txt :=
+              CASE
+                WHEN m.opened_at IS NOT NULL THEN TO_CHAR(m.opened_at,'DD/MM/YYYY HH24:MI')
+                WHEN m.created   IS NOT NULL THEN TO_CHAR(m.created,'DD/MM/YYYY HH24:MI')
+                ELSE NULL
+              END;
+      
+            l_html := l_html || '
+            <div class="tb-card">
+              <div class="tb-head" onclick="tbToggle(this)">
+      
+                <div class="tb-left">
+                  <div class="tb-title">
+                    <span>طلب</span>
+                    <span class="tb-id">'||esc(m.main_res_id)||'</span>
+                    '||CASE
+                        WHEN v_when_txt IS NOT NULL THEN
+                          '<span class="tb-pill"><span class="tb-dot"></span><span>'||esc(v_when_txt)||'</span></span>'
+                        ELSE
+                          ''
+                      END||'
+                  </div>
+      
+                  <div class="tb-sub">
+                    <span class="tb-pill">
+                      <span class="tb-dot" style="background:'||v_dot||'"></span>
+                      <span>'||esc(v_status_ar)||'</span>
+                    </span>
+      
+                    <span class="tb-pill">
+                      <span class="tb-dot"></span>
+                      <span>عدد الخدمات: '||esc(m.items_count)||'</span>
+                    </span>
+                  </div>
+                </div>
+      
+                <div class="tb-right">
+                  <div class="tb-total">
+                    '||esc(TO_CHAR(NVL(m.total_amount_egp,0),'FM999G999G990D00'))||' EGP
+                    <small>الإجمالي</small>
+                  </div>
+      
+                  <div class="tb-action">
+                    <span>عرض التفاصيل</span>
+                    <div class="tb-arrow">⌄</div>
+                  </div>
+                </div>
+      
+              </div>
+      
+              <div class="tb-body">
+                <div class="tb-items">
+            ';
+      
+            /* ===============================
+               ORDER ITEMS
+               =============================== */
+            FOR it IN (
+              SELECT
+                i.order_item_id,
+                i.ref_table,
+                i.ref_id,
+      
+                NVL(i.display_title_ar, i.item_type) AS title_ar,
+                i.display_subtitle_ar AS subtitle_ar,
+      
+                i.amount_egp,
+                i.amount_orig,
+                i.currency,
+      
+                i.service_start_ts,
+                i.meta_json,
+      
+                NVL(
+                  TO_NUMBER(
+                    JSON_VALUE(i.meta_json, '$.qty' RETURNING VARCHAR2(50) DEFAULT '1' ON ERROR)
+                  ),
+                  1
+                ) AS qty
+              FROM order_items i
+              WHERE i.main_res_id = m.main_res_id
+                AND NVL(i.is_cancelled,'N') = 'N'
+              ORDER BY i.order_item_id
+            ) LOOP
+      
+              DECLARE
+                v_details_url VARCHAR2(4000);
+      
+                v_nod       VARCHAR2(50);
+                v_ticket_no VARCHAR2(300);
+                v_signage   VARCHAR2(300);
+              BEGIN
+                v_details_url := order_router_util.details_url(
+                                   p_ref_table => it.ref_table,
+                                   p_ref_id    => it.ref_id
+                                 );
+      
+                /* meta pills */
+                BEGIN
+                  v_nod := JSON_VALUE(it.meta_json, '$.nod');
+                EXCEPTION WHEN OTHERS THEN
+                  v_nod := NULL;
+                END;
+      
+                BEGIN
+                  v_ticket_no := JSON_VALUE(it.meta_json, '$.ticketNumber');
+                EXCEPTION WHEN OTHERS THEN
+                  v_ticket_no := NULL;
+                END;
+      
+                BEGIN
+                  v_signage := JSON_VALUE(it.meta_json, '$.signage');
+                EXCEPTION WHEN OTHERS THEN
+                  v_signage := NULL;
+                END;
+      
+                l_html := l_html || '
+                  <div class="tb-item" onclick="goToUrl('''||jsq(v_details_url)||''')">
+                    <div class="tb-item-left">
+      
+                      <div class="tb-item-title-row">
+                        <div class="tb-item-title">'||esc(NVL(it.title_ar,'خدمة'))||'</div>
+                        <div class="tb-item-time">'
+                          ||esc(
+                            CASE
+                              WHEN it.service_start_ts IS NOT NULL THEN TO_CHAR(it.service_start_ts,'DD/MM/YYYY HH24:MI')
+                              ELSE ''
+                            END
+                          )||
+                        '</div>
+                      </div>
+                ';
+      
+                IF it.subtitle_ar IS NOT NULL AND LENGTH(TRIM(it.subtitle_ar)) > 0 THEN
+                  l_html := l_html || '
+                      <div class="tb-item-subtitle">'||esc(it.subtitle_ar)||'</div>
+                  ';
+                END IF;
+      
+                /* ===== Pills under subtitle (nod / ticket / signage) ===== */
+                IF (v_nod IS NOT NULL AND LENGTH(TRIM(v_nod)) > 0)
+                   OR (v_ticket_no IS NOT NULL AND LENGTH(TRIM(v_ticket_no)) > 0)
+                   OR (v_signage IS NOT NULL AND LENGTH(TRIM(v_signage)) > 0) THEN
+      
+                  l_html := l_html || '
+                      <div class="tb-mini-pills">
+                  ';
+      
+                  IF v_nod IS NOT NULL AND LENGTH(TRIM(v_nod)) > 0 THEN
+                    l_html := l_html || '
+                        <span class="tb-mini-pill">
+                          <span class="tb-mini-dot" style="background:#94a3b8"></span>
+                          <span>'||esc('عدد الأيام: '||v_nod)||'</span>
+                        </span>
+                    ';
+                  END IF;
+      
+                  IF v_ticket_no IS NOT NULL AND LENGTH(TRIM(v_ticket_no)) > 0 THEN
+                    l_html := l_html || '
+                        <span class="tb-mini-pill">
+                          <span class="tb-mini-dot" style="background:#0b2a4a"></span>
+                          <span>'||esc('رقم التذكرة: '||v_ticket_no)||'</span>
+                        </span>
+                    ';
+                  END IF;
+      
+                  IF v_signage IS NOT NULL AND LENGTH(TRIM(v_signage)) > 0 THEN
+                    l_html := l_html || '
+                        <span class="tb-mini-pill">
+                          <span class="tb-mini-dot" style="background:#f59e0b"></span>
+                          <span>'||esc('اللافتة: '||v_signage)||'</span>
+                        </span>
+                    ';
+                  END IF;
+      
+                  l_html := l_html || '
+                      </div>
+                  ';
+                END IF;
+      
+                l_html := l_html || '
+                    </div>
+      
+                    <div class="tb-item-pricebox">
+                      <div class="tb-item-price">'
+                        ||esc(TO_CHAR(NVL(it.amount_egp,0),'FM999G999G990D00'))||' EGP
+                      </div>
+      
+                      <div class="tb-item-qty-right">x'||esc(it.qty)||'</div>
+                ';
+      
+                IF NVL(UPPER(it.currency),'EGP') <> 'EGP' THEN
+                  l_html := l_html || '
+                      <div class="tb-item-price-orig">'
+                        ||esc(TO_CHAR(NVL(it.amount_orig,0),'FM999G999G990D00'))||' '||esc(it.currency)||
+                      '</div>
+                  ';
+                END IF;
+      
+                l_html := l_html || '
+                    </div>
+                  </div>
+                ';
+              END;
+      
+            END LOOP;
+      
+            l_html := l_html || '
+                </div>
+      
+                <div class="tb-summary">
+                  <div class="tb-row">
+                    <span>عدد الخدمات</span>
+                    <strong>'||esc(m.items_count)||'</strong>
+                  </div>
+      
+                  <div class="tb-row">
+                    <span>الإجمالي</span>
+                    <strong>'||esc(TO_CHAR(NVL(m.total_amount_egp,0),'FM999G999G990D00'))||' EGP</strong>
+                  </div>
+                </div>
+      
+              </div>
+            </div>
+            ';
+          END;
+      
+        END LOOP;
+      
+        l_html := l_html || '</div>';
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 60
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: false
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Client Events ===============================
+  id: 206739756205892971
+  identification: 
+    name: Client Events
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html CLOB := '';
+      BEGIN
+          l_html := l_html || '
+          <div class="client-events-timeline">';
+      
+          FOR r IN (
+              SELECT
+                  event_id,
+                  event_type,
+                  event_source,
+                  related_entity,
+                  related_id,
+                  event_date,
+                  event_data_json,
+                  created_by
+              FROM client_events
+              WHERE client_id = :P98_ID
+              ORDER BY event_date DESC
+          ) LOOP
+      
+              l_html := l_html || '
+              <div class="event-row">
+                  <div class="event-dot"></div>
+      
+                  <div class="event-card">
+                      <div class="event-header">
+                          <span class="event-type">' || apex_escape.html(r.event_type) || '</span>
+                          <span class="event-source">' || apex_escape.html(r.event_source) || '</span>
+                      </div>
+      
+                      <div class="event-meta">
+                          <span class="event-date">'
+                              || TO_CHAR(r.event_date, 'DD Mon YYYY HH24:MI') ||
+                          '</span>';
+      
+              IF r.related_entity IS NOT NULL THEN
+                  l_html := l_html || '
+                          <span class="event-related">'
+                              || apex_escape.html(r.related_entity)
+                              || NVL2(r.related_id, ' #' || apex_escape.html(r.related_id), '') ||
+                          '</span>';
+              END IF;
+      
+              l_html := l_html || '
+                      </div>';
+      
+              IF r.event_data_json IS NOT NULL THEN
+                  l_html := l_html || '
+                      <details class="event-json">
+                          <summary>View details</summary>
+                          <pre>'
+                              || apex_escape.html(r.event_data_json) ||
+                          '</pre>
+                      </details>';
+              END IF;
+      
+              l_html := l_html || '
+                      <div class="event-footer">
+                          Created by: ' || apex_escape.html(r.created_by) || '
+                      </div>
+                  </div>
+              </div>';
+          END LOOP;
+      
+          l_html := l_html || '</div>';
+      
+          RETURN l_html;
+      END;
+
+  layout: 
+    sequence: 80
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: vw_billable_order_items =====================
+  id: 210183973565154752
+  identification: 
+    name: vw_billable_order_items
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select BILLING_GROUP_ID,
+             CUSTOMER_ID,
+             MAIN_RES_ID,
+             ORDER_ITEM_ID,
+             DESCRIPTION,
+             UNIT_PRICE,
+             QUANTITY,
+             TOTAL_PRICE,
+             CURRENCY_CODE
+        from VW_BILLABLE_ORDER_ITEMS
+        where customer_id = :P98_ID
+    page-items-to-submit: 
+    - P98_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 40
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: BILLING_GROUP_ID ============================
+    id: 210184054967154753
+    identification: 
+      column-name: BILLING_GROUP_ID
+      type: Plain Text
+
+    heading: 
+      heading: Billing Group Id
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CUSTOMER_ID =================================
+    id: 210184136473154754
+    identification: 
+      column-name: CUSTOMER_ID
+      type: Plain Text
+
+    heading: 
+      heading: Customer Id
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: MAIN_RES_ID =================================
+    id: 210184217385154755
+    identification: 
+      column-name: MAIN_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Main Res Id
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ORDER_ITEM_ID ===============================
+    id: 210184338877154756
+    identification: 
+      column-name: ORDER_ITEM_ID
+      type: Plain Text
+
+    heading: 
+      heading: Order Item Id
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 210184438152154757
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UNIT_PRICE ==================================
+    id: 210184496795154758
+    identification: 
+      column-name: UNIT_PRICE
+      type: Plain Text
+
+    heading: 
+      heading: Unit Price
+      alignment: end
+
+    layout: 
+      sequence: 60
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: QUANTITY ====================================
+    id: 210184676659154759
+    identification: 
+      column-name: QUANTITY
+      type: Plain Text
+
+    heading: 
+      heading: Quantity
+      alignment: end
+
+    layout: 
+      sequence: 70
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_PRICE =================================
+    id: 210184697319154760
+    identification: 
+      column-name: TOTAL_PRICE
+      type: Plain Text
+
+    heading: 
+      heading: Total Price
+      alignment: end
+
+    layout: 
+      sequence: 80
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 210184797881154761
+    identification: 
+      column-name: CURRENCY_CODE
+      type: Plain Text
+
+    heading: 
+      heading: Currency Code
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Linked Contacts =============================
+  id: 213709711700160063
+  identification: 
+    name: Linked Contacts
+    title: وسائل التواصل المسجلة
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select CONTACT_ID,
+             CLIENT_ID,
+             CONTACT_TYPE,
+             CONTACT_VALUE,
+             IS_PRIMARY,
+             VERIFIED,
+             CREATED_AT
+        from CLIENT_CONTACTS
+      
+       where client_id = :P98_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: تفاصيل ملف العميل # 18977021883601085552
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CONTACT_ID ==================================
+    id: 213709854490160064
+    identification: 
+      column-name: CONTACT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CLIENT_ID ===================================
+    id: 213709894719160065
+    identification: 
+      column-name: CLIENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 20
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CONTACT_TYPE ================================
+    id: 213710047912160066
+    identification: 
+      column-name: CONTACT_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: نوع الوسيلة
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CONTACT_VALUE ===============================
+    id: 213710180716160067
+    identification: 
+      column-name: CONTACT_VALUE
+      type: Plain Text
+
+    heading: 
+      heading: العنوان
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IS_PRIMARY ==================================
+    id: 213710228899160068
+    identification: 
+      column-name: IS_PRIMARY
+      type: Plain Text
+
+    heading: 
+      heading: وسيلة رئيسية
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VERIFIED ====================================
+    id: 213710362227160069
+    identification: 
+      column-name: VERIFIED
+      type: Plain Text
+
+    heading: 
+      heading: موحقق (OTP)
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_AT ==================================
+    id: 213710432068160070
+    identification: 
+      column-name: CREATED_AT
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التسجيل
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: vw_billable_order_items =====================
+  id: 213711049598160076
+  identification: 
+    name: vw_billable_order_items
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT invoice_id, total_amount, tax_amount, grand_total, currency_code
+      FROM invoices
+      WHERE invoice_id = :P98_INVOICE_ID;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 213711922443160085
+    identification: 
+      column-name: CURRENCY_CODE
+      type: Plain Text
+
+    heading: 
+      heading: Currency Code
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INVOICE_ID ==================================
+    id: 213712056529160086
+    identification: 
+      column-name: INVOICE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Invoice Id
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 213712172593160087
+    identification: 
+      column-name: TOTAL_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Total Amount
+      alignment: end
+
+    layout: 
+      sequence: 110
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TAX_AMOUNT ==================================
+    id: 213712259815160088
+    identification: 
+      column-name: TAX_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Tax Amount
+      alignment: end
+
+    layout: 
+      sequence: 120
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GRAND_TOTAL =================================
+    id: 213712298897160089
+    identification: 
+      column-name: GRAND_TOTAL
+      type: Plain Text
+
+    heading: 
+      heading: Grand Total
+      alignment: end
+
+    layout: 
+      sequence: 130
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Invoice Total Summary =======================
+  id: 213712447789160090
+  identification: 
+    name: Invoice Total Summary
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+        invoice_id,
+        SUM(total_price) AS lines_total
+      FROM invoice_lines
+      WHERE invoice_id = :P98_INVOICE_ID
+      GROUP BY invoice_id;
+      
+    page-items-to-submit: 
+    - P98_INVOICE_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: vw_billable_order_items # 213711049598160076
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: INVOICE_ID ==================================
+    id: 213712680206160092
+    identification: 
+      column-name: INVOICE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Invoice Id
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LINES_TOTAL =================================
+    id: 213713079248160096
+    identification: 
+      column-name: LINES_TOTAL
+      type: Plain Text
+
+    heading: 
+      heading: Lines Total
+      alignment: end
+
+    layout: 
+      sequence: 30
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Invoice Report ==============================
+  id: 214999896195836357
+  identification: 
+    name: Invoice Report
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          i.invoice_id,
+          i.invoice_no,
+          i.status,
+          i.invoice_date,
+          i.due_date,
+      
+          i.main_res_id,
+          m.customer_id,
+      
+          i.currency_code,
+      
+          i.vat_included,
+          NVL(i.vat_rate, 0) AS vat_rate,
+      
+          /* ===== line summary ===== */
+          ln.lines_count,
+          ln.subtotal_lines,
+      
+          /* ===== net before vat ===== */
+          ln.subtotal_lines AS net_before_vat,
+      
+          /* ===== VAT calc ===== */
+          CASE
+            WHEN NVL(i.vat_included,'Y') = 'Y'
+              THEN ROUND(ln.subtotal_lines * NVL(i.vat_rate,0), 2)
+            ELSE 0
+          END AS vat_calc,
+      
+          /* ===== grand total calc ===== */
+          ROUND(
+            ln.subtotal_lines +
+            CASE
+              WHEN NVL(i.vat_included,'Y') = 'Y'
+                THEN ROUND(ln.subtotal_lines * NVL(i.vat_rate,0), 2)
+              ELSE 0
+            END
+          , 2) AS grand_calc,
+      
+          /* ===== stored totals ===== */
+          i.total_amount,
+          i.tax_amount,
+          i.grand_total,
+      
+          /* ===== reconciliation ===== */
+          ROUND(i.total_amount - ln.subtotal_lines, 2) AS diff_total,
+      
+          ROUND(
+            i.tax_amount -
+            CASE
+              WHEN NVL(i.vat_included,'Y') = 'Y'
+                THEN ROUND(ln.subtotal_lines * NVL(i.vat_rate,0), 2)
+              ELSE 0
+            END
+          , 2) AS diff_tax,
+      
+          ROUND(
+            i.grand_total -
+            ROUND(
+              ln.subtotal_lines +
+              CASE
+                WHEN NVL(i.vat_included,'Y') = 'Y'
+                  THEN ROUND(ln.subtotal_lines * NVL(i.vat_rate,0), 2)
+                ELSE 0
+              END
+            , 2)
+          , 2) AS diff_grand,
+      
+          CASE
+            WHEN ROUND(
+              i.grand_total -
+              ROUND(
+                ln.subtotal_lines +
+                CASE
+                  WHEN NVL(i.vat_included,'Y') = 'Y'
+                    THEN ROUND(ln.subtotal_lines * NVL(i.vat_rate,0), 2)
+                  ELSE 0
+                END
+              , 2)
+            , 2) = 0
+            THEN 'OK'
+            ELSE 'MISMATCH'
+          END AS totals_check
+      
+      FROM invoices i
+      
+      JOIN main_reservations m
+        ON m.main_res_id = i.main_res_id
+      
+      JOIN (
+          SELECT
+              invoice_id,
+              COUNT(*) AS lines_count,
+              NVL(SUM(total_price),0) AS subtotal_lines
+          FROM invoice_lines
+          GROUP BY invoice_id
+      ) ln
+        ON ln.invoice_id = i.invoice_id
+      
+      WHERE i.invoice_id = :P98_INVOICE_ID;
+    page-items-to-submit: 
+    - P98_INVOICE_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: vw_billable_order_items # 213711049598160076
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: MAIN_RES_ID =================================
+    id: 185545342939262338
+    identification: 
+      column-name: MAIN_RES_ID
+      type: Plain Text
+
+    heading: 
+      heading: Main Res Id
+      alignment: start
+
+    layout: 
+      sequence: 310
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_AMOUNT ================================
+    id: 185545493775262339
+    identification: 
+      column-name: TOTAL_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Total Amount
+      alignment: end
+
+    layout: 
+      sequence: 320
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TAX_AMOUNT ==================================
+    id: 185545627828262340
+    identification: 
+      column-name: TAX_AMOUNT
+      type: Plain Text
+
+    heading: 
+      heading: Tax Amount
+      alignment: end
+
+    layout: 
+      sequence: 330
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GRAND_TOTAL =================================
+    id: 185545729077262341
+    identification: 
+      column-name: GRAND_TOTAL
+      type: Plain Text
+
+    heading: 
+      heading: Grand Total
+      alignment: end
+
+    layout: 
+      sequence: 340
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INVOICE_ID ==================================
+    id: 215000077291836358
+    identification: 
+      column-name: INVOICE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Invoice Id
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 215000886363836366
+    identification: 
+      column-name: CURRENCY_CODE
+      type: Plain Text
+
+    heading: 
+      heading: Currency Code
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NET_BEFORE_VAT ==============================
+    id: 215001173870836369
+    identification: 
+      column-name: NET_BEFORE_VAT
+      type: Plain Text
+
+    heading: 
+      heading: Net Before Vat
+      alignment: end
+
+    layout: 
+      sequence: 50
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VAT_CALC ====================================
+    id: 215001195592836370
+    identification: 
+      column-name: VAT_CALC
+      type: Plain Text
+
+    heading: 
+      heading: Vat Calc
+      alignment: end
+
+    layout: 
+      sequence: 60
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GRAND_CALC ==================================
+    id: 215001334923836371
+    identification: 
+      column-name: GRAND_CALC
+      type: Plain Text
+
+    heading: 
+      heading: Grand Calc
+      alignment: end
+
+    layout: 
+      sequence: 70
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INVOICE_NO ==================================
+    id: 215002143644836379
+    identification: 
+      column-name: INVOICE_NO
+      type: Plain Text
+
+    heading: 
+      heading: Invoice No
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 215002280733836380
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INVOICE_DATE ================================
+    id: 215002369321836381
+    identification: 
+      column-name: INVOICE_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Invoice Date
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DUE_DATE ====================================
+    id: 215002453514836382
+    identification: 
+      column-name: DUE_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Due Date
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CUSTOMER_ID =================================
+    id: 215002646229836384
+    identification: 
+      column-name: CUSTOMER_ID
+      type: Plain Text
+
+    heading: 
+      heading: Customer Id
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LINES_COUNT =================================
+    id: 215002837900836386
+    identification: 
+      column-name: LINES_COUNT
+      type: Plain Text
+
+    heading: 
+      heading: Lines Count
+      alignment: end
+
+    layout: 
+      sequence: 180
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SUBTOTAL_LINES ==============================
+    id: 215002935761836387
+    identification: 
+      column-name: SUBTOTAL_LINES
+      type: Plain Text
+
+    heading: 
+      heading: Subtotal Lines
+      alignment: end
+
+    layout: 
+      sequence: 190
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VAT_RATE ====================================
+    id: 215003377061836391
+    identification: 
+      column-name: VAT_RATE
+      type: Plain Text
+
+    heading: 
+      heading: Vat Rate
+      alignment: end
+
+    layout: 
+      sequence: 230
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DIFF_TOTAL ==================================
+    id: 215003460774836392
+    identification: 
+      column-name: DIFF_TOTAL
+      type: Plain Text
+
+    heading: 
+      heading: Diff Total
+      alignment: end
+
+    layout: 
+      sequence: 240
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DIFF_TAX ====================================
+    id: 215003509496836393
+    identification: 
+      column-name: DIFF_TAX
+      type: Plain Text
+
+    heading: 
+      heading: Diff Tax
+      alignment: end
+
+    layout: 
+      sequence: 250
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DIFF_GRAND ==================================
+    id: 215003591598836394
+    identification: 
+      column-name: DIFF_GRAND
+      type: Plain Text
+
+    heading: 
+      heading: Diff Grand
+      alignment: end
+
+    layout: 
+      sequence: 260
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTALS_CHECK ================================
+    id: 215003786721836395
+    identification: 
+      column-name: TOTALS_CHECK
+      type: Plain Text
+
+    heading: 
+      heading: Totals Check
+      alignment: start
+
+    layout: 
+      sequence: 270
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VAT_INCLUDED ================================
+    id: 215026386994397470
+    identification: 
+      column-name: VAT_INCLUDED
+      type: Plain Text
+
+    heading: 
+      heading: Vat Included
+      alignment: start
+
+    layout: 
+      sequence: 300
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Main Reservations ===========================
+  id: 215026692754397474
+  identification: 
+    name: Main Reservations
+    title: طلبات العميل
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html CLOB := '';
+      
+        FUNCTION esc(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN apex_escape.html(NVL(p_txt,''));
+        END;
+      
+        FUNCTION jsq(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN REPLACE(NVL(p_txt,''), '''', '\''' );
+        END;
+      
+      BEGIN
+        /* ==========================================================
+           Ticket CSS + JS
+           ========================================================== */
+        l_html := l_html || '
+        <style>
+          .ticket-grid{ display:grid; gap:10px; }
+          @media (min-width: 640px){ .ticket-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+          @media (min-width: 1280px){ .ticket-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+      
+          .ticket{
+            position:relative; border-radius:14px; background:#fff;
+            border:1px solid rgba(15,23,42,.10);
+            box-shadow: 0 10px 30px rgba(15,23,42,.06);
+            overflow:hidden; min-height: 148px; cursor:pointer;
+          }
+      
+          .ticket:before, .ticket:after{
+            content:""; position:absolute; top:52%;
+            width:18px; height:18px; background:#f6f7fb;
+            border:1px solid rgba(15,23,42,.10);
+            border-radius:999px; transform: translateY(-50%);
+            z-index:3;
+          }
+          .ticket:before{ left:-9px; }
+          .ticket:after{ right:-9px; }
+      
+          .ticket-topbar{ height:6px; background: linear-gradient(90deg, #0b2a4a, #f59e0b); }
+      
+          /* ✅ UPDATED: head with optional photo */
+          .ticket-head{
+            padding:10px 12px 8px 12px;
+            display:flex;
+            gap:10px;
+            align-items:flex-start;
+          }
+      
+          .ticket-photo{
+            width:54px;
+            height:54px;
+            border-radius:12px;
+            object-fit:cover;
+            border:1px solid rgba(15,23,42,.10);
+            background:#f6f7fb;
+            flex:0 0 auto;
+          }
+          .ticket-head-content{
+            flex:1;
+            min-width:0;
+          }
+      
+          /* ===== NEW aligned header grid ===== */
+          .ticket-head-grid{
+            display:grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto;
+            gap:6px 10px;
+            align-items:center;
+          }
+          .ticket-head-title{
+            grid-column:1;
+            grid-row:1;
+            min-width:0;
+          }
+          .ticket-head-status{
+            grid-column:2;
+            grid-row:1;
+            align-self:center;
+          }
+          .ticket-head-ids{
+            grid-column:1;
+            grid-row:2;
+            min-width:0;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            flex-wrap:wrap;
+          }
+          .ticket-head-copy{
+            grid-column:2;
+            grid-row:2;
+            align-self:center;
+          }
+      
+          .ticket-type{
+            font-size:12px; font-weight:800; color:#0f172a;
+            display:flex; align-items:center; gap:6px; min-width:0;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+          }
+          .ticket-mainid{
+            font-size:10px; font-weight:900; color:#64748b;
+            background:rgba(15,23,42,.06);
+            border:1px solid rgba(15,23,42,.10);
+            padding:2px 8px; border-radius:999px;
+            flex:0 0 auto;
+          }
+      
+          .ticket-id{ font-size:10px; color:#64748b; font-weight:700; }
+      
+          .ticket-link{
+            font-size:10px; font-weight:900; color:#2563eb;
+            text-decoration:underline;
+            cursor:pointer;
+            user-select:none;
+          }
+      
+          .copy-chip{
+            display:inline-flex; align-items:center; justify-content:center;
+            gap:6px;
+            font-size:10px; font-weight:900;
+            padding:6px 10px;
+            border-radius:999px;
+            border:1px solid rgba(15,23,42,.12);
+            background:#fff;
+            cursor:pointer;
+            user-select:none;
+            transition:.12s;
+            height:28px;
+            line-height:1;
+            white-space:nowrap;
+          }
+          .copy-chip:hover{ transform: translateY(-1px); }
+          .copy-chip:active{ transform: translateY(0px); }
+      
+          .pill{
+            font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px;
+            border:1px solid rgba(15,23,42,.10);
+            display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+            height:28px;
+            line-height:1;
+          }
+          .pill-dot{ width:6px;height:6px;border-radius:999px; background:#94a3b8; }
+      
+          .ticket-body{ padding:0 12px 10px 12px; }
+          .ticket-title{ font-size:12px; font-weight:900; color:#0f172a; line-height:1.25; margin-bottom:6px; }
+          .ticket-subtitle{ font-size:11px; font-weight:800; color:#334155; line-height:1.25; margin-bottom:6px; }
+      
+          .ticket-meta{
+            display:flex; justify-content:space-between; gap:8px;
+            border-top:1px dashed rgba(15,23,42,.18);
+            padding-top:8px; margin-top:8px;
+          }
+      
+          .meta-col{ min-width:0; }
+          .meta-label{ font-size:10px; color:#64748b; font-weight:700; }
+          .meta-value{ font-size:11px; color:#0f172a; font-weight:800; }
+      
+          .ticket-price{ font-size:12px; font-weight:900; color:#0b2a4a; }
+          .ticket-price-egp{ font-size:10px; font-weight:800; color:#64748b; margin-top:2px; }
+      
+          .ticket-actions{ display:flex; gap:8px; padding:10px 12px 12px 12px; justify-content:space-between; }
+          .btn{
+            flex:1; font-size:11px; font-weight:900; padding:8px 10px;
+            border-radius:10px; border:1px solid rgba(15,23,42,.12);
+            cursor:pointer; transition:.15s; text-align:center; user-select:none;
+          }
+          .btn:hover{ transform: translateY(-1px); }
+          .btn-assign{ background:#0b2a4a; color:#fff; }
+          .btn-complete{ background:#f59e0b; color:#111827; }
+          .btn-disabled{ opacity:.45; cursor:not-allowed; transform:none !important; }
+      
+          .ticket-bg-new{ background: linear-gradient(180deg, rgba(245,158,11,.10), rgba(255,255,255,1) 55%); }
+          .ticket-bg-progress{ background: linear-gradient(180deg, rgba(11,42,74,.12), rgba(255,255,255,1) 55%); }
+          .ticket-bg-done{ background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(255,255,255,1) 55%); }
+          .ticket-bg-cancel{ background: linear-gradient(180deg, rgba(239,68,68,.10), rgba(255,255,255,1) 55%); }
+        </style>
+      
+        <script>
+          function goToUrl(url){
+            if(!url){ return; }
+            apex.navigation.redirect(url);
+          }
+      
+          function openAssignUrl(url, ev){
+            if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+            if(!url){
+              apex.message.showErrors([{
+                type: "error",
+                location: "page",
+                message: "لا يوجد رابط توزيع لهذه الخدمة.",
+                unsafe: false
+              }]);
+              return;
+            }
+            apex.navigation.dialog(
+              url,
+              { title: "استمارة التوزيع", height: "auto", width: 720, maxWidth: 960, modal: true },
+              "t-Dialog-page--standard"
+            );
+          }
+      
+          function completeService(orderItemId, ev){
+            if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+            apex.message.showPageSuccess("تم إرسال طلب إكمال الخدمة للعنصر: " + orderItemId);
+          }
+      
+          function copyText(txt, ev){
+            if(ev){ ev.stopPropagation(); ev.preventDefault(); }
+            if(!txt){ return; }
+      
+            try{
+              if(navigator && navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(txt).then(function(){
+                  apex.message.showPageSuccess("تم النسخ: " + txt);
+                }).catch(function(){
+                  fallbackCopy(txt);
+                });
+              }else{
+                fallbackCopy(txt);
+              }
+            }catch(e){
+              fallbackCopy(txt);
+            }
+          }
+      
+          function fallbackCopy(txt){
+            var ta = document.createElement("textarea");
+            ta.value = txt;
+            ta.setAttribute("readonly","");
+            ta.style.position = "fixed";
+            ta.style.top = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            try{ document.execCommand("copy"); }catch(e){}
+            document.body.removeChild(ta);
+            apex.message.showPageSuccess("تم النسخ: " + txt);
+          }
+        </script>
+        ';
+      
+        /* ==========================================================
+           Grid container
+           ========================================================== */
+        l_html := l_html || '<div class="ticket-grid" dir="rtl">';
+      
+        /* ==========================================================
+           Items Loop (snapshot-driven + client info + limo photo)
+           ========================================================== */
+        FOR it IN (
+          SELECT
+            i.order_item_id,
+            i.item_type,
+            i.ref_table,
+            i.ref_id,
+      
+            /* Amounts */
+            i.amount_orig,
+            i.currency,
+            i.amount_egp,
+      
+            i.created,
+            i.fulfillment_status,
+            i.fulfillment_updated_at,
+            i.fulfillment_updated_by,
+      
+            /* Snapshot fields */
+            i.display_title_ar,
+            i.display_subtitle_ar,
+            i.service_start_ts,
+            i.service_end_ts,
+            i.assigned_to_name,
+            i.meta_json,
+      
+            /* Main order info */
+            m.main_res_id,
+            m.customer_id,
+      
+            /* Client info */
+            c.client_code,
+            ph.contact_value AS client_phone,
+      
+            /* ✅ NEW: limo car type + main photo */
+            lr.cat_item_id      AS car_type_id,
+            ct.main_photo_url   AS service_photo_url
+      
+          FROM order_items i
+          JOIN main_reservations m
+            ON m.main_res_id = i.main_res_id
+          LEFT JOIN clients c
+            ON c.client_id = m.customer_id
+          LEFT JOIN client_contacts ph
+            ON ph.client_id = c.client_id
+           AND ph.contact_type = 'PHONE'
+      
+          /* limo sublevel -> car type */
+          LEFT JOIN sublevel_limo_res lr
+            ON i.ref_table = 'SUBLEVEL_LIMO_RES'
+           AND lr.sub_res_id = i.ref_id
+          LEFT JOIN limo_car_types ct
+            ON ct.car_type_id = lr.cat_item_id
+      
+          WHERE i.main_res_id = :P98_ACTIVEORDER
+            AND NVL(i.is_cancelled,'N') = 'N'
+          ORDER BY i.created DESC
+        ) LOOP
+      
+          /* ===============================
+             Status mapping + routing URLs
+             =============================== */
+          DECLARE
+            v_status_code VARCHAR2(30) := NVL(it.fulfillment_status,'NEW');
+            v_status_ar   VARCHAR2(100);
+            v_bg_class    VARCHAR2(200);
+            v_dot_color   VARCHAR2(50);
+      
+            v_assign_on   BOOLEAN := FALSE;
+            v_complete_on BOOLEAN := FALSE;
+      
+            v_details_url VARCHAR2(4000);
+            v_assign_url  VARCHAR2(4000);
+      
+            v_start_label VARCHAR2(200);
+            v_title_ar    VARCHAR2(500);
+            v_sub_ar      VARCHAR2(1000);
+      
+            v_nod         VARCHAR2(50);
+            v_ticket_no   VARCHAR2(300);
+            v_signage     VARCHAR2(300);
+      
+            v_phone       VARCHAR2(200);
+            v_client_code VARCHAR2(200);
+            v_copy_text   VARCHAR2(4000);
+      
+            /* ✅ NEW: image url */
+            v_img_url     VARCHAR2(4000);
+          BEGIN
+            v_details_url := order_router_util.details_url(
+              p_ref_table => it.ref_table,
+              p_ref_id    => it.ref_id
+            );
+      
+            v_assign_url := order_router_util.assign_url(
+              p_ref_table => it.ref_table,
+              p_ref_id    => it.ref_id
+            );
+      
+            IF v_status_code IN ('NEW','PENDING_OPS') THEN
+              v_status_ar := 'جديد';
+              v_bg_class  := 'ticket-bg-new';
+              v_dot_color := '#f59e0b';
+              v_assign_on := TRUE;
+      
+            ELSIF v_status_code IN ('ASSIGNED') THEN
+              v_status_ar   := 'تم التوزيع';
+              v_bg_class    := 'ticket-bg-progress';
+              v_dot_color   := '#0b2a4a';
+              v_complete_on := TRUE;
+      
+            ELSIF v_status_code IN ('IN_PROGRESS') THEN
+              v_status_ar   := 'قيد التنفيذ';
+              v_bg_class    := 'ticket-bg-progress';
+              v_dot_color   := '#0b2a4a';
+              v_complete_on := TRUE;
+      
+            ELSIF v_status_code IN ('COMPLETED') THEN
+              v_status_ar := 'مكتملة';
+              v_bg_class  := 'ticket-bg-done';
+              v_dot_color := '#22c55e';
+      
+            ELSIF v_status_code IN ('CANCELLED','FAILED') THEN
+              v_status_ar := 'ملغية';
+              v_bg_class  := 'ticket-bg-cancel';
+              v_dot_color := '#ef4444';
+      
+            ELSE
+              v_status_ar := v_status_code;
+              v_bg_class  := 'ticket-bg-new';
+              v_dot_color := '#94a3b8';
+            END IF;
+      
+            /* fallback titles */
+            v_title_ar := NVL(it.display_title_ar,
+                              CASE
+                                WHEN it.ref_table = 'SUBLEVEL_LIMO_RES' THEN '🚗 ليموزين'
+                                WHEN it.ref_table = 'SUBLEVEL_FAST_TRACK_RES' THEN '✈️ فاست تراك'
+                                WHEN it.ref_table = 'SUBLEVEL_APARTMENT_RES' THEN '🏠 شقق'
+                                ELSE NVL(it.item_type,'خدمة')
+                              END);
+      
+            v_sub_ar := NVL(it.display_subtitle_ar, '');
+      
+            /* start label */
+            v_start_label :=
+              CASE
+                WHEN it.service_start_ts IS NOT NULL THEN TO_CHAR(it.service_start_ts,'DD/MM/YYYY HH24:MI')
+              END;
+      
+            /* client */
+            v_phone       := it.client_phone;
+            v_client_code := it.client_code;
+      
+            /* ✅ image url logic (LIMO only) */
+            v_img_url :=
+              CASE
+                WHEN it.ref_table = 'SUBLEVEL_LIMO_RES' AND it.service_photo_url IS NOT NULL THEN it.service_photo_url
+                WHEN it.ref_table = 'SUBLEVEL_LIMO_RES' THEN '#APP_FILES#placeholders/unknown-car.png'
+                ELSE NULL
+              END;
+      
+            /* read meta_json (optional) */
+            BEGIN
+              v_nod := JSON_VALUE(it.meta_json, '$.nod');
+            EXCEPTION WHEN OTHERS THEN
+              v_nod := NULL;
+            END;
+      
+            BEGIN
+              v_ticket_no := JSON_VALUE(it.meta_json, '$.ticketNumber');
+            EXCEPTION WHEN OTHERS THEN
+              v_ticket_no := NULL;
+            END;
+      
+            BEGIN
+              v_signage := JSON_VALUE(it.meta_json, '$.signage');
+            EXCEPTION WHEN OTHERS THEN
+              v_signage := NULL;
+            END;
+      
+            /* copy payload */
+            v_copy_text :=
+              'MAIN: '||it.main_res_id
+              ||' | ITEM: '||it.order_item_id
+              ||CASE WHEN v_phone IS NOT NULL THEN ' | PHONE: '||v_phone ELSE '' END
+              ||CASE WHEN v_client_code IS NOT NULL THEN ' | CODE: '||v_client_code ELSE '' END;
+      
+            /* ===============================
+               Ticket HTML
+               =============================== */
+            l_html := l_html || '
+            <div class="ticket '||v_bg_class||'" onclick="goToUrl('''||jsq(v_details_url)||''')">
+              <div class="ticket-topbar"></div>
+      
+              <div class="ticket-head">
+                '|| CASE
+                      WHEN v_img_url IS NOT NULL THEN
+                        '<img class="ticket-photo" src="'||esc(v_img_url)||'" alt="service"/>'
+                      ELSE
+                        ''
+                    END ||'
+                <div class="ticket-head-content">
+                  <div class="ticket-head-grid">
+      
+                    <div class="ticket-head-title">
+                      <div class="ticket-type">
+                        <span>'||esc(v_title_ar)||'</span>
+                        <span class="ticket-mainid">('||esc(it.main_res_id)||')</span>
+                      </div>
+                    </div>
+      
+                    <div class="ticket-head-status">
+                      <div class="pill">
+                        <span class="pill-dot" style="background:'||v_dot_color||'"></span>
+                        <span>'||esc(v_status_ar)||'</span>
+                      </div>
+                    </div>
+      
+                    <div class="ticket-head-ids">
+                      <span class="ticket-id">#'||esc(it.order_item_id)||'</span>
+            ';
+      
+            /* phone as clickable copy (same style as order id) */
+            IF v_phone IS NOT NULL AND LENGTH(TRIM(v_phone)) > 0 THEN
+              l_html := l_html || '
+                      <span class="ticket-link" onclick="copyText('''||jsq(v_phone)||''', event)">'||esc(v_phone)||'</span>
+              ';
+            END IF;
+      
+            /* client code */
+            IF v_client_code IS NOT NULL AND LENGTH(TRIM(v_client_code)) > 0 THEN
+              l_html := l_html || '
+                      <span class="ticket-id">'||esc(v_client_code)||'</span>
+              ';
+            END IF;
+      
+            l_html := l_html || '
+                    </div>
+      
+                    <div class="ticket-head-copy">
+                      <span class="copy-chip" onclick="copyText('''||jsq(v_copy_text)||''', event)">نسخ البيانات</span>
+                    </div>
+      
+                  </div>
+                </div>
+              </div>
+      
+              <div class="ticket-body">
+            ';
+      
+            IF v_sub_ar IS NOT NULL AND LENGTH(TRIM(v_sub_ar)) > 0 THEN
+              l_html := l_html || '
+                <div class="ticket-subtitle">'||esc(v_sub_ar)||'</div>
+              ';
+            END IF;
+      
+            l_html := l_html || '
+                <div class="ticket-meta">
+                  <div class="meta-col">
+                    <div class="meta-label">تاريخ البداية</div>
+                    <div class="meta-value">'||esc(v_start_label)||'</div>
+            ';
+      
+            /* show assigned to (if any) */
+            IF it.assigned_to_name IS NOT NULL THEN
+              l_html := l_html || '
+                    <div style="margin-top:6px">
+                      <div class="meta-label">تم التوزيع إلى</div>
+                      <div class="meta-value">'||esc(it.assigned_to_name)||'</div>
+                    </div>
+              ';
+            END IF;
+      
+            l_html := l_html || '
+                  </div>
+      
+                  <div class="meta-col" style="text-align:left">
+                    <div class="meta-label">السعر</div>
+      
+                    <div class="ticket-price">'
+                      || esc(TO_CHAR(NVL(it.amount_orig,0),'FM999G999G990D00'))
+                      || ' ' || esc(it.currency) ||
+                    '</div>
+      
+                    <div class="ticket-price-egp">≈ '
+                      || esc(TO_CHAR(NVL(it.amount_egp,0),'FM999G999G990D00'))
+                      || ' EGP</div>
+                  </div>
+                </div>
+            ';
+      
+            /* extra small info from JSON */
+            IF v_nod IS NOT NULL OR v_ticket_no IS NOT NULL OR v_signage IS NOT NULL THEN
+              l_html := l_html || '
+                <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+              ';
+      
+              IF v_nod IS NOT NULL THEN
+                l_html := l_html || '
+                  <span class="pill" style="font-size:10px;padding:3px 8px;height:auto;">
+                    <span class="pill-dot" style="background:#94a3b8"></span>
+                    <span>'||esc('عدد الأيام: '||v_nod)||'</span>
+                  </span>
+                ';
+              END IF;
+      
+              IF v_ticket_no IS NOT NULL AND LENGTH(TRIM(v_ticket_no)) > 0 THEN
+                l_html := l_html || '
+                  <span class="pill" style="font-size:10px;padding:3px 8px;height:auto;">
+                    <span class="pill-dot" style="background:#0b2a4a"></span>
+                    <span>'||esc('رقم التذكرة: '||v_ticket_no)||'</span>
+                  </span>
+                ';
+              END IF;
+      
+              IF v_signage IS NOT NULL AND LENGTH(TRIM(v_signage)) > 0 THEN
+                l_html := l_html || '
+                  <span class="pill" style="font-size:10px;padding:3px 8px;height:auto;">
+                    <span class="pill-dot" style="background:#f59e0b"></span>
+                    <span>'||esc('اللافتة: '||v_signage)||'</span>
+                  </span>
+                ';
+              END IF;
+      
+              l_html := l_html || '
+                </div>
+              ';
+            END IF;
+      
+            l_html := l_html || '
+              </div>
+      
+              <div class="ticket-actions">
+            ';
+      
+            /* Assign Button */
+            IF v_assign_on THEN
+              l_html := l_html || '
+                <div class="btn btn-assign" onclick="openAssignUrl('''||jsq(v_assign_url)||''', event)">توزيع</div>
+              ';
+            ELSE
+              l_html := l_html || '
+                <div class="btn btn-assign btn-disabled" onclick="event.stopPropagation();event.preventDefault();">توزيع</div>
+              ';
+            END IF;
+      
+            /* Complete Button */
+            IF v_complete_on THEN
+              l_html := l_html || '
+                <div class="btn btn-complete" onclick="completeService('''||jsq(it.order_item_id)||''', event)">إكمال</div>
+              ';
+            ELSE
+              l_html := l_html || '
+                <div class="btn btn-complete btn-disabled" onclick="event.stopPropagation();event.preventDefault();">إكمال</div>
+              ';
+            END IF;
+      
+            l_html := l_html || '
+              </div>
+            </div>
+            ';
+      
+          END;
+        END LOOP;
+      
+        l_html := l_html || '</div>';
+      
+        IF l_html IS NULL OR LENGTH(l_html) < 200 THEN
+          l_html := '<div style="text-align:center;color:#64748b;padding:20px;font-weight:800">لا توجد خدمات في هذا الطلب</div>';
+        END IF;
+      
+        RETURN l_html;
+      END;
+
+  layout: 
+    sequence: 70
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Invoice Lines ===============================
+  id: 215029115775397498
+  identification: 
+    name: Invoice Lines
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select INVOICE_LINE_ID,
+             INVOICE_ID,
+             SOURCE_ORDER_ID,
+             SOURCE_ITEM_ID,
+             DESCRIPTION,
+             QUANTITY,
+             UNIT_PRICE,
+             TOTAL_PRICE
+        from INVOICE_LINES
+        where invoice_id = :P98_INVOICE_ID
+    page-items-to-submit: 
+    - P98_INVOICE_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: vw_billable_order_items # 213711049598160076
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: INVOICE_ID ==================================
+    id: 215029289380397499
+    identification: 
+      column-name: INVOICE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Invoice Id
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INVOICE_LINE_ID =============================
+    id: 215498890577922377
+    identification: 
+      column-name: INVOICE_LINE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Invoice Line Id
+      alignment: end
+
+    layout: 
+      sequence: 20
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SOURCE_ORDER_ID =============================
+    id: 215499076402922378
+    identification: 
+      column-name: SOURCE_ORDER_ID
+      type: Plain Text
+
+    heading: 
+      heading: Source Order Id
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SOURCE_ITEM_ID ==============================
+    id: 215499153563922379
+    identification: 
+      column-name: SOURCE_ITEM_ID
+      type: Plain Text
+
+    heading: 
+      heading: Source Item Id
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 215499233661922380
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: Description
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: QUANTITY ====================================
+    id: 215499383257922381
+    identification: 
+      column-name: QUANTITY
+      type: Plain Text
+
+    heading: 
+      heading: Quantity
+      alignment: end
+
+    layout: 
+      sequence: 60
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UNIT_PRICE ==================================
+    id: 215499444508922382
+    identification: 
+      column-name: UNIT_PRICE
+      type: Plain Text
+
+    heading: 
+      heading: Unit Price
+      alignment: end
+
+    layout: 
+      sequence: 70
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_PRICE =================================
+    id: 215499497280922383
+    identification: 
+      column-name: TOTAL_PRICE
+      type: Plain Text
+
+    heading: 
+      heading: Total Price
+      alignment: end
+
+    layout: 
+      sequence: 80
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 252608362110912841
+  identification: 
+    name: Breadcrumb
+    title: محرك الوصول
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: RDS =========================================
+  id: 11450465906518138820
+  identification: 
+    name: RDS
+    type: Region Display Selector
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--fillLabels
+    - t-TabsRegion-mod--pill
+    css-classes: 
+    - project-rds-region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': false
+      remember-selection: By User
+
+- # ====== Region: تفاصيل ملف العميل ===========================
+  id: 18977021883601085552
+  identification: 
+    name: تفاصيل ملف العميل
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          c.client_id,
+          c.client_code,
+          c.full_name,
+          NVL(c.country_name, '—') AS country_name,
+          cc.contact_value         AS phone,
+          cu.status                AS user_status,
+          cu.verified,
+          TO_CHAR(c.created_at, 'DD Mon YYYY') AS joined_on
+      FROM clients c
+      LEFT JOIN client_contacts cc
+        ON cc.client_id = c.client_id
+       AND cc.contact_type = 'PHONE'
+       AND cc.is_primary = 'Y'
+      LEFT JOIN customer_users cu
+        ON cu.client_id = c.client_id
+       where cc.client_id = :P98_ID
+    page-items-to-submit: 
+    - P98_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Value Attribute Pairs - Column
+      template-options: 
+      - '#DEFAULT#'
+      - t-AVPList--leftAligned
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CLIENT_ID ===================================
+    id: 205455492273406162
+    identification: 
+      column-name: CLIENT_ID
+      type: Plain Text
+
+    heading: 
+      heading: رقم العميل التعريفي
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FULL_NAME ===================================
+    id: 205455669760406163
+    identification: 
+      column-name: FULL_NAME
+      type: Plain Text
+
+    heading: 
+      heading: اسم العميل
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CLIENT_CODE =================================
+    id: 206740789736892981
+    identification: 
+      column-name: CLIENT_CODE
+      type: Plain Text
+
+    heading: 
+      heading: كود العميل
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COUNTRY_NAME ================================
+    id: 206742540118892999
+    identification: 
+      column-name: COUNTRY_NAME
+      type: Plain Text
+
+    heading: 
+      heading: الدولة
+      alignment: start
+
+    layout: 
+      sequence: 260
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PHONE =======================================
+    id: 213708988471160055
+    identification: 
+      column-name: PHONE
+      type: Plain Text
+
+    heading: 
+      heading: رقم الهاتف
+      alignment: start
+
+    layout: 
+      sequence: 270
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USER_STATUS =================================
+    id: 213709005370160056
+    identification: 
+      column-name: USER_STATUS
+      type: Plain Text
+
+    heading: 
+      heading: حالة حساب المستخدم
+      alignment: start
+
+    layout: 
+      sequence: 280
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VERIFIED ====================================
+    id: 213709121674160057
+    identification: 
+      column-name: VERIFIED
+      type: Plain Text
+
+    heading: 
+      heading: حالة التحقق (OTP)
+      alignment: start
+
+    layout: 
+      sequence: 290
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: JOINED_ON ===================================
+    id: 213709212391160058
+    identification: 
+      column-name: JOINED_ON
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ انشاء الملف
+      alignment: start
+
+    layout: 
+      sequence: 300
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Profile =====================================
+  id: 19341112379281221120
+  identification: 
+    name: Profile
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: RDS # 11450465906518138820
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Menubar =====================================
+  id: 20297995619413170957
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          1 AS actions,
+          REGEXP_REPLACE(
+              REGEXP_REPLACE(cc.contact_value, '[^0-9]', ''),
+              '^0',
+              ''
+          ) AS phone
+      FROM client_contacts cc
+      WHERE cc.client_id   = :P98_ID
+        AND cc.contact_type = 'PHONE'
+        AND cc.is_primary   = 'Y'
+        AND ROWNUM = 1;
+      
+    page-items-to-submit: 
+    - P98_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 252608362110912841
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 259007263158944767
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PHONE =======================================
+    id: 267395584133331151
+    identification: 
+      name: PHONE
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: PHONE
+      data-type: VARCHAR2
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: إضافة حجز ===================================
+    id: 206739200269892966
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: إضافة حجز
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:1499:&SESSION.::&DEBUG.::P1499_CUSTOMER_ID:&P98_ID.'
+        page: 1499 # Main Reservation Details Form
+        values: 
+          p1499_customer_id: '&P98_ID.'
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-cart-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: إنشاء فاتورة  ===============================
+    id: 210184950319154762
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: 'إنشاء فاتورة '
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:257:&SESSION.::&DEBUG.:::'
+        page: 257 # Create Invoice Form
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-ai-sparkle-generate-document
+      hot: true
+      show-as-disabled: false
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: Actions =====================================
+    id: 20297995919992170960
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: Create Order ==================================
+      id: 192345098940501272
+      identification: 
+        type: Menu Entry
+        label: Create Order
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1499:&SESSION.::&DEBUG.::P1499_CUSTOMER_ID:&P98_ID.'
+          page: 1499 # Main Reservation Details Form
+          values: 
+            p1499_customer_id: '&P98_ID.'
+
+    - # ====== Menu: حجز فندق ======================================
+      id: 256516367918766167
+      identification: 
+        type: Menu Entry
+        label: حجز فندق
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:169:&SESSION.::&DEBUG.:RR,169:P169_CLIENT_ID:&P98_ID.'
+          page: 169 # Hotel Reservation Form
+          clear-cache: RR,169
+          values: 
+            p169_client_id: '&P98_ID.'
+
+      appearance: 
+        icon: fa-building
+
+    - # ====== Menu: Separator =====================================
+      id: 256516460288766168
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+    - # ====== Menu: Separator =====================================
+      id: 259006558658944760
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 110
+
+    - # ====== Menu: حجز ليموزين ===================================
+      id: 266889762678625052
+      identification: 
+        type: Menu Entry
+        label: حجز ليموزين
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:358:&SESSION.::&DEBUG.:RR,358:P358_CLIENT_ID:&P98_ID.'
+          page: 358 # Limo Reservation Request Form
+          clear-cache: RR,358
+          values: 
+            p358_client_id: '&P98_ID.'
+
+      appearance: 
+        icon: fa-car
+
+    - # ====== Menu: تواصل من خلال الواتساب ========================
+      id: 267395464878331150
+      identification: 
+        type: Menu Entry
+        label: تواصل من خلال الواتساب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      link: 
+        type: Redirect to URL
+        target: 'https://wa.me/&PHONE.'
+        link-attributes: target="_blank"
+
+      appearance: 
+        icon: fa-users-chat
+
+    - # ====== Menu: اتصال  ========================================
+      id: 267395650492331152
+      identification: 
+        type: Menu Entry
+        label: 'اتصال '
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to URL
+        target: 'tel:&PHONE.'
+        link-attributes: target="_blank"
+
+      appearance: 
+        icon: fa-phone
+
+    - # ====== Menu: حجز مسار ======================================
+      id: 280906879267161255
+      identification: 
+        type: Menu Entry
+        label: حجز مسار
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1500:&SESSION.::&DEBUG.:RR,451::'
+          page: 1500 # FT-Sub-Level-Reservation Form
+          clear-cache: RR,451
+
+      appearance: 
+        icon: fa-person-running-fast
+
+    - # ====== Menu: تعديل (Admin) =================================
+      id: 13402156768981111903
+      identification: 
+        type: Menu Entry
+        label: تعديل (Admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:121:&SESSION.::&DEBUG.:RP,121:P121_CLIENT_ID:&P98_ID.'
+          page: 121 # Client Details-form
+          clear-cache: RP,121
+          values: 
+            p121_client_id: '&P98_ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: Separator =====================================
+      id: 15513489468859236513
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+    - # ====== Menu: اعادة ظبط =====================================
+      id: 16155890939204211025
+      identification: 
+        type: Menu Entry
+        label: اعادة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:98:&SESSION.::&DEBUG.:RP,5:P98_ID:&P98_ID.'
+          page: 98 # Client Details Full Page
+          clear-cache: RP,5
+          values: 
+            p98_id: '&P98_ID.'
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 20297996625899170967
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:98:&SESSION.::&DEBUG.:RP,::'
+          page: 98 # Client Details Full Page
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: نظرة سريعة ====================================
+      id: 25228676800316375991
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:97:&SESSION.::&DEBUG.:RP,97:P97_CLIENT_ID:&P98_ID.'
+          page: 97
+          clear-cache: RP,97
+          values: 
+            p97_client_id: '&P98_ID.'
+
+      appearance: 
+        icon: fa-user
+
+page-items: 
+- # ====== Page Item: P98_ACTIVEORDER ==========================
+  id: 205459098217406198
+  identification: 
+    name: P98_ACTIVEORDER
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 70
+    region: Profile # 19341112379281221120
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P98_INVOICE_ID ===========================
+  id: 213710903746160075
+  identification: 
+    name: P98_INVOICE_ID
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: vw_billable_order_items # 213711049598160076
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P98_PROMO_CODE ===========================
+  id: 215002016462836378
+  identification: 
+    name: P98_PROMO_CODE
+    type: Select List
+
+  label: 
+    label: SelectPromo
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 90
+    region: Profile # 19341112379281221120
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: select promo_code as a, promo_code as b from promo_codes
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P98_VAT_INCLUDED =========================
+  id: 215024452466397451
+  identification: 
+    name: P98_VAT_INCLUDED
+    type: Switch
+
+  label: 
+    label: VAT
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 100
+    region: Profile # 19341112379281221120
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P98_ID ===================================
+  id: 254006758095316146
+  identification: 
+    name: P98_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P98_NAME =================================
+  id: 19066645901124391008
+  identification: 
+    name: P98_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Profile # 19341112379281221120
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+buttons: 
+- # ====== Button: AddContact ==================================
+  id: 213710492069160071
+  identification: 
+    button-name: AddContact
+    label: اضافة وسيلة جديدة
+
+  layout: 
+    sequence: 20
+    region: تفاصيل ملف العميل # 18977021883601085552
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:266:&SESSION.::&DEBUG.::P266_CLIENT_ID:&P98_ID.'
+      page: 266 # Client Contact Form (NEW)
+      values: 
+        p266_client_id: '&P98_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: createinvoice ===============================
+  id: 215500920110922397
+  identification: 
+    button-name: createinvoice
+    label: 'إنشاء فاتورة '
+
+  layout: 
+    sequence: 10
+    region: Main Reservations # 201397469460641769
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:268:&SESSION.::&DEBUG.::P268_CUSTOMER_ID:&P98_ID.'
+      page: 268 # Client-Invoice-Generator
+      values: 
+        p268_customer_id: '&P98_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: UP ==========================================
+  id: 252531878355869328
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 30
+    region: Breadcrumb # 252608362110912841
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:112:&SESSION.::&DEBUG.:RP,::'
+      page: 112 # Clients
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: on include future change ============
+  id: 252600384649869415
+  identification: 
+    name: on include future change
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P98_INCLUDE_FUTURE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 252600845282869417
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P98_INCLUDE_FUTURE
+
+    execution: 
+      sequence: 10
+      event: on include future change # 252600384649869415
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: on change of include past ===========
+  id: 252601734575869418
+  identification: 
+    name: on change of include past
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P98_INCLUDE_PAST
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 252602229556869419
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P98_INCLUDE_PAST
+
+    execution: 
+      sequence: 10
+      event: on change of include past # 252601734575869418
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: refresh on modal close ==============
+  id: 252603128368869419
+  identification: 
+    name: refresh on modal close
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Menubar # 20297995619413170957
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 206739509413892969
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Main Reservations # 201397469460641769
+
+    execution: 
+      sequence: 60
+      event: refresh on modal close # 252603128368869419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 252603675984869419
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: تفاصيل ملف العميل # 18977021883601085552
+
+    execution: 
+      sequence: 40
+      event: refresh on modal close # 252603128368869419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: when Project Change Exclude User ====
+  id: 252604950588869420
+  identification: 
+    name: when Project Change Exclude User
+
+  execution: 
+    sequence: 60
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P98_PROJ_CHANGE_EXCLUDE_USER_YN
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 252605410141869420
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P98_PROJ_CHANGE_EXCLUDE_USER_YN
+
+    execution: 
+      sequence: 10
+      event: when Project Change Exclude User # 252604950588869420
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 252605918677869421
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        apex_util.set_preference (
+            p_preference => 'P98_PROJ_CHANGE_EXCLUDE_USER_YN',
+            p_value      => :P98_PROJ_CHANGE_EXCLUDE_USER_YN,
+            p_user       => :APP_USER );
+
+    execution: 
+      sequence: 20
+      event: when Project Change Exclude User # 252604950588869420
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: current active order =======================
+  id: 205459047224406197
+  identification: 
+    name: current active order
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        :P98_ACTIVEORDER := get_active_main_res_id(:P98_ID);
+      END;
+      
+
+  execution: 
+    sequence: 30
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Create Invoice =============================
+  id: 215024543864397452
+  identification: 
+    name: Create Invoice
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: UTILITY_INVOICE
+    procedure-or-function: ISSUE_INVOICE_FOR_ORDER
+
+  execution: 
+    sequence: 140
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  parameters: 
+  - # ====== Parameter: p_created_by =============================
+    id: 215024765739397454
+    identification: 
+      name: p_created_by
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ':APP_USER_ID'
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_vat_included ===========================
+    id: 215024882848397455
+    identification: 
+      name: p_vat_included
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P98_VAT_INCLUDED
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_main_res_id ============================
+    id: 215025048215397457
+    identification: 
+      name: p_main_res_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P98_ACTIVEORDER
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_invoice_id =============================
+    id: 215025117215397458
+    identification: 
+      name: p_invoice_id
+
+    parameter: 
+      direction: Out
+      data-type: VARCHAR2
+      ignore-output: false
+
+    value: 
+      item: P98_INVOICE_ID
+
+    advanced: 
+      display-sequence: 50
+
+- # ====== Process: active invoice  ============================
+  id: 215025246271397459
+  identification: 
+    name: 'active invoice '
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        :P98_INVOICE_ID := utility_invoice.get_invoice_id(:P98_ACTIVEORDER);
+      END;
+      
+
+  execution: 
+    sequence: 40
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Apply Promo ================================
+  id: 215025310171397460
+  identification: 
+    name: Apply Promo
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: UTILITY_INVOICE
+    procedure-or-function: APPLY_PROMO
+
+  execution: 
+    sequence: 150
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  parameters: 
+  - # ====== Parameter: p_created_by =============================
+    id: 215025417731397461
+    identification: 
+      name: p_created_by
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ':APP_USER_ID'
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_invoice_id =============================
+    id: 215025736337397464
+    identification: 
+      name: p_invoice_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P98_INVOICE_ID
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_promo_code =============================
+    id: 215025818518397465
+    identification: 
+      name: p_promo_code
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P98_PROMO_CODE
+
+    advanced: 
+      display-sequence: 50
+
+- # ====== Process: Remove Promo ===============================
+  id: 215025966386397466
+  identification: 
+    name: Remove Promo
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: UTILITY_INVOICE
+    procedure-or-function: REMOVE_PROMO
+
+  execution: 
+    sequence: 160
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  parameters: 
+  - # ====== Parameter: p_invoice_id =============================
+    id: 215026152679397468
+    identification: 
+      name: p_invoice_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P98_INVOICE_ID
+
+    advanced: 
+      display-sequence: 20
+
+- # ====== Process: set first and last name session state ======
+  id: 252595937149869411
+  identification: 
+    name: set first and last name session state
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        SELECT FULL_NAME || ' - ' || CLIENT_CODE as FULL_NAME
+        INTO :P98_NAME
+        FROM CLIENTS
+        WHERE CLIENT_ID = :P98_ID;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: sync roles =================================
+  id: 252596349335869412
+  identification: 
+    name: sync roles
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_member_app_role (
+          p_app_id => :APP_ID,
+          p_email  => :P98_EMAIL);
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Never
+

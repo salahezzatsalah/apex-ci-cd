@@ -1,0 +1,1573 @@
+---
+# ====== Page: Limo Cars Catalog =============================
+id: 351
+identification: 
+  name: Limo Cars Catalog
+  alias: LIMO-CARS-CATALOG
+  title: كتالوج السيارات
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: filters =====================================
+  id: 17888354078700655591
+  identification: 
+    name: filters
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 19613191894949292072
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 20477535249982306890
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 19613191894949292072
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20477536483488306902
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تسجيل نوع سيارة =============================
+    id: 16589063072780049514
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تسجيل نوع سيارة
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:352:&SESSION.::&DEBUG.:RP,352::'
+        page: 352 # Car Type Registration Form
+        clear-cache: RP,352
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20477535550561306893
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: اعدة ظبط ======================================
+      id: 17708856279588404159
+      identification: 
+        type: Menu Entry
+        label: اعدة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:351:&SESSION.::&DEBUG.:RP,74::'
+          page: 351 # Limo Cars Catalog
+          clear-cache: RP,74
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث =========================================
+      id: 20477536256468306900
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:351:&SESSION.::&DEBUG.:RP,::'
+          page: 351 # Limo Cars Catalog
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: CAR TYPES ===================================
+  id: 20931122368445371407
+  identification: 
+    name: CAR TYPES
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html CLOB;
+      
+        /* ================= Helper ================= */
+      
+        PROCEDURE add(p_txt IN CLOB) IS
+        BEGIN
+          IF p_txt IS NOT NULL THEN
+            DBMS_LOB.APPEND(l_html, p_txt);
+          END IF;
+        END;
+      
+        FUNCTION esc(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN apex_escape.html(NVL(p_txt,''));
+        END;
+      
+        FUNCTION jsq(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN REPLACE(NVL(p_txt,''), '''', '\''' );
+        END;
+      
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+      
+        /* =====================================================
+           CSS + JS
+        ===================================================== */
+      
+        add(TO_CLOB(q'[
+      <style>
+      
+      /* ================= Layout ================= */
+      
+      .car-wrap{
+        direction:rtl;
+        font-family:Cairo,Inter,sans-serif;
+      }
+      
+      .car-top{
+        display:grid;
+        grid-template-columns:1fr 140px 140px auto;
+        gap:8px;
+        margin-bottom:14px;
+      }
+      
+      .car-search,
+      .car-filter{
+        background:#fff;
+        border:1px solid #cbd5e1;
+        border-radius:9px;
+        padding:7px 10px;
+        font-size:11px;
+      }
+      
+      .car-count{
+        font-size:11px;
+        color:#64748b;
+        align-self:center;
+      }
+      
+      .bulk-btn{
+        background:#0f172a;
+        color:#fff;
+        border:none;
+        border-radius:9px;
+        font-size:11px;
+        font-weight:800;
+        cursor:pointer;
+        padding:7px 12px;
+      }
+      
+      
+      /* ================= Grid ================= */
+      
+      .car-grid{
+        display:grid;
+        gap:12px;
+      }
+      
+      @media(min-width:640px){
+        .car-grid{grid-template-columns:repeat(2,1fr);}
+      }
+      
+      @media(min-width:1280px){
+        .car-grid{grid-template-columns:repeat(4,1fr);}
+      }
+      
+      
+      /* ================= Card ================= */
+      
+      .car-ticket{
+        border-radius:14px;
+        background:#fff;
+        border:1px solid rgba(15,23,42,.1);
+        box-shadow:0 6px 18px rgba(0,0,0,.06);
+        overflow:hidden;
+        transition:.15s;
+        cursor:pointer;
+      }
+      
+      .car-ticket:hover{
+        transform:translateY(-2px);
+      }
+      
+      .car-ticket:focus{
+        outline:2px solid #0b2a4a;
+      }
+      
+      
+      /* ================= Header ================= */
+      
+      .car-head{
+        display:flex;
+        gap:10px;
+        padding:12px;
+      }
+      
+      .car-photo{
+        width:56px;
+        height:56px;
+        border-radius:12px;
+        border:1px solid #e2e8f0;
+        object-fit:cover;
+      }
+      
+      .car-title{
+        font-size:13px;
+        font-weight:900;
+      }
+      
+      .car-id{
+        font-size:10px;
+        color:#64748b;
+      }
+      
+      .car-meta{
+        font-size:10px;
+        color:#475569;
+        margin-top:3px;
+        font-weight:700;
+      }
+      
+      
+      /* ================= Badges ================= */
+      
+      .badge{
+        display:inline-block;
+        font-size:9px;
+        padding:2px 6px;
+        border-radius:999px;
+        font-weight:800;
+      }
+      
+      .badge-ok{background:#ecfdf5;color:#065f46;}
+      .badge-warn{background:#fff7ed;color:#9a3412;}
+      .badge-miss{background:#fee2e2;color:#991b1b;}
+      
+      
+      /* ================= Prices ================= */
+      
+      .car-body{
+        padding:0 12px 10px;
+      }
+      
+      .car-prices{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:6px;
+        border-top:1px dashed #cbd5e1;
+        padding-top:8px;
+      }
+      
+      .price-box{
+        text-align:center;
+        background:#f8fafc;
+        border-radius:8px;
+        padding:6px 4px;
+      }
+      
+      .price-label{
+        font-size:10px;
+        color:#64748b;
+      }
+      
+      .price-val{
+        font-size:11px;
+        font-weight:900;
+      }
+      
+      .price-empty{
+        color:#94a3b8;
+      }
+      
+      
+      /* ================= Actions ================= */
+      
+      .car-actions{
+        display:flex;
+        gap:6px;
+        padding:10px;
+        border-top:1px solid #f1f5f9;
+      }
+      
+      .btn{
+        flex:1;
+        font-size:11px;
+        font-weight:900;
+        padding:7px;
+        border-radius:9px;
+        border:1px solid #cbd5e1;
+        cursor:pointer;
+        text-align:center;
+      }
+      
+      .btn-edit{
+        background:#0b2a4a;
+        color:#fff;
+      }
+      
+      .btn-price{
+        background:#f59e0b;
+        color:#000;
+      }
+      
+      </style>
+      
+      
+      <script>
+      
+      function filterCars(){
+      
+        let q   = document.getElementById("carSearch").value.toLowerCase();
+        let cat = document.getElementById("catFilter").value;
+        let cap = document.getElementById("capFilter").value;
+      
+        let cards = document.querySelectorAll(".car-ticket");
+        let count = 0;
+      
+        cards.forEach(c=>{
+      
+          let s   = c.dataset.search || '';
+          let c1  = c.dataset.cat || '';
+          let c2  = c.dataset.cap || '0';
+      
+          let capVal = parseInt(c2,10)||0;
+      
+          let ok = true;
+      
+          if(q && !s.includes(q)) ok=false;
+          if(cat && c1!==cat) ok=false;
+          if(cap && capVal < parseInt(cap,10)) ok=false;
+      
+          c.style.display = ok?'':'none';
+      
+          if(ok) count++;
+      
+        });
+      
+        document.getElementById("carCount").innerHTML =
+          "النتائج: " + count;
+      }
+      
+      
+      function openDialog(url,title,ev){
+      
+        ev.preventDefault();
+        ev.stopPropagation();
+      
+        apex.navigation.dialog(
+          url,
+          { title:title, width:760, modal:true }
+        );
+      }
+      
+      
+      function goTo(url,ev){
+      
+        ev.preventDefault();
+        ev.stopPropagation();
+      
+        apex.navigation.redirect(url);
+      }
+      
+      </script>
+      ]'));
+      
+      
+        /* =====================================================
+           Filters
+        ===================================================== */
+      
+        add(TO_CLOB('
+      <div class="car-wrap">
+      
+        <div class="car-top">
+      
+          <input id="carSearch"
+                 class="car-search"
+                 placeholder="بحث..."
+                 oninput="filterCars()"/>
+      
+          <select id="catFilter"
+                  class="car-filter"
+                  onchange="filterCars()">
+      
+            <option value="">كل الفئات</option>
+      
+          </select>
+      
+          <select id="capFilter"
+                  class="car-filter"
+                  onchange="filterCars()">
+      
+            <option value="">كل السعات</option>
+            <option value="2">2+</option>
+            <option value="4">4+</option>
+            <option value="6">6+</option>
+            <option value="8">8+</option>
+      
+          </select>
+      
+          <button class="bulk-btn">تسعير جماعي</button>
+      
+          <div class="car-count" id="carCount"></div>
+      
+        </div>
+      
+      
+        <div class="car-grid">
+      '));
+      
+      
+        /* =====================================================
+           Data Loop
+        ===================================================== */
+      
+        FOR r IN (
+      
+          SELECT
+      
+            ct.car_type_id,
+            ct.car_type_name,
+            ct.category,
+            ct.max_passengers,
+            ct.main_photo_url,
+      
+            car_catalog_router_pkg.edit_url(ct.car_type_id)     AS edit_url,
+            car_catalog_router_pkg.prices_url(ct.car_type_id)   AS prices_url,
+            car_catalog_router_pkg.gallery_url(ct.car_type_id)  AS gallery_url,
+      
+            LIMO_CATALOG_PKG.get_hour_price(ct.car_type_id,1)  AS price_h,
+            LIMO_CATALOG_PKG.get_trip_price(ct.car_type_id)    AS price_d,
+            LIMO_CATALOG_PKG.get_km_price(ct.car_type_id)      AS price_km
+      
+          FROM limo_car_types ct
+          WHERE NVL(ct.status,'ACTIVE')='ACTIVE'
+          ORDER BY ct.created DESC
+      
+        ) LOOP
+      
+      
+          DECLARE
+            l_badge VARCHAR2(200);
+          BEGIN
+      
+            IF r.price_h IS NULL
+            OR r.price_d IS NULL
+            OR r.price_km IS NULL THEN
+      
+              l_badge :=
+                '<span class="badge badge-miss">ناقص تسعير</span>';
+      
+            ELSIF r.price_h < 50
+               OR r.price_d < 500 THEN
+      
+              l_badge :=
+                '<span class="badge badge-warn">سعر منخفض</span>';
+      
+            ELSE
+      
+              l_badge :=
+                '<span class="badge badge-ok">مكتمل</span>';
+      
+            END IF;
+      
+      
+      
+            add(TO_CLOB('
+      
+      <div class="car-ticket"
+           role="button"
+           tabindex="0"
+           onclick="goTo('''||jsq(r.gallery_url)||''',event)"
+      
+           data-search="'||LOWER(r.car_type_name||' '||r.car_type_id)||'"
+           data-cat="'||esc(NVL(r.category,'NONE'))||'"
+           data-cap="'||NVL(TO_CHAR(r.max_passengers),'0')||'">
+      
+      
+        <div class="car-head">
+      
+          <img class="car-photo"
+               src="'||NVL(r.main_photo_url,
+                '#APP_FILES#placeholders/unknown-car.png')||'"/>
+      
+      
+          <div>
+      
+            <div class="car-title">'||
+              esc(r.car_type_name)||'</div>
+      
+            <div class="car-id">'||
+              esc(r.car_type_id)||'</div>
+      
+            <div class="car-meta">
+      
+              فئة: '||esc(NVL(r.category,'-'))||'
+              | ركاب: '||TO_CHAR(NVL(r.max_passengers,0))||'
+      
+            </div>
+      
+            '||l_badge||'
+      
+          </div>
+      
+        </div>
+      
+      
+      
+        <div class="car-body">
+      
+          <div class="car-prices">
+      
+      
+            <div class="price-box">
+      
+              <div class="price-label">ساعة</div>
+      
+              <div class="price-val '||
+              CASE WHEN r.price_h IS NULL
+                   THEN 'price-empty' END||'">'||
+      
+              NVL(TO_CHAR(r.price_h),'—')||
+      
+              '</div>
+      
+            </div>
+      
+      
+      
+            <div class="price-box">
+      
+              <div class="price-label">يوم</div>
+      
+              <div class="price-val '||
+              CASE WHEN r.price_d IS NULL
+                   THEN 'price-empty' END||'">'||
+      
+              NVL(TO_CHAR(r.price_d),'—')||
+      
+              '</div>
+      
+            </div>
+      
+      
+      
+            <div class="price-box">
+      
+              <div class="price-label">KM</div>
+      
+              <div class="price-val '||
+              CASE WHEN r.price_km IS NULL
+                   THEN 'price-empty' END||'">'||
+      
+              NVL(TO_CHAR(r.price_km),'—')||
+      
+              '</div>
+      
+            </div>
+      
+      
+          </div>
+        </div>
+      
+      
+      
+        <div class="car-actions">
+      
+      
+          <div class="btn btn-edit"
+            onclick="openDialog('''||
+            jsq(r.edit_url)||''',''تعديل'',event)">
+      
+            تعديل
+      
+          </div>
+      
+      
+          <div class="btn btn-price"
+            onclick="goTo('''||
+            jsq(r.prices_url)||''',event)">
+      
+            الأسعار
+      
+          </div>
+      
+      
+        </div>
+      
+      
+      </div>
+      '));
+      
+          END;
+      
+        END LOOP;
+      
+      
+      
+        /* =====================================================
+           Close
+        ===================================================== */
+      
+        add(TO_CLOB('
+        </div>
+      </div>
+      '));
+      
+      
+      
+        RETURN l_html;
+      
+      END;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    css-classes: 
+    - car-content-row
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Faceted Search ==============================
+  id: 21726865990231031177
+  identification: 
+    name: Faceted Search
+    title: إدوات البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: CAR TYPES # 20931122368445371407
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 20
+
+  facets: 
+  - # ====== Facet: P351_HASPIC ==================================
+    id: 266889901779625053
+    identification: 
+      name: P351_HASPIC
+      type: Checkbox Group
+
+    label: 
+      label: يوجد صورة ملف
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Facet: P351_SEATS ===================================
+    id: 303100802380624700
+    identification: 
+      name: P351_SEATS
+      type: Checkbox Group
+
+    label: 
+      label: عدد المقاعد
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: SEATS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P351_SEARCH ==================================
+    id: 21726925414681031396
+    identification: 
+      name: P351_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    source: 
+      database-column(s): CAR_TYPE_NAME
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P351_STATUS ==================================
+    id: 21726925546730031397
+    identification: 
+      name: P351_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الإتاحة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P351_CATEGORY ================================
+    id: 24177031441103049818
+    identification: 
+      name: P351_CATEGORY
+      type: Checkbox Group
+
+    label: 
+      label: تصنيف السيارة
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES CATEGORIES # 266657472268387203
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CATEGORY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P351_HASPIC =================================
+    id: 266889901779625053
+    identification: 
+      name: P351_HASPIC
+      type: Checkbox Group
+
+    label: 
+      label: يوجد صورة ملف
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Filter: P351_SEATS ==================================
+    id: 303100802380624700
+    identification: 
+      name: P351_SEATS
+      type: Checkbox Group
+
+    label: 
+      label: عدد المقاعد
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: SEATS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P351_SEARCH =================================
+    id: 21726925414681031396
+    identification: 
+      name: P351_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    source: 
+      database-column(s): CAR_TYPE_NAME
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P351_STATUS =================================
+    id: 21726925546730031397
+    identification: 
+      name: P351_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الإتاحة
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ','
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P351_CATEGORY ===============================
+    id: 24177031441103049818
+    identification: 
+      name: P351_CATEGORY
+      type: Checkbox Group
+
+    label: 
+      label: تصنيف السيارة
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CAR TYPES CATEGORIES # 266657472268387203
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CATEGORY
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P351_ORDER_BY ============================
+  id: 14692553828899371777
+  identification: 
+    name: P351_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: filters # 17888354078700655591
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:اسم السيارة;CAR_TYPE_NAME,تصنيف السيارة;CATEGORY'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: CAR_TYPE_NAME
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 266589814015995004
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 19613191894949292072
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:RP,::'
+      page: 350 # Limousine Department Home
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 266596281731995013
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: CAR TYPES # 20931122368445371407
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266596753966995015
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: CAR TYPES # 20931122368445371407
+
+    execution: 
+      sequence: 10
+      event: DC # 266596281731995013
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 266597247621995016
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21726865990231031177
+
+    execution: 
+      sequence: 20
+      event: DC # 266596281731995013
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog closed ============
+  id: 266597615089995016
+  identification: 
+    name: refresh on dialog closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 19613191894949292072
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266598109126995016
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: CAR TYPES # 20931122368445371407
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog closed # 266597615089995016
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 266598692152995017
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21726865990231031177
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog closed # 266597615089995016
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: sync roles =================================
+  id: 266595876177995012
+  identification: 
+    name: sync roles
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_members_app_role (
+          p_app_id => :APP_ID);
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Never
+

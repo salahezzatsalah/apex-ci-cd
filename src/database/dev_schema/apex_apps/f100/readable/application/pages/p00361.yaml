@@ -1,0 +1,2015 @@
+---
+# ====== Page: Limo Reservations Interactive Report ==========
+id: 361
+identification: 
+  name: Limo Reservations Interactive Report
+  alias: LIMO-RESERVATIONS-INTERACTIVE-REPORT
+  title: سجل خدمات الليموزين
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Limo Reservations Interactive Report ========
+  id: 308418043922473504
+  identification: 
+    name: Limo Reservations Interactive Report
+    title: طلبات الليموزين
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          -- Product-level fields
+          p.PRODUCT_ID,
+          p.RESERVATION_ID,
+          ct.CAR_TYPE_NAME,
+          ct.CATEGORY AS car_category,
+          ct.SEATS AS car_seats,
+          p.TRIP_TYPE,
+          p.TRIP_DATE_FROM,
+          p.TRIP_DATE_TO,
+          p.TRIP_TIME,
+          p.FROM_LOCATION,
+          p.TO_LOCATION,
+          p.NOD AS num_of_days,
+          p.PRICE,
+          p.CURRENCY AS product_currency,
+          p.EXCHANGE_RATE AS product_exchange_rate,
+          p.AMOUNT_EGP,
+          p.TOTAL_PRICE,
+          p.STATUS AS product_status,
+          p.NOTES AS product_notes,
+      
+          -- Reservation-level details
+          lr.CLIENT_ID,
+          (SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = lr.CLIENT_ID) AS client_name,
+          lr.CLASSIFICATION_TYPE,
+      NVL(lr.TICKET_NUMBER, 'لا يوجد') AS ticket_number,
+      NVL(lr.SIGNAGE_DETAILS, 'لا يوجد') AS signage_details,
+          lr.FROM_DATE AS reservation_from_date,
+          lr.TO_DATE AS reservation_to_date,
+          lr.CURRENCY AS reservation_currency,
+          lr.EXCHANGE_RATE AS reservation_exchange_rate,
+          lr.STATUS AS reservation_status,
+          lr.NOTES AS reservation_notes,
+          lr.TAGS AS reservation_tags,
+          lr.RESERVATION_URL_NAME,
+      
+          -- Progress logic (icon and description)
+          CASE lr.STATUS
+              WHEN 'PENDINGOPS' THEN 'fa-pie-chart-30'
+              WHEN 'PENDINGPAY' THEN 'fa-pie-chart-60'
+              WHEN 'CONFIRMED'  THEN 'fa-pie-chart-100'
+              ELSE 'fa-pie-chart-0'
+          END AS icon,
+      
+          CASE lr.STATUS
+              WHEN 'PENDINGOPS' THEN 'Operational Processing (30%)'
+              WHEN 'PENDINGPAY' THEN 'Awaiting Payment (60%)'
+              WHEN 'CONFIRMED'  THEN 'Confirmed (100%)'
+              ELSE 'Not Started (0%)'
+          END AS status_description,
+      
+          -- Assigned reps
+          lr.SALES_REP_ID,
+          (SELECT FIRST_NAME || ' ' || LAST_NAME FROM BS_EMPLOYEES e WHERE e.ID = lr.SALES_REP_ID) AS sales_rep_name,
+          lr.OPS_REP_ID,
+          (SELECT FIRST_NAME || ' ' || LAST_NAME FROM BS_EMPLOYEES e WHERE e.ID = lr.OPS_REP_ID) AS ops_rep_name,
+      
+          -- Audit info
+          p.CREATED AS product_created,
+          p.CREATED_BY AS product_created_by,
+          p.UPDATED AS product_updated,
+          p.UPDATED_BY AS product_updated_by,
+          lr.CREATED AS reservation_created,
+          lr.CREATED_BY AS reservation_created_by,
+          lr.UPDATED AS reservation_updated,
+          lr.UPDATED_BY AS reservation_updated_by,
+          lr.ARCHIVED_YN,
+          lr.ARCHIVED_BY,
+          lr.ARCHIVED_DATE,
+      
+          -- Status labels/icons for trips (customize further if you have trip statuses)
+          CASE p.STATUS
+              WHEN 'ACTIVE'    THEN 'نشطة'
+              WHEN 'CANCELLED' THEN 'ملغاة'
+              WHEN 'COMPLETED' THEN 'مكتملة'
+              ELSE 'غير محددة'
+          END AS product_status_label,
+      
+          CASE p.STATUS
+              WHEN 'ACTIVE'    THEN 'fa-car text-success'
+              WHEN 'CANCELLED' THEN 'fa-times-circle text-danger'
+              WHEN 'COMPLETED' THEN 'fa-check-circle text-primary'
+              ELSE 'fa-ban text-secondary'
+          END AS product_status_icon,
+      
+          -- For reporting/grouping
+          TO_CHAR(lr.UPDATED, 'YYYY.MM') AS updated_month
+      
+      FROM 
+          LIMO_PRODUCTS p
+          JOIN LIMO_RESERVATIONS lr ON p.RESERVATION_ID = lr.RESERVATION_ID
+          LEFT JOIN LIMO_CAR_TYPES ct ON p.CAR_TYPE_ID = ct.CAR_TYPE_ID
+      
+      WHERE 
+       NVL(lr.ARCHIVED_YN, 'N') = 'N'
+      
+      ORDER BY p.TRIP_DATE_FROM DESC;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - js-showMaximizeButton
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 308418177187473505
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:359:&SESSION.::&DEBUG.:RP,359:P359_PRODUCT_ID,P359_RESERVATION_ID:#PRODUCT_ID#,#RESERVATION_ID#'
+        page: 359 # Limo Product Reservation Form
+        clear-cache: RP,359
+        values: 
+          p359_product_id: '#PRODUCT_ID#'
+          p359_reservation_id: '#RESERVATION_ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: No data found.
+      when-more-data-found: 'The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.'
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: true
+      save-public-report-authorization: Administration Rights # 149832818388153023719
+      reset: true
+      help: true
+      download: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 308443561688508047
+      identification: 
+        name: Primary Report
+        alias: 389456
+
+    columns: 
+    - # ====== Column: RESERVATION_ID ==============================
+      id: 308418376870473507
+      identification: 
+        column-name: RESERVATION_ID
+        type: Link
+
+      heading: 
+        heading: كود طلب الحجز
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      link: 
+        target: 
+          url: 'f?p=&APP_ID.:360:&SESSION.::&DEBUG.:360:P360_RESERVATION_ID:#RESERVATION_ID#'
+          page: 360 # Limo Reservation Request Details
+          clear-cache: 360
+          values: 
+            p360_reservation_id: '#RESERVATION_ID#'
+
+        link-text: '#RESERVATION_ID#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CLIENT_NAME =================================
+      id: 308418822409473512
+      identification: 
+        column-name: CLIENT_NAME
+        type: Hidden
+
+      heading: 
+        heading: 'العميل '
+
+      layout: 
+        sequence: 570
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TOTAL_PRICE =================================
+      id: 308419375191473517
+      identification: 
+        column-name: TOTAL_PRICE
+        type: Plain Text
+
+      heading: 
+        heading: اجمالي السعر
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 160
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: 999G999G999G999G990D00
+
+      column-formatting: 
+        html-expression: |
+          #TOTAL_PRICE# #PRODUCT_CURRENCY# 
+          
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: SALES_REP_NAME ==============================
+      id: 308419757286473521
+      identification: 
+        column-name: SALES_REP_NAME
+        type: Plain Text
+
+      heading: 
+        heading: 'مسؤول البيع '
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 190
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: OPS_REP_NAME ================================
+      id: 308419819861473522
+      identification: 
+        column-name: OPS_REP_NAME
+        type: Plain Text
+
+      heading: 
+        heading: مسؤول العمليات
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 200
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CLIENT_ID ===================================
+      id: 308420280813473526
+      identification: 
+        column-name: CLIENT_ID
+        type: Hidden
+
+      heading: 
+        heading: Client Id
+
+      layout: 
+        sequence: 530
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ICON ========================================
+      id: 308420667350473530
+      identification: 
+        column-name: ICON
+        type: Hidden
+
+      heading: 
+        heading: Icon
+
+      layout: 
+        sequence: 540
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS_DESCRIPTION ==========================
+      id: 308420746461473531
+      identification: 
+        column-name: STATUS_DESCRIPTION
+        type: Hidden
+
+      heading: 
+        heading: Status Description
+
+      layout: 
+        sequence: 400
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_CREATED =========================
+      id: 308421203651473535
+      identification: 
+        column-name: RESERVATION_CREATED
+        type: Hidden
+
+      heading: 
+        heading: Reservation Created
+
+      layout: 
+        sequence: 550
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_CREATED_BY ======================
+      id: 308421265755473536
+      identification: 
+        column-name: RESERVATION_CREATED_BY
+        type: Hidden
+
+      heading: 
+        heading: Reservation Created By
+
+      layout: 
+        sequence: 560
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_UPDATED =========================
+      id: 308421402723473537
+      identification: 
+        column-name: RESERVATION_UPDATED
+        type: Hidden
+
+      heading: 
+        heading: Reservation Updated
+
+      layout: 
+        sequence: 220
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_UPDATED_BY ======================
+      id: 308421421864473538
+      identification: 
+        column-name: RESERVATION_UPDATED_BY
+        type: Hidden
+
+      heading: 
+        heading: Reservation Updated By
+
+      layout: 
+        sequence: 280
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED_MONTH ===============================
+      id: 308422142691504090
+      identification: 
+        column-name: UPDATED_MONTH
+        type: Hidden
+
+      heading: 
+        heading: Updated Month
+
+      layout: 
+        sequence: 290
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: SALES_REP_ID ================================
+      id: 308422311827504092
+      identification: 
+        column-name: SALES_REP_ID
+        type: Hidden
+
+      heading: 
+        heading: Sales Rep Id
+
+      layout: 
+        sequence: 300
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: OPS_REP_ID ==================================
+      id: 308422457671504093
+      identification: 
+        column-name: OPS_REP_ID
+        type: Hidden
+
+      heading: 
+        heading: Ops Rep Id
+
+      layout: 
+        sequence: 310
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_ID ==================================
+      id: 308422559314504094
+      identification: 
+        column-name: PRODUCT_ID
+        type: Plain Text
+
+      heading: 
+        heading: كود الرحلة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CAR_TYPE_NAME ===============================
+      id: 308422618316504095
+      identification: 
+        column-name: CAR_TYPE_NAME
+        type: Plain Text
+
+      heading: 
+        heading: نوع السيارة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 80
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CAR_CATEGORY ================================
+      id: 308422792368504096
+      identification: 
+        column-name: CAR_CATEGORY
+        type: Hidden
+
+      heading: 
+        heading: Car Category
+
+      layout: 
+        sequence: 320
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CAR_SEATS ===================================
+      id: 308422843028504097
+      identification: 
+        column-name: CAR_SEATS
+        type: Hidden
+
+      heading: 
+        heading: Car Seats
+
+      layout: 
+        sequence: 330
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TRIP_TYPE ===================================
+      id: 308422939233504098
+      identification: 
+        column-name: TRIP_TYPE
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: LIMOPRODUCTS TRIP TYPES # 267647733503170392
+
+      heading: 
+        heading: نوع الرحلة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 90
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: TRIP_DATE_FROM ==============================
+      id: 308423027922504099
+      identification: 
+        column-name: TRIP_DATE_FROM
+        type: Plain Text
+
+      heading: 
+        heading: الفترة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      column-formatting: 
+        html-expression: 'من: #TRIP_DATE_FROM# - #TRIP_TIME# <br> الي: #TRIP_DATE_TO#  <br> عدد الايام: #NUM_OF_DAYS#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TRIP_DATE_TO ================================
+      id: 308423141278504100
+      identification: 
+        column-name: TRIP_DATE_TO
+        type: Hidden
+
+      heading: 
+        heading: الى تاريخ
+
+      layout: 
+        sequence: 240
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TRIP_TIME ===================================
+      id: 308423258533504101
+      identification: 
+        column-name: TRIP_TIME
+        type: Hidden
+
+      heading: 
+        heading: الساعة
+
+      layout: 
+        sequence: 230
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: FROM_LOCATION ===============================
+      id: 308423392563504102
+      identification: 
+        column-name: FROM_LOCATION
+        type: Plain Text
+
+      heading: 
+        heading: الإتجاه
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      column-formatting: 
+        html-expression: |
+          من: <br>
+           #FROM_LOCATION# <br> الي: <br> #TO_LOCATION#
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TO_LOCATION =================================
+      id: 308423501663504103
+      identification: 
+        column-name: TO_LOCATION
+        type: Hidden
+
+      heading: 
+        heading: الي موقع
+
+      layout: 
+        sequence: 250
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: NUM_OF_DAYS =================================
+      id: 308423570587504104
+      identification: 
+        column-name: NUM_OF_DAYS
+        type: Hidden
+
+      heading: 
+        heading: عدد الايام
+
+      layout: 
+        sequence: 260
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRICE =======================================
+      id: 308423656033504105
+      identification: 
+        column-name: PRICE
+        type: Plain Text
+
+      heading: 
+        heading: السعر
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: 999G999G999G999G990D00
+
+      column-formatting: 
+        html-expression: |
+          #PRICE# #PRODUCT_CURRENCY# 
+          
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_CURRENCY ============================
+      id: 308423784782504106
+      identification: 
+        column-name: PRODUCT_CURRENCY
+        type: Hidden
+
+      heading: 
+        heading: العملة
+
+      layout: 
+        sequence: 270
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_EXCHANGE_RATE =======================
+      id: 308423899898504107
+      identification: 
+        column-name: PRODUCT_EXCHANGE_RATE
+        type: Hidden
+
+      heading: 
+        heading: سعر الصرف
+
+      layout: 
+        sequence: 340
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: AMOUNT_EGP ==================================
+      id: 308423954349504108
+      identification: 
+        column-name: AMOUNT_EGP
+        type: Plain Text
+
+      heading: 
+        heading: اجمالي بالجنية
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 170
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: FML999G999G999G999G990D00
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_STATUS ==============================
+      id: 308424105043504109
+      identification: 
+        column-name: PRODUCT_STATUS
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: LIMO TRIPS STATUSES # 268044888112141093
+
+      heading: 
+        heading: حالة الرحلة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 210
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: PRODUCT_NOTES ===============================
+      id: 308424168613504110
+      identification: 
+        column-name: PRODUCT_NOTES
+        type: Plain Text
+
+      heading: 
+        heading: ملاحظات على الخدمة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 180
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      column-formatting: 
+        html-expression: |
+          رقم التذكرة:<br>
+           <strong>#TICKET_NUMBER#</strong>
+          <br>
+          بيانات اللافتة: <br> <strong>#SIGNAGE_DETAILS#</strong>
+          <br>
+          #PRODUCT_NOTES#.
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CLASSIFICATION_TYPE =========================
+      id: 308424250168504111
+      identification: 
+        column-name: CLASSIFICATION_TYPE
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: LIMO RESERVATION REQUEST CLASSIFICATIONS # 267073320409618852
+
+      heading: 
+        heading: تصنيف طلب الحجز
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 30
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: TICKET_NUMBER ===============================
+      id: 308424369509504112
+      identification: 
+        column-name: TICKET_NUMBER
+        type: Plain Text
+
+      heading: 
+        heading: رقم التذكرة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: SIGNAGE_DETAILS =============================
+      id: 308424436048504113
+      identification: 
+        column-name: SIGNAGE_DETAILS
+        type: Plain Text
+
+      heading: 
+        heading: بيانات اللافتة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_FROM_DATE =======================
+      id: 308424541417504114
+      identification: 
+        column-name: RESERVATION_FROM_DATE
+        type: Hidden
+
+      heading: 
+        heading: تاريخ الطلب الرئيسي الى
+
+      layout: 
+        sequence: 350
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_TO_DATE =========================
+      id: 308424650426504115
+      identification: 
+        column-name: RESERVATION_TO_DATE
+        type: Hidden
+
+      heading: 
+        heading: تاريخ الطلب الرئيسي من
+
+      layout: 
+        sequence: 360
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_CURRENCY ========================
+      id: 308424717937504116
+      identification: 
+        column-name: RESERVATION_CURRENCY
+        type: Hidden
+
+      heading: 
+        heading: 'عملة الطلب الرئيسية '
+
+      layout: 
+        sequence: 370
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_EXCHANGE_RATE ===================
+      id: 308424904743504117
+      identification: 
+        column-name: RESERVATION_EXCHANGE_RATE
+        type: Hidden
+
+      heading: 
+        heading: سعر صرف عملة الطلب
+
+      layout: 
+        sequence: 380
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_STATUS ==========================
+      id: 308424957231504118
+      identification: 
+        column-name: RESERVATION_STATUS
+        type: Hidden
+
+      heading: 
+        heading: Reservation Status
+
+      layout: 
+        sequence: 420
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_NOTES ===========================
+      id: 308425057925504119
+      identification: 
+        column-name: RESERVATION_NOTES
+        type: Hidden
+
+      heading: 
+        heading: ملاحظات على الطلب
+
+      layout: 
+        sequence: 390
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_TAGS ============================
+      id: 308425136554504120
+      identification: 
+        column-name: RESERVATION_TAGS
+        type: Hidden
+
+      heading: 
+        heading: علامات مميزة
+
+      layout: 
+        sequence: 410
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_URL_NAME ========================
+      id: 308425257408504121
+      identification: 
+        column-name: RESERVATION_URL_NAME
+        type: Hidden
+
+      heading: 
+        heading: Reservation Url Name
+
+      layout: 
+        sequence: 430
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_CREATED =============================
+      id: 308425338138504122
+      identification: 
+        column-name: PRODUCT_CREATED
+        type: Hidden
+
+      heading: 
+        heading: Product Created
+
+      layout: 
+        sequence: 440
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_CREATED_BY ==========================
+      id: 308425487817504123
+      identification: 
+        column-name: PRODUCT_CREATED_BY
+        type: Hidden
+
+      heading: 
+        heading: Product Created By
+
+      layout: 
+        sequence: 450
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_UPDATED =============================
+      id: 308425574179504124
+      identification: 
+        column-name: PRODUCT_UPDATED
+        type: Hidden
+
+      heading: 
+        heading: Product Updated
+
+      layout: 
+        sequence: 460
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_UPDATED_BY ==========================
+      id: 308425642144504125
+      identification: 
+        column-name: PRODUCT_UPDATED_BY
+        type: Hidden
+
+      heading: 
+        heading: Product Updated By
+
+      layout: 
+        sequence: 470
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ARCHIVED_YN =================================
+      id: 308425804433504126
+      identification: 
+        column-name: ARCHIVED_YN
+        type: Hidden
+
+      heading: 
+        heading: Archived Yn
+
+      layout: 
+        sequence: 480
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ARCHIVED_BY =================================
+      id: 308425856231504127
+      identification: 
+        column-name: ARCHIVED_BY
+        type: Hidden
+
+      heading: 
+        heading: Archived By
+
+      layout: 
+        sequence: 490
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ARCHIVED_DATE ===============================
+      id: 308425960596504128
+      identification: 
+        column-name: ARCHIVED_DATE
+        type: Hidden
+
+      heading: 
+        heading: Archived Date
+
+      layout: 
+        sequence: 500
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_STATUS_LABEL ========================
+      id: 308426084022504129
+      identification: 
+        column-name: PRODUCT_STATUS_LABEL
+        type: Hidden
+
+      heading: 
+        heading: Product Status Label
+
+      layout: 
+        sequence: 510
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: PRODUCT_STATUS_ICON =========================
+      id: 308426163667504130
+      identification: 
+        column-name: PRODUCT_STATUS_ICON
+        type: Hidden
+
+      heading: 
+        heading: Product Status Icon
+
+      layout: 
+        sequence: 520
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 23782253847687878905
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 24646597202720893723
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 23782253847687878905
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 24646598436226893735
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Add &NOMENCLATURE_PROJECT. ==================
+    id: 20789251350281570719
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: Add &NOMENCLATURE_PROJECT.
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:104:&SESSION.::&DEBUG.:104,24::'
+        page: 104
+        clear-cache: 104,24
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+    security: 
+      authorization-scheme: Contribution Rights # 149832818544438023719
+
+  - # ====== Action: Actions =====================================
+    id: 24646597503299893726
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: My &NOMENCLATURE_PROJECTS. ====================
+      id: 18982037772189868492
+      identification: 
+        type: Menu Entry
+        label: My &NOMENCLATURE_PROJECTS.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: Reset =========================================
+      id: 20504492522511933791
+      identification: 
+        type: Menu Entry
+        label: Reset
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 140
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:361:&SESSION.::&DEBUG.:RP,CIR,RIR,86::'
+          page: 361 # Limo Reservations Interactive Report
+          clear-cache: RP,CIR,RIR,86
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: Separator =====================================
+      id: 20504492691128933792
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+    - # ====== Menu: About &NOMENCLATURE_PROJECTS. =================
+      id: 20504496131518933827
+      identification: 
+        type: Menu Entry
+        label: About &NOMENCLATURE_PROJECTS.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:107:&SESSION.::&DEBUG.:::'
+          page: 107
+
+      appearance: 
+        icon: fa-info
+
+    - # ====== Menu: &NOMENCLATURE_PROJECTS. Primary Report ========
+      id: 20573502618560550303
+      identification: 
+        type: Menu Entry
+        label: '&NOMENCLATURE_PROJECTS. Primary Report'
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP,::'
+          page: 23
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: My Activities =================================
+      id: 21259788326705646512
+      identification: 
+        type: Menu Entry
+        label: My Activities
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+    - # ====== Menu: Separator =====================================
+      id: 21259788411529646513
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 110
+
+    - # ====== Menu: Separator =====================================
+      id: 21259788580548646514
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Releases ======================================
+      id: 21868854128132186628
+      identification: 
+        type: Menu Entry
+        label: Releases
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:8:&SESSION.::&DEBUG.:RP,::'
+          page: 8 # Identity Profile
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-ship
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Refresh =======================================
+      id: 24646598209206893733
+      identification: 
+        type: Menu Entry
+        label: Refresh
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:361:&SESSION.::&DEBUG.:RP,::'
+          page: 361 # Limo Reservations Interactive Report
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 269475232004527528
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 23782253847687878905
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_PROJ_JUMP_PG.:&SESSION.::&DEBUG.:RP,::'
+      page: '&LAST_PROJ_JUMP_PG.'
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: AddLimoRes ==================================
+  id: 269515770193636619
+  identification: 
+    button-name: AddLimoRes
+    label: إضافة طلب حجز
+
+  layout: 
+    sequence: 10
+    region: Limo Reservations Interactive Report # 308418043922473504
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-car
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:358:&SESSION.::&DEBUG.:358:P358_CLIENT_ID:&P361_ID.'
+      page: 358 # Limo Reservation Request Form
+      clear-cache: 358
+      values: 
+        p358_client_id: '&P361_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on dc =======================
+  id: 269496392134527579
+  identification: 
+    name: refresh on dc
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 23782253847687878905
+

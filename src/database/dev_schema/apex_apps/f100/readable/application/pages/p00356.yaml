@@ -1,0 +1,2097 @@
+---
+# ====== Page: Car Type Document Details =====================
+id: 356
+identification: 
+  name: Car Type Document Details
+  alias: CAR-TYPE-DOCUMENT-DETAILS
+  title: تفاصيل مستند
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  file-urls: 
+  - '#PRISMJS_DIRECTORY#prism#MIN#.js'
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: No Preview Available ========================
+  id: 29132271068030207164
+  identification: 
+    name: No Preview Available
+    type: Static Content
+
+  source: 
+    html-code: هذا النوع من المستندات لا يمكن عرضة
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P356_FILE_EXTENSION not in ('SQL','PLS','PLSQL','PLB','YAML','JSON','XML','JAVA','PYC','PDF') and
+      :P356_DOCUMENT_IS_IMAGE is null
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Document Details ============================
+  id: 46656130050684777909
+  identification: 
+    name: Document Details
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d.ID,
+             p.hotel_id,
+             p.hotel_name || ' - ' || t.room_name type,
+             t.room_type_id,
+             d.DOCUMENT_FILENAME,
+             d.UPDATED,
+             d.created,
+             --d.doc_description,
+             lower(d.created_by) author,
+             dbms_lob.getlength(d.DOCUMENT_BLOB) doc_size,
+             d.created date_created,
+             substr(d.DOCUMENT_FILENAME,instr(d.DOCUMENT_FILENAME,'.',-1)+1,length(d.DOCUMENT_FILENAME)-instr(d.DOCUMENT_FILENAME,'.',-1)) file_extension
+        from HOTELS_ROOMS_DOCUMENTS d,
+             HOTEL_ROOM_TYPES t,
+             HOTELS p
+       where d.id = :P356_ID and d.room_id = t.room_type_id and t.hotel_id = p.hotel_id
+    page-items-to-submit: 
+    - P356_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-left-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-label--stacked
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ROOM_TYPE_ID ================================
+    id: 266924744876772011
+    identification: 
+      column-name: ROOM_TYPE_ID
+      type: Plain Text
+
+    heading: 
+      heading: Room Type Id
+      alignment: end
+
+    layout: 
+      sequence: 170
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: CREATED =====================================
+    id: 266925182175772011
+    identification: 
+      column-name: CREATED
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AUTHOR ======================================
+    id: 266925561345772011
+    identification: 
+      column-name: AUTHOR
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: القائم بالاضافة
+      alignment: center
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DOC_SIZE ====================================
+    id: 266925937803772012
+    identification: 
+      column-name: DOC_SIZE
+      type: Plain Text
+
+    heading: 
+      heading: حجم المستند
+      alignment: center
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: FILESIZE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATE_CREATED ================================
+    id: 266926308094772012
+    identification: 
+      column-name: DATE_CREATED
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FILE_EXTENSION ==============================
+    id: 266926755199772012
+    identification: 
+      column-name: FILE_EXTENSION
+      type: Hidden
+
+    layout: 
+      sequence: 150
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HOTEL_ID ====================================
+    id: 266927184208772012
+    identification: 
+      column-name: HOTEL_ID
+      type: Plain Text
+
+    heading: 
+      heading: Hotel Id
+      alignment: end
+
+    layout: 
+      sequence: 160
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: ID ==========================================
+    id: 266927558682772013
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TYPE ========================================
+    id: 266927925899772013
+    identification: 
+      column-name: TYPE
+      type: Link
+
+    heading: 
+      heading: المهمة
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:502:&SESSION.::&DEBUG.:502:P502_TASK_ID:#TASK_ID#'
+        page: 502 # Task Details
+        clear-cache: 502
+        values: 
+          p502_task_id: '#TASK_ID#'
+
+      link-text: '#TYPE#'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DOCUMENT_FILENAME ===========================
+    id: 266928370341772014
+    identification: 
+      column-name: DOCUMENT_FILENAME
+      type: Plain Text
+
+    heading: 
+      heading: اسم الملف
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 266928778331772014
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تحديث
+      alignment: center
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MM-YYYY HH24:MI:SS'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 48989840473738937225
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: SQL =========================================
+  id: 50012457384135730369
+  identification: 
+    name: SQL
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-sql">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+    page-items-to-submit: 
+    - P356_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: SQL
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: PDF =========================================
+  id: 50012457472940730370
+  identification: 
+    name: PDF
+    type: Static Content
+
+  source: 
+    html-code: '&P356_PDF_LINK.'
+
+  layout: 
+    sequence: 120
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: pdf_viewer
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P356_FILE_EXTENSION
+    value: PDF
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: YAML ========================================
+  id: 51008358104277257994
+  identification: 
+    name: YAML
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-yaml">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: YAML
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Java ========================================
+  id: 51008358139434257995
+  identification: 
+    name: Java
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-java">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: JAVA
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: JSON ========================================
+  id: 51008358272927257996
+  identification: 
+    name: JSON
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-json">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: JSON
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: XML =========================================
+  id: 51008358394087257997
+  identification: 
+    name: XML
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-xml">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 90
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: XML
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: PL/SQL ======================================
+  id: 51008358510442257998
+  identification: 
+    name: PL/SQL
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-plsql">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: 'PLS:PLSQL:PLB'
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Python ======================================
+  id: 51008358541332257999
+  identification: 
+    name: Python
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+         s clob;
+         l number;
+         r clob;
+         l_offset int := 1;
+      begin
+         for c1 in (
+             select TO_CLOB(DOCUMENT_BLOB) x
+             from CARS_CATALOG_DOCUMENTS
+             where id = :P356_ID) loop
+                s := c1.x;
+         end loop;
+         l := dbms_lob.getlength(s);
+         r := '<pre><code class="lang-python">'||chr(10);
+         for i in 1..2000 loop
+             if l_offset > dbms_lob.getlength(s) then 
+                exit;
+             else
+                r := r||apex_escape.html(dbms_lob.substr(s,5000,l_offset));
+                l_offset := l_offset + 5000;
+             end if;
+         end loop;
+         r := r||chr(10)||'</code></pre>';
+         return r;
+      end;
+      
+
+  layout: 
+    sequence: 110
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is in colon delimited list
+    item: P356_FILE_EXTENSION
+    list: PYC
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: &P356_FILE_NAME. ============================
+  id: 52588605971635875340
+  identification: 
+    name: '&P356_FILE_NAME.'
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P356_DOCUMENT_IS_IMAGE
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Document Description ========================
+  id: 53080190440794452711
+  identification: 
+    name: Document Description
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT DOC_description
+        from CARS_CATALOG_DOCUMENTS d
+       where id = :P356_ID 
+    page-items-to-submit: 
+    - P356_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--noUI
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      SELECT 1
+        from HOTELS_ROOMS_DOCUMENTS d
+       where id = :P356_ID 
+         and DOC_description is not null
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--staticRowColors
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: None
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: DOC_DESCRIPTION =============================
+    id: 266938506526772023
+    identification: 
+      column-name: DOC_DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: تفاصيل المستند
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P356_PREV_PAGE ===========================
+  id: 44775934498270341835
+  identification: 
+    name: P356_PREV_PAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P356_PDF_LINK ============================
+  id: 44775935831876341848
+  identification: 
+    name: P356_PDF_LINK
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P356_DOCUMENT_NAME =======================
+  id: 48998700773775699452
+  identification: 
+    name: P356_DOCUMENT_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P356_NEXT_ID =============================
+  id: 48998701195004699456
+  identification: 
+    name: P356_NEXT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P356_PREV_ID =============================
+  id: 48998701297553699457
+  identification: 
+    name: P356_PREV_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P356_DOCUMENT_BLOB =======================
+  id: 48998716875015699472
+  identification: 
+    name: P356_DOCUMENT_BLOB
+    type: Display Image
+
+  label: 
+    label: المستند
+    alignment: Left
+
+  settings: 
+    based-on: BLOB Column returned by SQL statement
+    sql-statement: |
+      SELECT DOCUMENT_BLOB 
+        from CARS_CATALOG_DOCUMENTS d
+       where id = :P356_ID 
+      
+
+  layout: 
+    sequence: 10
+    region: '&P356_FILE_NAME.' # 52588605971635875340
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P356_ID ==================================
+  id: 49017499650678898336
+  identification: 
+    name: P356_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P356_FILE_EXTENSION ======================
+  id: 50012484230826730432
+  identification: 
+    name: P356_FILE_EXTENSION
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P356_FILE_NAME ===========================
+  id: 53425027349778230345
+  identification: 
+    name: P356_FILE_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: '&P356_FILE_NAME.' # 52588605971635875340
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P356_DOCUMENT_IS_IMAGE ===================
+  id: 75902579310271519362
+  identification: 
+    name: P356_DOCUMENT_IS_IMAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Document Details # 46656130050684777909
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+buttons: 
+- # ====== Button: Previous ====================================
+  id: 266931959784772017
+  identification: 
+    button-name: Previous
+    label: السابق
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 48989840473738937225
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-chevron-left
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:356:&SESSION.::&DEBUG.:356:P356_ID,P356_PREV_PAGE:&P356_PREV_ID.,&P356_PREV_PAGE.'
+      page: 356 # Car Type Document Details
+      clear-cache: 356
+      values: 
+        p356_id: '&P356_PREV_ID.'
+        p356_prev_page: '&P356_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: Next ========================================
+  id: 266932383533772017
+  identification: 
+    button-name: Next
+    label: التالي
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 48989840473738937225
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-chevron-right
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:356:&SESSION.::&DEBUG.:356:P356_ID,P356_PREV_PAGE:&P356_NEXT_ID.,&P356_PREV_PAGE.'
+      page: 356 # Car Type Document Details
+      clear-cache: 356
+      values: 
+        p356_id: '&P356_NEXT_ID.'
+        p356_prev_page: '&P356_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: Edit ========================================
+  id: 266932766964772018
+  identification: 
+    button-name: Edit
+    label: تعديل
+
+  layout: 
+    sequence: 30
+    region: Breadcrumb # 48989840473738937225
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-edit
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:353:&SESSION.::&DEBUG.:353:P353_ID:&P356_ID.'
+      page: 353 # Add Car Type Document
+      clear-cache: 353
+      values: 
+        p353_id: '&P356_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: download ====================================
+  id: 266933203010772018
+  identification: 
+    button-name: download
+    label: تحميل
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 48989840473738937225
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-download
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: UP ==========================================
+  id: 266933514998772018
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 48989840473738937225
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&P356_PREV_PAGE.:&SESSION.::&DEBUG.:::'
+      page: '&P356_PREV_PAGE.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 266942231349772026
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 48989840473738937225
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266942793435772028
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Document Details # 46656130050684777909
+
+    execution: 
+      sequence: 10
+      event: DC # 266942231349772026
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Load PDF ============================
+  id: 266943131228772029
+  identification: 
+    name: Load PDF
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  server-side-condition: 
+    type: Item = Value
+    item: P356_FILE_EXTENSION
+    value: PDF
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 266943609860772029
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        $('#pdf_viewer').html('');
+        var url = '&P356_PDF_LINK.';
+        var preview = document.createElement('embed'); 
+        preview.type = "application/pdf";
+        preview.width="100%";
+        preview.height="1000px";
+        preview.src = url;
+        $("#pdf_viewer").append(preview);
+
+    execution: 
+      sequence: 10
+      event: Load PDF # 266943131228772029
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Disable Next Button =================
+  id: 266944103276772029
+  identification: 
+    name: Disable Next Button
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  client-side-condition: 
+    type: Item is null
+    item: P356_NEXT_ID
+
+  actions: 
+  - # ====== Action: Disable =====================================
+    id: 266944594878772030
+    identification: 
+      action: Disable
+
+    affected-elements: 
+      selection-type: Button
+      button: Next # 266932383533772017
+
+    execution: 
+      sequence: 10
+      event: Disable Next Button # 266944103276772029
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Disable Previous Button =============
+  id: 266944942133772030
+  identification: 
+    name: Disable Previous Button
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  client-side-condition: 
+    type: Item is null
+    item: P356_PREV_ID
+
+  actions: 
+  - # ====== Action: Disable =====================================
+    id: 266945460723772031
+    identification: 
+      action: Disable
+
+    affected-elements: 
+      selection-type: Button
+      button: Previous # 266931959784772017
+
+    execution: 
+      sequence: 10
+      event: Disable Previous Button # 266944942133772030
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Download doc ========================
+  id: 266945859594772031
+  identification: 
+    name: Download doc
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: download # 266933203010772018
+
+  actions: 
+  - # ====== Action: Download ====================================
+    id: 266946353815772031
+    identification: 
+      action: Download
+
+    settings: 
+      multiple-files: false
+      view-file-as: Attachment
+
+    source: 
+      sql-query: |
+        select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE 
+          from CARS_CATALOG_DOCUMENTS 
+         where id = :P356_ID
+
+    execution: 
+      sequence: 10
+      event: Download doc # 266945859594772031
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: P356_PDF_LINK ==========================
+  id: 266939581234772024
+  identification: 
+    item-name: P356_PDF_LINK
+
+  execution: 
+    sequence: 60
+    point: Before Header
+
+  computation: 
+    type: Function Body
+    language: PL/SQL
+    pl/sql-function-body: |
+      return APEX_PAGE.GET_URL (
+                  p_page      => 356,
+                  p_request   => 'APPLICATION_PROCESS=viewCarTypePDF',
+                  p_plain_url => TRUE );
+
+- # ====== Computation: P356_DOCUMENT_NAME =====================
+  id: 266939942282772025
+  identification: 
+    item-name: P356_DOCUMENT_NAME
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select DOCUMENT_FILENAME
+        from CARS_CATALOG_DOCUMENTS d
+       where id = :P356_ID
+      
+
+- # ====== Computation: P356_NEXT_ID ===========================
+  id: 266940355963772025
+  identification: 
+    item-name: P356_NEXT_ID
+
+  execution: 
+    sequence: 30
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT id
+        from CARS_CATALOG_DOCUMENTS d
+       where car_type_id = (select car_type_id from CARS_CATALOG_DOCUMENTS d2 where d2.id = :P356_ID) and
+             created < (select created from CARS_CATALOG_DOCUMENTS d2 where d2.id = :P356_ID) and
+                dbms_lob.getlength(DOCUMENT_BLOB) > 0 
+      order by created desc
+      fetch first 1 rows only
+
+- # ====== Computation: P356_PREV_ID ===========================
+  id: 266940738297772025
+  identification: 
+    item-name: P356_PREV_ID
+
+  execution: 
+    sequence: 40
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT id
+        from CARS_CATALOG_DOCUMENTS d
+       where car_type_id = (select car_type_id from CARS_CATALOG_DOCUMENTS d2 where d2.id = :P356_ID) and
+             created > (select created from CARS_CATALOG_DOCUMENTS d2 where d2.id = :P356_ID) and
+                dbms_lob.getlength(DOCUMENT_BLOB) > 0 
+      order by created 
+      fetch first 1 rows only
+
+- # ====== Computation: P356_FILE_EXTENSION ====================
+  id: 266941193937772025
+  identification: 
+    item-name: P356_FILE_EXTENSION
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select upper(substr(d.DOCUMENT_FILENAME,instr(d.DOCUMENT_FILENAME,'.',-1)+1,length(d.DOCUMENT_FILENAME)-instr(d.DOCUMENT_FILENAME,'.',-1))) ext
+        from CARS_CATALOG_DOCUMENTS d
+       where id = :P356_ID
+
+- # ====== Computation: P356_FILE_NAME =========================
+  id: 266941591288772026
+  identification: 
+    item-name: P356_FILE_NAME
+
+  execution: 
+    sequence: 50
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT DOCUMENT_FILENAME
+        from CARS_CATALOG_DOCUMENTS d
+       where id = :P356_ID 
+
+- # ====== Computation: P356_DOCUMENT_IS_IMAGE =================
+  id: 266941976718772026
+  identification: 
+    item-name: P356_DOCUMENT_IS_IMAGE
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select 'Y'
+        from CARS_CATALOG_DOCUMENTS d
+       where id = :P356_ID
+      and upper(substr(d.DOCUMENT_FILENAME,instr(d.DOCUMENT_FILENAME,'.',-1)+1,length(d.DOCUMENT_FILENAME)-instr(d.DOCUMENT_FILENAME,'.',-1)))
+       in ('JPG','JPEG','PNG','GIF','AVIF','WEBP')
+      
+

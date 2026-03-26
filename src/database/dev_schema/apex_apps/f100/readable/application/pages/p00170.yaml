@@ -1,0 +1,6714 @@
+---
+# ====== Page: Hotels Reservations Interactive Report ========
+id: 170
+identification: 
+  name: Hotels Reservations Interactive Report
+  alias: HOTELS-RESERVATIONS-INTERACTIVE-REPORT
+  title: سجل حجوزات الفنادق
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    var dataRowCalled = null;
+    function defineGlobalVariable(buttonElement) {
+        dataRowCalled = buttonElement;
+    }
+    window.copyReservationInfo = function (hotel, room, description, total, nights, addonDays) {
+      const days = parseInt(addonDays, 10) || 0;
+      let weekendText;
+    
+      if (days === 0) {
+        weekendText = "❌ لا تشمل ويكند";
+      } else if (days === 1) {
+        weekendText = "✅ تشمل يوم ويكند واحد";
+      } else {
+        weekendText = `✅ تشمل ${days} أيام ويكند`;
+      }
+    
+      const info = `📋 *تفاصيل الحجز:*
+    
+    🏨 *الفندق:* ${hotel}
+    🚪 *نوع الغرفة:* ${room}
+    📝 *الوصف:* ${description}
+    🌙 *عدد الليالي:* ${nights}
+    ${weekendText}
+    💰 *الإجمالي الكلي:* ${total}
+    
+    💼 السعر شامل الخدمة والضريبة`;
+    if (window.apex && apex.message) {
+          apex.message.showPageSuccess("✅ تم نسخ تفاصيل الحجز!");
+        } else {
+          alert("✅ تم نسخ تفاصيل الحجز!");
+        }
+      navigator.clipboard.writeText(info).catch(() => {
+        alert("حدث خطأ أثناء النسخ");
+      });
+    };
+    
+    window.copyReservationHeaderInfo = function (resNum, clientName, hotel, room, description, checkIn, checkOut, nights, user) {
+      const info = `📋 *معلومات الحجز :*
+    
+    🔢 *رقم الحجز:* ${resNum}
+    👤 *اسم العميل:* ${clientName}
+    🏨 *الفندق:* ${hotel}
+    🚪 *نوع الغرفة:* ${room}
+    📝 *الوصف:* ${description}
+    📅 *تاريخ الدخول:* ${checkIn}
+    📅 *تاريخ الخروج:* ${checkOut}
+    🌙 *عدد الليالي:* ${nights}
+    
+    🧾 *تم الحجز بواسطة:* ${user}
+    `;
+    
+      navigator.clipboard.writeText(info).then(() => {
+        if (window.apex && apex.message) {
+          apex.message.showPageSuccess("✅ تم نسخ معلومات الحجز!");
+        } else {
+          alert("✅ تم نسخ معلومات الحجز!");
+        }
+      }).catch(() => {
+        alert("حدث خطأ أثناء النسخ");
+      });
+    };
+    
+    function CallCancelProduct(rowID) {
+        const processName = "CANCELPRODUCT";
+        const employeeID = apex.item("P170_EMPLOYEE_ID").getValue();
+        console.log("Cancel Product Request - Row ID:", rowID, "Employee ID:", employeeID);
+    
+        const dataSent = { x01: rowID, x02: employeeID };
+    
+        const displaySuccessMsg = (response) => {
+            if (response.status === 1) {
+                apex.message.showPageSuccess(response.msg);
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                apex.message.clearErrors();
+                apex.message.showErrors([{ type: "error", location: ["page"], message: response.msg }]);
+            }
+        };
+    
+        const callback = {
+            success: displaySuccessMsg,
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error during server process:", textStatus, errorThrown);
+                apex.message.alert("Something went wrong.");
+            },
+        };
+    
+        apex.server.process(processName, dataSent, callback);
+    }
+    
+    function CallChangeStatus(rowID) {
+        let purl = "f?p=&APP_ID.:237:&APP_SESSION.:::237:P237_reservationid:P_ID";
+        purl = purl.replace("P_ID", encodeURIComponent(rowID));
+        apex.navigation.redirect(purl);
+        refreshReportOnDialogClose();
+    }
+    
+    function CallAddTranscation(rowID) {
+        let purl = "f?p=&APP_ID.:244:&APP_SESSION.:::244:P244_RELATEDRESID:P_ID";
+        purl = purl.replace("P_ID", encodeURIComponent(rowID));
+        apex.navigation.redirect(purl);
+        refreshReportOnDialogClose();
+    }
+    
+    function CallAddDocument(rowID) {
+        let purl = "f?p=&APP_ID.:210:&APP_SESSION.:::210:P210_RESERVATIONID:P_ID";
+        purl = purl.replace("P_ID", encodeURIComponent(rowID));
+        apex.navigation.redirect(purl);
+        refreshReportOnDialogClose();
+    }
+    
+    function CallEditProduct(rowID) {
+        let purl = "f?p=&APP_ID.:236:&APP_SESSION.:::236:P236_RESERVATION_ID:P_ID";
+        purl = purl.replace("P_ID", encodeURIComponent(rowID));
+        apex.navigation.redirect(purl);
+        refreshReportOnDialogClose();
+    }
+    
+    function refreshReportOnDialogClose() {
+        apex.jQuery(window).on("dialogclose", function () {
+            location.reload();
+            console.log("Dialog closed. Page reloaded.");
+            apex.jQuery(window).off("dialogclose");
+        });
+    }
+    
+    
+    
+    
+    function CallReactiviate(rowID) {
+        const processName = "REACTIVIATEPRODUCT";
+        const employeeID = apex.item("P170_EMPLOYEE_ID").getValue();
+        const dataSent = { x01: rowID, x02: employeeID };
+    
+        console.log("Reactivate Product Request - Row ID:", rowID, "Employee ID:", employeeID);
+    
+        const displaySuccessMsg = (response) => {
+            if (response.status === 1) {
+                apex.message.showPageSuccess(response.msg);
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                apex.message.clearErrors();
+                apex.message.showErrors([{ type: "error", location: ["page"], message: response.msg }]);
+            }
+        };
+    
+        const callback = {
+            success: displaySuccessMsg,
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error during server process:", textStatus, errorThrown);
+                apex.message.alert("Something went wrong.");
+            },
+        };
+    
+        apex.server.process(processName, dataSent, callback);
+    }
+    
+    
+    
+  execute-when-page-loads: |
+    (function ($) {
+      function initReservationMenu() {
+        // 🟡 Block clicks on .res-footer
+        $(document)
+          .off("click.resFooterBlock")
+          .on("click.resFooterBlock", ".res-footer", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+          });
+    
+        // 🟡 Block clicks on .totals
+        $(document)
+          .off("click.totals")
+          .on("click.totals", ".totals", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+          });
+    
+        $(document)
+          .off("click.resTitleBlock")
+          .on("click.resTitleBlock", ".res-header h3", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            return false;
+          });
+    
+        // ⚙️ Menu button logic
+        $(document)
+          .off("click.resMenu")
+          .on("click.resMenu", ".js-menuButton", function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+    
+            const $btn = $(this);
+            const status = $btn.data("status");
+            const $menu = $("#AprtResOptionsList_menu");
+    
+            $menu.find("li").hide();
+            $("#AprtResOptionsList_menu_5, #AprtResOptionsList_menu_6, #AprtResOptionsList_menu_7").show();
+    
+            if (status === "PENDING") {
+              $("#AprtResOptionsList_menu_0, #AprtResOptionsList_menu_3").show();
+            } 
+            if (status === "CONFIRMED") {
+              $("#AprtResOptionsList_menu_1, #AprtResOptionsList_menu_3").show();
+            } else if (status === "CHECKED_IN") {
+              $("#AprtResOptionsList_menu_2").show();
+            } else if (status === "CANCELED") {
+              $("#AprtResOptionsList_menu_4").show();
+            }
+    
+            // 🔹 Smart positioning logic
+            setTimeout(() => {
+              const btnOffset = $btn.offset();
+              const btnHeight = $btn.outerHeight();
+              const menuWidth = $menu.outerWidth();
+              const menuHeight = $menu.outerHeight();
+              const scrollTop = $(window).scrollTop();
+              const scrollLeft = $(window).scrollLeft();
+              const windowWidth = $(window).width();
+              const windowHeight = $(window).height();
+    
+              let top = btnOffset.top + btnHeight + 6;
+              let left = btnOffset.left;
+    
+              if (top + menuHeight > scrollTop + windowHeight) {
+                top = btnOffset.top - menuHeight - 6;
+              }
+              if (left + menuWidth > scrollLeft + windowWidth) {
+                left = Math.max(scrollLeft + windowWidth - menuWidth - 10, scrollLeft + 10);
+              }
+              if (left < 10) left = 10;
+    
+              $menu.css({
+                position: "absolute",
+                top,
+                left,
+                zIndex: 9999,
+                display: "block"
+              }).show();
+    
+              $(document).off("click.hideMenu keydown.hideMenu");
+    
+              $(document).on("click.hideMenu", function (event) {
+                if (
+                  !$menu.is(event.target) &&
+                  $menu.has(event.target).length === 0 &&
+                  !$btn.is(event.target)
+                ) {
+                  $menu.hide();
+                  $(document).off("click.hideMenu keydown.hideMenu");
+                }
+              });
+    
+              $(document).on("keydown.hideMenu", function (event) {
+                if (event.key === "Escape") {
+                  $menu.hide();
+                  $(document).off("click.hideMenu keydown.hideMenu");
+                }
+              });
+            }, 0);
+          });
+      }
+    
+      $(initReservationMenu);
+      $(document).on("apexafterrefresh", initReservationMenu);
+    })(apex.jQuery);
+    
+
+css: 
+  inline: |
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    /* 🔒 Make the surrounding area not clickable */
+    .res-btn-area {
+      pointer-events: none; /* Disable clicks in the area */
+    }
+    
+    /* ✅ Re-enable clicks only on the actual button */
+    .res-btn-area .js-menuButton {
+      pointer-events: auto;
+    }
+    
+    
+    /* ========== Reservation Card Styles ========== */
+    .reservation-card {  
+          font-family: 'Cairo', sans-serif;
+    
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #fff;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      direction: rtl;
+      transition: box-shadow 0.25s ease;
+    }
+    .reservation-card:hover {
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Header */
+    .res-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .res-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #111827;
+    }
+    .res-sub {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-top: 3px;
+    }
+    
+    /* Status tags */
+    .status-tag {
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .status-pending     { background: #fef3c7; color: #92400e; }
+    .status-confirmed   { background: #dbeafe; color: #1e3a8a; }
+    .status-checkedin   { background: #dcfce7; color: #166534; }
+    .status-checkedout  { background: #e5e7eb; color: #1f2937; }
+    .status-canceled    { background: #fee2e2; color: #991b1b; }
+    .status-unknown     { background: #f3f4f6; color: #111827; }
+    
+    /* Info section */
+    .res-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: #374151;
+    }
+    .res-info div {
+      display: flex;
+      align-items: center;
+    }
+    
+    /* Icons */
+    .icon {
+      margin-left: 6px;
+      color: #6b7280;
+    }
+    
+    /* Price Boxes */
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .price-box {
+      background: #f9fafb;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    .price-box span {
+      display: block;
+      color: inherit;
+    }
+    
+    /* Totals */
+    .totals {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .totals div {
+      display: flex;
+      align-items: center;
+    }
+    
+    /* Action button */
+    .res-btn {
+      margin-top: 10px;
+      text-align: left;
+    }
+    .res-btn button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .res-btn button:hover {
+      background: #1d4ed8;
+    }
+    
+    /* Footer */
+    .res-footer {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: #4b5563;
+      border-top: 1px solid #eee;
+      padding-top: 8px;
+    }
+    
+
+html-header: 
+  html-header: |
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: New =========================================
+  id: 196635965882065645
+  identification: 
+    name: New
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          r.RESERVATION_ID         AS "معرّف الحجز",
+          h.HOTEL_NAME             AS "اسم الفندق",
+          rt.ROOM_NAME             AS "نوع الغرفة",
+          CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_IN_DATE)  AS "تاريخ الدخول",
+          CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_OUT_DATE) AS "تاريخ الخروج",
+          r.NIGHTS                 AS "عدد الليالي",
+      
+          r.REQUESTER_ID           AS "معرّف العميل",
+          (SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = r.REQUESTER_ID) AS "اسم العميل",
+      
+          p.FINAL_PRICE            AS "سعر الليلة",
+          p.CURRENCY               AS "العملة",
+          r.TOTAL_RESERVATION_PRICE     AS "الإجمالي",
+          r.TOTAL_RESERVATION_PRICE_EGP AS "الإجمالي بالجنيه",
+      
+          NVL(SUM(c.AMOUNT * c.CURRENCYRATES), 0) AS "المدفوع بالجنيه",
+          NVL(r.TOTAL_RESERVATION_PRICE_EGP, 0) - NVL(SUM(c.AMOUNT * c.CURRENCYRATES), 0) AS "المتبقي بالجنيه",
+      
+          r.STATUS AS "CODE_STATUS",
+          CASE r.STATUS
+              WHEN 'PENDING'     THEN 'قيد المعالجة'
+              WHEN 'CONFIRMED'   THEN 'تحت التنفيذ'
+              WHEN 'CHECKED_IN'  THEN 'تم التسكين'
+              WHEN 'CHECKED_OUT' THEN 'تم الخروج'
+              WHEN 'CANCELED'    THEN 'تم الإلغاء'
+              ELSE 'غير محددة'
+          END AS "STATUS",
+          r.REGISTERED_BY    AS "تم التسجيل بواسطة",
+          r.NOTES            AS "ملاحظات",
+          h.HOTEL_ID
+      
+      FROM 
+          HOTELS_RESERVATIONS r
+          JOIN UNIT_ROOM_LOOKUP l ON r.LOOKUP_ID = l.LOOKUP_ID
+          JOIN HOTELS h ON r.HOTEL_ID = h.HOTEL_ID
+          LEFT JOIN UNIT_ROOM_TYPES rt ON l.ROOM_TYPE_ID = rt.ROOM_TYPE_ID
+          LEFT JOIN UNIT_ROOM_PRICE p ON l.PRICE_ID = p.PRICE_ID
+          LEFT JOIN COLLECTIONS c ON c.RELATEDRESID = r.RESERVATION_ID
+      
+      WHERE 
+          r.STATUS IN ('CHECKED_IN', 'PENDING')
+      
+      GROUP BY 
+          r.RESERVATION_ID,
+          h.HOTEL_NAME,
+          rt.ROOM_NAME,
+          r.CHECK_IN_DATE,
+          r.CHECK_OUT_DATE,
+          r.NIGHTS,
+          r.REQUESTER_ID,
+          p.FINAL_PRICE,
+          p.CURRENCY,
+          r.TOTAL_RESERVATION_PRICE,
+          r.TOTAL_RESERVATION_PRICE_EGP,
+          r.STATUS,
+          r.POSTDATETIME,
+          r.LAST_EDIT_DATE,
+          r.REGISTERED_BY,
+          r.NOTES,
+          h.HOTEL_ID
+      
+      ORDER BY 
+          r.CHECK_IN_DATE DESC;
+      
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: report-table
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    id: 196957112205988626
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:236:&SESSION.::&DEBUG.::P236_RESERVATION_ID:#معرّف الحجز#'
+        page: 236
+        values: 
+          p236_reservation_id: '#معرّف الحجز#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 197006937654417747
+      identification: 
+        name: Primary Report
+        alias: 1053877
+
+    columns: 
+    - # ====== Column: معرّف الحجز =================================
+      id: 196957196224988627
+      identification: 
+        column-name: معرّف الحجز
+        type: Plain Text
+
+      heading: 
+        heading: معرّف الحجز
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: اسم الفندق ==================================
+      id: 196957292559988628
+      identification: 
+        column-name: اسم الفندق
+        type: Plain Text
+
+      heading: 
+        heading: اسم الفندق
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: نوع الغرفة ==================================
+      id: 196957430049988629
+      identification: 
+        column-name: نوع الغرفة
+        type: Plain Text
+
+      heading: 
+        heading: نوع الغرفة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 30
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: تاريخ الدخول ================================
+      id: 196957514169988630
+      identification: 
+        column-name: تاريخ الدخول
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الدخول
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: تاريخ الخروج ================================
+      id: 196957603096988631
+      identification: 
+        column-name: تاريخ الخروج
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الخروج
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: عدد الليالي =================================
+      id: 196957669049988632
+      identification: 
+        column-name: عدد الليالي
+        type: Plain Text
+
+      heading: 
+        heading: عدد الليالي
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: معرّف العميل ================================
+      id: 196957824401988633
+      identification: 
+        column-name: معرّف العميل
+        type: Hidden
+
+      heading: 
+        heading: معرّف العميل
+
+      layout: 
+        sequence: 70
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: اسم العميل ==================================
+      id: 196957919848988634
+      identification: 
+        column-name: اسم العميل
+        type: Plain Text
+
+      heading: 
+        heading: اسم العميل
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 80
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: سعر الليلة ==================================
+      id: 196957963015988635
+      identification: 
+        column-name: سعر الليلة
+        type: Plain Text
+
+      heading: 
+        heading: سعر الليلة
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: العملة ======================================
+      id: 196958068125988636
+      identification: 
+        column-name: العملة
+        type: Plain Text
+
+      heading: 
+        heading: العملة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: الإجمالي ====================================
+      id: 196958171755988637
+      identification: 
+        column-name: الإجمالي
+        type: Plain Text
+
+      heading: 
+        heading: الإجمالي
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 150
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: الإجمالي بالجنيه ============================
+      id: 196958257134988638
+      identification: 
+        column-name: الإجمالي بالجنيه
+        type: Plain Text
+
+      heading: 
+        heading: الإجمالي بالجنيه
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 160
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: تم التسجيل بواسطة ===========================
+      id: 196958803462988643
+      identification: 
+        column-name: تم التسجيل بواسطة
+        type: Plain Text
+
+      heading: 
+        heading: تم التسجيل بواسطة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 190
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ملاحظات =====================================
+      id: 196958920593988644
+      identification: 
+        column-name: ملاحظات
+        type: Plain Text
+
+      heading: 
+        heading: ملاحظات
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 200
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      column-formatting: 
+        html-expression: |
+          <button id="btn_123" class="t-Button t-Button--icon t-Button--iconRight js-menuButton"
+                  data-menu="AprtResOptionsList_menu" 
+                  type="button"
+                  aria-expanded="false"
+              data-id="#معرّف الحجز#"
+              data-hotel-id="#HOTEL_ID#"
+              data-client-id="#REQUESTER_ID#"
+              data-checkin="#تاريخ الدخول#"
+              data-checkout="#تاريخ الخروج#"
+              data-status="#STATUS#" 
+              data-ig-region-id="#report-table#">
+              
+              <span class="t-Icon t-Icon--left fa fa-check-circle" aria-hidden="true"></span>
+              <span class="t-Icon t-Icon--right fa fa-ellipsis-v" style="transform: rotate(180deg);"></span>
+          </button>
+          
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: HOTEL_ID ====================================
+      id: 196958995592988645
+      identification: 
+        column-name: HOTEL_ID
+        type: Hidden
+
+      heading: 
+        heading: Hotel Id
+
+      layout: 
+        sequence: 210
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CODE_STATUS =================================
+      id: 197011944171050700
+      identification: 
+        column-name: CODE_STATUS
+        type: Plain Text
+
+      heading: 
+        heading: Code Status
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 220
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS ======================================
+      id: 197012088943050701
+      identification: 
+        column-name: STATUS
+        type: Hidden
+
+      heading: 
+        heading: Status
+
+      layout: 
+        sequence: 230
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: المدفوع بالجنيه =============================
+      id: 197012179677050702
+      identification: 
+        column-name: المدفوع بالجنيه
+        type: Plain Text
+
+      heading: 
+        heading: المدفوع بالجنيه
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 170
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: المتبقي بالجنيه =============================
+      id: 197012296267050703
+      identification: 
+        column-name: المتبقي بالجنيه
+        type: Plain Text
+
+      heading: 
+        heading: المتبقي بالجنيه
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 180
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: A4
+        orientation: Landscape
+        units: Millimeters
+        width: 297
+        height: 210
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+- # ====== Region: ACTIONS =====================================
+  id: 196955032869988605
+  identification: 
+    name: ACTIONS
+    type: List
+
+  source: 
+    list: hotelreservation # 200379132635620968
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 23741758740475348253
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region-orderBy--end
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: AprtResOptionsList
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      list-template: Menu Popup
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Services Interactive Report =================
+  id: 197080168190502728
+  identification: 
+    name: Services Interactive Report
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          r.RESERVATION_ID         AS "كود الحجز",
+      
+          '<span class="hotel-name">' || h.HOTEL_NAME || '</span>' AS "اسم الفندق",
+          '<span class="room-name">'  || rt.ROOM_NAME || '</span>' AS "نوع الغرفة",
+      
+          TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_IN_DATE), 'DD-MM-YYYY')  AS "تاريخ الدخول",
+          TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_OUT_DATE), 'DD-MM-YYYY') AS "تاريخ الخروج",
+          r.NIGHTS                 AS "عدد الليالي",
+      
+          '<span class="client-name">' || 
+              (SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = r.REQUESTER_ID) || 
+          '</span>' AS "اسم العميل",
+      
+          '<span class="price">' || TO_CHAR(p.FINAL_PRICE, '999,999.99') || '</span>' AS "سعر الليلة",
+          '<span class="currency">' || p.CURRENCY || '</span>' AS "العملة",
+      
+          '<span class="total-price">' || TO_CHAR(r.TOTAL_RESERVATION_PRICE, '999,999.99') || '</span>' AS "الإجمالي",
+          '<span class="total-price-egp">' || TO_CHAR(r.TOTAL_RESERVATION_PRICE_EGP, '999,999.99') || '</span>' AS "الإجمالي بالجنيه",
+      
+          '<span class="paid-amount">' || TO_CHAR(NVL(SUM(c.AMOUNT * c.CURRENCYRATES), 0), '999,999.99') || '</span>' AS "المدفوع بالجنيه",
+      
+          '<span class="remaining-amount">' || 
+          TO_CHAR(NVL(r.TOTAL_RESERVATION_PRICE_EGP, 0) - NVL(SUM(c.AMOUNT * c.CURRENCYRATES), 0), '999,999.99') || 
+          '</span>' AS "المتبقي بالجنيه",
+      
+          CASE r.STATUS
+              WHEN 'PENDING'     THEN '<span class="status pending">قيد المعالجة</span>'
+              WHEN 'CONFIRMED'   THEN '<span class="status confirmed">تحت التنفيذ</span>'
+              WHEN 'CHECKED_IN'  THEN '<span class="status checkedin">تم التسكين</span>'
+              WHEN 'CHECKED_OUT' THEN '<span class="status checkedout">تم الخروج</span>'
+              WHEN 'CANCELED'    THEN '<span class="status canceled">تم الإلغاء</span>'
+              ELSE '<span class="status unknown">غير محددة</span>'
+          END AS "الحالة",
+      CASE r.STATUS WHEN 'PENDING' THEN 'قيد المعالجة' WHEN 'CONFIRMED' THEN 'تحت التنفيذ' WHEN 'CHECKED_IN' THEN 'تم التسكين' WHEN 'CHECKED_OUT' THEN 'تم الخروج' WHEN 'CANCELED' THEN 'تم الإلغاء' ELSE 'غير محددة' END AS "STATUS",
+          r.REGISTERED_BY AS "تم التسجيل بواسطة",
+          r.NOTES         AS "ملاحظات",
+          h.HOTEL_ID
+      
+      FROM 
+          HOTELS_RESERVATIONS r
+          JOIN UNIT_ROOM_LOOKUP l ON r.LOOKUP_ID = l.LOOKUP_ID
+          JOIN HOTELS h ON r.HOTEL_ID = h.HOTEL_ID
+          LEFT JOIN UNIT_ROOM_TYPES rt ON l.ROOM_TYPE_ID = rt.ROOM_TYPE_ID
+          LEFT JOIN UNIT_ROOM_PRICE p ON l.PRICE_ID = p.PRICE_ID
+          LEFT JOIN COLLECTIONS c ON c.RELATEDRESID = r.RESERVATION_ID
+      
+      WHERE 
+          r.STATUS IN ('CHECKED_IN', 'PENDING')
+      
+      GROUP BY 
+          r.RESERVATION_ID,
+          h.HOTEL_NAME,
+          rt.ROOM_NAME,
+          r.CHECK_IN_DATE,
+          r.CHECK_OUT_DATE,
+          r.NIGHTS,
+          r.REQUESTER_ID,
+          p.FINAL_PRICE,
+          p.CURRENCY,
+          r.TOTAL_RESERVATION_PRICE,
+          r.TOTAL_RESERVATION_PRICE_EGP,
+          r.STATUS,
+          r.REGISTERED_BY,
+          r.NOTES,
+          h.HOTEL_ID
+      
+      ORDER BY 
+          r.CHECK_IN_DATE DESC;
+      
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - js-showMaximizeButton
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: report-table
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    id: 197080332442502729
+    link: 
+      link-column: Exclude Link Column
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: No data found.
+      when-more-data-found: 'The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.'
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: false
+      reset: true
+      help: false
+      download: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 197134023968428838
+      identification: 
+        name: Primary Report
+        alias: 1055148
+
+    columns: 
+    - # ====== Column: HOTEL_ID ====================================
+      id: 197080429022502730
+      identification: 
+        column-name: HOTEL_ID
+        type: Hidden
+
+      heading: 
+        heading: Hotel Id
+
+      layout: 
+        sequence: 10
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: كود الحجز ===================================
+      id: 197080464078502731
+      identification: 
+        column-name: كود الحجز
+        type: Plain Text
+
+      heading: 
+        heading: كود الحجز
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: اسم الفندق ==================================
+      id: 197080636625502732
+      identification: 
+        column-name: اسم الفندق
+        type: Link
+
+      heading: 
+        heading: اسم الفندق
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 30
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      link: 
+        target: 
+          url: 'f?p=&APP_ID.:134:&SESSION.::&DEBUG.::P134_ID:#HOTEL_ID#'
+          page: 134
+          values: 
+            p134_id: '#HOTEL_ID#'
+
+        link-text: '#اسم الفندق#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: اسم العميل ==================================
+      id: 197080727615502733
+      identification: 
+        column-name: اسم العميل
+        type: Plain Text
+
+      heading: 
+        heading: اسم العميل
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: عدد الليالي =================================
+      id: 197080766052502734
+      identification: 
+        column-name: عدد الليالي
+        type: Plain Text
+
+      heading: 
+        heading: عدد الليالي
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: العملة ======================================
+      id: 197080859712502735
+      identification: 
+        column-name: العملة
+        type: Plain Text
+
+      heading: 
+        heading: العملة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: تاريخ الدخول ================================
+      id: 197081012244502736
+      identification: 
+        column-name: تاريخ الدخول
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الدخول
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: تاريخ الخروج ================================
+      id: 197081116698502737
+      identification: 
+        column-name: تاريخ الخروج
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الخروج
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 80
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: المدفوع بالجنيه =============================
+      id: 197081183087502738
+      identification: 
+        column-name: المدفوع بالجنيه
+        type: Plain Text
+
+      heading: 
+        heading: المدفوع بالجنيه
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 90
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: المتبقي بالجنيه =============================
+      id: 197081302505502739
+      identification: 
+        column-name: المتبقي بالجنيه
+        type: Plain Text
+
+      heading: 
+        heading: المتبقي بالجنيه
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: الحالة ======================================
+      id: 197081420435502740
+      identification: 
+        column-name: الحالة
+        type: Plain Text
+
+      heading: 
+        heading: الحالة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: نوع الغرفة ==================================
+      id: 197081455710502741
+      identification: 
+        column-name: نوع الغرفة
+        type: Plain Text
+
+      heading: 
+        heading: نوع الغرفة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: سعر الليلة ==================================
+      id: 197081613733502742
+      identification: 
+        column-name: سعر الليلة
+        type: Plain Text
+
+      heading: 
+        heading: سعر الليلة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 130
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: الإجمالي ====================================
+      id: 197081716698502743
+      identification: 
+        column-name: الإجمالي
+        type: Plain Text
+
+      heading: 
+        heading: الإجمالي
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: الإجمالي بالجنيه ============================
+      id: 197081746770502744
+      identification: 
+        column-name: الإجمالي بالجنيه
+        type: Plain Text
+
+      heading: 
+        heading: الإجمالي بالجنيه
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 150
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: تم التسجيل بواسطة ===========================
+      id: 197081875444502745
+      identification: 
+        column-name: تم التسجيل بواسطة
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: BS_EMPLOYEES.USERNAME # 256625940367935825
+
+      heading: 
+        heading: تم التسجيل بواسطة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 160
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: ملاحظات =====================================
+      id: 197081960993502746
+      identification: 
+        column-name: ملاحظات
+        type: Plain Text
+
+      heading: 
+        heading: اجراءات
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 170
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      column-formatting: 
+        html-expression: |
+          <button id="btn_123" class="t-Button t-Button--icon t-Button--iconRight js-menuButton"
+                  data-menu="AprtResOptionsList_menu" 
+                  type="button"
+                  aria-expanded="false"
+              data-id="#كود الحجز#"
+              data-hotel-id="#HOTEL_ID#"
+              data-client-id="#REQUESTER_ID#"
+              data-checkin="#تاريخ الدخول#"
+              data-checkout="#تاريخ الخروج#"
+              data-status="#STATUS#" 
+              data-ig-region-id="#report-table#">
+              
+              <span class="t-Icon t-Icon--left fa fa-check-circle" aria-hidden="true"></span>
+              <span class="t-Icon t-Icon--right fa fa-ellipsis-v" style="transform: rotate(180deg);"></span>
+          </button>
+          
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS ======================================
+      id: 197082113358502747
+      identification: 
+        column-name: STATUS
+        type: Hidden
+
+      heading: 
+        heading: Status
+
+      layout: 
+        sequence: 180
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+- # ====== Region: Services Interactive ReportS ================
+  id: 198078226947747310
+  identification: 
+    name: Services Interactive ReportS
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      WITH price_summary AS (
+        SELECT 
+          RESERVATION_ID,
+          COUNT(*) AS total_days,
+          COUNT(CASE WHEN SPECIAL_PRICE IS NOT NULL AND SPECIAL_PRICE > 0 THEN 1 END) AS special_days,
+          COUNT(CASE WHEN BASE_PRICE IS NOT NULL AND (SPECIAL_PRICE IS NULL OR SPECIAL_PRICE = 0) THEN 1 END) AS base_days,
+          COUNT(CASE WHEN NVL(DAY_ADDON,0) > 0 THEN 1 END) AS addon_days,
+          SUM(NVL(EFFECTIVE_PRICE,0)) AS total_effective,
+          SUM(NVL(SPECIAL_PRICE,0)) AS total_special,
+          SUM(CASE WHEN BASE_PRICE IS NOT NULL AND (SPECIAL_PRICE IS NULL OR SPECIAL_PRICE = 0) THEN BASE_PRICE ELSE 0 END) AS total_base,
+          SUM(CASE WHEN NVL(DAY_ADDON,0) > 0 THEN NVL(DAY_ADDON,0) ELSE 0 END) AS total_addon
+        FROM RESERVATION_CALCULATION_LOG
+        GROUP BY RESERVATION_ID
+      )
+      SELECT 
+        '<div class="reservation-card">
+      
+          <div class="res-header">
+            <div>
+           <h3>
+        حجز رقم #' || NVL(r.res_num,r.RESERVATION_ID) || '
+        ' || CASE 
+              WHEN r.res_num IS NOT NULL THEN
+                '<i class="fa fa-copy" 
+                   title="Copy info"
+                   style="cursor:pointer;color:#2563eb;margin-left:8px;"
+               onclick="copyReservationHeaderInfo(
+        ''' || NVL(r.res_num,'-') || ''',
+        ''' || NVL((SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = r.REQUESTER_ID), '-')  || ''',
+        ''' || REPLACE(h.HOTEL_NAME, '''', '’') || ''',
+        ''' || REPLACE(rt.ROOM_NAME, '''', '’') || ''',
+        ''' || NVL(REPLACE(rt.DESCRIPTION, '''', '’'), '-') || ''',
+        ''' || TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_IN_DATE), 'DD-MM-YYYY') || ''',
+        ''' || TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_OUT_DATE), 'DD-MM-YYYY') || ''',
+        ''' || r.NIGHTS || ''',
+        ''' || NVL(v.USERNAME, '-') || '''
+      )"
+      ></i>'
+              ELSE ''
+            END || '
+      </h3>
+      
+              <div class="res-sub">
+                <i class="fa fa-user icon"></i>' || NVL((SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = r.REQUESTER_ID), '-') || '
+              </div>
+            </div>
+            <div>' || 
+              CASE r.STATUS
+                WHEN 'PENDING'     THEN '<span class="status-tag status-pending">قيد المعالجة</span>'
+                WHEN 'CONFIRMED'   THEN '<span class="status-tag status-confirmed">تحت التنفيذ</span>'
+                WHEN 'CHECKED_IN'  THEN '<span class="status-tag status-checkedin">تم التسكين</span>'
+                WHEN 'CHECKED_OUT' THEN '<span class="status-tag status-checkedout">تم الخروج</span>'
+                WHEN 'CANCELED'    THEN '<span class="status-tag status-canceled">تم الإلغاء</span>'
+                ELSE '<span class="status-tag status-unknown">غير محددة</span>'
+              END || '
+            </div>
+          </div>
+      
+          <div class="res-info">
+            <div><i class="fa fa-calendar icon"></i><strong>الدخول:</strong> ' || TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_IN_DATE), 'DD-MM-YYYY') || '</div>
+            <div><i class="fa fa-calendar-check-o icon"></i><strong>الخروج:</strong> ' || TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_OUT_DATE), 'DD-MM-YYYY') || '</div>
+            <div><i class="fa fa-moon-o icon"></i><strong>الليالي:</strong> ' || r.NIGHTS || '</div>
+            <div><i class="fa fa-users icon"></i><strong>النزلاء:</strong> بالغين ' || NVL(r.ADULT,0) || ' - أطفال ' || NVL(r.CHILDERN,0) || '</div>
+          </div>
+      
+          <div><i class="fa fa-coffee icon"></i><strong>الإفطار:</strong> ' ||
+            CASE 
+              WHEN rt.BREAKFAST_INCLUDED THEN '<span style="color:#16a34a;font-weight:600;">شامل</span>'
+              WHEN s.SERVICE_NAME IS NOT NULL THEN 
+                '<span style="color:#2563eb;font-weight:600;">إفطار إضافي</span>'
+              ELSE '<span style="color:#dc2626;">غير مشمول</span>'
+            END || '
+          </div>
+      
+          <!-- 🟢🔵🟠 Arabic daily summary section -->
+          <div class="price-summary" style="margin-top:10px;background:#f9fafb;padding:10px;border-radius:10px;">
+            <div style="font-weight:600;color:#111827;margin-bottom:5px;">
+              <i class="fa fa-calendar icon"></i> ملخص الأسعار اليومية
+            </div>
+      
+            <div style="color:#15803d;">🟢 الأيام الخاصة: ' || NVL(ps.special_days,0) || ' يوم × ' ||
+              TO_CHAR(NVL(ps.total_special,0)/NULLIF(ps.special_days,0),'999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'دولار') || '</div>
+      
+            <div style="color:#2563eb;">🔵 الأيام الأساسية: ' || NVL(ps.base_days,0) || ' يوم × ' ||
+              TO_CHAR(NVL(ps.total_base,0)/NULLIF(ps.base_days,0),'999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'دولار') || '</div>
+      
+            <div style="color:#ea580c;">🟠 الأيام الإضافية (عطلات): ' || NVL(ps.addon_days,0) || ' يوم اضافة ' ||
+              TO_CHAR(NVL(ps.total_addon,0)/NULLIF(ps.addon_days,0),'999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'دولار') || '</div>
+          </div>
+          <!-- ✅ End Arabic summary section -->
+      
+          <div class="price-grid" style="display:grid;gap:8px;margin-top:10px;">
+            <div class="price-box" style="color:#2563eb;">
+              <i class="fa fa-tag icon"></i>
+              <strong>سعر الليلة :</strong>
+              <span>' || TO_CHAR(NVL(l.BASE_PRICE, 0), '999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '</span>
+            </div>
+      
+            <div class="price-box" style="color:#7e22ce;">
+              <i class="fa fa-percent icon"></i>
+              <strong>عمولة المكتب الوسيط :</strong>
+              <span>' || TO_CHAR(NVL(l.COMMISSION_VALUE, 0), '999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '</span>
+            </div>
+      
+            <div class="price-box" style="color:#ea580c;">
+              <i class="fa fa-money icon"></i>
+              <strong>رسوم الشركة :</strong>
+              <span>' || TO_CHAR(NVL(l.FEE_VALUE, 0), '999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '</span>
+            </div>
+      
+            <div class="price-box" style="color:#16a34a;">
+              <i class="fa fa-cutlery icon"></i>
+              <strong>الإفطار لليلة :</strong>
+              <span>' || 
+      TO_CHAR(
+        CASE 
+          WHEN NVL(l.BREAKFAST_INCLUDED, 0) = 1 THEN 0
+          ELSE NVL(TO_NUMBER(l.BREAKFAST_PRICE), 0)
+        END,
+        '999,999.99'
+      )
+       || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '
+              </span>
+            </div>
+          </div>
+      
+          <div class="totals" style="margin-top:10px;padding-top:10px;border-top:1px solid #e5e7eb;">
+            <div>
+              <i class="fa fa-sun-o icon" style="color:#1d4ed8;"></i>
+              <strong>السعر النهائي لاول ليلة :</strong>
+              <span style="color:#1d4ed8;font-weight:bold;">' ||
+                TO_CHAR(NVL(l.EFFECTIVE_PRICE, 0), '999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '
+              </span>
+            </div>
+            <div><i class="fa fa-calculator icon" style="color:#15803d;"></i><strong>الإجمالي الكلي:</strong> <span style="color:#15803d;font-weight:bold;">' || TO_CHAR(NVL(r.TOTAL_RESERVATION_PRICE,0),'999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '</span></div>
+            <div><i class="fa fa-credit-card icon" style="color:#2563eb;"></i><strong>المدفوع:</strong> <span style="color:#2563eb;">' || TO_CHAR(NVL(SUM(c.AMOUNT),0),'999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '</span></div>
+            <div><i class="fa fa-exclamation-circle icon" style="color:#dc2626;"></i><strong>المتبقي:</strong> <span style="color:#dc2626;font-weight:bold;">' || TO_CHAR((NVL(r.TOTAL_RESERVATION_PRICE,0))-NVL(SUM(c.AMOUNT),0),'999,999.99') || ' ' || NVL(cb.CURRENCY_NAME_AR,'EGP') || '</span></div>
+         <div style="text-align:end;margin-top:10px;">
+          <button 
+        onclick="copyReservationInfo(
+          ''' || REPLACE(h.HOTEL_NAME, '''', '’') || ''',
+          ''' || REPLACE(rt.ROOM_NAME, '''', '’') || ''',
+          ''' || NVL(REPLACE(rt.DESCRIPTION, '''', '’'), '-') || ''',
+          ''' || TO_CHAR(NVL(r.TOTAL_RESERVATION_PRICE, 0), '999,999.99') || ''',
+          ''' || r.NIGHTS || ''',
+          ''' || NVL(ps.addon_days, 0) || '''
+        )"
+        style="background:#059669;
+               color:#fff;
+               font-weight:600;
+               padding:10px 18px;
+               border:none;
+               border-radius:8px;
+               cursor:pointer;
+               box-shadow:0 3px 6px rgba(0,0,0,0.2);
+               transition:transform 0.2s;">
+        <i class="fa fa-copy" style="margin-left:6px;"></i> نسخ التفاصيل
+      </button>
+      
+            </div>
+         
+          </div>
+      
+      <div class="res-btn" style="text-align:end;margin-top:12px;">
+        <button class="t-Button js-menuButton"
+          type="button"
+          data-menu="AprtResOptionsList_menu"
+          data-id="' || r.RESERVATION_ID || '"
+          data-hotel-id="' || h.HOTEL_ID || '"
+          data-client-id="' || r.REQUESTER_ID || '"
+          data-status="' || r.STATUS || '"
+          style="background:linear-gradient(90deg,#2563eb,#1e40af);
+                 color:#fff;
+                 font-weight:700;
+                 font-size:17px;
+                 padding:14px 28px;
+                 border:none;
+                 border-radius:14px;
+                 box-shadow:0 4px 10px rgba(0,0,0,0.2);
+                 cursor:pointer;
+                 transition:transform 0.2s, box-shadow 0.2s;">
+          <i class="fa fa-cog icon" style="margin-left:6px;"></i> خيارات
+        </button>
+      </div>
+      
+      
+          <div class="res-footer">
+            <div><i class="fa fa-user-circle icon"></i><strong>المسجل:</strong> ' || NVL(v.USERNAME,'-') || '</div>
+            <div><i class="fa fa-sticky-note icon"></i><strong>ملاحظات:</strong> ' || NVL(r.NOTES,'-') || '</div>
+          </div>
+        </div>' AS "تفاصيل الحجز",
+        r.RESERVATION_ID AS ID,
+        h.hotel_name AS NAME,
+      CASE 
+        WHEN (NVL(r.TOTAL_RESERVATION_PRICE,0) - NVL(SUM(c.AMOUNT),0)) <> 0 
+          THEN NVL(h.HOTEL_NAME || ' - ' || rt.ROOM_NAME,'-')
+        ELSE NULL
+      END AS remaining,
+      CASE
+        WHEN r.RES_NUM IS NULL 
+          THEN NVL(h.HOTEL_NAME || ' - ' || rt.ROOM_NAME, '-')
+        ELSE NULL
+      END AS no_res_num,
+      
+        rt.ROOM_NAME AS ROOM_NAME,
+        r.ADULT+ r.CHILDERN AS GUEST,
+        CASE r.STATUS
+                WHEN 'PENDING'     THEN 'قيد المعالجة'
+                WHEN 'CONFIRMED'   THEN 'تحت التنفيذ'
+                WHEN 'CHECKED_IN'  THEN 'تم التسكين'
+                WHEN 'CHECKED_OUT' THEN 'تم الخروج'
+                WHEN 'CANCELED'    THEN 'تم الإلغاء'
+                ELSE 'غير محددة'
+              END  AS status,
+              r.CHECK_IN_DATE AS START_DATE,
+              r.CHECK_OUT_DATE AS END_DATE,
+      rt.DESCRIPTION as DESCRIPTION,
+       r.REQUESTER_ID as client_id
+      FROM 
+        HOTELS_RESERVATIONS r
+        JOIN UNIT_ROOM_LOOKUP l ON r.LOOKUP_ID = l.LOOKUP_ID
+        JOIN HOTELS h ON r.HOTEL_ID = h.HOTEL_ID
+        LEFT JOIN UNIT_ROOM_TYPES rt ON l.ROOM_TYPE_ID = rt.ROOM_TYPE_ID
+        LEFT JOIN UNIT_ROOM_PRICE p ON l.PRICE_ID = p.PRICE_ID
+        LEFT JOIN UNIT_COMPANY_COMMISSION cc ON p.COMMISSION_ID = cc.COMMISSION_ID
+        LEFT JOIN OUR_FEES f ON p.FEE_ID = f.FEE_ID
+        LEFT JOIN HOTEL_RESERVATION_SERVICES s ON s.RESERVATION_ID = r.RESERVATION_ID AND UPPER(s.SERVICE_NAME) LIKE 'BREAKFAST%' AND ROWNUM = 1
+        LEFT JOIN COLLECTIONS c ON c.RELATEDRESID = r.RESERVATION_ID
+        LEFT JOIN price_summary ps ON ps.RESERVATION_ID = r.RESERVATION_ID
+        left  join RESERVATION_CALCULATION_LOG l
+        on l.RESERVATION_ID = r.RESERVATION_ID
+          AND TRUNC(l.CALC_DATE) = TRUNC(r.CHECK_IN_DATE)
+          AND ROWNUM = 1
+      
+        JOIN BS_EMPLOYEES v ON v.ID = r.REGISTERED_BY
+        LEFT JOIN CURRENCIES cb ON cb.CURRENCY_CODE = p.CURRENCY
+      -- WHERE
+      --   (
+      --     :P170_ENTERDATE IS NULL 
+      --     OR :P170_EXITDATE IS NULL 
+      --     OR (
+      --          r.CHECK_IN_DATE >= TO_DATE(:P170_ENTERDATE, 'YYYY-MM-DD')
+      --      AND r.CHECK_OUT_DATE <= TO_DATE(:P170_EXITDATE, 'YYYY-MM-DD')
+      --        )
+        
+      
+      --   )
+      
+        GROUP BY 
+        r.RESERVATION_ID, r.CHECK_IN_DATE, r.CHECK_OUT_DATE, r.NIGHTS,rt.room_name,
+        r.ADULT, r.CHILDERN, r.REQUESTER_ID, r.STATUS,COMMISSION_TYPE,cc.COMMISSION_VALUE,F.FEE_TYPE,F.FEE_VALUE
+      ,S.TOTAL_AMOUNT,rt.description,r.res_num,
+        p.PRICE_PER_NIGHT, p.CURRENCY, S.SERVICE_NAME,
+        cb.CURRENCY_NAME_AR, v.USERNAME, r.TOTAL_RESERVATION_PRICE,
+        rt.BREAKFAST_INCLUDED, h.HOTEL_ID, r.NOTES,h.hotel_name,
+        ps.special_days, ps.base_days, ps.addon_days,l.EFFECTIVE_PRICE,
+        ps.total_special, ps.total_base, ps.total_addon,l.BREAKFAST_INCLUDED,l.COMMISSION_VALUE,l.BREAKFAST_PRICE,l.FEE_VALUE,l.base_price
+      
+      
+      ORDER BY 
+        CASE 
+          WHEN r.STATUS = 'PENDING' THEN 1
+          WHEN r.STATUS = 'CONFIRMED' AND TRUNC(r.CHECK_in_DATE) <= TRUNC(SYSDATE - 1) THEN 2
+          WHEN r.STATUS = 'CHECKED_IN' 
+                   AND TRUNC(r.CHECK_OUT_DATE) <= TRUNC(SYSDATE + 1) THEN 3 -- near or today
+      WHEN r.STATUS = 'CHECKED_OUT' THEN 4 
+        
+          WHEN r.STATUS = 'CANCELED' THEN 5
+          ELSE 6
+        END,
+        CASE 
+          WHEN r.STATUS IN ('PENDING', 'CONFIRMED') THEN r.CHECK_IN_DATE
+          ELSE r.CHECK_OUT_DATE
+        END DESC;
+      
+      
+    page-items-to-submit: 
+    - P170_EXITDATE
+    - P170_ENTERDATE
+    - P170_NUMBEROFDAYS
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: report-table
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: لا يوجد الحجز
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: تفاصيل الحجز ================================
+    id: 198227554351156518
+    identification: 
+      column-name: تفاصيل الحجز
+      type: Link
+
+    heading: 
+      heading: تفاصيل الحجز
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:242:&SESSION.::&DEBUG.::P242_RESERVATIONID:#ID#'
+        page: 242
+        values: 
+          p242_reservationid: '#ID#'
+
+      link-text: '#تفاصيل الحجز#'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: ID ==========================================
+    id: 198227730683156519
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 20
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ROOM_NAME ===================================
+    id: 199176890862091637
+    identification: 
+      column-name: ROOM_NAME
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAME ========================================
+    id: 199539310835309938
+    identification: 
+      column-name: NAME
+      type: Hidden
+
+    layout: 
+      sequence: 60
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GUEST =======================================
+    id: 199539359527309939
+    identification: 
+      column-name: GUEST
+      type: Hidden
+
+    layout: 
+      sequence: 70
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 199539448960309940
+    identification: 
+      column-name: STATUS
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CLIENT_ID ===================================
+    id: 199539592889309941
+    identification: 
+      column-name: CLIENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 90
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: START_DATE ==================================
+    id: 199975518309783638
+    identification: 
+      column-name: START_DATE
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: END_DATE ====================================
+    id: 199975545144783639
+    identification: 
+      column-name: END_DATE
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 285104275787301918
+    identification: 
+      column-name: DESCRIPTION
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REMAINING ===================================
+    id: 285104843824301924
+    identification: 
+      column-name: REMAINING
+      type: Hidden
+
+    layout: 
+      sequence: 130
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NO_RES_NUM ==================================
+    id: 285105393655301930
+    identification: 
+      column-name: NO_RES_NUM
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: New =========================================
+  id: 198080838986747336
+  identification: 
+    name: New
+    title: محرك البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: Services Interactive ReportS # 198078226947747310
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 3
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: No
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 10
+
+  facets: 
+  - # ====== Facet: P170_SEARCH ==================================
+    id: 198080912507747337
+    identification: 
+      name: P170_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P170_NAME ====================================
+    id: 199176718974091635
+    identification: 
+      name: P170_NAME
+      type: Select List
+
+    label: 
+      label: اسم الفندق
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+
+    actions-menu: 
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P170_GUEST ===================================
+    id: 199176830978091636
+    identification: 
+      name: P170_GUEST
+      type: Checkbox Group
+
+    label: 
+      label: عدد الافراد
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 120
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: GUEST
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P170_ROOM_NAME ===============================
+    id: 199177178661091640
+    identification: 
+      name: P170_ROOM_NAME
+      type: Checkbox Group
+
+    label: 
+      label: اسم الغرف
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: ROOM_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P170_STATUS ==================================
+    id: 199177605700091644
+    identification: 
+      name: P170_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الحجز
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 100
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P170_CLIENT_ID ===============================
+    id: 199535257301309898
+    identification: 
+      name: P170_CLIENT_ID
+      type: Select List
+
+    label: 
+      label: اسم العميل
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CRM_CLIENTS.FULL_NAME # 254031009602355585
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+
+    actions-menu: 
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: CLIENT_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P170_DESCRIPTION =============================
+    id: 285104702513301923
+    identification: 
+      name: P170_DESCRIPTION
+      type: Checkbox Group
+
+    label: 
+      label: وصف الغرق
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: DESCRIPTION
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P170_REMAINING ===============================
+    id: 285105338666301929
+    identification: 
+      name: P170_REMAINING
+      type: Checkbox Group
+
+    label: 
+      label: 'قيد التسوية '
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 80
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: REMAINING
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P170_NO_RES_NUM ==============================
+    id: 285105969031301935
+    identification: 
+      name: P170_NO_RES_NUM
+      type: Checkbox Group
+
+    label: 
+      label: بدون رقم حجز
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 90
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: NO_RES_NUM
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P170_SEARCH =================================
+    id: 198080912507747337
+    identification: 
+      name: P170_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P170_NAME ===================================
+    id: 199176718974091635
+    identification: 
+      name: P170_NAME
+      type: Select List
+
+    label: 
+      label: اسم الفندق
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P170_GUEST ==================================
+    id: 199176830978091636
+    identification: 
+      name: P170_GUEST
+      type: Checkbox Group
+
+    label: 
+      label: عدد الافراد
+
+    layout: 
+      sequence: 120
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: GUEST
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P170_ROOM_NAME ==============================
+    id: 199177178661091640
+    identification: 
+      name: P170_ROOM_NAME
+      type: Checkbox Group
+
+    label: 
+      label: اسم الغرف
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: ROOM_NAME
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P170_STATUS =================================
+    id: 199177605700091644
+    identification: 
+      name: P170_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الحجز
+
+    layout: 
+      sequence: 100
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P170_CLIENT_ID ==============================
+    id: 199535257301309898
+    identification: 
+      name: P170_CLIENT_ID
+      type: Select List
+
+    label: 
+      label: اسم العميل
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CRM_CLIENTS.FULL_NAME # 254031009602355585
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: CLIENT_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P170_DESCRIPTION ============================
+    id: 285104702513301923
+    identification: 
+      name: P170_DESCRIPTION
+      type: Checkbox Group
+
+    label: 
+      label: وصف الغرق
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: DESCRIPTION
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P170_REMAINING ==============================
+    id: 285105338666301929
+    identification: 
+      name: P170_REMAINING
+      type: Checkbox Group
+
+    label: 
+      label: 'قيد التسوية '
+
+    layout: 
+      sequence: 80
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: REMAINING
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P170_NO_RES_NUM =============================
+    id: 285105969031301935
+    identification: 
+      name: P170_NO_RES_NUM
+      type: Checkbox Group
+
+    label: 
+      label: بدون رقم حجز
+
+    layout: 
+      sequence: 90
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: NO_RES_NUM
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+- # ====== Region: Services Interactive Report =================
+  id: 198081224867747340
+  identification: 
+    name: Services Interactive Report
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          r.RESERVATION_ID         AS "كود الحجز",
+      
+          '<span class="hotel-name">' || h.HOTEL_NAME || '</span>' AS "اسم الفندق",
+          '<span class="room-name">'  || rt.ROOM_NAME || '</span>' AS "نوع الغرفة",
+      
+          TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_IN_DATE), 'DD-MM-YYYY')  AS "تاريخ الدخول",
+          TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_OUT_DATE), 'DD-MM-YYYY') AS "تاريخ الخروج",
+          r.NIGHTS                 AS "عدد الليالي",
+      
+          '<span class="client-name">' || 
+              (SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = r.REQUESTER_ID) || 
+          '</span>' AS "اسم العميل",
+      
+          '<span class="price">' || TO_CHAR(p.FINAL_PRICE, '999,999.99') || '</span>' AS "سعر الليلة",
+          '<span class="currency">' || p.CURRENCY || '</span>' AS "العملة",
+      
+          '<span class="total-price">' || TO_CHAR(r.TOTAL_RESERVATION_PRICE, '999,999.99') || '</span>' AS "الإجمالي",
+          '<span class="total-price-egp">' || TO_CHAR(r.TOTAL_RESERVATION_PRICE_EGP, '999,999.99') || '</span>' AS "الإجمالي بالجنيه",
+      
+          '<span class="paid-amount">' || TO_CHAR(NVL(SUM(c.AMOUNT * c.CURRENCYRATES), 0), '999,999.99') || '</span>' AS "المدفوع بالجنيه",
+      
+          '<span class="remaining-amount">' || 
+          TO_CHAR(NVL(r.TOTAL_RESERVATION_PRICE_EGP, 0) - NVL(SUM(c.AMOUNT * c.CURRENCYRATES), 0), '999,999.99') || 
+          '</span>' AS "المتبقي بالجنيه",
+      
+          CASE r.STATUS
+              WHEN 'PENDING'     THEN '<span class="status pending">قيد المعالجة</span>'
+              WHEN 'CONFIRMED'   THEN '<span class="status confirmed">تحت التنفيذ</span>'
+              WHEN 'CHECKED_IN'  THEN '<span class="status checkedin">تم التسكين</span>'
+              WHEN 'CHECKED_OUT' THEN '<span class="status checkedout">تم الخروج</span>'
+              WHEN 'CANCELED'    THEN '<span class="status canceled">تم الإلغاء</span>'
+              ELSE '<span class="status unknown">غير محددة</span>'
+          END AS "الحالة",
+      CASE r.STATUS WHEN 'PENDING' THEN 'قيد المعالجة' WHEN 'CONFIRMED' THEN 'تحت التنفيذ' WHEN 'CHECKED_IN' THEN 'تم التسكين' WHEN 'CHECKED_OUT' THEN 'تم الخروج' WHEN 'CANCELED' THEN 'تم الإلغاء' ELSE 'غير محددة' END AS "STATUS",
+          r.REGISTERED_BY AS "تم التسجيل بواسطة",
+          r.NOTES         AS "ملاحظات",
+          h.HOTEL_ID
+      
+      FROM 
+          HOTELS_RESERVATIONS r
+          JOIN UNIT_ROOM_LOOKUP l ON r.LOOKUP_ID = l.LOOKUP_ID
+          JOIN HOTELS h ON r.HOTEL_ID = h.HOTEL_ID
+          LEFT JOIN UNIT_ROOM_TYPES rt ON l.ROOM_TYPE_ID = rt.ROOM_TYPE_ID
+          LEFT JOIN UNIT_ROOM_PRICE p ON l.PRICE_ID = p.PRICE_ID
+          LEFT JOIN COLLECTIONS c ON c.RELATEDRESID = r.RESERVATION_ID
+      
+      WHERE 
+          r.STATUS IN ('CHECKED_IN', 'PENDING')
+      
+      GROUP BY 
+          r.RESERVATION_ID,
+          h.HOTEL_NAME,
+          rt.ROOM_NAME,
+          r.CHECK_IN_DATE,
+          r.CHECK_OUT_DATE,
+          r.NIGHTS,
+          r.REQUESTER_ID,
+          p.FINAL_PRICE,
+          p.CURRENCY,
+          r.TOTAL_RESERVATION_PRICE,
+          r.TOTAL_RESERVATION_PRICE_EGP,
+          r.STATUS,
+          r.REGISTERED_BY,
+          r.NOTES,
+          h.HOTEL_ID
+      
+      ORDER BY 
+          r.CHECK_IN_DATE DESC;
+      
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - js-showMaximizeButton
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: كود الحجز ===================================
+    id: 198132749009978710
+    identification: 
+      column-name: كود الحجز
+      type: Plain Text
+
+    heading: 
+      heading: كود الحجز
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: اسم الفندق ==================================
+    id: 198132843051978711
+    identification: 
+      column-name: اسم الفندق
+      type: Plain Text
+
+    heading: 
+      heading: اسم الفندق
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: نوع الغرفة ==================================
+    id: 198133020750978712
+    identification: 
+      column-name: نوع الغرفة
+      type: Plain Text
+
+    heading: 
+      heading: نوع الغرفة
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: تاريخ الدخول ================================
+    id: 198133118536978713
+    identification: 
+      column-name: تاريخ الدخول
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الدخول
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: تاريخ الخروج ================================
+    id: 198133180619978714
+    identification: 
+      column-name: تاريخ الخروج
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الخروج
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: عدد الليالي =================================
+    id: 198133272216978715
+    identification: 
+      column-name: عدد الليالي
+      type: Plain Text
+
+    heading: 
+      heading: عدد الليالي
+      alignment: end
+
+    layout: 
+      sequence: 60
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: اسم العميل ==================================
+    id: 198133383400978716
+    identification: 
+      column-name: اسم العميل
+      type: Plain Text
+
+    heading: 
+      heading: اسم العميل
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: سعر الليلة ==================================
+    id: 198133515095978717
+    identification: 
+      column-name: سعر الليلة
+      type: Plain Text
+
+    heading: 
+      heading: سعر الليلة
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: العملة ======================================
+    id: 198133621017978718
+    identification: 
+      column-name: العملة
+      type: Plain Text
+
+    heading: 
+      heading: العملة
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: الإجمالي ====================================
+    id: 198133643205978719
+    identification: 
+      column-name: الإجمالي
+      type: Plain Text
+
+    heading: 
+      heading: الإجمالي
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: الإجمالي بالجنيه ============================
+    id: 198133775335978720
+    identification: 
+      column-name: الإجمالي بالجنيه
+      type: Plain Text
+
+    heading: 
+      heading: الإجمالي بالجنيه
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: المدفوع بالجنيه =============================
+    id: 198133892979978721
+    identification: 
+      column-name: المدفوع بالجنيه
+      type: Plain Text
+
+    heading: 
+      heading: المدفوع بالجنيه
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: المتبقي بالجنيه =============================
+    id: 198134000121978722
+    identification: 
+      column-name: المتبقي بالجنيه
+      type: Plain Text
+
+    heading: 
+      heading: المتبقي بالجنيه
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: الحالة ======================================
+    id: 198134093712978723
+    identification: 
+      column-name: الحالة
+      type: Plain Text
+
+    heading: 
+      heading: الحالة
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 198134171586978724
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: تم التسجيل بواسطة ===========================
+    id: 198134271747978725
+    identification: 
+      column-name: تم التسجيل بواسطة
+      type: Plain Text
+
+    heading: 
+      heading: تم التسجيل بواسطة
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ملاحظات =====================================
+    id: 198134387888978726
+    identification: 
+      column-name: ملاحظات
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HOTEL_ID ====================================
+    id: 198134479681978727
+    identification: 
+      column-name: HOTEL_ID
+      type: Plain Text
+
+    heading: 
+      heading: Hotel Id
+      alignment: end
+
+    layout: 
+      sequence: 180
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Services Interactive Report =================
+  id: 258931446804700145
+  identification: 
+    name: Services Interactive Report
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          -- =====================
+          -- تفاصيل مستوى الغرفة
+          -- =====================
+          l.LOOKUP_ID AS room_id,
+          r.RESERVATION_ID AS reservation_id,
+          rt.ROOM_NAME AS room_type,
+          CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_IN_DATE) AS DATE_FROM,
+          CONVERT_TO_LOCAL_TIMEZONE(r.CHECK_OUT_DATE) AS DATE_TO,
+          r.NIGHTS AS NIGHT_COUNT,
+          p.FINAL_PRICE AS CUSTOM_PRICE_PER_NIGHT,
+          p.CURRENCY,
+          p.EXCHANGE_RATE,
+          r.TOTAL_RESERVATION_PRICE AS TOTAL_PRICE,
+          r.TOTAL_RESERVATION_PRICE_EGP AS TOTAL_EGP,
+      
+          -- =====================
+          -- تفاصيل مستوى الحجز
+          -- =====================
+          r.REQUESTER_ID AS CLIENT_ID,
+          (SELECT FULL_NAME FROM CRM_CLIENTS c WHERE c.CLIENT_ID = r.REQUESTER_ID) AS client_name,
+          r.HOTEL_ID,
+          (SELECT HOTEL_NAME FROM HOTELS h WHERE h.HOTEL_ID = r.HOTEL_ID) AS hotel_name,
+          r.TOTAL_RESERVATION_PRICE AS TOTAL_INVOICE_AMOUNT,
+          NULL AS TOTAL_PAYMENT,
+          NULL AS REMAINING_AMOUNT,
+          NULL AS MIN_PAYMENT_REQUIRED,
+          r.STATUS,
+      
+          -- =====================
+          -- منطق التقدم
+          -- =====================
+          CASE r.STATUS
+              WHEN 'PENDING'     THEN 'fa-pie-chart-30'
+              WHEN 'CONFIRMED'   THEN 'fa-pie-chart-60'
+              WHEN 'CHECKED_IN'  THEN 'fa-pie-chart-100'
+              ELSE 'fa-pie-chart-0'
+          END AS icon,
+      
+          CASE r.STATUS
+              WHEN 'PENDING'     THEN 'قيد المعالجة (30%)'
+              WHEN 'CONFIRMED'   THEN 'في انتظار الوصول (60%)'
+              WHEN 'CHECKED_IN'  THEN 'تم التأكيد (100%)'
+              ELSE 'غير محدد (0%)'
+          END AS status_description,
+      
+          -- =====================
+          -- ممثلو المبيعات والعمليات
+          -- =====================
+          -- r.SALES_REP_ID,
+          -- (SELECT FIRST_NAME || ' ' || LAST_NAME FROM BS_EMPLOYEES e WHERE e.ID = r.SALES_REP_ID) AS sales_rep_name,
+          -- r.OPS_REP_ID,
+          -- (SELECT FIRST_NAME || ' ' || LAST_NAME FROM BS_EMPLOYEES e WHERE e.ID = r.OPS_REP_ID) AS ops_rep_name,
+      
+          -- =====================
+          -- المراجعة والتتبع
+          -- =====================
+          r.POSTDATETIME AS reservation_created,
+          r.REGISTERED_BY AS reservation_created_by,
+          r.LAST_EDIT_DATE AS reservation_updated,
+          r.LAST_UPDATED_TIME AS reservation_updated_by,
+          r.NOTES,
+      
+          -- =====================
+          -- حالة الغرفة
+          -- =====================
+          CASE r.STATUS
+              WHEN 'CHECKED_IN'  THEN 'تم تسجيل الدخول'
+              WHEN 'CHECKED_OUT' THEN 'تم تسجيل الخروج'
+              WHEN 'CANCELED'    THEN 'ملغاة'
+              ELSE 'قيد الانتظار'
+          END AS room_status_label,
+      
+          CASE r.STATUS
+              WHEN 'CHECKED_IN'  THEN 'fa-sign-in text-success'
+              WHEN 'CHECKED_OUT' THEN 'fa-sign-out text-primary'
+              WHEN 'CANCELED'    THEN 'fa-times-circle text-danger'
+              ELSE 'fa-circle-o text-muted'
+          END AS room_status_icon,
+      
+          -- =====================
+          -- التقارير والتجميع
+          -- =====================
+          TO_CHAR(r.LAST_UPDATED_TIME, 'YYYY.MM') AS updated_month
+      
+      FROM 
+          HOTELS_RESERVATIONS r
+          JOIN UNIT_ROOM_LOOKUP l ON r.LOOKUP_ID = l.LOOKUP_ID
+          LEFT JOIN UNIT_ROOM_TYPES rt ON l.ROOM_TYPE_ID = rt.ROOM_TYPE_ID
+          LEFT JOIN UNIT_ROOM_PRICE p ON l.PRICE_ID = p.PRICE_ID
+      
+      ORDER BY 
+          r.CHECK_IN_DATE DESC;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - js-showMaximizeButton
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    id: 258931527908700146
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:173:&SESSION.::&DEBUG.:RP,173:P173_ID,P173_HOTEL_RESERVATION_ID:#ROOM_ID#,#RESERVATION_ID###RESERVATION_ID#'
+        page: 173 # Hotel Room Reservation Form
+        clear-cache: RP,173
+        values: 
+          p173_id: '#ROOM_ID#'
+          p173_hotel_reservation_id: '#RESERVATION_ID###RESERVATION_ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: No data found.
+      when-more-data-found: 'The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.'
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: false
+      reset: true
+      help: false
+      download: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 259749720186263514
+      identification: 
+        name: Primary Report
+        alias: 307707
+
+    columns: 
+    - # ====== Column: CUSTOM_PRICE_PER_NIGHT ======================
+      id: 196433632557095219
+      identification: 
+        column-name: CUSTOM_PRICE_PER_NIGHT
+        type: Plain Text
+
+      heading: 
+        heading: Custom Price Per Night
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 380
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TOTAL_PRICE =================================
+      id: 196433688250095220
+      identification: 
+        column-name: TOTAL_PRICE
+        type: Plain Text
+
+      heading: 
+        heading: Total Price
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 390
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TOTAL_EGP ===================================
+      id: 196433779187095221
+      identification: 
+        column-name: TOTAL_EGP
+        type: Plain Text
+
+      heading: 
+        heading: Total Egp
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 400
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ROOM_ID =====================================
+      id: 196435206691095235
+      identification: 
+        column-name: ROOM_ID
+        type: Plain Text
+
+      heading: 
+        heading: Room Id
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 410
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TOTAL_PAYMENT ===============================
+      id: 196435337237095236
+      identification: 
+        column-name: TOTAL_PAYMENT
+        type: Plain Text
+
+      heading: 
+        heading: Total Payment
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 250
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: REMAINING_AMOUNT ============================
+      id: 196435367548095237
+      identification: 
+        column-name: REMAINING_AMOUNT
+        type: Plain Text
+
+      heading: 
+        heading: Remaining Amount
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 430
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: MIN_PAYMENT_REQUIRED ========================
+      id: 196435518605095238
+      identification: 
+        column-name: MIN_PAYMENT_REQUIRED
+        type: Plain Text
+
+      heading: 
+        heading: Min Payment Required
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 440
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_UPDATED_BY ======================
+      id: 196435599180095239
+      identification: 
+        column-name: RESERVATION_UPDATED_BY
+        type: Plain Text
+
+      heading: 
+        heading: Reservation Updated By
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 450
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_ID ==============================
+      id: 259127763016947746
+      identification: 
+        column-name: RESERVATION_ID
+        type: Link
+
+      heading: 
+        heading: كود الحجز 🆔
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 130
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      link: 
+        target: 
+          url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:3:P3_RESERVATION_ID:#RESERVATION_ID#'
+          page: 3 # Create Identity
+          clear-cache: 3
+          values: 
+            p3_reservation_id: '#RESERVATION_ID#'
+
+        link-text: '#RESERVATION_ID#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ROOM_TYPE ===================================
+      id: 259127808544947747
+      identification: 
+        column-name: ROOM_TYPE
+        type: Plain Text
+
+      heading: 
+        heading: 'نوع الغرفة 🛏 '
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DATE_FROM ===================================
+      id: 259127939958947748
+      identification: 
+        column-name: DATE_FROM
+        type: Plain Text
+
+      heading: 
+        heading: من تاريخ 📅
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 190
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DATE_TO =====================================
+      id: 259128036321947749
+      identification: 
+        column-name: DATE_TO
+        type: Plain Text
+
+      heading: 
+        heading: الي تاريخ 📅
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 200
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: NIGHT_COUNT =================================
+      id: 259128181802947750
+      identification: 
+        column-name: NIGHT_COUNT
+        type: Plain Text
+
+      heading: 
+        heading: الليالي 🌙
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 210
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CURRENCY ====================================
+      id: 259128319966947752
+      identification: 
+        column-name: CURRENCY
+        type: Plain Text
+
+      heading: 
+        heading: العملة 💵
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 240
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: EXCHANGE_RATE ===============================
+      id: 259128499632947753
+      identification: 
+        column-name: EXCHANGE_RATE
+        type: Plain Text
+
+      heading: 
+        heading: سعر الصرف 🔁
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 260
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: FML999G999G999G999G990D00
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CLIENT_ID ===================================
+      id: 259128793358947756
+      identification: 
+        column-name: CLIENT_ID
+        type: Hidden
+
+      heading: 
+        heading: Client Id
+
+      layout: 
+        sequence: 280
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CLIENT_NAME =================================
+      id: 259128865388947757
+      identification: 
+        column-name: CLIENT_NAME
+        type: Plain Text
+
+      heading: 
+        heading: العميل 👤
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 180
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: HOTEL_ID ====================================
+      id: 259128991047947758
+      identification: 
+        column-name: HOTEL_ID
+        type: Hidden
+
+      heading: 
+        heading: Hotel Id
+
+      layout: 
+        sequence: 290
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: HOTEL_NAME ==================================
+      id: 259129033512947759
+      identification: 
+        column-name: HOTEL_NAME
+        type: Plain Text
+
+      heading: 
+        heading: الفندق 🏨
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 150
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TOTAL_INVOICE_AMOUNT ========================
+      id: 259129174894947760
+      identification: 
+        column-name: TOTAL_INVOICE_AMOUNT
+        type: Hidden
+
+      heading: 
+        heading: اجمالي الفتورة 💼
+
+      layout: 
+        sequence: 270
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS ======================================
+      id: 259129525795947764
+      identification: 
+        column-name: STATUS
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: HOTEL_RESERVATION_STATUSES.STATUS_NAME # 256625289846935817
+
+      heading: 
+        heading: حالة الحجز 📊
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 170
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: ICON ========================================
+      id: 259129635528947765
+      identification: 
+        column-name: ICON
+        type: Hidden
+
+      heading: 
+        heading: Icon
+
+      layout: 
+        sequence: 300
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS_DESCRIPTION ==========================
+      id: 259129783041947766
+      identification: 
+        column-name: STATUS_DESCRIPTION
+        type: Plain Text
+
+      heading: 
+        heading: Status Description
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 310
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_CREATED =========================
+      id: 259130583827947774
+      identification: 
+        column-name: RESERVATION_CREATED
+        type: Hidden
+
+      heading: 
+        heading: Reservation Created
+
+      layout: 
+        sequence: 320
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_CREATED_BY ======================
+      id: 259130620389947775
+      identification: 
+        column-name: RESERVATION_CREATED_BY
+        type: Hidden
+
+      heading: 
+        heading: Reservation Created By
+
+      layout: 
+        sequence: 330
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: RESERVATION_UPDATED =========================
+      id: 259130792015947776
+      identification: 
+        column-name: RESERVATION_UPDATED
+        type: Hidden
+
+      heading: 
+        heading: Reservation Updated
+
+      layout: 
+        sequence: 340
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: NOTES =======================================
+      id: 259130978465947778
+      identification: 
+        column-name: NOTES
+        type: Hidden
+
+      heading: 
+        heading: Notes
+
+      layout: 
+        sequence: 350
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED_MONTH ===============================
+      id: 259131067720947779
+      identification: 
+        column-name: UPDATED_MONTH
+        type: Hidden
+
+      heading: 
+        heading: Updated Month
+
+      layout: 
+        sequence: 360
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ROOM_STATUS_LABEL ===========================
+      id: 259805034263422030
+      identification: 
+        column-name: ROOM_STATUS_LABEL
+        type: Plain Text
+
+      heading: 
+        heading: حالة الغرفة 📊
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 160
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ROOM_STATUS_ICON ============================
+      id: 259805145144422031
+      identification: 
+        column-name: ROOM_STATUS_ICON
+        type: Hidden
+
+      heading: 
+        heading: Room Status Icon
+
+      layout: 
+        sequence: 370
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 23741758740475348253
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 24606102095508363071
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: Breadcrumb # 23741758740475348253
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 24606103329014363083
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: اضافة حجز ===================================
+    id: 197011839933050698
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اضافة حجز
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:236:&SESSION.::&DEBUG.:::'
+        page: 236
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Add &NOMENCLATURE_PROJECT. ==================
+    id: 20748756243069040067
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: Add &NOMENCLATURE_PROJECT.
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:104:&SESSION.::&DEBUG.:104,24::'
+        page: 104
+        clear-cache: 104,24
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+    security: 
+      authorization-scheme: Contribution Rights # 149832818544438023719
+
+  - # ====== Action: Actions =====================================
+    id: 24606102396087363074
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: My &NOMENCLATURE_PROJECTS. ====================
+      id: 18941542664977337840
+      identification: 
+        type: Menu Entry
+        label: My &NOMENCLATURE_PROJECTS.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Reset =========================================
+      id: 20463997415299403139
+      identification: 
+        type: Menu Entry
+        label: Reset
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 140
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:170:&SESSION.::&DEBUG.:RP,CIR,RIR,86::'
+          page: 170 # Hotels Reservations Interactive Report
+          clear-cache: RP,CIR,RIR,86
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: Separator =====================================
+      id: 20463997583916403140
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: About &NOMENCLATURE_PROJECTS. =================
+      id: 20464001024306403175
+      identification: 
+        type: Menu Entry
+        label: About &NOMENCLATURE_PROJECTS.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:107:&SESSION.::&DEBUG.:::'
+          page: 107
+
+      appearance: 
+        icon: fa-info
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: &NOMENCLATURE_PROJECTS. Primary Report ========
+      id: 20533007511348019651
+      identification: 
+        type: Menu Entry
+        label: '&NOMENCLATURE_PROJECTS. Primary Report'
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP,::'
+          page: 23
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: My Activities =================================
+      id: 21219293219493115860
+      identification: 
+        type: Menu Entry
+        label: My Activities
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Separator =====================================
+      id: 21219293304317115861
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 110
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Separator =====================================
+      id: 21219293473336115862
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Releases ======================================
+      id: 21828359020919655976
+      identification: 
+        type: Menu Entry
+        label: Releases
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:8:&SESSION.::&DEBUG.:RP,::'
+          page: 8 # Identity Profile
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-ship
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Refresh =======================================
+      id: 24606103101994363081
+      identification: 
+        type: Menu Entry
+        label: Refresh
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:170:&SESSION.::&DEBUG.:RP,::'
+          page: 170 # Hotels Reservations Interactive Report
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+page-items: 
+- # ====== Page Item: P170_EMPLOYEE_ID =========================
+  id: 196955231201988607
+  identification: 
+    name: P170_EMPLOYEE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':APP_USER_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P170_ENTERDATE ===========================
+  id: 289371295270989428
+  identification: 
+    name: P170_ENTERDATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ الدخول
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: None
+    maximum-date: None
+
+  layout: 
+    sequence: 10
+    region: New # 198080838986747336
+    slot: CREATE
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P170_EXITDATE ============================
+  id: 289371435138989429
+  identification: 
+    name: P170_EXITDATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ الخروج
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: Item
+    minimum-item: P170_ENTERDATE
+    maximum-date: None
+
+  layout: 
+    sequence: 20
+    region: New # 198080838986747336
+    slot: CREATE
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P170_NUMBEROFDAYS ========================
+  id: 289371483638989430
+  identification: 
+    name: P170_NUMBEROFDAYS
+    type: Display Only
+
+  label: 
+    label: عدد الليالي
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: false
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 30
+    region: New # 198080838986747336
+    slot: CREATE
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: Search ======================================
+  id: 200063085959804102
+  identification: 
+    button-name: Search
+    label: بحث
+
+  layout: 
+    sequence: 10
+    region: New # 198080838986747336
+    slot: CHANGE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--stretch
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Button: RemoveSearch ================================
+  id: 200063459767804100
+  identification: 
+    button-name: RemoveSearch
+    label: إزالة التحديد
+
+  layout: 
+    sequence: 10
+    region: New # 198080838986747336
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--stretch
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Button: UP ==========================================
+  id: 259115369560923042
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 23741758740475348253
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&LAST_PROJ_JUMP_PG.:&SESSION.::&DEBUG.:RP,::'
+      page: '&LAST_PROJ_JUMP_PG.'
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: New_1 ===============================
+  id: 196959123315988646
+  identification: 
+    name: New_1
+
+  execution: 
+    sequence: 30
+    event-scope: Dynamic
+    static-container-(jquery-selector): '#report-table'
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: .js-menuButton
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 196959174955988647
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        defineGlobalVariable(this.triggeringElement);
+        
+
+    execution: 
+      sequence: 10
+      event: New_1 # 196959123315988646
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: New =================================
+  id: 196977941513534751
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Custom
+    custom-event: menuAction
+    selection-type: JavaScript Expression
+    javascript-expression: document
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 196978305771534722
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        // ✅ تأكد أن dataRowCalled تم تعيينها عند فتح القائمة (global variable)
+        const rowData = dataRowCalled;
+        
+        if (!rowData) {
+            console.warn("❌ لم يتم تعيين dataRowCalled أو العنصر غير موجود.");
+            return;
+        }
+        
+        // استخراج البيانات من الزر
+        const rowID       = rowData.getAttribute('data-id');
+        const hotelID     = rowData.getAttribute('data-hotel-id');
+        const clientID    = rowData.getAttribute('data-client-id');
+        const checkin     = rowData.getAttribute('data-checkin');
+        const checkout    = rowData.getAttribute('data-checkout');
+        const status      = rowData.getAttribute('data-status'); // ✅ التصحيح هنا
+        
+        console.log({ rowID, hotelID, clientID, checkin, checkout, status });
+        
+        // تحقق أساسي
+        if (!rowID) {
+            apex.message.alert("لم يتم العثور على رقم الحجز.", null, {
+                title: "خطأ في الاختيار",
+                style: "warning",
+                okLabel: "حسناً"
+            });
+            return;
+        }
+        
+        // تنفيذ الأكشن بناءً على الاختيار
+        switch (this.data.action) {
+            case 'CheckIn':
+                CallChangeStatus(rowID, 'CHECKED_IN');
+                break;
+        
+            case 'CheckOut':
+                CallChangeStatus(rowID, 'CHECKED_OUT');
+                break;
+        
+            case 'CancelProduct':
+                CallCancelProduct(rowID);
+                break;
+        
+            case 'Reactiviate':
+                CallReactiviate(rowID);
+                break;
+        
+            case 'AddTranscation':
+                CallAddTranscation(rowID);
+                break;
+        
+            case 'AddDocument':
+                CallAddDocument(rowID);
+                break;
+        
+            case 'EditProduct':
+                CallEditProduct(rowID);
+                break;
+        case 'ConfrimResrvation':
+        
+                CallChangeStatus(rowID, 'CONFIRMED');
+                break;
+        
+            default:
+                apex.message.alert("تم اختيار إجراء غير معروف.");
+                break;
+        }
+        
+
+    execution: 
+      sequence: 20
+      event: New # 196977941513534751
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: SetValue ============================
+  id: 200078032022707025
+  identification: 
+    name: SetValue
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Search # 200063085959804102
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 199975666602783640
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Services Interactive ReportS # 198078226947747310
+
+    execution: 
+      sequence: 10
+      event: SetValue # 200078032022707025
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Value ===================================
+    id: 200078357098707005
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |2
+         ABS(TO_DATE(:P170_EXITDATE, 'YYYY-MM-DD') - TO_DATE(:P170_ENTERDATE, 'YYYY-MM-DD'))
+        
+      items-to-submit: 
+      - P170_ENTERDATE
+      - P170_EXITDATE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P170_NUMBEROFDAYS
+
+    execution: 
+      sequence: 20
+      event: SetValue # 200078032022707025
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: New_1 ===============================
+  id: 200078692985704738
+  identification: 
+    name: New_1
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: RemoveSearch # 200063459767804100
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 199975753201783641
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Services Interactive ReportS # 198078226947747310
+
+    execution: 
+      sequence: 20
+      event: New_1 # 200078692985704738
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: cleardates ==================================
+    id: 200079059827704735
+    identification: 
+      name: cleardates
+      action: Clear
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P170_ENTERDATE
+      - ' P170_EXITDATE'
+      - ' P170_NUMBEROFDAYS'
+
+    execution: 
+      sequence: 10
+      event: New_1 # 200078692985704738
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dc =======================
+  id: 259123295155923061
+  identification: 
+    name: refresh on dc
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Breadcrumb # 23741758740475348253
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 197011905671050699
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: New # 196635965882065645
+
+    execution: 
+      sequence: 10
+      event: refresh on dc # 259123295155923061
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: CANCELPRODUCT ==============================
+  id: 196954771475988603
+  identification: 
+    name: CANCELPRODUCT
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          v_reservation_id CONSTANT VARCHAR2(200) := apex_application.g_x01; -- معرّف الحجز القادم من JavaScript
+          v_employee_id    CONSTANT VARCHAR2(200) := apex_application.g_x02; -- معرّف الموظف القادم من JavaScript
+      BEGIN
+          -- تحديث حالة الحجز وتعيين الموظف الذي قام بالإلغاء
+          UPDATE HOTELS_RESERVATIONS
+             SET STATUS          = 'CANCELED',
+                 LAST_EDIT_DATE   = SYSTIMESTAMP,
+                 CANCELLED_BY     = v_employee_id
+           WHERE RESERVATION_ID  = v_reservation_id;
+      
+          IF SQL%ROWCOUNT > 0 THEN
+              -- ✅ تم الإلغاء بنجاح
+              apex_json.open_object; 
+              apex_json.write('status', 1); 
+              apex_json.write('msg', 'تم إلغاء الحجز بنجاح'); 
+              apex_json.close_all;
+          ELSE
+              -- ⚠️ لم يتم العثور على الحجز
+              apex_json.open_object; 
+              apex_json.write('status', 0); 
+              apex_json.write('msg', 'لم يتم العثور على الحجز بالمعرّف المحدد'); 
+              apex_json.close_all;
+          END IF;
+      
+          COMMIT;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              -- ❌ حدث خطأ أثناء العملية
+              apex_json.open_object; 
+              apex_json.write('status', 0); 
+              apex_json.write('msg', 'حدث خطأ أثناء إلغاء الحجز: ' || SQLERRM); 
+              apex_json.close_all;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: REACTIVIATEPRODUCT =========================
+  id: 196954881713988604
+  identification: 
+    name: REACTIVIATEPRODUCT
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          v_reservation_id CONSTANT VARCHAR2(200) := apex_application.g_x01; -- المعرّف القادم من JavaScript
+      BEGIN
+          -- تحديث حالة الحجز وإعادة تفعيله
+          UPDATE HOTELS_RESERVATIONS
+             SET STATUS          = 'PENDING',   -- إعادة تفعيل الحجز
+                 LAST_EDIT_DATE   = SYSTIMESTAMP,  -- تحديث آخر تعديل
+                 CANCELLED_BY     = NULL           -- مسح خانة الملغي بواسطة
+           WHERE RESERVATION_ID   = v_reservation_id;
+      
+          IF SQL%ROWCOUNT > 0 THEN
+              -- ✅ نجاح العملية
+              apex_json.open_object; 
+              apex_json.write('status', 1); 
+              apex_json.write('msg', 'تم إعادة تنشيط الحجز بنجاح'); 
+              apex_json.close_all;
+          ELSE
+              -- ⚠️ لم يتم العثور على الحجز
+              apex_json.open_object; 
+              apex_json.write('status', 0); 
+              apex_json.write('msg', 'لم يتم العثور على الحجز بالمعرّف المحدد'); 
+              apex_json.close_all;
+          END IF;
+      
+          COMMIT;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              -- ❌ في حال حدوث خطأ
+              apex_json.open_object; 
+              apex_json.write('status', 0); 
+              apex_json.write('msg', 'حدث خطأ أثناء إعادة تنشيط الحجز: ' || SQLERRM); 
+              apex_json.close_all;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+

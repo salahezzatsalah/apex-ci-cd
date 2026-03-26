@@ -1,0 +1,4041 @@
+---
+# ====== Page: Task Details ==================================
+id: 502
+identification: 
+  name: Task Details
+  alias: TASK-DETAILS
+  title: تفاصيل المهمة
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .sp-tag {
+        padding: 2px 4px;
+        display: inline-block;
+        vertical-align: text-bottom;
+        border-radius: 3px;
+        background-color: rgba(0,0,0,.1);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .sp-tags-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: flex-start;
+    }
+    
+    .resize-region {
+      resize: vertical;
+      overflow: auto;
+    }
+    
+    .a-CardView-iconWrap,
+    .a-CardView-badge { align-self: flex-start; }
+    
+    .project-rds-region {
+        background-color: rgb(219 204 175 / 20%);
+    }
+    .t-Body-title {
+        --ut-palette-warning-shade: rgba(var(--oj-palette-neutral-rgb-160));
+        --ut-component-background-color: rgba(var(--oj-palette-neutral-rgb-170)); 
+        --ut-alert-horizontal-border-radius: 0;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: RDS =========================================
+  id: 33305061356372325447
+  identification: 
+    name: RDS
+    type: Region Display Selector
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_08
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - u-padding-inline-dynamic
+    - project-rds-region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': false
+      remember-selection: By User
+
+- # ====== Region: Details =====================================
+  id: 35991909575477484866
+  identification: 
+    name: Details
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--noPadding
+    css-classes: 
+    - u-flex
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Links =======================================
+  id: 38086881274481035870
+  identification: 
+    name: Links
+    title: لينكات [&P502_LINKSCOUNT.]
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select ID,
+             TASK_ID,
+             LINK_NAME,
+             case when lower(link_url) not like 'http%' then 'http://' end || link_url link_url_link,
+             decode(greatest(length(link_url),80),80,
+                 link_url,
+                 substr(link_url,1,39)||'...'||substr(link_url,length(link_url)-39)
+                 ) link_url_disp,
+             decode(IMPORTANT_YN,'Y','Yes','N','No',IMPORTANT_YN) IMPORTANT,
+             CREATED,
+             lower(CREATED_BY) created_by,
+             UPDATED,
+             UPDATED_BY
+        from RES_TASK_LINKS
+       where task_id = :P502_TASK_ID
+    page-items-to-submit: 
+    - P502_TASK_ID
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 38086881350332035871
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:506:&SESSION.::&DEBUG.:RP,506:P506_ID:#ID#'
+        page: 506 # Task Link
+        clear-cache: RP,506
+        values: 
+          p506_id: '#ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 38089265636555082379
+      identification: 
+        name: Primary Report
+        alias: 47246263
+
+    columns: 
+    - # ====== Column: TASK_ID =====================================
+      id: 28621269421481905604
+      identification: 
+        column-name: TASK_ID
+        type: Plain Text
+
+      heading: 
+        heading: كود المهمة
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: LINK_URL_LINK ===============================
+      id: 28669597448495820705
+      identification: 
+        column-name: LINK_URL_LINK
+        type: Hidden
+
+      heading: 
+        heading: Link Url Link
+
+      layout: 
+        sequence: 110
+
+      source: 
+        primary-key: false
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: LINK_URL_DISP ===============================
+      id: 28669597559451820706
+      identification: 
+        column-name: LINK_URL_DISP
+        type: Plain Text
+
+      heading: 
+        heading: اللينك
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: ID ==========================================
+      id: 38086881464382035872
+      identification: 
+        column-name: ID
+        type: Plain Text
+
+      heading: 
+        heading: Id
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: true
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: LINK_NAME ===================================
+      id: 38086881729437035874
+      identification: 
+        column-name: LINK_NAME
+        type: Plain Text
+
+      heading: 
+        heading: اسم الرابط
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 30
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      column-formatting: 
+        html-expression: <a href="#LINK_URL_LINK#" target="_blank">#LINK_NAME#</a>
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED =====================================
+      id: 38086881987894035877
+      identification: 
+        column-name: CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ التسجيل
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: SINCE_SHORT
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED_BY ==================================
+      id: 38086882080052035878
+      identification: 
+        column-name: CREATED_BY
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+      heading: 
+        heading: القائم بالتسجيل
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: UPDATED =====================================
+      id: 38086882216711035879
+      identification: 
+        column-name: UPDATED
+        type: Plain Text
+
+      heading: 
+        heading: اخر تحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: SINCE_SHORT
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED_BY ==================================
+      id: 38086882335477035880
+      identification: 
+        column-name: UPDATED_BY
+        type: Plain Text
+
+      heading: 
+        heading: القائم بالتحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 80
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: IMPORTANT ===================================
+      id: 43334198017275700972
+      identification: 
+        column-name: IMPORTANT
+        type: Plain Text
+
+      heading: 
+        heading: مهم
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 90
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: Letter
+        orientation: Landscape
+        units: Inches
+        width: 11
+        height: 8.5
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+        page-header-text: Links
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+- # ====== Region: Details =====================================
+  id: 40579906529331892558
+  identification: 
+    name: Details
+    title: تفاصيل المهمة (المطلوب)
+    type: Static Content
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 40722263211065145015
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 41586606566098159833
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 40722263211065145015
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 41586607799604159845
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تعديل =======================================
+    id: 11700587697973370714
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تعديل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:501:&SESSION.::&DEBUG.:RP,501:P501_ID:&P502_TASK_ID.'
+        page: 501
+        clear-cache: RP,501
+        values: 
+          p501_id: '&P502_TASK_ID.'
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-edit
+      hot: true
+      show-as-disabled: false
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1
+          from reservation_tasks t, res_task_types tt
+         where t.id = :P502_TASK_ID
+           and t.task_type_id = tt.id
+           and tt.STATIC_ID not in ('MILESTONE','REVIEW')
+      execute-condition: For Each Row
+
+  - # ====== Action: تعديل =======================================
+    id: 11700587872793370715
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تعديل
+
+    layout: 
+      sequence: 30
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:509:&SESSION.::&DEBUG.:RP,509:P509_ID:&P502_TASK_ID.'
+        page: 509
+        clear-cache: RP,509
+        values: 
+          p509_id: '&P502_TASK_ID.'
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-edit
+      hot: true
+      show-as-disabled: false
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1
+          from reservation_tasks t, res_task_types tt
+         where t.id = :P502_TASK_ID
+           and t.task_type_id = tt.id
+           and tt.STATIC_ID = 'REVIEW'
+      execute-condition: For Each Row
+
+  - # ====== Action: menu ========================================
+    id: 28669598285205820713
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: menu
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: عرض التغيرات ==================================
+      id: 28669598336648820714
+      identification: 
+        type: Menu Entry
+        label: عرض التغيرات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:507:&SESSION.::&DEBUG.:507:P507_TASK_ID:&P502_TASK_ID.'
+          page: 507
+          clear-cache: 507
+          values: 
+            p507_task_id: '&P502_TASK_ID.'
+
+      appearance: 
+        icon: fa-clock-o
+
+  - # ====== Action: تعديل =======================================
+    id: 34925608199246953477
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تعديل
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:508:&SESSION.::&DEBUG.:RP,508:P508_ID:&P502_TASK_ID.'
+        page: 508
+        clear-cache: RP,508
+        values: 
+          p508_id: '&P502_TASK_ID.'
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-edit
+      hot: true
+      show-as-disabled: false
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1
+          from reservation_tasks t, res_task_types tt
+         where t.id = :P502_TASK_ID
+           and t.task_type_id = tt.id
+           and tt.STATIC_ID = 'MILESTONE'
+      execute-condition: For Each Row
+
+- # ====== Region: Details =====================================
+  id: 59789906392387310683
+  identification: 
+    name: Details
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+          x clob;
+      begin
+      x := 'لا يوجد تفاصيل';
+      for c1 in (select description from reservation_tasks d where d.id = :P502_TASK_ID and description is not null) loop
+          x := apex_markdown.to_html(c1.description);
+      end loop;
+      return x;
+      end;
+    page-items-to-submit: 
+    - P502_TASK_ID
+
+  layout: 
+    sequence: 120
+    parent-region: Details # 40579906529331892558
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Task ========================================
+  id: 64782704458160822026
+  identification: 
+    name: Task
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      with today as (select trunc(sysdate) day from dual)
+      select r.ID,
+          --    p.INITIATIVE_ID,
+          --    i.initiative,
+          --    f.area focus_area,
+          --    f.id focus_area_id,
+             (select reservation_id from hotel_reservations where RESERVATION_ID = r.reservation_id) reservation_id,
+             r.reservation_type,
+             (select case when first_name is not null or last_name is not null
+                          then first_name||' '||last_name
+                          else email
+                          end
+                     from bs_employees t where t.id = r.owner_id) the_owner,
+             r.owner_id,
+             s.status,
+             r.start_date,
+             r.target_complete,
+             case when s.indicates_complete_yn = 'N' and
+                       r.target_complete is not null
+                  then least(5, trunc(r.target_complete) - trunc(r.target_complete, 'iw') + 1)
+                       - least(5, today.day - trunc(today.day, 'iw') + 1)
+                       + (trunc(r.target_complete, 'iw') - trunc(today.day, 'iw')) * 5 / 7
+             end weekdays_left,
+             r.updated
+        from reservation_tasks r,
+             res_task_statuses s,
+             today,
+             HOTEL_RESERVATIONs p
+          --    SP_INITIATIVES i,
+          --    SP_AREAS f
+       where r.id = :P502_TASK_ID
+         and r.status_id = s.id
+         and r.reservation_id = p.RESERVATION_ID
+      --    and p.initiative_id = i.id
+      --    and i.area_id = f.id
+    page-items-to-submit: 
+    - P502_TASK_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: Details # 35991909575477484866
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 50
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-label--stacked
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: no data found
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: RESERVATION_ID ==============================
+    id: 260159820787840533
+    identification: 
+      column-name: RESERVATION_ID
+      type: Link
+
+    heading: 
+      heading: كود الحجز
+      alignment: start
+
+    layout: 
+      sequence: 250
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.::P3_RESERVATION_ID:#RESERVATION_ID#'
+        page: 3 # Create Identity
+        values: 
+          p3_reservation_id: '#RESERVATION_ID#'
+
+      link-text: '#RESERVATION_ID#'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: RESERVATION_TYPE ============================
+    id: 260159909817840534
+    identification: 
+      column-name: RESERVATION_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: نوع الحجز
+      alignment: start
+
+    layout: 
+      sequence: 260
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: WEEKDAYS_LEFT ===============================
+    id: 20511676804224919844
+    identification: 
+      column-name: WEEKDAYS_LEFT
+      type: Plain Text
+
+    heading: 
+      heading: الزمن المتبقي
+      alignment: end
+
+    layout: 
+      sequence: 220
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 28621269894043905608
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: حالة المهمة
+      alignment: start
+
+    layout: 
+      sequence: 190
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: START_DATE ==================================
+    id: 28621269959511905609
+    identification: 
+      column-name: START_DATE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التعين
+      alignment: start
+
+    layout: 
+      sequence: 200
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: DD-MON-YYYY
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TARGET_COMPLETE =============================
+    id: 28621270059676905610
+    identification: 
+      column-name: TARGET_COMPLETE
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الاتمام
+      alignment: start
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: DD-MON-YYYY
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OWNER_ID ====================================
+    id: 28621272744121905637
+    identification: 
+      column-name: OWNER_ID
+      type: Hidden
+
+    layout: 
+      sequence: 240
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: THE_OWNER ===================================
+    id: 28621272816018905638
+    identification: 
+      column-name: THE_OWNER
+      type: Link
+
+    heading: 
+      heading: الشخص المعين
+      alignment: start
+
+    layout: 
+      sequence: 180
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:5:P5_ID:#OWNER_ID#'
+        page: 5 # Security Group Form
+        clear-cache: 5
+        values: 
+          p5_id: '#OWNER_ID#'
+
+      link-text: '#THE_OWNER#'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 28639029017218291177
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تحديث
+      alignment: start
+
+    layout: 
+      sequence: 230
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 28639029441405291177
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 140
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Comments ====================================
+  id: 147386364431365195419
+  identification: 
+    name: Comments
+    title: تعليقات [&P502_COMMENTSCOUNT.]
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select ic.ID,
+             -- Display Columns
+             tm.initials user_icon,
+             apex_util.get_since(ic.created) comment_date,
+             tm.first_name || ' ' || tm.last_name user_name,
+             --
+             ic.body_html comment_text,
+             case when lower(ic.created_by) = lower(:app_user_id)
+                  then '<a href="'||apex_util.prepare_URL(
+                                    p_url => 'f?p='||:APP_ID||':503:'||:APP_SESSION||'::NO:503:P503_ID:'||ic.id,
+                                    p_checksum_type => '3')||'">تعديل</a>' 
+                  end actions,
+             ' ' attribute_1,
+             ' ' attribute_2,
+             ' ' attribute_3,
+             ' ' attribute_4,
+             'u-color-'||ora_hash(ic.created_by,45) icon_modifier,
+             --
+             --
+             --
+             decode(ic.private_yn,null,null,'N',null,'Y',' Private Comment') private_comment_label,
+             --
+             -- Data Columns
+             --
+             ic.BODY,
+             ic.BODY_HTML,
+             ic.AUTHOR_ID,
+             --
+             ic.CREATED,
+             ic.CREATED_BY,
+             ic.UPDATED,
+             ic.UPDATED_BY,
+             tm.id team_member_id
+        from res_task_comments ic, 
+             bs_employees tm
+      where ic.author_id = tm.id and
+            ic.task_id = :P502_TASK_ID and  
+            (nvl(ic.private_yn,'N') = 'N' or lower(ic.created_by) = lower(:app_user_id) )
+      order by created desc
+    page-items-to-submit: 
+    - P502_TASK_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 90
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Comments
+      template-options: 
+      - '#DEFAULT#'
+      - t-Comments--chat
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: No Comments
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 28639041491564291197
+    identification: 
+      column-name: ID
+      type: Plain Text
+
+    heading: 
+      heading: Id
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USER_ICON ===================================
+    id: 28639041800906291198
+    identification: 
+      column-name: USER_ICON
+      type: Plain Text
+
+    heading: 
+      heading: User Icon
+      alignment: center
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMMENT_DATE ================================
+    id: 28639042230931291198
+    identification: 
+      column-name: COMMENT_DATE
+      type: Plain Text
+
+    heading: 
+      heading: Comment Date
+      alignment: center
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: USER_NAME ===================================
+    id: 28639042668167291198
+    identification: 
+      column-name: USER_NAME
+      type: Plain Text
+
+    heading: 
+      heading: User Name
+      alignment: center
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMMENT_TEXT ================================
+    id: 28639043028797291199
+    identification: 
+      column-name: COMMENT_TEXT
+      type: Plain Text
+
+    heading: 
+      heading: Comment Text
+      alignment: center
+
+    layout: 
+      sequence: 180
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    column-formatting: 
+      html-expression: |
+        {if PRIVATE_COMMENT_LABEL/}<strong class="u-danger-text">#PRIVATE_COMMENT_LABEL#</strong><br />{endif/}
+        #COMMENT_TEXT#
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: ACTIONS =====================================
+    id: 28639043423893291199
+    identification: 
+      column-name: ACTIONS
+      type: Plain Text
+
+    heading: 
+      heading: Actions
+      alignment: center
+
+    layout: 
+      sequence: 190
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: ATTRIBUTE_1 =================================
+    id: 28639043835407291199
+    identification: 
+      column-name: ATTRIBUTE_1
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 1
+      alignment: center
+
+    layout: 
+      sequence: 200
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_2 =================================
+    id: 28639044288545291200
+    identification: 
+      column-name: ATTRIBUTE_2
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 2
+      alignment: center
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_3 =================================
+    id: 28639044622315291200
+    identification: 
+      column-name: ATTRIBUTE_3
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 3
+      alignment: center
+
+    layout: 
+      sequence: 220
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ATTRIBUTE_4 =================================
+    id: 28639045029470291201
+    identification: 
+      column-name: ATTRIBUTE_4
+      type: Plain Text
+
+    heading: 
+      heading: Attribute 4
+      alignment: center
+
+    layout: 
+      sequence: 230
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ICON_MODIFIER ===============================
+    id: 28639045407976291201
+    identification: 
+      column-name: ICON_MODIFIER
+      type: Plain Text
+
+    heading: 
+      heading: Icon Modifier
+      alignment: center
+
+    layout: 
+      sequence: 240
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PRIVATE_COMMENT_LABEL =======================
+    id: 28639045881226291201
+    identification: 
+      column-name: PRIVATE_COMMENT_LABEL
+      type: Plain Text
+
+    heading: 
+      heading: Private Comment Label
+      alignment: start
+
+    layout: 
+      sequence: 260
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: BODY ========================================
+    id: 28639046248349291202
+    identification: 
+      column-name: BODY
+      type: Plain Text
+
+    heading: 
+      heading: Body
+      alignment: center
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: BODY_HTML ===================================
+    id: 28639046641899291202
+    identification: 
+      column-name: BODY_HTML
+      type: Plain Text
+
+    heading: 
+      heading: Body Html
+      alignment: center
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AUTHOR_ID ===================================
+    id: 28639047090834291202
+    identification: 
+      column-name: AUTHOR_ID
+      type: Plain Text
+
+    heading: 
+      heading: Author Id
+      alignment: center
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 28639047459480291202
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: center
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 28639047796544291203
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Created By
+      alignment: center
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 28639048246592291203
+    identification: 
+      column-name: UPDATED
+      type: Hidden
+
+    layout: 
+      sequence: 130
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 28639048631345291204
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Updated By
+      alignment: center
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TEAM_MEMBER_ID ==============================
+    id: 28639049028171291204
+    identification: 
+      column-name: TEAM_MEMBER_ID
+      type: Plain Text
+
+    heading: 
+      heading: User ID
+      alignment: start
+
+    layout: 
+      sequence: 250
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Documents ===================================
+  id: 159173539968204647332
+  identification: 
+    name: Documents
+    title: مستندات [&P502_DOCUMENTCOUNT.]
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d.ID,
+             d.DOCUMENT_FILENAME,
+             d.UPDATED,
+             d.created,
+             case when length(d.doc_description) > 200
+                  then substr(d.doc_description,1,200)||'...'
+                  else d.doc_description
+                  end doc_description,
+             d.tags,
+             lower(created_by) created_by,
+             dbms_lob.getlength(d.DOCUMENT_BLOB) doc_size,
+             created date_created,
+             substr(DOCUMENT_FILENAME,instr(DOCUMENT_FILENAME,'.',-1)+1,length(DOCUMENT_FILENAME)-instr(DOCUMENT_FILENAME,'.',-1)) file_extension,
+             decode(important_yn,'Y','نعم','لا') important
+        from RES_TASK_DOCUMENTS d
+       where task_id = :P502_TASK_ID
+      order by created desc
+      
+    page-items-to-submit: 
+    - P502_TASK_ID
+
+  layout: 
+    sequence: 110
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: DOCUMENTS
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 45482153779869942656
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:504:&SESSION.::&DEBUG.:504:P504_ID:#ID#'
+        page: 504
+        clear-cache: 504
+        values: 
+          p504_id: '#ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 45483890014673535427
+      identification: 
+        name: Primary Report
+        alias: 8109551
+
+    columns: 
+    - # ====== Column: IMPORTANT ===================================
+      id: 43565188567738672691
+      identification: 
+        column-name: IMPORTANT
+        type: Plain Text
+
+      heading: 
+        heading: مهم
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 130
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED_BY ==================================
+      id: 44674736407148870151
+      identification: 
+        column-name: CREATED_BY
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+      heading: 
+        heading: القائم باضافة المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: ID ==========================================
+      id: 45482153881033942657
+      identification: 
+        column-name: ID
+        type: Plain Text
+
+      heading: 
+        heading: Id
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOCUMENT_FILENAME ===========================
+      id: 45482154013424942658
+      identification: 
+        column-name: DOCUMENT_FILENAME
+        type: Link
+
+      heading: 
+        heading: اسم المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      link: 
+        target: 
+          url: 'f?p=&APP_ID.:505:&SESSION.::&DEBUG.:505:P505_ID,P505_PREV_PAGE:#ID#,502'
+          page: 505 # Task Document Details
+          clear-cache: 505
+          values: 
+            p505_id: '#ID#'
+            p505_prev_page: 502
+
+        link-text: '#DOCUMENT_FILENAME#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED =====================================
+      id: 45482154190388942660
+      identification: 
+        column-name: UPDATED
+        type: Plain Text
+
+      heading: 
+        heading: اخر تحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: SINCE
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED =====================================
+      id: 45482154266231942661
+      identification: 
+        column-name: CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الانشاء
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: SINCE_SHORT
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOC_DESCRIPTION =============================
+      id: 45482154438225942662
+      identification: 
+        column-name: DOC_DESCRIPTION
+        type: Plain Text
+
+      heading: 
+        heading: وصف المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOC_SIZE ====================================
+      id: 45482154643754942664
+      identification: 
+        column-name: DOC_SIZE
+        type: Plain Text
+
+      heading: 
+        heading: حجم النستند
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: FILESIZE
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DATE_CREATED ================================
+      id: 45482154660792942665
+      identification: 
+        column-name: DATE_CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الانشاء
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: FILE_EXTENSION ==============================
+      id: 45919008851538791444
+      identification: 
+        column-name: FILE_EXTENSION
+        type: Plain Text
+
+      heading: 
+        heading: امتداد الملف
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TAGS ========================================
+      id: 56578692555479340247
+      identification: 
+        column-name: TAGS
+        type: Plain Text
+
+      heading: 
+        heading: علامات مميزة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: Letter
+        orientation: Landscape
+        units: Inches
+        width: 11
+        height: 8.5
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+        page-header-text: Documents
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+page-items: 
+- # ====== Page Item: P502_LINKSCOUNT ==========================
+  id: 260050850765498977
+  identification: 
+    name: P502_LINKSCOUNT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P502_COMMENTSCOUNT =======================
+  id: 260051055636498979
+  identification: 
+    name: P502_COMMENTSCOUNT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P502_DOCUMENTCOUNT =======================
+  id: 260159772355840532
+  identification: 
+    name: P502_DOCUMENTCOUNT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P502_RESERVATION_ID ======================
+  id: 28621270128308905611
+  identification: 
+    name: P502_RESERVATION_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P502_PREV_PAGE ===========================
+  id: 29062454305911313616
+  identification: 
+    name: P502_PREV_PAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P502_TASK_ID =============================
+  id: 33116157325009189744
+  identification: 
+    name: P502_TASK_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+- # ====== Page Item: P502_TASK ================================
+  id: 33116157544111189746
+  identification: 
+    name: P502_TASK
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P502_PRIVATE_YN ==========================
+  id: 33442234760129097537
+  identification: 
+    name: P502_PRIVATE_YN
+    type: Checkbox
+
+  label: 
+    label: تعليق خاص
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Comments # 147386364431365195419
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    - margin-left-md
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P502_LINK ================================
+  id: 38086908033166035954
+  identification: 
+    name: P502_LINK
+    type: Text Field
+
+  label: 
+    label: لينك الرابط
+    alignment: Left
+
+  settings: 
+    subtype: URL
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Links # 38086881274481035870
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P502_LINK_NAME ===========================
+  id: 38086908434297035958
+  identification: 
+    name: P502_LINK_NAME
+    type: Text Field
+
+  label: 
+    label: اسم الرابط
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Links # 38086881274481035870
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P502_COMMENT =============================
+  id: 155957519116267452705
+  identification: 
+    name: P502_COMMENT
+    type: Rich Text Editor
+
+  label: 
+    label: ' '
+    alignment: Left
+
+  settings: 
+    format: Markdown
+    minimum-height: 180
+    allow-custom-html: true
+
+  layout: 
+    sequence: 10
+    region: Comments # 147386364431365195419
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function( options ) { return options; }
+      ///* JS Init Function for Comments Rich Text Editor */
+      //function( options ) {
+      //    options.editorOptions.paste_data_images = false;
+      //    return options;
+      //}
+      
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: view_images =================================
+  id: 28639017968548291158
+  identification: 
+    button-name: view_images
+    label: معرض الصور
+
+  layout: 
+    sequence: 10
+    region: Documents # 159173539968204647332
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:60:&SESSION.::&DEBUG.:60:P60_TASK_ID:&P502_TASK_ID.'
+      page: 60
+      clear-cache: 60
+      values: 
+        p60_task_id: '&P502_TASK_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1 
+        from RES_TASK_DOCUMENTS d
+       where task_id = :P502_TASK_ID and 
+             (
+                 lower(DOCUMENT_FILENAME) like '%.png' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpg' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpeg' or 
+                 lower(DOCUMENT_FILENAME) like '%.gif' or 
+                 lower(DOCUMENT_FILENAME) like '%.tiff' or 
+                 lower(DOCUMENT_FILENAME) like '%.ai' 
+             )
+
+- # ====== Button: add_document ================================
+  id: 28639018369558291160
+  identification: 
+    button-name: add_document
+    label: اضافة مستند
+
+  layout: 
+    sequence: 30
+    region: Documents # 159173539968204647332
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:504:&SESSION.::&DEBUG.:RR,504:P504_TASK_ID:&P502_TASK_ID.'
+      page: 504
+      clear-cache: RR,504
+      values: 
+        p504_task_id: '&P502_TASK_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: add_link ====================================
+  id: 28639034853354291184
+  identification: 
+    button-name: add_link
+    label: اضافة اللنك
+
+  layout: 
+    sequence: 40
+    region: Links # 38086881274481035870
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    - t-Button--gapTop
+    icon: fa-plus
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: UP_for_3 ====================================
+  id: 28639036292320291186
+  identification: 
+    button-name: UP_for_3
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 40722263211065145015
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:RP,:P3_RESERVATION_ID:&P502_RESERVATION_ID.'
+      page: 3 # Create Identity
+      clear-cache: RP
+      values: 
+        p3_reservation_id: '&P502_RESERVATION_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item = Value
+    item: P502_PREV_PAGE
+    value: 3
+
+- # ====== Button: POST_COMMENT ================================
+  id: 28639049467686291204
+  identification: 
+    button-name: POST_COMMENT
+    label: اضافة تعليق
+
+  layout: 
+    sequence: 20
+    region: Comments # 147386364431365195419
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    column-css-classes: 
+    - u-flex
+    - u-align-items-center
+    - margin-bottom-md
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  security: 
+    authorization-scheme: Administration Rights # 149832818388153023719
+
+- # ====== Button: UP ==========================================
+  id: 29062454470538313617
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 40722263211065145015
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:&P502_PREV_PAGE.:&SESSION.::&DEBUG.:RP,::'
+      page: '&P502_PREV_PAGE.'
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item != Value
+    item: P502_PREV_PAGE
+    value: 3
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on documents ================
+  id: 28639063009254291224
+  identification: 
+    name: refresh on documents
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Documents # 159173539968204647332
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 28639063506789291225
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Documents # 159173539968204647332
+
+    execution: 
+      sequence: 10
+      event: refresh on documents # 28639063009254291224
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: post comment ========================
+  id: 28639063985427291225
+  identification: 
+    name: post comment
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: POST_COMMENT # 28639049467686291204
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 28639064451479291226
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        insert into res_task_comments (
+            task_id,
+            body,
+            author_id,
+            private_yn
+            ) values (
+            :P502_TASK_ID,
+            :P502_COMMENT,
+            :APP_USER_ID,
+            nvl(:P502_PRIVATE_YN,'N')
+            );
+        :P502_COMMENT := null;
+        :P502_PRIVATE_YN := null;
+      items-to-submit: 
+      - P502_TASK_ID
+      - P502_COMMENT
+      - P502_PRIVATE_YN
+      items-to-return: 
+      - P502_COMMENT
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: post comment # 28639063985427291225
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 28639064959876291226
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Comments # 147386364431365195419
+
+    execution: 
+      sequence: 20
+      event: post comment # 28639063985427291225
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 28639065406455291226
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Task # 64782704458160822026
+
+    execution: 
+      sequence: 30
+      event: post comment # 28639063985427291225
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: on comments dialog closed ===========
+  id: 28639065801814291227
+  identification: 
+    name: on comments dialog closed
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Comments # 147386364431365195419
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 28639066354110291227
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Comments # 147386364431365195419
+
+    execution: 
+      sequence: 10
+      event: on comments dialog closed # 28639065801814291227
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 28639066846472291227
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Task # 64782704458160822026
+
+    execution: 
+      sequence: 20
+      event: on comments dialog closed # 28639065801814291227
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: add link ============================
+  id: 28639067208932291228
+  identification: 
+    name: add link
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: add_link # 28639034853354291184
+
+  actions: 
+  - # ====== Action: Alert =======================================
+    id: 28639067781489291228
+    identification: 
+      action: Alert
+
+    settings: 
+      title: ناقص حاجة!
+      message: يرجى إدخال رابط URL واسم الرابط.
+      style: Default
+
+    execution: 
+      sequence: 10
+      event: add link # 28639067208932291228
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+    client-side-condition: 
+      type: JavaScript expression
+      javascript-expression: $v('P502_LINK') === '' || $v('P502_LINK_NAME') === ''
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 28639068239555291228
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        if :P502_LINK_NAME is not null and :P502_LINK is not null then
+        insert into res_TASK_LINKS (
+            task_id, link_name, link_url)
+        values (
+            :P502_TASK_ID, :P502_LINK_NAME, :P502_LINK);
+        :P502_LINK_NAME := null;
+        :P502_LINK := null;
+        end if;
+      items-to-submit: 
+      - P502_LINK_NAME
+      - P502_LINK
+      - P502_TASK_ID
+      items-to-return: 
+      - P502_LINK_NAME
+      - P502_LINK
+      suppress-change-event: false
+
+    execution: 
+      sequence: 20
+      event: add link # 28639067208932291228
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 28639068710701291229
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Links # 38086881274481035870
+
+    execution: 
+      sequence: 40
+      event: add link # 28639067208932291228
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 28639069259267291229
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Task # 64782704458160822026
+
+    execution: 
+      sequence: 50
+      event: add link # 28639067208932291228
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: contextual info dialog close refresh 
+  id: 28639071089933291230
+  identification: 
+    name: contextual info dialog close refresh
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 40722263211065145015
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 28639071564196291231
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Task # 64782704458160822026
+
+    execution: 
+      sequence: 10
+      event: contextual info dialog close refresh # 28639071089933291230
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: on links region dc ==================
+  id: 28639071984093291231
+  identification: 
+    name: on links region dc
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Links # 38086881274481035870
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 28639072447100291231
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Task # 64782704458160822026
+
+    execution: 
+      sequence: 10
+      event: on links region dc # 28639071984093291231
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 28639072910285291232
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Links # 38086881274481035870
+
+    execution: 
+      sequence: 20
+      event: on links region dc # 28639071984093291231
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: P502_LINKSCOUNT ========================
+  id: 260050999397498978
+  identification: 
+    item-name: P502_LINKSCOUNT
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select count(id) from res_task_links where task_id = :P502_TASK_ID'
+
+- # ====== Computation: P502_COMMENTSCOUNT =====================
+  id: 260159561120840530
+  identification: 
+    item-name: P502_COMMENTSCOUNT
+
+  execution: 
+    sequence: 20
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select count(id) from res_task_comments where task_id = :P502_TASK_ID'
+
+- # ====== Computation: P502_DOCUMENTCOUNT =====================
+  id: 260159606574840531
+  identification: 
+    item-name: P502_DOCUMENTCOUNT
+
+  execution: 
+    sequence: 30
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select count(id) from res_task_documents where task_id = :P502_TASK_ID'
+
+- # ====== Computation: P502_TASK ==============================
+  id: 28639061543856291223
+  identification: 
+    item-name: P502_TASK
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select (select task_type from res_task_types rt where rt.id = task_type_id)||
+                 case when task_sub_type_id is not null then ': ' end ||
+                 (select task_type from res_task_types rt where rt.id = task_sub_type_id) ||
+             case when task is not null then ' - '||task end type
+        from reservation_tasks
+       where id = :P502_TASK_ID
+
+processes: 
+- # ====== Process: log ========================================
+  id: 11862921548665220100
+  identification: 
+    name: log
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      RESERVATION_LOG.log_interaction(
+          p_reservation_id => :P502_reservation_ID,
+          p_type => :P502_RESERVATION_TYPE);
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+    run-process: Once Per Page Visit (default)
+

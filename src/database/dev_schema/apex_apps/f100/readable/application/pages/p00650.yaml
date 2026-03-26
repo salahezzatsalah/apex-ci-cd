@@ -1,0 +1,473 @@
+---
+# ====== Page: Airport Services Department Home ==============
+id: 650
+identification: 
+  name: Airport Services Department Home
+  alias: AIRPORT-SERVICES-DEPARTMENT-HOME
+  title: Airport Services Department Home
+  page-group: Home # 18677563246010402822
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+comments: 
+  comments: home
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 13965094752583370128
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 75
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 14829438107616384946
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 13965094752583370128
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14829438408195384949
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: الانشطة الشخصية  ==============================
+      id: 12076677971534972176
+      identification: 
+        type: Menu Entry
+        label: 'الانشطة الشخصية '
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض حجوزاتي ===================================
+      id: 12831974929659684908
+      identification: 
+        type: Menu Entry
+        label: عرض حجوزاتي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: Separator =====================================
+      id: 12847683726909008115
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Separator =====================================
+      id: 13441039132649225008
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 14829439114102384956
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 150
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:650:&SESSION.::&DEBUG.:RP,1::'
+          page: 650 # Airport Services Department Home
+          clear-cache: RP,1
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: مهامي =========================================
+      id: 20741435939386620980
+      identification: 
+        type: Menu Entry
+        label: مهامي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:RP,500:P500_ASSIGNED_TO:&APP_USER_FIRST_LAST_NAME.'
+          page: 500 # Tasks
+          clear-cache: RP,500
+          values: 
+            p500_assigned_to: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-clipboard-list
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: اضافة نشاط ====================================
+      id: 23087996246139021599
+      identification: 
+        type: Menu Entry
+        label: اضافة نشاط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:101:&SESSION.::&DEBUG.:RP,101::'
+          page: 101
+          clear-cache: RP,101
+
+      appearance: 
+        icon: fa-plus
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: مفضل ========================================
+    id: 20080777911865664701
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: مفضل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,:P362_FAVORITE:نعم'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP
+        values: 
+          p362_favorite: نعم
+
+    appearance: 
+      display-type: Icon
+      icon: fa-heart
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: عرض جميع الطلابات ===========================
+    id: 23087996126903021598
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: عرض جميع الطلابات
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,362::'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP,362
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 281061671422850395
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 13965094752583370128
+
+- # ====== Dynamic Action: toggle favorite =====================
+  id: 281062060155850395
+  identification: 
+    name: toggle favorite
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P650_RESERVATION_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 281062596931850395
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-reservation-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-reservation-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('تم اضافة الحجز في قائمة المفضل!');
+        }
+        apex.items.P650_RESERVATION_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: toggle favorite # 281062060155850395
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 281063035725850396
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        RESERVATION_FAVORITE_TOGGLE(
+            p_reservation_id  => :P650_RESERVATION_TO_FAVORITE, 
+            p_user_id => :APP_USER_ID );
+      items-to-submit: 
+      - P650_RESERVATION_TO_FAVORITE
+      - APP_USER_ID
+
+    execution: 
+      sequence: 10
+      event: toggle favorite # 281062060155850395
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: dismiss notif =======================
+  id: 281063483854850396
+  identification: 
+    name: dismiss notif
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P650_NOTIF_TO_DISMISS
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 281063970746850396
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        update sp_team_member_notifications
+           set dismissed_yn = 'Y'
+         where id = :P650_NOTIF_TO_DISMISS
+           and team_member_id =  :APP_USER_ID;
+      items-to-submit: 
+      - P650_NOTIF_TO_DISMISS
+
+    execution: 
+      sequence: 10
+      event: dismiss notif # 281063483854850396
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 281064498957850396
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.items.P650_NOTIF_TO_DISMISS.setValue('',undefined,true);
+
+    execution: 
+      sequence: 20
+      event: dismiss notif # 281063483854850396
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

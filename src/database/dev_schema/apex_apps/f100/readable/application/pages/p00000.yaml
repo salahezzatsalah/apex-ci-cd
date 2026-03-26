@@ -1,0 +1,552 @@
+---
+# ====== Page: Global Page ===================================
+id: 0
+identification: 
+  name: Global Page
+
+regions: 
+- # ====== Region: Search ======================================
+  id: 267395778516331153
+  identification: 
+    name: Search
+    title: بحث في النظام
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_04
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Inline Dialog
+    template-options: 
+    - js-modal
+    - js-dialog-size720x480
+    - margin-top-none
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Search
+
+  advanced: 
+    static-id: SearchDialog
+    custom-attributes: 
+    - '#APEX_CSP_DISPLAY_NONE#'
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Search Result ===============================
+  id: 267396153177331157
+  identification: 
+    name: Search Result
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      -- CLIENTS (NEW MODEL)
+      select
+          'ملف عميل' as result_type,
+      
+          c.full_name || 
+          case 
+              when c.client_code is not null 
+              then ' (' || c.client_code || ')' 
+          end as result_label,
+      
+          ph.contact_value as result_subtitle, -- PHONE
+      
+          em.contact_value as result_desc,      -- EMAIL
+      
+          c.client_id as result_id,
+      
+          /* Avatar */
+          '#APP_FILES#placeholders/client-profile-placeholder.png' as avatar_src,
+      
+          98 as target_page,
+          'P98_ID' as target_item
+      from clients c
+      
+      /* ===============================
+         Primary PHONE
+         =============================== */
+      left join client_contacts ph
+             on ph.client_id = c.client_id
+            and ph.contact_type = 'PHONE'
+      
+      
+      /* ===============================
+         Primary EMAIL (optional)
+         =============================== */
+      left join client_contacts em
+             on em.client_id = c.client_id
+            and em.contact_type = 'EMAIL'
+            and em.is_primary = 'Y'
+      
+      where
+          length(:P0_SEARCH) >= 2
+      and (
+             lower(c.full_name) like '%' || lower(:P0_SEARCH) || '%'
+          or lower(c.client_code) like '%' || lower(:P0_SEARCH) || '%'
+          or ph.contact_value like '%' || regexp_replace(:P0_SEARCH, '[^0-9]', '') || '%'
+      )
+      
+      union all
+      
+      -- EMPLOYEES
+      select
+          'ملف موظف' as result_type,
+          e.first_name || ' ' || e.last_name as result_label,
+          e.job_title as result_subtitle,
+          e.email as result_desc,
+          e.id as result_id,
+          case
+              when e.photo_filename is not null then
+              'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/profilephotosapi/photo/' || e.id
+              else
+                  '#APP_FILES#placeholders/employees-profile-placeholder.png'
+          end as avatar_src,
+          5 as target_page,
+          'P5_ID' as target_item
+      from bs_employees e
+      where
+          length(:P0_SEARCH) >= 2 and
+      (lower(e.first_name) like '%' || lower(:P0_SEARCH) || '%'
+          or lower(e.last_name) like '%' || lower(:P0_SEARCH) || '%'
+          or lower(e.phone_number) like '%' || lower(:P0_SEARCH) || '%')
+      
+      -- union all
+      
+      -- -- HOTEL RESERVATIONS
+      -- select
+      --     'طلب حجز فندق' as result_type,
+      --     'كود الطلب: ' || r.reservation_id as result_label,
+      --     to_char(r.from_date, 'YYYY-MM-DD') || ' - ' || to_char(r.to_date, 'YYYY-MM-DD') as result_subtitle,
+      --     r.client_name || ' – ' || r.hotel_name as result_desc,
+      --     r.reservation_id as result_id,
+      --     '#APP_FILES#placeholders/hotel-reservations-placeholder.png' as avatar_src,
+      --     3 as target_page,
+      --     'P3_RESERVATION_ID' as target_item
+      -- from vw_hotel_reservation_summary r
+      -- where     length(:P0_SEARCH) >= 2 and 
+      --     lower(r.reservation_id) like '%' || lower(:P0_SEARCH) || '%'
+      
+      -- -- union all
+      
+      -- LIMO RESERVATIONS
+      -- select
+      --     'طلب حجز ليموزين' as result_type,
+      --     'كود الطلب: ' || r.reservation_id as result_label,
+      --     to_char(r.from_date, 'YYYY-MM-DD') || ' - ' || to_char(r.to_date, 'YYYY-MM-DD') as result_subtitle,
+      --     r.client_name as result_desc,
+      --     r.reservation_id as result_id,
+      --     '#APP_FILES#placeholders/limo-reservation-placeholder.png' as avatar_src,
+      --     360 as target_page,
+      --     'P360_RESERVATION_ID' as target_item
+      -- from vw_limo_reservation_summary r
+      -- where
+      --     length(:P0_SEARCH) >= 2 and 
+      --     lower(r.reservation_id) like '%' || lower(:P0_SEARCH) || '%'
+      
+    page-items-to-submit: 
+    - P0_SEARCH
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: Search # 267395778516331153
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    static-id: SearchData
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: '&RESULT_TYPE.'
+      title: '&RESULT_LABEL.'
+      description: '&RESULT_DESC.'
+      miscellaneous: '&RESULT_SUBTITLE.'
+      display-avatar: true
+      display-badge: false
+
+    avatar: 
+      type: Image
+      image: 
+        url-column: AVATAR_SRC
+
+      shape: Rounded
+      size: Default
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: true
+
+  columns: 
+  - # ====== Column: TARGET_PAGE =================================
+    id: 268058484662285365
+    identification: 
+      name: TARGET_PAGE
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: TARGET_PAGE
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: TARGET_ITEM =================================
+    id: 268058603596285366
+    identification: 
+      name: TARGET_ITEM
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: TARGET_ITEM
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESULT_TYPE =================================
+    id: 269055413341390030
+    identification: 
+      name: RESULT_TYPE
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: RESULT_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESULT_LABEL ================================
+    id: 269055541032390031
+    identification: 
+      name: RESULT_LABEL
+
+    layout: 
+      sequence: 70
+
+    source: 
+      type: Database Column
+      database-column: RESULT_LABEL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESULT_SUBTITLE =============================
+    id: 269055673784390032
+    identification: 
+      name: RESULT_SUBTITLE
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: RESULT_SUBTITLE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESULT_DESC =================================
+    id: 269055724322390033
+    identification: 
+      name: RESULT_DESC
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: RESULT_DESC
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: RESULT_ID ===================================
+    id: 269055896566390034
+    identification: 
+      name: RESULT_ID
+
+    layout: 
+      sequence: 100
+
+    source: 
+      type: Database Column
+      database-column: RESULT_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: AVATAR_SRC ==================================
+    id: 269055936009390035
+    identification: 
+      name: AVATAR_SRC
+
+    layout: 
+      sequence: 110
+
+    source: 
+      type: Database Column
+      database-column: AVATAR_SRC
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Full Row Link ===============================
+    id: 267397980397331175
+    identification: 
+      position: Full Row Link # 349402277895478545
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:&TARGET_PAGE.:&SESSION.::&DEBUG.:&TARGET_PAGE.:&TARGET_ITEM.:&RESULT_ID.'
+        page: '&TARGET_PAGE.'
+        clear-cache: '&TARGET_PAGE.'
+        values: 
+          &target_item.: '&RESULT_ID.'
+
+page-items: 
+- # ====== Page Item: P0_USER_NAME =============================
+  id: 265961082184147634
+  identification: 
+    name: P0_USER_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: SQL Query (return single value)
+    sql-query: 'select :APP_USER from dual'
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select :APP_USER from dual'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Current Page != Page
+    page: 9999
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P0_SEARCH ================================
+  id: 267395824042331154
+  identification: 
+    name: P0_SEARCH
+    type: Text Field
+
+  label: 
+    label: بحث
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Search # 267395778516331153
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    icon: fa-search
+    width: 30
+    value-placeholder: بحث في النظام (إدارات العملاء، الفريق، الموردين، حجوزات الفنادق، حجوزات الليموزين)
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    css-classes: 
+    - rounded-full
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+dynamic-actions: 
+- # ====== Dynamic Action: P0_SEARCH Input =====================
+  id: 267396992041331165
+  identification: 
+    name: P0_SEARCH Input
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Input
+    selection-type: Item(s)
+    item(s): 
+    - P0_SEARCH
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 267397021721331166
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Search Result # 267396153177331157
+
+    execution: 
+      sequence: 10
+      event: P0_SEARCH Input # 267396992041331165
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

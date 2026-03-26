@@ -1,0 +1,249 @@
+---
+# ====== Page: Settings ======================================
+id: 20000
+identification: 
+  name: Settings
+  alias: SETTINGS1
+  title: الإعدادات
+  page-group: User Settings # 251478209839477840
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - t-Dialog--noPadding
+  - js-dialog-class-t-Drawer--pullOutEnd
+  - js-dialog-class-t-Drawer--md
+
+dialog: 
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: This page contains a list of settings applicable to the current application user.
+
+configuration: 
+  build-option: 'Feature: User Settings' # 251478642664477840
+
+regions: 
+- # ====== Region: &APP_USER. ==================================
+  id: 251483274291477850
+  identification: 
+    name: '&APP_USER.'
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Hero
+    template-options: 
+    - '#DEFAULT#'
+    - t-HeroRegion--hideIcon
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      SELECT 1
+        FROM apex_application_auth
+       WHERE application_id             = :APP_ID
+         AND is_current_authentication = 'Y'
+         AND scheme_type_code          = 'NATIVE_CUSTOM'
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: &APP_USER. ==================================
+  id: 251483611031477850
+  identification: 
+    name: '&APP_USER.'
+    type: Cards
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: BS_EMPLOYEES
+    include-rowid-column: false
+    where-clause: 'username = :APP_USER'
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Cards Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-CardsRegion--styleB
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      SELECT 1
+        FROM apex_application_auth
+       WHERE application_id             = :APP_ID
+         AND is_current_authentication = 'Y'
+         AND scheme_type_code          = 'NATIVE_CUSTOM'
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 251484132083477850
+    appearance: 
+      layout: Horizontal (Row)
+
+    card: 
+      css-classes: 
+      - a-CardView--noUI
+      primary-key-column-1: ID
+
+    title: 
+      advanced-formatting: false
+      column: USERNAME
+
+    subtitle: 
+      advanced-formatting: false
+      column: EMAIL
+
+    body: 
+      advanced-formatting: false
+      column: JOB_TITLE
+
+    secondary-body: 
+      advanced-formatting: false
+      column: COMPETENCIES
+
+    icon-and-badge: 
+      icon-source: Image BLOB Column
+      image-column: PHOTO
+      icon-position: Start
+
+    media: 
+      advanced-formatting: false
+      source: No Media
+
+    blob-attributes: 
+      mime-type-column: PHOTO_MIMETYPE
+      last-updated-column: PHOTO_LASTUPD
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+- # ====== Region: Settings ====================================
+  id: 251484685259477851
+  identification: 
+    name: Settings
+    title: الإعدادات
+    type: List
+
+  source: 
+    list: User Settings # 251482288764477847
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      list-template: Media List
+      template-options: 
+      - '#DEFAULT#'
+      - t-MediaList--showBadges
+      - u-colors
+

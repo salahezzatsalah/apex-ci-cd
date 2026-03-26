@@ -1,0 +1,812 @@
+---
+# ====== Page: User Details ==================================
+id: 10012
+identification: 
+  name: User Details
+  alias: USER-DETAILS
+  title: بيانات المستخدم
+  page-group: Administration # 149832819600226023728
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: true
+
+security: 
+  authorization-scheme: Administration Rights # 149832818388153023719
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+help: 
+  help-text: |
+    <p>Use this form to enter users, their email address and set their access level. 
+    The settings defined under <em>Configure Access Control</em> will determine whether the username must be their email address or can be any alphanumeric entry.</p>
+    <p>This application supports the following 3 access levels: Reader, Contributor, and Administrator.</p>
+    <ul>
+      <li><strong>Readers</strong> have read-only access to all information and can also view reports.</li>
+      <li><strong>Contributors</strong> can create, edit and delete information and view reports.</li>
+      <li><strong>Administrators</strong>, in addition to Contributors capability, can also perform configuration of the application by accessing the Administration section of the application.</li>
+    </ul>
+    <p>When editing an existing user you can lock their account which will prevent them from accessing the application.</p>
+    <p><em><strong>Note:</strong>   If using Oracle APEX accounts then users entered here must also be defined as end users by a Workspace Administrator, who can also set their password.</em></p>
+
+configuration: 
+  build-option: Access Control # 149832816658623023715
+
+regions: 
+- # ====== Region: Form on Manage User Access ==================
+  id: 149832835969396023843
+  identification: 
+    name: Form on Manage User Access
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: APEX_APPL_ACL_USERS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 149832836077062023843
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P10012_OLD_ROLE_NAME =====================
+  id: 14582813574974862011
+  identification: 
+    name: P10012_OLD_ROLE_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Form on Manage User Access # 149832835969396023843
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      select role_names
+        from APEX_APPL_ACL_USERS
+       where id = :P10012_ID
+         and application_id = :APP_ID
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10012_ID ================================
+  id: 149832839555339023847
+  identification: 
+    name: P10012_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Form on Manage User Access # 149832835969396023843
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Form on Manage User Access # 149832835969396023843
+    column: ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10012_APPLICATION_ID ====================
+  id: 149832839977606023848
+  identification: 
+    name: P10012_APPLICATION_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Form on Manage User Access # 149832835969396023843
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Form on Manage User Access # 149832835969396023843
+    column: APPLICATION_ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: '&APP_ID.'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10012_USER_NAME =========================
+  id: 149832840378422023848
+  identification: 
+    name: P10012_USER_NAME
+    type: Text Field
+
+  label: 
+    label: اسم المستخدم
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Form on Manage User Access # 149832835969396023843
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Form on Manage User Access # 149832835969396023843
+    column: USER_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Item is NOT NULL
+    item: P10012_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P10012_ROLE_IDS ==========================
+  id: 149832840711690023849
+  identification: 
+    name: P10012_ROLE_IDS
+    type: Radio Group
+
+  label: 
+    label: صلاحيات المستخدم
+    alignment: Left
+
+  settings: 
+    number-of-columns: 1
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 40
+    region: Form on Manage User Access # 149832835969396023843
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: ACCESS_ROLES # 149832840835224023850
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Form on Manage User Access # 149832835969396023843
+    column: ROLE_IDS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      select role_id
+        from APEX_APPL_ACL_ROLES
+       where application_id = :APP_ID
+         and role_name = 'Contributor'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+  help: 
+    help-text: |
+      <p>When Access Control is enabled, Administrators have the ability to restrict access to certain application features for authenticated users. This application supports the following 3 roles: Reader, Contributor, and Administrator.<p>
+      <ul>
+        <li><strong>Readers</strong> have read-only access to all information and can also view reports.</li>
+        <li><strong>Contributors</strong> can create,edit and delete information and view reports.</li>
+        <li><strong>Administrators</strong>,in addition to Contributors capability,can also perform configuration of the application.</li>
+      </ul>
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 149832837053061023845
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 149832836077062023843
+    slot: PREVIOUS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: false
+
+- # ====== Button: DELETE ======================================
+  id: 149832838472373023847
+  identification: 
+    button-name: DELETE
+    label: نزع كل الصلاحيات
+
+  layout: 
+    sequence: 20
+    region: Buttons # 149832836077062023843
+    slot: PREVIOUS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--danger
+    - t-Button--simple
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10012_ID
+
+- # ====== Button: SAVE ========================================
+  id: 149832838892195023847
+  identification: 
+    button-name: SAVE
+    label: حفظ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 149832836077062023843
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P10012_ID
+
+- # ====== Button: CREATE ======================================
+  id: 149832839242328023847
+  identification: 
+    button-name: CREATE
+    label: اضافة الصلاحية
+
+  layout: 
+    sequence: 40
+    region: Buttons # 149832836077062023843
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P10012_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 149832837109343023845
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 149832837053061023845
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 149832837831561023846
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 149832837109343023845
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: email valid =============================
+  id: 27407620534533940914
+  identification: 
+    name: email valid
+
+  execution: 
+    sequence: 20
+
+  validation: 
+    type: Item matches Regular Expression
+    item: P10012_USER_NAME
+    regular-expression: '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}'
+    always-execute: false
+
+  error: 
+    error-message: Username must be a valid email
+    display-location: Inline with Field and in Notification
+    associated-item: P10012_USER_NAME # 149832840378422023848
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 149832839242328023847
+    type: Never
+
+- # ====== Validation: Cannot remove yourself from administrator
+  id: 149832842037313023857
+  identification: 
+    name: Cannot remove yourself from administrator
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Function Body (returning Boolean)
+    language: PL/SQL
+    pl/sql-function-body: |
+      if :P10012_USER_NAME = :APP_USER and
+          apex_acl.is_role_removed_from_user (
+              p_application_id => :APP_ID,
+              p_user_name      => :APP_USER,
+              p_role_static_id => 'ADMINISTRATOR',
+              p_role_ids       => apex_string.split_numbers(
+                                      p_str => case when :REQUEST = 'DELETE' then
+                                                   null
+                                               else
+                                                   :P10012_ROLE_IDS
+                                               end,
+                                      p_sep => ':') ) then
+          return false;
+      else
+          return true;
+      end if;
+    always-execute: false
+
+  error: 
+    error-message: You cannot remove administrator role from yourself.
+    display-location: Inline in Notification
+
+computations: 
+- # ====== Computation: P10012_ID ==============================
+  id: 11891268146667817632
+  identification: 
+    item-name: P10012_ID
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select id
+        from APEX_APPL_ACL_USERS
+       where application_id = :APP_ID
+         and user_name = upper(:P10012_USER_NAME)
+
+  server-side-condition: 
+    type: Request = Value
+    value: FROMPERSON
+
+processes: 
+- # ====== Process: sync_team_member ===========================
+  id: 11891267767997817628
+  identification: 
+    name: sync_team_member
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_member_app_role (
+          p_app_id => :APP_ID,
+          p_email  => :P10012_USER_NAME);
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: log create =================================
+  id: 14582813251320862008
+  identification: 
+    name: log create
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      for c1 in (
+          select role_name
+            from APEX_APPL_ACL_ROLES
+           where application_id = :APP_ID 
+             and role_id = :P10012_ROLE_IDS
+      ) loop
+          insert into sp_app_log
+              (activity, details)
+          values
+              ('Added User', lower(:P10012_USER_NAME)||' (role: '||c1.role_name||')');
+      end loop;
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 149832839242328023847
+
+- # ====== Process: log update =================================
+  id: 14582813391806862009
+  identification: 
+    name: log update
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      for c1 in (
+          select role_name
+            from APEX_APPL_ACL_ROLES
+           where application_id = :APP_ID 
+             and role_id = :P10012_ROLE_IDS
+      ) loop
+          if :P10012_OLD_ROLE_NAME != c1.role_name then
+              insert into sp_app_log
+                  (activity, details)
+              values
+                  ('Updated User', lower(:P10012_USER_NAME) ||' (role changed from '||:P10012_OLD_ROLE_NAME ||' to '||c1.role_name||')');
+          end if;
+      end loop;
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 149832838892195023847
+
+- # ====== Process: log delete =================================
+  id: 14582813400205862010
+  identification: 
+    name: log delete
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      insert into sp_app_log
+          (activity, details)
+      values
+          ('Deleted User', lower(:P10012_USER_NAME)||' (role: '||:P10012_OLD_ROLE_NAME||')');
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 149832838472373023847
+
+- # ====== Process: Initialize form Manage User Access =========
+  id: 149832842384041023858
+  identification: 
+    name: Initialize form Manage User Access
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Form on Manage User Access # 149832835969396023843
+
+  execution: 
+    sequence: 10
+    point: After Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Manage User Access ============
+  id: 149832842762497023859
+  identification: 
+    name: Process form Manage User Access
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Form on Manage User Access # 149832835969396023843
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: No
+    return-primary-key(s)-after-insert: false
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 149832843155122023859
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 70
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+

@@ -1,0 +1,217 @@
+---
+- # ====== Template Option Group: Style ========================
+  id: 217339085235493372
+  identification: 
+    template-type: Report
+    name: Style
+    identifier: STYLE
+    sequence: 10
+
+  help: 
+    help-text: Determines the overall style for the component.
+
+  settings: 
+    null-text: Default
+    advanced: false
+
+- # ====== Template Option Group: Body Text ====================
+  id: 217339838329493375
+  identification: 
+    template-type: Report
+    name: Body Text
+    identifier: BODY_TEXT
+    sequence: 40
+
+  help: 
+    help-text: Determines the height of the card body.
+
+  settings: 
+    null-text: Auto
+    advanced: false
+
+- # ====== Template Option Group: Animation ====================
+  id: 217340607054493378
+  identification: 
+    template-type: Report
+    name: Animation
+    identifier: ANIMATION
+    sequence: 70
+
+  help: 
+    help-text: Sets the hover and focus animation.
+
+  settings: 
+    null-text: Default
+    advanced: false
+
+- # ====== Template Option Group: Icon Shape ===================
+  id: 217343242750493386
+  identification: 
+    template-type: Report
+    name: Icon Shape
+    identifier: ICON_SHAPE
+    sequence: 60
+
+  help: 
+    help-text: Determines the shape of the icon.
+
+  settings: 
+    null-text: Circle
+    advanced: false
+
+- # ====== Template Option Group: Layout =======================
+  id: 217344761475493391
+  identification: 
+    template-type: Report
+    name: Layout
+    identifier: LAYOUT
+    sequence: 30
+
+  help: 
+    help-text: Determines the layout of Cards in the report.
+
+  settings: 
+    advanced: false
+
+- # ====== Template Option Group: Icons ========================
+  id: 217351532881493413
+  identification: 
+    template-type: Report
+    name: Icons
+    identifier: ICONS
+    sequence: 20
+
+  help: 
+    help-text: Controls how to handle icons in the report.
+
+  settings: 
+    null-text: No Icons
+    advanced: false
+
+- # ====== Template Option Group: Collapse Mode ================
+  id: 265575038493244180
+  identification: 
+    template-type: List
+    name: Collapse Mode
+    identifier: COLLAPSE_STYLE
+    sequence: 30
+
+  settings: 
+    advanced: false
+
+- # ====== Template Option Group: Style ========================
+  id: 265577272083244183
+  identification: 
+    template-type: List
+    name: Style
+    identifier: STYLE
+    sequence: 10
+
+  settings: 
+    null-text: Default
+    advanced: false
+
+- # ====== Template Option Group: Display Icons ================
+  id: 265592786885451208
+  identification: 
+    template-type: List
+    name: Display Icons
+    identifier: DISPLAY_ICONS
+    sequence: 30
+
+  settings: 
+    null-text: No Icons
+    advanced: false
+
+- # ====== Template Option Group: Preserve Label Spacing =======
+  id: 10727343692039572709
+  identification: 
+    template-type: Item
+    name: Preserve Label Spacing
+    identifier: PRESERVE_LABEL_SPACING
+    sequence: 1
+
+  help: 
+    help-text: Preserves the label space and enables use of the Label Column Span property.
+
+  settings: 
+    null-text: Yes
+    advanced: false
+
+- # ====== Template Option Group: Color Accents ================
+  id: 10727347695045572712
+  identification: 
+    template-type: List
+    name: Color Accents
+    identifier: COLOR_ACCENTS
+    sequence: 50
+
+  settings: 
+    null-text: Default
+    advanced: false
+
+- # ====== Template Option Group: Icon Style ===================
+  id: 10727349684129572713
+  identification: 
+    template-type: List
+    name: Icon Style
+    identifier: ICON_STYLE
+    sequence: 35
+
+  settings: 
+    advanced: false
+
+- # ====== Template Option Group: Display Mode =================
+  id: 10727352812509572715
+  identification: 
+    template-type: Page
+    name: Display Mode
+    identifier: DISPLAY_MODE
+    sequence: 30
+
+  help: 
+    help-text: Determines the default display appearance and positioning of the dialog. The default opens a floating dialog position at the center of the screen.
+
+  settings: 
+    null-text: Default
+    advanced: false
+
+- # ====== Template Option Group: Display Mode =================
+  id: 10727361265167572719
+  identification: 
+    template-type: Region
+    name: Display Mode
+    identifier: DISPLAY_MODE
+    sequence: 1
+
+  help: 
+    help-text: Determines the default display appearance and positioning of the dialog. The default opens a floating dialog position at the center of the screen.
+
+  settings: 
+    null-text: Default
+    advanced: false
+
+- # ====== Template Option Group: Result Separator =============
+  id: 10727371221272572726
+  identification: 
+    template-type: Region
+    name: Result Separator
+    identifier: RESULT_SEPARATOR
+    sequence: 2
+
+  settings: 
+    null-text: Show
+    advanced: false
+
+- # ====== Template Option Group: Color Accents ================
+  id: 10727375235510572728
+  identification: 
+    template-type: Report
+    name: Color Accents
+    identifier: COLOR_ACCENTS
+    sequence: 50
+
+  settings: 
+    null-text: Default
+    advanced: false
+

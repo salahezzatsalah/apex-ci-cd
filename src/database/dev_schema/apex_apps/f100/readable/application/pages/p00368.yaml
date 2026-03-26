@@ -1,0 +1,1767 @@
+---
+# ====== Page: company registered car form ===================
+id: 368
+identification: 
+  name: company registered car form
+  alias: COMPANY-REGISTERED-CAR-FORM
+  title: استمارة تكويد سيارة شركة - نموذج 368
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Car Details =================================
+  id: 352986422442960615
+  identification: 
+    name: Car Details
+    title: بينات السيارة
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Company Registered Car Form # 353002113505045950
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Company Registered Car Form =================
+  id: 353002113505045950
+  identification: 
+    name: Company Registered Car Form
+    title: استمارة تكويد سيارة شركة - نموذج 368
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: COMPANY_REGISTERED_CARS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 353021590323045972
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P368_ID ==================================
+  id: 280905663499161243
+  identification: 
+    name: P368_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Company Registered Car Form # 353002113505045950
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_CAR_NAME ============================
+  id: 280905761665161244
+  identification: 
+    name: P368_CAR_NAME
+    type: Text Field
+
+  label: 
+    label: الاسم المميز
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: CAR_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_CAR_TYPE_ID =========================
+  id: 280905836310161245
+  identification: 
+    name: P368_CAR_TYPE_ID
+    type: Select One
+
+  label: 
+    label: نوع السيارة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 40
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 50
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CAR TYPES CATEGORIES # 266657472268387203
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: CAR_TYPE_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_MODEL_NAME ==========================
+  id: 280905975205161246
+  identification: 
+    name: P368_MODEL_NAME
+    type: Text Field
+
+  label: 
+    label: اسم الموديل
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: MODEL_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_YEAR ================================
+  id: 280906056947161247
+  identification: 
+    name: P368_YEAR
+    type: Select One
+
+  label: 
+    label: سنة الموديل
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 60
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 1990 + LEVEL - 1 AS DISPLAY_VALUE,
+             1990 + LEVEL - 1 AS RETURN_VALUE
+      FROM dual
+      CONNECT BY 1990 + LEVEL - 1 <= EXTRACT(YEAR FROM SYSDATE)
+      ORDER BY RETURN_VALUE DESC;
+      
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: YEAR
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_LICENSE_PLATE =======================
+  id: 280906199106161248
+  identification: 
+    name: P368_LICENSE_PLATE
+    type: Text Field
+
+  label: 
+    label: رقم لوحات السيارة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 20
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: LICENSE_PLATE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_COLOR ===============================
+  id: 280906299276161249
+  identification: 
+    name: P368_COLOR
+    type: Text Field
+
+  label: 
+    label: لون السيارة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 80
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: COLOR
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_CHASSIS_NUMBER ======================
+  id: 280906339983161250
+  identification: 
+    name: P368_CHASSIS_NUMBER
+    type: Text Field
+
+  label: 
+    label: رقم الشسية
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 90
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 40
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: CHASSIS_NUMBER
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_PROFILE_PHOTO_BLOB ==================
+  id: 280906464869161251
+  identification: 
+    name: P368_PROFILE_PHOTO_BLOB
+    type: Image Upload
+
+  label: 
+    label: <i class="fa6-solid fa6-car-side"></i> صورة ملف السيارة
+    alignment: Left
+
+  display: 
+    display-as: Inline Dropzone
+    capture-using: NONE
+
+  storage:: 
+    type: Table APEX_APPLICATION_TEMP_FILES
+    purge-files-at: End of Session
+    allow-multiple-files: false
+
+  cropping: 
+    allow-cropping: true
+    aspect-ratio: Original
+
+  layout: 
+    sequence: 20
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: PROFILE_PHOTO_BLOB
+    data-type: BLOB
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_PROFILE_PHOTO_FILENAME ==============
+  id: 280906535625161252
+  identification: 
+    name: P368_PROFILE_PHOTO_FILENAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Company Registered Car Form # 353002113505045950
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: PROFILE_PHOTO_FILENAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_PROFILE_PHOTO_MIMETYPE ==============
+  id: 280906692547161253
+  identification: 
+    name: P368_PROFILE_PHOTO_MIMETYPE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Company Registered Car Form # 353002113505045950
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: PROFILE_PHOTO_MIMETYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_PROFILE_PHOTO_LASTUPD ===============
+  id: 280906755257161254
+  identification: 
+    name: P368_PROFILE_PHOTO_LASTUPD
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Company Registered Car Form # 353002113505045950
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: PROFILE_PHOTO_LASTUPD
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_NOTES ===============================
+  id: 353024320355046000
+  identification: 
+    name: P368_NOTES
+    type: Textarea
+
+  label: 
+    label: <i class="fa6-solid fa6-note-sticky"></i> ملاحظات
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 100
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 1000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P368_STATUS ==============================
+  id: 353041393388046015
+  identification: 
+    name: P368_STATUS
+    type: Radio Group
+
+  label: 
+    label: <i class="fa6-solid fa6-check-to-slot"></i> حالة الخدمة
+    alignment: Left
+
+  settings: 
+    number-of-columns: 3
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 110
+    region: Car Details # 352986422442960615
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--slimPadding
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:نشط;ACTIVE,غير نشط;INACTIVE'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Company Registered Car Form # 353002113505045950
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: ACTIVE
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 280950269278202872
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 353021590323045972
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 280950673497202873
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 353021590323045972
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P368_ID
+
+- # ====== Button: SAVE ========================================
+  id: 280951010597202873
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 353021590323045972
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P368_ID
+
+- # ====== Button: CREATE ======================================
+  id: 280951403904202873
+  identification: 
+    button-name: CREATE
+    label: انشاء الملف
+
+  layout: 
+    sequence: 40
+    region: Buttons # 353021590323045972
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P368_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 280952431905202887
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 280950269278202872
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 280952980323202888
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 280952431905202887
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Switch ==============================
+  id: 280953346509202888
+  identification: 
+    name: Switch
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P368_IS_COMPANY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P368_IS_COMPANY
+    value: N
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 280953865338202889
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P368_NATIONAL_ID
+
+    execution: 
+      sequence: 20
+      event: Switch # 280953346509202888
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 280954380797202889
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P368_NATIONAL_ID
+
+    execution: 
+      sequence: 10
+      event: Switch # 280953346509202888
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 280954865551202890
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P368_CONTACT_PERSON
+      - P368_COMPANY_REG_NO
+
+    execution: 
+      sequence: 20
+      event: Switch # 280953346509202888
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 280955377604202890
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P368_CONTACT_PERSON
+      - P368_COMPANY_REG_NO
+
+    execution: 
+      sequence: 10
+      event: Switch # 280953346509202888
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Activate User Account ===============
+  id: 280955744269202890
+  identification: 
+    name: Activate User Account
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P368_HAS_PORTAL_ACCESS
+
+  client-side-condition: 
+    type: Item = Value
+    item: P368_HAS_PORTAL_ACCESS
+    value: N
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 280956300648202890
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P368_USERNAME
+      - P368_PASSWORD_HASH
+      - P368_STATUS
+
+    execution: 
+      sequence: 10
+      event: Activate User Account # 280955744269202890
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 280956746167202890
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P368_USERNAME
+      - P368_PASSWORD_HASH
+      - P368_STATUS
+
+    execution: 
+      sequence: 10
+      event: Activate User Account # 280955744269202890
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+processes: 
+- # ====== Process: EDIT COMPANY CAR ===========================
+  id: 176418720019661026
+  identification: 
+    name: EDIT COMPANY CAR
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: ALL_VIEWS_PKG
+    procedure-or-function: UPDATE_CAR
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 280951010597202873
+
+  parameters: 
+  - # ====== Parameter: p_car_id =================================
+    id: 177875455105894063
+    identification: 
+      name: p_car_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_car_name ===============================
+    id: 177875543346894064
+    identification: 
+      name: p_car_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_CAR_NAME
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_car_type_id ============================
+    id: 177875666171894065
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_model_name =============================
+    id: 177875746690894066
+    identification: 
+      name: p_model_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_MODEL_NAME
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_year ===================================
+    id: 177875817991894067
+    identification: 
+      name: p_year
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_YEAR
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_license_plate ==========================
+    id: 177875924677894068
+    identification: 
+      name: p_license_plate
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_LICENSE_PLATE
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_color ==================================
+    id: 177876060915894069
+    identification: 
+      name: p_color
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_COLOR
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_chassis_number =========================
+    id: 177876091604894070
+    identification: 
+      name: p_chassis_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_CHASSIS_NUMBER
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_status =================================
+    id: 177876266531894071
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_STATUS
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_notes ==================================
+    id: 177876385913894072
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_NOTES
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_profile_photo_blob =====================
+    id: 177876480665894073
+    identification: 
+      name: p_profile_photo_blob
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P368_PROFILE_PHOTO_BLOB
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_updated_by =============================
+    id: 177876519034894074
+    identification: 
+      name: p_updated_by
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 120
+
+- # ====== Process: DELETE COMPANY  ============================
+  id: 176418841099661027
+  identification: 
+    name: 'DELETE COMPANY '
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: ALL_VIEWS_PKG
+    procedure-or-function: DELETE_CAR
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 280950673497202873
+
+  parameters: 
+  - # ====== Parameter: p_car_id =================================
+    id: 177876615513894075
+    identification: 
+      name: p_car_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_ID
+
+    advanced: 
+      display-sequence: 10
+
+- # ====== Process: ADD COMPANY CAR ============================
+  id: 178406357632226842
+  identification: 
+    name: ADD COMPANY CAR
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: ALL_VIEWS_PKG
+    procedure-or-function: CREATE_CAR
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 280951403904202873
+
+  parameters: 
+  - # ====== Parameter: p_car_name ===============================
+    id: 177874381423894052
+    identification: 
+      name: p_car_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_CAR_NAME
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_car_type_id ============================
+    id: 177874469033894053
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_model_name =============================
+    id: 177874580569894054
+    identification: 
+      name: p_model_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_MODEL_NAME
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_year ===================================
+    id: 177874656335894055
+    identification: 
+      name: p_year
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_YEAR
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_license_plate ==========================
+    id: 177874758913894056
+    identification: 
+      name: p_license_plate
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_LICENSE_PLATE
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_color ==================================
+    id: 177874851583894057
+    identification: 
+      name: p_color
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_COLOR
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_chassis_number =========================
+    id: 177874936893894058
+    identification: 
+      name: p_chassis_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_CHASSIS_NUMBER
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_status =================================
+    id: 177875060978894059
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_STATUS
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_notes ==================================
+    id: 177875108253894060
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P368_NOTES
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_profile_photo_blob =====================
+    id: 177875268139894061
+    identification: 
+      name: p_profile_photo_blob
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P368_PROFILE_PHOTO_BLOB
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_created_by =============================
+    id: 177875304763894062
+    identification: 
+      name: p_created_by
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 110
+
+- # ====== Process: Initialize form Driver Account Form ========
+  id: 280937740664202859
+  identification: 
+    name: Initialize form Driver Account Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Company Registered Car Form # 353002113505045950
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Suppliers Account Form ========
+  id: 280938162037202860
+  identification: 
+    name: Process form Suppliers Account Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Company Registered Car Form # 353002113505045950
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: Close Dialog ===============================
+  id: 280952049678202886
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

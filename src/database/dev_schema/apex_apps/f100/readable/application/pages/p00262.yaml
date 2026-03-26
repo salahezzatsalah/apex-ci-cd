@@ -1,0 +1,1026 @@
+---
+# ====== Page: pay ===========================================
+id: 262
+identification: 
+  name: pay
+  alias: PAY
+  title: pay
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    window.addEventListener("message", function(event) {
+        // التأكد من أن البيانات قادمة من Paymob وبها حالة النجاح
+        if (event.data.success === true || event.data.type === "TRANSACTION_SUCCESSFUL") {
+            
+            var trxId = event.data.id; // الحصول على رقم العملية من Paymob
+    
+            // 1. وضع رقم العملية داخل الـ Item الذي أنشأتِه
+            $s("P262_PAYMENT_RESULT", trxId);
+    
+            // 2. إغلاق نافذة الدفع (الـ Modal)
+            apex.theme.closeRegion("PAY_MODAL_STATIC_ID"); 
+    
+            // 3. إظهار رسالة تأكيد للمستخدم
+            apex.message.showPageSuccess("✅ تم تسجيل العملية بنجاح! رقم المعاملة: " + trxId);
+    
+            // 4. تحديث التقرير (Transactions Summary) ليظهر السطر الجديد فوراً
+            
+            // (اختياري) إذا كنتِ تريدين تنفيذ أكشن PL/SQL فور وضع القيمة في الـ Item
+            // apex.event.trigger('#P262_PAYMENT_RESULT', 'change');
+        }
+    }, false);
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Enabled
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Enabled for Public Sessions
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Payment =====================================
+  id: 192980757628998158
+  identification: 
+    name: Payment
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: New =========================================
+  id: 192983075066998181
+  identification: 
+    name: New
+    type: Static Content
+
+  source: 
+    html-code: |2
+          <iframe id="paymob_iframe" width="100%" height="600" src="" frameborder="0"></iframe>
+      
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Inline Dialog
+    template-options: 
+    - '#DEFAULT#'
+    - js-dialog-size600x400
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: paymob_modal
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P262_ORDER_ID ============================
+  id: 192980809940998159
+  identification: 
+    name: P262_ORDER_ID
+    type: Text Field
+
+  label: 
+    label: Order Id
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_PAYMENT_LINK ========================
+  id: 192980961171998160
+  identification: 
+    name: P262_PAYMENT_LINK
+    type: Text Field
+
+  label: 
+    label: CARD_HOLDER
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P262_EXP_MONTH ===========================
+  id: 192981086812998161
+  identification: 
+    name: P262_EXP_MONTH
+    type: Text Field
+
+  label: 
+    label: EXP_MONTH
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P262_CVV =================================
+  id: 192981100188998162
+  identification: 
+    name: P262_CVV
+    type: Text Field
+
+  label: 
+    label: CVV
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P262_AMOUNT ==============================
+  id: 192981211501998163
+  identification: 
+    name: P262_AMOUNT
+    type: Text Field
+
+  label: 
+    label: AMOUNT
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_FIRST_NAME ==========================
+  id: 192981799312998169
+  identification: 
+    name: P262_FIRST_NAME
+    type: Text Field
+
+  label: 
+    label: First Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_LAST_NAME ===========================
+  id: 192981937995998170
+  identification: 
+    name: P262_LAST_NAME
+    type: Text Field
+
+  label: 
+    label: LAST_NAME
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 80
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_PHONE ===============================
+  id: 192982045815998171
+  identification: 
+    name: P262_PHONE
+    type: Text Field
+
+  label: 
+    label: PHONE
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 90
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_EMAIL ===============================
+  id: 192982213881998173
+  identification: 
+    name: P262_EMAIL
+    type: Text Field
+
+  label: 
+    label: EMAIL
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 100
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_PAYEMENT_TOKEN ======================
+  id: 192982316694998174
+  identification: 
+    name: P262_PAYEMENT_TOKEN
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Payment # 192980757628998158
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P262_EXP_YEAR ============================
+  id: 192982459878998175
+  identification: 
+    name: P262_EXP_YEAR
+    type: Text Field
+
+  label: 
+    label: Exp Year
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Payment # 192980757628998158
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P262_PAYMENT_RESULT ======================
+  id: 192984263798998193
+  identification: 
+    name: P262_PAYMENT_RESULT
+    type: Text Field
+
+  label: 
+    label: Payment Result
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: New # 192983075066998181
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Pay =========================================
+  id: 192984367749998194
+  identification: 
+    button-name: Pay
+    label: Pay
+
+  layout: 
+    sequence: 130
+    region: Payment # 192980757628998158
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+dynamic-actions: 
+- # ====== Dynamic Action: make_payment ========================
+  id: 192984436183998195
+  identification: 
+    name: make_payment
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Pay # 192984367749998194
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 161563356656425206
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var pToken = apex.item("P262_PAYEMENT_TOKEN").getValue();
+        var iframeId = "996215"; 
+        
+        if (pToken && pToken.length > 20) {
+            var url = "https://accept.paymob.com/api/acceptance/iframes/" + iframeId + "?payment_token=" + pToken;
+            //  var url="https://paymob.link/44Q6A";
+            // تحديد خصائص النافذة الجديدة (العرض، الارتفاع، والمكان)
+            var width = 600;
+            var height = 700;
+            var left = (screen.width - width) / 2;
+            var top = (screen.height - height) / 2;
+            var features = "width=" + width + ",height=" + height + ",top=" + top + ",left=" + left + ",scrollbars=yes,resizable=yes";
+        
+            // فتح الرابط في نافذة جديدة (Window)
+            var payWindow = window.open(url, "PaymobPayment", features);
+        
+            // التحقق إذا كان المتصفح حظر النافذة المنبثقة
+            if (!payWindow) {
+                apex.message.alert("يرجى السماح بالنوافذ المنبثقة (Popups) لإتمام عملية الدفع.");
+            }
+        
+        } else {
+            apex.message.alert("عفواً، حدث خطأ في تجهيز بيانات الدفع، يرجى المحاولة مرة أخرى.");
+        }
+
+    execution: 
+      sequence: 40
+      event: make_payment # 192984436183998195
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 192984601704998197
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        INSERT INTO paymob_orders (amount, status)
+        VALUES (:P262_AMOUNT, 'PENDING')
+        RETURNING order_id INTO :P262_ORDER_ID;
+        
+      items-to-submit: 
+      - P262_AMOUNT
+      items-to-return: 
+      - P262_ORDER_ID
+      suppress-change-event: false
+
+    execution: 
+      sequence: 20
+      event: make_payment # 192984436183998195
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 212682790945938353
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            l_response_clob  CLOB;
+            l_auth_token     VARCHAR2(4000);
+            l_order_id       NUMBER;           -- ده order_id بتاع Paymob
+            l_payment_token  VARCHAR2(4000);
+        
+            -- إعدادات Paymob
+            v_api_key        VARCHAR2(500) := 'ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRFeU1qSXdNeXdpYm1GdFpTSTZJakUzTnpFeU16UTBORGt1TURRMk1UazFJbjAuU3loUTVvM21DUURveDJEQVNLSHVWaHlWSWVxMm8tUEUxbkFONUZKZVlYTUZGT21kWllkZW1nOC1GazZCRThXdDBQMmJiTkF5TGFXZmJwMUF6MXRyekE=';
+            v_integration_id NUMBER        := 5467116;
+            v_amount         NUMBER        := NVL(ROUND(:P262_AMOUNT * 100), 0);  -- السعر بالقرش
+        
+        BEGIN
+            -- 1) Auth Token
+            apex_web_service.g_request_headers(1).name  := 'Content-Type';
+            apex_web_service.g_request_headers(1).value := 'application/json';
+            apex_web_service.g_request_headers(2).name  := 'Accept';
+            apex_web_service.g_request_headers(2).value := 'application/json';
+        
+            l_response_clob := apex_web_service.make_rest_request(
+                p_url         => 'https://accept.paymob.com/api/auth/tokens',
+                p_http_method => 'POST',
+                p_body        => '{"api_key": "' || v_api_key || '"}'
+            );
+            apex_json.parse(l_response_clob);
+            l_auth_token := apex_json.get_varchar2(p_path => 'token');
+        
+            -- 2) Order Registration
+            l_response_clob := apex_web_service.make_rest_request(
+                p_url         => 'https://accept.paymob.com/api/ecommerce/orders',
+                p_http_method => 'POST',
+                p_body        => '{
+                    "auth_token": "' || l_auth_token || '",
+                    "delivery_needed": "false",
+                    "amount_cents": ' || v_amount || ',
+                    "currency": "EGP",
+                    "merchant_order_id": "' || :P262_ORDER_ID || '",
+                    "items": [{"name":"Item1","amount_cents":' || v_amount || ',"quantity":1}]
+                }'
+            );
+            apex_json.parse(l_response_clob);
+            l_order_id := apex_json.get_number(p_path => 'id');
+        
+            -- 3) Payment Key
+            l_response_clob := apex_web_service.make_rest_request(
+                p_url         => 'https://accept.paymob.com/api/acceptance/payment_keys',
+                p_http_method => 'POST',
+                p_body        => '{
+                    "auth_token": "' || l_auth_token || '",
+                    "amount_cents": ' || v_amount || ',
+                    "expiration": 3600,
+                    "order_id": ' || l_order_id || ',
+                    "billing_data": {
+                        "apartment": "NA",
+                        "email": "'|| NVL(:P262_EMAIL,'test@example.com') ||'",
+                        "floor": "NA",
+                        "first_name": "'|| NVL(:P262_FIRST_NAME,'NA') ||'",
+                        "street": "NA",
+                        "building": "NA",
+                        "phone_number": "'|| NVL(:P262_PHONE,'+201234567890') ||'",
+                        "shipping_method": "NA",
+                        "postal_code": "NA",
+                        "city": "Cairo",
+                        "country": "EG",
+                        "last_name": "'|| NVL(:P262_LAST_NAME,'NA') ||'",
+                        "state": "NA"
+                    },
+                    "currency": "EGP",
+                    "integration_id": ' || v_integration_id || '
+                }'
+            );
+            apex_json.parse(l_response_clob);
+            l_payment_token := apex_json.get_varchar2(p_path => 'token');
+        
+            -- 4) تخزين التوكن للـ JS
+            :P262_PAYEMENT_TOKEN := l_payment_token;
+        
+        EXCEPTION
+            WHEN OTHERS THEN
+                apex_error.add_error (
+                    p_message          => 'خطأ في الربط: ' || SQLERRM,
+                    p_display_location => apex_error.c_inline_in_notification
+                );
+        END;
+        
+      items-to-submit: 
+      - P262_AMOUNT
+      - P262_FIRST_NAME
+      - P262_LAST_NAME
+      - P262_PHONE
+      - P262_EMAIL
+      - P262_ORDER_ID
+      items-to-return: 
+      - P262_PAYEMENT_TOKEN
+      suppress-change-event: false
+
+    execution: 
+      sequence: 30
+      event: make_payment # 192984436183998195
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+

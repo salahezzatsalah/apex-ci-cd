@@ -1,0 +1,451 @@
+---
+- # ====== Static Application File: badr/icons/id-card.png =====
+  id: 192670043868671926
+  identification: 
+    file-name: badr/icons/id-card.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: settlement.css =============
+  id: 196371041793051859
+  identification: 
+    file-name: settlement.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: settlement.min.css =========
+  id: 196372068499053004
+  identification: 
+    file-name: settlement.min.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: flags.png ==================
+  id: 229933337640872524
+  identification: 
+    file-name: flags.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: flags@2x.png ===============
+  id: 229933811198874678
+  identification: 
+    file-name: flags@2x.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: css/blitzcode.min.css ======
+  id: 229979233038475069
+  identification: 
+    file-name: css/blitzcode.min.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-144-rounded.p
+  id: 251476557560445618
+  identification: 
+    file-name: icons/app-icon-144-rounded.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-256-rounded.p
+  id: 251476956542445688
+  identification: 
+    file-name: icons/app-icon-256-rounded.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fa-brands-400.ttf ======
+  id: 265153526365825991
+  identification: 
+    file-name: fa6/fa-brands-400.ttf
+
+  attributes: 
+    mime-type: font/ttf
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fa-brands-400.woff2 ====
+  id: 265153858353827763
+  identification: 
+    file-name: fa6/fa-brands-400.woff2
+
+  attributes: 
+    mime-type: font/woff2
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fa-regular-400.ttf =====
+  id: 265154133988829206
+  identification: 
+    file-name: fa6/fa-regular-400.ttf
+
+  attributes: 
+    mime-type: font/ttf
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fa-regular-400.woff2 ===
+  id: 265154412469830486
+  identification: 
+    file-name: fa6/fa-regular-400.woff2
+
+  attributes: 
+    mime-type: font/woff2
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fa-solid-900.ttf =======
+  id: 265154709167832295
+  identification: 
+    file-name: fa6/fa-solid-900.ttf
+
+  attributes: 
+    mime-type: font/ttf
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fa-solid-900.woff2 =====
+  id: 265155005140834046
+  identification: 
+    file-name: fa6/fa-solid-900.woff2
+
+  attributes: 
+    mime-type: font/woff2
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/brands.css =============
+  id: 265173566711457798
+  identification: 
+    file-name: fa6/brands.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fontawesome.css ========
+  id: 265173777469457800
+  identification: 
+    file-name: fa6/fontawesome.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/regular.css ============
+  id: 265174068582457800
+  identification: 
+    file-name: fa6/regular.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/solid.css ==============
+  id: 265174328450457801
+  identification: 
+    file-name: fa6/solid.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/solid.min.css ==========
+  id: 265174968561463046
+  identification: 
+    file-name: fa6/solid.min.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/regular.min.css ========
+  id: 265175591650464465
+  identification: 
+    file-name: fa6/regular.min.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/brands.min.css =========
+  id: 265565881544922653
+  identification: 
+    file-name: fa6/brands.min.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/fontawesome.min.css ====
+  id: 265733800906936010
+  identification: 
+    file-name: fa6/fontawesome.min.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: fa6/_variables.less ========
+  id: 265847620764330688
+  identification: 
+    file-name: fa6/_variables.less
+
+  attributes: 
+    mime-type: text/plain
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: hotel.png ==================
+  id: 266026706387676606
+  identification: 
+    file-name: hotel.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/client-profile-
+  id: 269044882596290866
+  identification: 
+    file-name: placeholders/client-profile-placeholder.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/employees-profi
+  id: 269045100063290875
+  identification: 
+    file-name: placeholders/employees-profile-placeholder.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/hotel-reservati
+  id: 269045380231290876
+  identification: 
+    file-name: placeholders/hotel-reservations-placeholder.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/limo-reservatio
+  id: 269045681828290876
+  identification: 
+    file-name: placeholders/limo-reservation-placeholder.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/suppliers-place
+  id: 269045976510290877
+  identification: 
+    file-name: placeholders/suppliers-placeholder.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: js/blitzcode.js ============
+  id: 269092576193238649
+  identification: 
+    file-name: js/blitzcode.js
+
+  attributes: 
+    mime-type: text/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: js/blitzcode.min.js ========
+  id: 269096784426290172
+  identification: 
+    file-name: js/blitzcode.min.js
+
+  attributes: 
+    mime-type: text/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: css/blitzcode.css ==========
+  id: 269098757283343056
+  identification: 
+    file-name: css/blitzcode.css
+
+  attributes: 
+    mime-type: text/css
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/unknown-car.png
+  id: 269815878481398143
+  identification: 
+    file-name: placeholders/unknown-car.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/suppliers.png =
+  id: 271302964499322454
+  identification: 
+    file-name: placeholders/suppliers.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: service-worker.js ==========
+  id: 271718436938745537
+  identification: 
+    file-name: service-worker.js
+
+  attributes: 
+    mime-type: text/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: place.webp =================
+  id: 271724507414254315
+  identification: 
+    file-name: place.webp
+
+  attributes: 
+    mime-type: image/webp
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/roomnophoto.png
+  id: 272142577423272864
+  identification: 
+    file-name: placeholders/roomnophoto.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: Luxurious-bedroom-with-cushi
+  id: 272143213048293427
+  identification: 
+    file-name: Luxurious-bedroom-with-cushioned-bed-frame-and-warm-lighting.webp
+
+  attributes: 
+    mime-type: image/webp
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/companydriver.p
+  id: 276553744688608595
+  identification: 
+    file-name: placeholders/companydriver.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: jquery-clock-timepicker.js =
+  id: 278226596966507668
+  identification: 
+    file-name: jquery-clock-timepicker.js
+
+  attributes: 
+    mime-type: text/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/unknown.png ===
+  id: 278785915899768795
+  identification: 
+    file-name: placeholders/unknown.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: placeholders/ownedcar.png ==
+  id: 280911165483179543
+  identification: 
+    file-name: placeholders/ownedcar.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: strategic-planner.png ======
+  id: 13313841384481113277
+  identification: 
+    file-name: strategic-planner.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: strategic-planner_transparen
+  id: 13313846209286114807
+  identification: 
+    file-name: strategic-planner_transparent.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: default-user-avatar.png ====
+  id: 14946221805767575923
+  identification: 
+    file-name: default-user-avatar.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: js/sp-search.min.js ========
+  id: 27413169747452738134
+  identification: 
+    file-name: js/sp-search.min.js
+
+  attributes: 
+    mime-type: text/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: js/sp-search.js ============
+  id: 27413279216217015557
+  identification: 
+    file-name: js/sp-search.js
+
+  attributes: 
+    mime-type: text/javascript
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-32.png ======
+  id: 149832815822788023711
+  identification: 
+    file-name: icons/app-icon-32.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-192.png =====
+  id: 149832816147528023713
+  identification: 
+    file-name: icons/app-icon-192.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+
+- # ====== Static Application File: icons/app-icon-512.png =====
+  id: 149832816451334023714
+  identification: 
+    file-name: icons/app-icon-512.png
+
+  attributes: 
+    mime-type: image/png
+    file-character-set: Unicode UTF-8
+

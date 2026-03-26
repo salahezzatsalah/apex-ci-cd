@@ -1,0 +1,838 @@
+---
+# ====== Page: User Quick Look ===============================
+id: 73
+identification: 
+  name: User Quick Look
+  alias: USER-QUICK-LOOK
+  title: '&NOMENCLATURE_USER. نظرة سريعة'
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .sp-tag {
+        padding: 2px 4px;
+        display: inline-block;
+        vertical-align: text-bottom;
+        border-radius: 3px;
+        background-color: rgba(0,0,0,.1);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .sp-tags-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: flex-start;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: &NOMENCLATURE_USER. Details =================
+  id: 13378605632859239421
+  identification: 
+    name: '&NOMENCLATURE_USER. Details'
+    title: '&NOMENCLATURE_USER. تفاصيل'
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select tm.ID,
+             tm.FIRST_NAME||' '||tm.LAST_NAME name,
+             tm.EMAIL,
+             replace(lower(tm.TAGS),',',', ') tags,
+             rtrim(replace(tm.competencies,',',', ')) competencies,
+             screen_name,
+             tm.created,
+             tm.updated
+      from bs_employees tm
+      where ID = :P73_TEAM_MEMBER_ID
+    page-items-to-submit: 
+    - P73_TEAM_MEMBER_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-top-sm
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P73_TEAM_MEMBER_ID
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-label--stacked
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 13378605716666239422
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAME ========================================
+    id: 13378605843114239423
+    identification: 
+      column-name: NAME
+      type: Plain Text
+
+    heading: 
+      heading: الاسم
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: EMAIL =======================================
+    id: 13378606124200239426
+    identification: 
+      column-name: EMAIL
+      type: Plain Text
+
+    heading: 
+      heading: البريد الالكتروني
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TAGS ========================================
+    id: 13378606356455239428
+    identification: 
+      column-name: TAGS
+      type: Plain Text
+
+    heading: 
+      heading: علامات مميزة
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 15313127853866900033
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الانشاء
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 15313127943585900034
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تعديل
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: SINCE
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SCREEN_NAME =================================
+    id: 20320296207075718996
+    identification: 
+      column-name: SCREEN_NAME
+      type: Plain Text
+
+    heading: 
+      heading: اسم العرض
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: COMPETENCIES ================================
+    id: 25397292394079001731
+    identification: 
+      column-name: COMPETENCIES
+      type: Plain Text
+
+    heading: 
+      heading: الاختصاصات
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: 'select 1 from bs_employees where competencies is not null and id = :P73_TEAM_MEMBER_ID'
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Button Container ============================
+  id: 14607299119100409922
+  identification: 
+    name: Button Container
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P73_TEAM_MEMBER_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Not a Team Member ===========================
+  id: 16376569825949274721
+  identification: 
+    name: Not a Team Member
+    title: ليس عضو فريق
+    type: Static Content
+
+  source: 
+    html-code: الشخص المحدد ليس عضوًا في الفريق داخل هذا النظام.
+
+  layout: 
+    sequence: 1
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--info
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P73_TEAM_MEMBER_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P73_TEAM_MEMBER_ID =======================
+  id: 13378607619805239441
+  identification: 
+    name: P73_TEAM_MEMBER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: '&NOMENCLATURE_USER. Details' # 13378605632859239421
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P73_PHOTO_PLACEHOLDER ====================
+  id: 14607299666026409927
+  identification: 
+    name: P73_PHOTO_PLACEHOLDER
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: Image URL stored in Page Item Value
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Static Value
+    static-value: '#APP_FILES#default-user-avatar.png'
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: |
+      select 1 
+      from bs_employees 
+      where id = :P73_TEAM_MEMBER_ID and 
+            photo_URL is not null
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P73_PHOTO ================================
+  id: 14885601322160395911
+  identification: 
+    name: P73_PHOTO
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: Image URL stored in Page Item Value
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: 0
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT PHOTO_URL
+       FROM BS_EMPLOYEES
+       WHERE ID= :P73_TEAM_MEMBER_ID;
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1 
+      from bs_employees 
+      where id = :P73_TEAM_MEMBER_ID and 
+            photo_URL is not null
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P73_EXT_LINK =============================
+  id: 14977237320794591169
+  identification: 
+    name: P73_EXT_LINK
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: '&NOMENCLATURE_USER. Details' # 13378605632859239421
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select replace(apex_app_setting.get_value('EXTERNAL_PERSON_LINK'),'#EMAIL#',lower(email)) 
+        from bs_employees
+       where id = :P73_TEAM_MEMBER_ID
+         and email is not null
+         and apex_app_setting.get_value('EXTERNAL_PERSON_LINK_DOMAIN') is not null
+         and lower(email) like '%@'||lower(apex_app_setting.get_value('EXTERNAL_PERSON_LINK_DOMAIN'))
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: edit_user ===================================
+  id: 13378607703069239442
+  identification: 
+    button-name: edit_user
+    label: تعديل (ADMIN)
+
+  layout: 
+    sequence: 40
+    region: Button Container # 14607299119100409922
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-edit
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:96:&SESSION.::&DEBUG.:RP,96:P96_ID:&P73_TEAM_MEMBER_ID.'
+      page: 96 # Employee Details
+      clear-cache: RP,96
+      values: 
+        p96_id: '&P73_TEAM_MEMBER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  security: 
+    authorization-scheme: Administration Rights # 149832818388153023719
+
+- # ====== Button: view_details ================================
+  id: 13391831954818711405
+  identification: 
+    button-name: view_details
+    label: عرض التفاصيل
+
+  layout: 
+    sequence: 50
+    region: Button Container # 14607299119100409922
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-glasses
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:RP,5:P5_ID:&P73_TEAM_MEMBER_ID.'
+      page: 5 # Security Group Form
+      clear-cache: RP,5
+      values: 
+        p5_id: '&P73_TEAM_MEMBER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: manage_my_profile ===========================
+  id: 14607299747908409928
+  identification: 
+    button-name: manage_my_profile
+    label: Manage My Profile
+
+  layout: 
+    sequence: 20
+    region: Button Container # 14607299119100409922
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-user
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:20:&SESSION.::&DEBUG.:RP,20:P20_ID:&APP_USER_ID.'
+      page: 20
+      clear-cache: RP,20
+      values: 
+        p20_id: '&APP_USER_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1
+      from bs_employees tm
+      where tm.id = :P73_TEAM_MEMBER_ID and
+            tm.username = lower(:APP_USER)
+
+- # ====== Button: external_link ===============================
+  id: 14977443560412949397
+  identification: 
+    button-name: external_link
+    label: External Directory
+
+  layout: 
+    sequence: 30
+    region: Button Container # 14607299119100409922
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-external-link
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:window.open('&P73_EXT_LINK.','_blank');"
+    execute-validations: true
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    custom-attributes: 
+    - title="External
+    - Directory"
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P73_EXT_LINK
+

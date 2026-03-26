@@ -1,0 +1,3131 @@
+---
+# ====== Page: Driver Account Form ===========================
+id: 365
+identification: 
+  name: Driver Account Form
+  alias: DRIVER-ACCOUNT-FORM
+  title: إستمارة ملف سائق - نموذج 365
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Driver Details ==============================
+  id: 301036273476754611
+  identification: 
+    name: Driver Details
+    title: بيانات السائق
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Driver Account Form # 301051964538839946
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Contact Details =============================
+  id: 301036406424754612
+  identification: 
+    name: Contact Details
+    title: بيانات التواصل
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: Driver Account Form # 301051964538839946
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Type and Login Details ======================
+  id: 301036511515754613
+  identification: 
+    name: Type and Login Details
+    title: 'تصنيف الملف وصلاحيات الدخول '
+    type: Static Content
+
+  layout: 
+    sequence: 50
+    parent-region: Driver Account Form # 301051964538839946
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Driver Account Form =========================
+  id: 301051964538839946
+  identification: 
+    name: Driver Account Form
+    title: استمارة ملف كابتن داخلي - نموذج 365
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select DRIVER_NAME,
+             NATIONAL_ID,
+             LICENSE_NUMBER,
+             LICENSE_EXPIRY_DATE,
+             PHONE,
+             EMAIL,
+             ADDRESS,
+             CITY,
+             COUNTRY_ID,
+             STATUS,
+             EMPLOYEE_CODE,
+             JOIN_DATE,
+             DRIVER_LEVEL,
+             CONTRACT_TYPE,
+             IS_ACTIVE_EMPLOYEE,
+             DEPARTMENT_ID,
+             PROFILE_PHOTO,
+             PHOTO_FILENAME,
+             PHOTO_MIMETYPE,
+             PHOTO_CHARSET,
+             PHOTO_LAST_UPDATED,
+             NOTES,
+             HAS_PORTAL_ACCESS,
+             USERNAME,
+             PASSWORD_HASH,
+             CREATED,
+             CREATED_BY,
+             UPDATED,
+             UPDATED_BY,
+             DRIVER_ID,
+             DRIVER_AVATAR
+        from COMPANY_DRIVERS
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 301071441356839968
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P365_DRIVER_AVATAR =======================
+  id: 176416804435661007
+  identification: 
+    name: P365_DRIVER_AVATAR
+    type: Textarea
+
+  label: 
+    label: Driver Avatar
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 190
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 600
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: DRIVER_AVATAR
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_DRIVER_NAME =========================
+  id: 272527493262453968
+  identification: 
+    name: P365_DRIVER_NAME
+    type: Text Field
+
+  label: 
+    label: اسم السائق
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: DRIVER_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_LICENSE_NUMBER ======================
+  id: 272527580798453969
+  identification: 
+    name: P365_LICENSE_NUMBER
+    type: Text Field
+
+  label: 
+    label: رقم الرخصة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: LICENSE_NUMBER
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_LICENSE_EXPIRY_DATE =================
+  id: 272527606510453970
+  identification: 
+    name: P365_LICENSE_EXPIRY_DATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ انتهاء الرخصة
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: LICENSE_EXPIRY_DATE
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_EMPLOYEE_CODE =======================
+  id: 272527752255453971
+  identification: 
+    name: P365_EMPLOYEE_CODE
+    type: Text Field
+
+  label: 
+    label: Employee Code
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 140
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: EMPLOYEE_CODE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_JOIN_DATE ===========================
+  id: 272527829873453972
+  identification: 
+    name: P365_JOIN_DATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ التعين بالشركة
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 60
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: JOIN_DATE
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_IS_ACTIVE_EMPLOYEE ==================
+  id: 272528135877453975
+  identification: 
+    name: P365_IS_ACTIVE_EMPLOYEE
+    type: Switch
+
+  label: 
+    label: حالة التعين
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 70
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: IS_ACTIVE_EMPLOYEE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: Y
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_DEPARTMENT_ID =======================
+  id: 272528245596453976
+  identification: 
+    name: P365_DEPARTMENT_ID
+    type: Display Only
+
+  label: 
+    label: الإدارة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 50
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+        department_name || 
+        CASE 
+          WHEN department_code IS NOT NULL THEN ' (' || department_code || ')' 
+          ELSE '' 
+        END AS d,
+        id AS r
+      FROM bs_departments
+      ORDER BY 1;
+      
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: DEPARTMENT_ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: 666
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_DRIVER_ID ===========================
+  id: 272528365642453977
+  identification: 
+    name: P365_DRIVER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 160
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: DRIVER_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_DRIVER_LEVEL ========================
+  id: 272528465917453978
+  identification: 
+    name: P365_DRIVER_LEVEL
+    type: Text Field
+
+  label: 
+    label: Driver Level
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 170
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: DRIVER_LEVEL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_CONTRACT_TYPE =======================
+  id: 272528541113453979
+  identification: 
+    name: P365_CONTRACT_TYPE
+    type: Text Field
+
+  label: 
+    label: Contract Type
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 180
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: CONTRACT_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_PROFILE_PHOTO =======================
+  id: 301058332247839960
+  identification: 
+    name: P365_PROFILE_PHOTO
+    type: Image Upload
+
+  label: 
+    label: <i class="fa6-solid fa6-image"></i>   صورة المورد / شعار الشركة
+    alignment: Left
+
+  display: 
+    display-as: Inline Dropzone
+    capture-using: NONE
+
+  storage:: 
+    type: Table APEX_APPLICATION_TEMP_FILES
+    purge-files-at: End of Session
+    allow-multiple-files: false
+
+  cropping: 
+    allow-cropping: false
+
+  layout: 
+    sequence: 10
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PROFILE_PHOTO
+    data-type: BLOB
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_PHOTO_FILENAME ======================
+  id: 301058797494839961
+  identification: 
+    name: P365_PHOTO_FILENAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PHOTO_FILENAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_PHOTO_MIMETYPE ======================
+  id: 301059163361839961
+  identification: 
+    name: P365_PHOTO_MIMETYPE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PHOTO_MIMETYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_PHOTO_CHARSET =======================
+  id: 301059623086839961
+  identification: 
+    name: P365_PHOTO_CHARSET
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PHOTO_CHARSET
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_PHOTO_LAST_UPDATED ==================
+  id: 301060015107839961
+  identification: 
+    name: P365_PHOTO_LAST_UPDATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PHOTO_LAST_UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_CREATED =============================
+  id: 301060339381839962
+  identification: 
+    name: P365_CREATED
+    type: Date Picker
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 100
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_CREATED_BY ==========================
+  id: 301060744783839962
+  identification: 
+    name: P365_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 110
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_NATIONAL_ID =========================
+  id: 301061125282839964
+  identification: 
+    name: P365_NATIONAL_ID
+    type: Text Field
+
+  label: 
+    label: رقم الهوية
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-id-card
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: NATIONAL_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_UPDATED =============================
+  id: 301061194689839962
+  identification: 
+    name: P365_UPDATED
+    type: Date Picker
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 120
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_UPDATED_BY ==========================
+  id: 301061621566839963
+  identification: 
+    name: P365_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 130
+    region: Driver Account Form # 301051964538839946
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P365_NOTES ===============================
+  id: 301064584938839968
+  identification: 
+    name: P365_NOTES
+    type: Textarea
+
+  label: 
+    label: <i class="fa6-solid fa6-note-sticky"></i> ملاحظات
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 90
+    region: Driver Details # 301036273476754611
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 1000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_PHONE ===============================
+  id: 301067086637839969
+  identification: 
+    name: P365_PHONE
+    type: Text Field
+
+  label: 
+    label: رقم الهاتف
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Contact Details # 301036406424754612
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-phone
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PHONE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_EMAIL ===============================
+  id: 301067548801839969
+  identification: 
+    name: P365_EMAIL
+    type: Text Field
+
+  label: 
+    label: البريد الالكتروني
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Contact Details # 301036406424754612
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-envelope
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: EMAIL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_ADDRESS =============================
+  id: 301067948942839970
+  identification: 
+    name: P365_ADDRESS
+    type: Text Field
+
+  label: 
+    label: عنوان الاقامة / المراسلات
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Contact Details # 301036406424754612
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-location-dot
+    width: 60
+
+  validation: 
+    value-required: false
+    maximum-length: 500
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: ADDRESS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_CITY ================================
+  id: 301068265143839970
+  identification: 
+    name: P365_CITY
+    type: Text Field
+
+  label: 
+    label: المدينة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Contact Details # 301036406424754612
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-city
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: CITY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_COUNTRY_ID ==========================
+  id: 301068724289839971
+  identification: 
+    name: P365_COUNTRY_ID
+    type: Select One
+
+  label: 
+    label: الدولة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 80
+    region: Contact Details # 301036406424754612
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-flag
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: COUNTRIESLIST # 251815092929946311
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: COUNTRY_ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_STATUS ==============================
+  id: 301073021923839975
+  identification: 
+    name: P365_STATUS
+    type: Select List
+
+  label: 
+    label: حالة الحساب
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 60
+    region: Type and Login Details # 301036511515754613
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: SUPPLIER_STATUSES.STATUS_NAME # 255591319970110892
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: ACTIVE
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_HAS_PORTAL_ACCESS ===================
+  id: 301078510267839979
+  identification: 
+    name: P365_HAS_PORTAL_ACCESS
+    type: Switch
+
+  label: 
+    label: لدية صلاحية دخول النظام
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 10
+    region: Type and Login Details # 301036511515754613
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: HAS_PORTAL_ACCESS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_USERNAME ============================
+  id: 301078949449839980
+  identification: 
+    name: P365_USERNAME
+    type: Text Field
+
+  label: 
+    label: اسم المستخدم
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Type and Login Details # 301036511515754613
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: USERNAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P365_PASSWORD_HASH =======================
+  id: 301079325993839980
+  identification: 
+    name: P365_PASSWORD_HASH
+    type: Text Field
+
+  label: 
+    label: كلمة المرور
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Type and Login Details # 301036511515754613
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - js-hidePasswordVisibility
+    width: 60
+
+  validation: 
+    value-required: false
+    maximum-length: 500
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Driver Account Form # 301051964538839946
+    column: PASSWORD_HASH
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 274463713918725915
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 301071441356839968
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 274464145519725916
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 301071441356839968
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P365_DRIVER_ID
+
+- # ====== Button: SAVE ========================================
+  id: 274464549536725916
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 301071441356839968
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P365_DRIVER_ID
+
+- # ====== Button: CREATE ======================================
+  id: 274464922282725916
+  identification: 
+    button-name: CREATE
+    label: انشاء الملف
+
+  layout: 
+    sequence: 40
+    region: Buttons # 301071441356839968
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P365_DRIVER_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 274465996454725921
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 274463713918725915
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 274466409401725921
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 274465996454725921
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Switch ==============================
+  id: 274466838767725922
+  identification: 
+    name: Switch
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P365_IS_COMPANY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P365_IS_COMPANY
+    value: N
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 274467304891725922
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P365_NATIONAL_ID
+
+    execution: 
+      sequence: 20
+      event: Switch # 274466838767725922
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 274467804431725922
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P365_NATIONAL_ID
+
+    execution: 
+      sequence: 10
+      event: Switch # 274466838767725922
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 274468338751725923
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P365_CONTACT_PERSON
+      - P365_COMPANY_REG_NO
+
+    execution: 
+      sequence: 20
+      event: Switch # 274466838767725922
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 274468888693725923
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P365_CONTACT_PERSON
+      - P365_COMPANY_REG_NO
+
+    execution: 
+      sequence: 10
+      event: Switch # 274466838767725922
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Activate User Account ===============
+  id: 274469298584725923
+  identification: 
+    name: Activate User Account
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P365_HAS_PORTAL_ACCESS
+
+  client-side-condition: 
+    type: Item = Value
+    item: P365_HAS_PORTAL_ACCESS
+    value: N
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 274469719699725923
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P365_USERNAME
+      - P365_PASSWORD_HASH
+      - P365_STATUS
+
+    execution: 
+      sequence: 10
+      event: Activate User Account # 274469298584725923
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 274470239772725924
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P365_USERNAME
+      - P365_PASSWORD_HASH
+      - P365_STATUS
+
+    execution: 
+      sequence: 10
+      event: Activate User Account # 274469298584725923
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+processes: 
+- # ====== Process: ADD DRIVER =================================
+  id: 176416646939661006
+  identification: 
+    name: ADD DRIVER
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: ALL_VIEWS_PKG
+    procedure-or-function: CREATE_DRIVER
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 274464922282725916
+
+  parameters: 
+  - # ====== Parameter: p_driver_name ============================
+    id: 177865612077949484
+    identification: 
+      name: p_driver_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_DRIVER_NAME
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_national_id ============================
+    id: 177865772960949485
+    identification: 
+      name: p_national_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_NATIONAL_ID
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_license_number =========================
+    id: 177865821338949486
+    identification: 
+      name: p_license_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_LICENSE_NUMBER
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_license_expiry_date ====================
+    id: 177865961774949487
+    identification: 
+      name: p_license_expiry_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_LICENSE_EXPIRY_DATE
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_phone ==================================
+    id: 177866007559949488
+    identification: 
+      name: p_phone
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_PHONE
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_email ==================================
+    id: 177866102008949489
+    identification: 
+      name: p_email
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_EMAIL
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_address ================================
+    id: 177866207290949490
+    identification: 
+      name: p_address
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_ADDRESS
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_city ===================================
+    id: 177866302853949491
+    identification: 
+      name: p_city
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_CITY
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_country_id =============================
+    id: 177866425889949492
+    identification: 
+      name: p_country_id
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_COUNTRY_ID
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_status =================================
+    id: 177866530731949493
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_STATUS
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_join_date ==============================
+    id: 177866593071949494
+    identification: 
+      name: p_join_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_JOIN_DATE
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_is_active_employee =====================
+    id: 177866694645949495
+    identification: 
+      name: p_is_active_employee
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_IS_ACTIVE_EMPLOYEE
+
+    advanced: 
+      display-sequence: 120
+
+  - # ====== Parameter: p_department_id ==========================
+    id: 177866847079949496
+    identification: 
+      name: p_department_id
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_DEPARTMENT_ID
+
+    advanced: 
+      display-sequence: 130
+
+  - # ====== Parameter: p_notes ==================================
+    id: 177866961358949497
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_NOTES
+
+    advanced: 
+      display-sequence: 140
+
+  - # ====== Parameter: p_has_portal_access ======================
+    id: 177866996250949498
+    identification: 
+      name: p_has_portal_access
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_HAS_PORTAL_ACCESS
+
+    advanced: 
+      display-sequence: 150
+
+  - # ====== Parameter: p_username ===============================
+    id: 177867146893949499
+    identification: 
+      name: p_username
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_USERNAME
+
+    advanced: 
+      display-sequence: 160
+
+  - # ====== Parameter: p_password_hash ==========================
+    id: 177874110586894050
+    identification: 
+      name: p_password_hash
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_PASSWORD_HASH
+
+    advanced: 
+      display-sequence: 170
+
+  - # ====== Parameter: p_profile_photo ==========================
+    id: 177874195414894051
+    identification: 
+      name: p_profile_photo
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P365_PROFILE_PHOTO
+
+    advanced: 
+      display-sequence: 180
+
+- # ====== Process: EDIT DRIVER ================================
+  id: 176418465862661024
+  identification: 
+    name: EDIT DRIVER
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: ALL_VIEWS_PKG
+    procedure-or-function: UPDATE_DRIVER
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 274464549536725916
+
+  parameters: 
+  - # ====== Parameter: p_driver_id ==============================
+    id: 177863733342949465
+    identification: 
+      name: p_driver_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_DRIVER_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_driver_name ============================
+    id: 177863877305949466
+    identification: 
+      name: p_driver_name
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_DRIVER_NAME
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_national_id ============================
+    id: 177863967335949467
+    identification: 
+      name: p_national_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_NATIONAL_ID
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_license_number =========================
+    id: 177864009973949468
+    identification: 
+      name: p_license_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_LICENSE_NUMBER
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_license_expiry_date ====================
+    id: 177864181062949469
+    identification: 
+      name: p_license_expiry_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_LICENSE_EXPIRY_DATE
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_phone ==================================
+    id: 177864278926949470
+    identification: 
+      name: p_phone
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_PHONE
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_email ==================================
+    id: 177864300589949471
+    identification: 
+      name: p_email
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_EMAIL
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_address ================================
+    id: 177864470341949472
+    identification: 
+      name: p_address
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_ADDRESS
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_city ===================================
+    id: 177864496721949473
+    identification: 
+      name: p_city
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_CITY
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_country_id =============================
+    id: 177864653828949474
+    identification: 
+      name: p_country_id
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_COUNTRY_ID
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_status =================================
+    id: 177864747971949475
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_STATUS
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_join_date ==============================
+    id: 177864842455949476
+    identification: 
+      name: p_join_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_JOIN_DATE
+
+    advanced: 
+      display-sequence: 120
+
+  - # ====== Parameter: p_is_active_employee =====================
+    id: 177864961207949477
+    identification: 
+      name: p_is_active_employee
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_IS_ACTIVE_EMPLOYEE
+
+    advanced: 
+      display-sequence: 130
+
+  - # ====== Parameter: p_department_id ==========================
+    id: 177865020003949478
+    identification: 
+      name: p_department_id
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_DEPARTMENT_ID
+
+    advanced: 
+      display-sequence: 140
+
+  - # ====== Parameter: p_notes ==================================
+    id: 177865132195949479
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_NOTES
+
+    advanced: 
+      display-sequence: 150
+
+  - # ====== Parameter: p_has_portal_access ======================
+    id: 177865247954949480
+    identification: 
+      name: p_has_portal_access
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_HAS_PORTAL_ACCESS
+
+    advanced: 
+      display-sequence: 160
+
+  - # ====== Parameter: p_username ===============================
+    id: 177865317211949481
+    identification: 
+      name: p_username
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_USERNAME
+
+    advanced: 
+      display-sequence: 170
+
+  - # ====== Parameter: p_password_hash ==========================
+    id: 177865414028949482
+    identification: 
+      name: p_password_hash
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_PASSWORD_HASH
+
+    advanced: 
+      display-sequence: 180
+
+  - # ====== Parameter: p_profile_photo ==========================
+    id: 177865562037949483
+    identification: 
+      name: p_profile_photo
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P365_PROFILE_PHOTO
+
+    advanced: 
+      display-sequence: 190
+
+- # ====== Process: DELETE DRIVER ==============================
+  id: 176418550385661025
+  identification: 
+    name: DELETE DRIVER
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: ALL_VIEWS_PKG
+    procedure-or-function: DELETE_DRIVER
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 274464145519725916
+
+  parameters: 
+  - # ====== Parameter: p_driver_id ==============================
+    id: 177863616468949464
+    identification: 
+      name: p_driver_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P365_DRIVER_ID
+
+    advanced: 
+      display-sequence: 10
+
+- # ====== Process: Initialize form Driver Account Form ========
+  id: 274450644324725902
+  identification: 
+    name: Initialize form Driver Account Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Driver Account Form # 301051964538839946
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Suppliers Account Form ========
+  id: 274451033342725903
+  identification: 
+    name: Process form Suppliers Account Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Driver Account Form # 301051964538839946
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: Close Dialog ===============================
+  id: 274465525643725921
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

@@ -1,0 +1,1271 @@
+---
+# ====== Page: Account Transaction Form ======================
+id: 756
+identification: 
+  name: Account Transaction Form
+  alias: ACCOUNT-TRANSACTION-FORM
+  title: استمارة عملية على حساب - نموذج 756
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Transaction Header ==========================
+  id: 281585806565694040
+  identification: 
+    name: Transaction Header
+    title: تاريخ وعرض العملية
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: Account Transaction Form # 281600699534778761
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Transaction Entries =========================
+  id: 281585935373694041
+  identification: 
+    name: Transaction Entries
+    title: بيان العملية
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Account Transaction Form # 281600699534778761
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Account Transaction Form ====================
+  id: 281600699534778761
+  identification: 
+    name: Account Transaction Form
+    title: استمارة عملية على حساب - نموذج 756
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 281607033639778776
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P756_TRANSACTION_TYPE ====================
+  id: 281586044484694042
+  identification: 
+    name: P756_TRANSACTION_TYPE
+    type: Radio Group
+
+  label: 
+    label: نوع العملية
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 40
+    region: Transaction Entries # 281585935373694041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:خصم من الرصيد;DEBIT,اضافة الي الرصيد;CREDIT'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_ENTRY_ID ============================
+  id: 281586545898694047
+  identification: 
+    name: P756_ENTRY_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Account Transaction Form # 281600699534778761
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_ACCOUNT_ID ==========================
+  id: 281601053408778763
+  identification: 
+    name: P756_ACCOUNT_ID
+    type: Display Only
+
+  label: 
+    label: رقم الحساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Transaction Entries # 281585935373694041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT
+        ACCOUNT_NAME || ' - ' || ACCOUNT_CODE
+        DISPLAY,
+        ACCOUNT_ID
+      FROM ACCOUNTS
+      ORDER BY ACCOUNT_NAME
+      
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_TRANSACTION_DATE ====================
+  id: 281601481716778767
+  identification: 
+    name: P756_TRANSACTION_DATE
+    type: Display Only
+
+  label: 
+    label: تاريخ العملية
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Transaction Header # 281585806565694040
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      
+         select convert_to_local_timezone(SYSTIMESTAMP) from dual
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_DESCRIPTION =========================
+  id: 281602262574778770
+  identification: 
+    name: P756_DESCRIPTION
+    type: Textarea
+
+  label: 
+    label: الغرض من العملية
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 30
+    region: Transaction Header # 281585806565694040
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: true
+    maximum-length: 500
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_REFERENCE_NUMBER ====================
+  id: 281602607837778771
+  identification: 
+    name: P756_REFERENCE_NUMBER
+    type: Text Field
+
+  label: 
+    label: الرقم المرجعي
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Transaction Header # 281585806565694040
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_CURRENCY_CODE =======================
+  id: 281603027411778771
+  identification: 
+    name: P756_CURRENCY_CODE
+    type: Display Only
+
+  label: 
+    label: عملة الحساب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: Transaction Entries # 281585935373694041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select currency_code from accounts where account_id = :P756_ACCOUNT_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_DEBIT_AMOUNT ========================
+  id: 281603500904778772
+  identification: 
+    name: P756_DEBIT_AMOUNT
+    type: Number Field
+
+  label: 
+    label: البلغ المخصوم
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 50
+    region: Transaction Entries # 281585935373694041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_CREDIT_AMOUNT =======================
+  id: 281603864006778772
+  identification: 
+    name: P756_CREDIT_AMOUNT
+    type: Number Field
+
+  label: 
+    label: المبلغ المضاف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 60
+    region: Transaction Entries # 281585935373694041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 10
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P756_NOTES ===============================
+  id: 281604206158778772
+  identification: 
+    name: P756_NOTES
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Transaction Entries # 281585935373694041
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 281607423861778776
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 281607033639778776
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 281608807635778778
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 281607033639778776
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P756_ENTRY_ID
+
+- # ====== Button: SAVE ========================================
+  id: 281609249315778778
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 281607033639778776
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P756_ENTRY_ID
+
+- # ====== Button: CREATE ======================================
+  id: 281609607434778778
+  identification: 
+    button-name: CREATE
+    label: تسجيل العملية
+
+  layout: 
+    sequence: 40
+    region: Buttons # 281607033639778776
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P756_ENTRY_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Show Relevant =======================
+  id: 281586140267694043
+  identification: 
+    name: Show Relevant
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P756_TRANSACTION_TYPE
+
+  client-side-condition: 
+    type: Item is not null
+    item: P756_TRANSACTION_TYPE
+
+  actions: 
+  - # ====== Action: SHOW DEBIT WHEN ITEM IS DEBIT ===============
+    id: 281586258705694044
+    identification: 
+      name: SHOW DEBIT WHEN ITEM IS DEBIT
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P756_DEBIT_AMOUNT
+
+    execution: 
+      sequence: 40
+      event: Show Relevant # 281586140267694043
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P756_TRANSACTION_TYPE
+      value: DEBIT
+
+  - # ====== Action: Hide DEBIT AND CREDIT WHEN ITEM IS NULL =====
+    id: 281586347809694045
+    identification: 
+      name: Hide DEBIT AND CREDIT WHEN ITEM IS NULL
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P756_CREDIT_AMOUNT
+      - P756_DEBIT_AMOUNT
+
+    execution: 
+      sequence: 30
+      event: Show Relevant # 281586140267694043
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: SHOW CREDIT IF ITEM IS CREDIT ===============
+    id: 281586461544694046
+    identification: 
+      name: SHOW CREDIT IF ITEM IS CREDIT
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P756_CREDIT_AMOUNT
+
+    execution: 
+      sequence: 10
+      event: Show Relevant # 281586140267694043
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P756_TRANSACTION_TYPE
+      value: CREDIT
+
+  - # ====== Action: HIDE DEBIT IF ITEM IS CREDIT ================
+    id: 281587043190694052
+    identification: 
+      name: HIDE DEBIT IF ITEM IS CREDIT
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P756_DEBIT_AMOUNT
+
+    execution: 
+      sequence: 20
+      event: Show Relevant # 281586140267694043
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P756_TRANSACTION_TYPE
+      value: CREDIT
+
+  - # ====== Action: HIDE CREDIT IF ITEM IS DEBIT ================
+    id: 281587160004694053
+    identification: 
+      name: HIDE CREDIT IF ITEM IS DEBIT
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P756_CREDIT_AMOUNT
+
+    execution: 
+      sequence: 30
+      event: Show Relevant # 281586140267694043
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P756_TRANSACTION_TYPE
+      value: DEBIT
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 281607547588778776
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 281607423861778776
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 281608361325778778
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 281607547588778776
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: P756_TRANSACTION_DATE must be timestamp =
+  id: 281601969765778770
+  identification: 
+    name: P756_TRANSACTION_DATE must be timestamp
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P756_TRANSACTION_DATE
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P756_TRANSACTION_DATE # 281601481716778767
+
+processes: 
+- # ====== Process: Fetch Entry Transaction Data ===============
+  id: 230533672739461314
+  identification: 
+    name: Fetch Entry Transaction Data
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          -- Variables to hold parent transaction id
+          v_transaction_id TRANSACTION_ENTRIES.TRANSACTION_ID%TYPE;
+      BEGIN
+          -- Fetch from TRANSACTION_ENTRIES
+          SELECT
+              ACCOUNT_ID,
+              CURRENCY_CODE,
+              TRANSACTION_TYPE,
+              DEBIT_AMOUNT,
+              CREDIT_AMOUNT,
+              NOTES,
+              TRANSACTION_ID
+          INTO
+              :P756_ACCOUNT_ID,
+              :P756_CURRENCY_CODE,
+              :P756_TRANSACTION_TYPE,
+              :P756_DEBIT_AMOUNT,
+              :P756_CREDIT_AMOUNT,
+              :P756_NOTES,
+              v_transaction_id
+          FROM
+              TRANSACTION_ENTRIES
+          WHERE
+              ENTRY_ID = :P756_ENTRY_ID;
+      
+          -- Fetch header (TRANSACTIONS)
+          SELECT
+              TRANSACTION_DATE,
+              DESCRIPTION,
+              REFERENCE_NUMBER
+          INTO
+              :P756_TRANSACTION_DATE,
+              :P756_DESCRIPTION,
+              :P756_REFERENCE_NUMBER
+          FROM
+              TRANSACTIONS
+          WHERE
+              TRANSACTION_ID = v_transaction_id;
+      
+      EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+              -- If nothing found, clear everything (optional)
+              :P756_ACCOUNT_ID := NULL;
+              :P756_CURRENCY_CODE := NULL;
+              :P756_TRANSACTION_TYPE := NULL;
+              :P756_DEBIT_AMOUNT := NULL;
+              :P756_CREDIT_AMOUNT := NULL;
+              :P756_NOTES := NULL;
+              :P756_TRANSACTION_DATE := NULL;
+              :P756_DESCRIPTION := NULL;
+              :P756_REFERENCE_NUMBER := NULL;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P756_ENTRY_ID
+
+- # ====== Process: Insert Transaction =========================
+  id: 281587252707694054
+  identification: 
+    name: Insert Transaction
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        v_transaction_id TRANSACTIONS.TRANSACTION_ID%TYPE;
+      BEGIN
+        -- Insert into TRANSACTIONS
+        INSERT INTO TRANSACTIONS (
+          TRANSACTION_DATE,
+          DESCRIPTION,
+          REFERENCE_NUMBER,
+          STATUS,
+          CREATED,
+          CREATED_BY
+        )
+        VALUES (
+          TO_TIMESTAMP(:P756_TRANSACTION_DATE, 'DD-MM-YYYY HH:MI PM'),
+          :P756_DESCRIPTION,
+          :P756_REFERENCE_NUMBER,
+          'POSTED',
+          SYSTIMESTAMP,
+          NVL(APEX_UTIL.GET_SESSION_STATE('APP_USER_ID'), USER)
+        )
+        RETURNING TRANSACTION_ID INTO v_transaction_id;
+      
+        -- Insert into TRANSACTION_ENTRIES
+        INSERT INTO TRANSACTION_ENTRIES (
+          TRANSACTION_ID,
+          ACCOUNT_ID,
+          CURRENCY_CODE,
+          DEBIT_AMOUNT,
+          CREDIT_AMOUNT,
+          NOTES,
+          TRANSACTION_TYPE,
+          CREATED,
+          CREATED_BY
+        )
+        VALUES (
+          v_transaction_id,
+          :P756_ACCOUNT_ID,
+          :P756_CURRENCY_CODE,
+          CASE WHEN :P756_TRANSACTION_TYPE = 'DEBIT' THEN :P756_DEBIT_AMOUNT ELSE NULL END,
+          CASE WHEN :P756_TRANSACTION_TYPE = 'CREDIT' THEN :P756_CREDIT_AMOUNT ELSE NULL END,
+          :P756_NOTES,
+          :P756_TRANSACTION_TYPE,
+          SYSTIMESTAMP,
+          NVL(APEX_UTIL.GET_SESSION_STATE('APP_USER_ID'), USER)
+        );
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 281609607434778778
+    type: Item is NULL
+    item: P756_ENTRY_ID
+
+- # ====== Process: Update Transaction Entry ===================
+  id: 281587338090694055
+  identification: 
+    name: Update Transaction Entry
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      UPDATE TRANSACTION_ENTRIES
+      SET
+        ACCOUNT_ID        = :P756_ACCOUNT_ID,
+        CURRENCY_CODE     = :P756_CURRENCY_CODE,
+        DEBIT_AMOUNT      = CASE WHEN :P756_TRANSACTION_TYPE = 'DEBIT' THEN :P756_DEBIT_AMOUNT ELSE NULL END,
+        CREDIT_AMOUNT     = CASE WHEN :P756_TRANSACTION_TYPE = 'CREDIT' THEN :P756_CREDIT_AMOUNT ELSE NULL END,
+        NOTES             = :P756_NOTES,
+        TRANSACTION_TYPE  = :P756_TRANSACTION_TYPE,
+        UPDATED           = SYSTIMESTAMP,
+        UPDATED_BY        = NVL(APEX_UTIL.GET_SESSION_STATE('APP_USER_ID'), USER)
+      WHERE
+        ENTRY_ID = :P756_ENTRY_ID;
+      
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: SAVE # 281609249315778778
+    type: Item is NOT NULL
+    item: P756_ENTRY_ID
+
+- # ====== Process: DELETE Transaction Entry ===================
+  id: 281587453957694056
+  identification: 
+    name: DELETE Transaction Entry
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        v_transaction_id TRANSACTION_ENTRIES.TRANSACTION_ID%TYPE;
+      BEGIN
+        SELECT TRANSACTION_ID INTO v_transaction_id
+        FROM TRANSACTION_ENTRIES
+        WHERE ENTRY_ID = :P756_ENTRY_ID;
+      
+        DELETE FROM TRANSACTION_ENTRIES
+        WHERE TRANSACTION_ID = v_transaction_id;
+      
+        DELETE FROM TRANSACTIONS
+        WHERE TRANSACTION_ID = v_transaction_id;
+      END;
+      
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 281608807635778778
+    type: Item is NOT NULL
+    item: P756_ENTRY_ID
+
+- # ====== Process: Close Dialog ===============================
+  id: 281610819347778779
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

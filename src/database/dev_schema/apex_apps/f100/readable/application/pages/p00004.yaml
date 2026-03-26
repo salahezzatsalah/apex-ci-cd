@@ -1,0 +1,1248 @@
+---
+# ====== Page: Identities Department =========================
+id: 4
+identification: 
+  name: Identities Department
+  alias: IDENTITIES-DEPARTMENT
+  title: إدارة الهويات
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Filters =====================================
+  id: 169096416373639016
+  identification: 
+    name: Filters
+    title: بحث سريع
+    type: Faceted Search
+
+  source: 
+    filtered-region: Search Results (Identity) # 169096581812639018
+
+  layout: 
+    sequence: 10
+    parent-region: Identity and Users # 181142229592280050
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Yes
+      show-total-row-count: Yes
+      total-row-count-label: عدد البياتات
+      show-charts: Dialog
+      display-chart-for-top-n-values: 10
+
+  facets: 
+  - # ====== Facet: P4_SEARCH ====================================
+    id: 169096486973639017
+    identification: 
+      name: P4_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P4_IDENTITY_TYPE =============================
+    id: 169098124542639033
+    identification: 
+      name: P4_IDENTITY_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع الهوية
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: IDENTITY_TYPE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P4_GROUPS ====================================
+    id: 183527514852203524
+    identification: 
+      name: P4_GROUPS
+      type: Checkbox Group
+
+    label: 
+      label: المجموعات
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: IAM_SECURITY_GROUPS.GROUP_CODE # 183139769712387860
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: GROUP_IDS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ':'
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  filters: 
+  - # ====== Filter: P4_SEARCH ===================================
+    id: 169096486973639017
+    identification: 
+      name: P4_SEARCH
+      type: Search
+
+    label: 
+      label: Search
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P4_IDENTITY_TYPE ============================
+    id: 169098124542639033
+    identification: 
+      name: P4_IDENTITY_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: نوع الهوية
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: IDENTITY_TYPE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P4_GROUPS ===================================
+    id: 183527514852203524
+    identification: 
+      name: P4_GROUPS
+      type: Checkbox Group
+
+    label: 
+      label: المجموعات
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: IAM_SECURITY_GROUPS.GROUP_CODE # 183139769712387860
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: GROUP_IDS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: Delimited List
+      separator: ':'
+      trim-whitespace: true
+      filter-combination: OR (Union)
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+- # ====== Region: Search Results (Identity) ===================
+  id: 169096581812639018
+  identification: 
+    name: Search Results (Identity)
+    title: الهويات المسجلة
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          i.identity_id,
+          i.identity_type,
+          i.full_name,
+          i.email,
+          i.phone_number,
+          i.status,
+          i.created,
+      
+          u.user_id,
+          u.username,
+          u.global_role,
+          u.account_locked_yn,
+      
+          /* Groups as colon-separated IDs */
+          (
+              SELECT LISTAGG(ug.group_id, ':')
+                     WITHIN GROUP (ORDER BY ug.group_id)
+              FROM iam_user_security_groups ug
+              WHERE ug.user_id = u.user_id
+                AND ug.is_active_yn = 'Y'
+          ) AS group_ids,
+      
+          CASE
+              WHEN u.user_id IS NOT NULL THEN 'Y'
+              ELSE 'N'
+          END AS has_user
+      
+      FROM iam_identities i
+      
+      LEFT JOIN iam_users u
+             ON u.identity_id = i.identity_id
+             AND u.tenant_id  = i.tenant_id
+      
+      WHERE i.tenant_id = :TENANT_ID;
+
+  order-by: 
+    type: Static Value
+    order-by-clause: IDENTITY_ID
+
+  layout: 
+    sequence: 20
+    parent-region: Identity and Users # 181142229592280050
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: '&IDENTITY_ID.'
+      title: '&FULL_NAME.'
+      miscellaneous: |
+        &USERNAME. <br>
+        &PHONE_NUMBER.
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: FULL_NAME ===================================
+    id: 180416796871954129
+    identification: 
+      name: FULL_NAME
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: FULL_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: EMAIL =======================================
+    id: 180416896350954130
+    identification: 
+      name: EMAIL
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: EMAIL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PHONE_NUMBER ================================
+    id: 180417010323954131
+    identification: 
+      name: PHONE_NUMBER
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: PHONE_NUMBER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS ======================================
+    id: 180417131016954132
+    identification: 
+      name: STATUS
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: USER_ID =====================================
+    id: 180417290561954134
+    identification: 
+      name: USER_ID
+
+    layout: 
+      sequence: 80
+
+    source: 
+      type: Database Column
+      database-column: USER_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: USERNAME ====================================
+    id: 180417411136954135
+    identification: 
+      name: USERNAME
+
+    layout: 
+      sequence: 90
+
+    source: 
+      type: Database Column
+      database-column: USERNAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: GLOBAL_ROLE =================================
+    id: 180417483949954136
+    identification: 
+      name: GLOBAL_ROLE
+
+    layout: 
+      sequence: 100
+
+    source: 
+      type: Database Column
+      database-column: GLOBAL_ROLE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ACCOUNT_LOCKED_YN ===========================
+    id: 180417571338954137
+    identification: 
+      name: ACCOUNT_LOCKED_YN
+
+    layout: 
+      sequence: 110
+
+    source: 
+      type: Database Column
+      database-column: ACCOUNT_LOCKED_YN
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IDENTITY_ID =================================
+    id: 183527683963203526
+    identification: 
+      name: IDENTITY_ID
+
+    layout: 
+      sequence: 130
+
+    source: 
+      type: Database Column
+      database-column: IDENTITY_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IDENTITY_TYPE ===============================
+    id: 183527786532203527
+    identification: 
+      name: IDENTITY_TYPE
+
+    layout: 
+      sequence: 140
+
+    source: 
+      type: Database Column
+      database-column: IDENTITY_TYPE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 183527861042203528
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 150
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: GROUP_IDS ===================================
+    id: 183528096524203530
+    identification: 
+      name: GROUP_IDS
+
+    layout: 
+      sequence: 160
+
+    source: 
+      type: Database Column
+      database-column: GROUP_IDS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: HAS_USER ====================================
+    id: 183528160887203531
+    identification: 
+      name: HAS_USER
+
+    layout: 
+      sequence: 170
+
+    source: 
+      type: Database Column
+      database-column: HAS_USER
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Full Row Link ===============================
+    id: 180418360677954145
+    identification: 
+      position: Full Row Link # 349402277895478545
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.::P2_IDENTITY_ID:&IDENTITY_ID.'
+        page: 2 # Identity Profile
+        values: 
+          p2_identity_id: '&IDENTITY_ID.'
+
+  - # ====== Action: User Actions ================================
+    id: 183126736751282811
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: User Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: اضافة الي مجموعة ==============================
+      id: 183126860953282812
+      identification: 
+        type: Menu Entry
+        label: اضافة الي مجموعة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:7:&SESSION.::&DEBUG.::P7_USER_ID:&USER_ID.'
+          page: 7 # Assign to Security Group
+          values: 
+            p7_user_id: '&USER_ID.'
+
+    - # ====== Menu: Deactive Account ==============================
+      id: 183126947841282813
+      identification: 
+        type: Menu Entry
+        label: Deactive Account
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:::'
+          page: 1 # home
+
+    - # ====== Menu: Rest Password =================================
+      id: 183127110804282814
+      identification: 
+        type: Menu Entry
+        label: Rest Password
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:::'
+          page: 1 # home
+
+    - # ====== Menu: Edit ==========================================
+      id: 183127227618282815
+      identification: 
+        type: Menu Entry
+        label: Edit
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:::'
+          page: 1 # home
+
+- # ====== Region: Breadcrumb ==================================
+  id: 180311322717181214
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--compactTitle
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Identity & Governance # 180314052894210574
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Identity and Users ==========================
+  id: 181142229592280050
+  identification: 
+    name: Identity and Users
+    title: الهويات والمستخدمين
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Region Select # 183126008370282803
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Region Select ===============================
+  id: 183126008370282803
+  identification: 
+    name: Region Select
+    type: Region Display Selector
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--simple
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': true
+      remember-selection: By User
+
+- # ====== Region: Groups ======================================
+  id: 183126055175282804
+  identification: 
+    name: Groups
+    title: المجموعات
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: IAM_SECURITY_GROUPS
+    include-rowid-column: false
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: Region Select # 183126008370282803
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      overline: '&GROUP_ID.'
+      title: '&GROUP_NAME.'
+      description: '&GROUP_CODE.'
+      display-avatar: false
+      display-badge: false
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: GROUP_ID ====================================
+    id: 183126220489282805
+    identification: 
+      name: GROUP_ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: GROUP_ID
+      data-type: VARCHAR2
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: GROUP_CODE ==================================
+    id: 183126322038282806
+    identification: 
+      name: GROUP_CODE
+
+    layout: 
+      sequence: 20
+
+    source: 
+      type: Database Column
+      database-column: GROUP_CODE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: GROUP_NAME ==================================
+    id: 183126403262282807
+    identification: 
+      name: GROUP_NAME
+
+    layout: 
+      sequence: 30
+
+    source: 
+      type: Database Column
+      database-column: GROUP_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 183126503244282808
+    identification: 
+      name: DESCRIPTION
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: DESCRIPTION
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IS_ACTIVE_YN ================================
+    id: 183126548930282809
+    identification: 
+      name: IS_ACTIVE_YN
+
+    layout: 
+      sequence: 50
+
+    source: 
+      type: Database Column
+      database-column: IS_ACTIVE_YN
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 183126728229282810
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 60
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Full Row Link ===============================
+    id: 183529242909203642
+    identification: 
+      position: Full Row Link # 349402277895478545
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:10:&SESSION.::&DEBUG.::P10_GROUP_ID:&GROUP_ID.'
+        page: 10 # Group Members
+        values: 
+          p10_group_id: '&GROUP_ID.'
+
+buttons: 
+- # ====== Button: CreateIDentity ==============================
+  id: 169099148026639044
+  identification: 
+    button-name: CreateIDentity
+    label: إنشاء هوية
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 180311322717181214
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:3:&SESSION.::&DEBUG.:::'
+      page: 3 # Create Identity
+
+    warn-on-unsaved-changes: Do Not Check
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Button: CreateUser ==================================
+  id: 180356516714479514
+  identification: 
+    button-name: CreateUser
+    label: إنشاء مستخدم
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 180311322717181214
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:11:&SESSION.::&DEBUG.:::'
+      page: 11 # Create User
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CreateGroup =================================
+  id: 180417878738954140
+  identification: 
+    button-name: CreateGroup
+    label: إنشاء مجموعة
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 180311322717181214
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:::'
+      page: 5 # Security Group Form
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: update region =======================
+  id: 183125790578282801
+  identification: 
+    name: update region
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Button
+    button: CreateUser # 180356516714479514
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 183125835730282802
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Search Results (Identity) # 169096581812639018
+
+    execution: 
+      sequence: 10
+      event: update region # 183125790578282801
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

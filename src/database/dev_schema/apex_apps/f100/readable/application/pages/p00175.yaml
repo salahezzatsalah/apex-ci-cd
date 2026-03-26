@@ -1,0 +1,1661 @@
+---
+# ====== Page: Hotel Supplier Fee Form =======================
+id: 175
+identification: 
+  name: Hotel Supplier Fee Form
+  alias: HOTEL-SUPPLIER-FEE-FORM
+  title: استمارة رسوم تشغيلية لحجز فندق - نموذج 175
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Hotel Supplier Fee Form =====================
+  id: 261441930301839924
+  identification: 
+    name: Hotel Supplier Fee Form
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: HOTEL_RESERVATION_ROOM_FEES
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 261454258498839943
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P175_ID ==================================
+  id: 261442221339839926
+  identification: 
+    name: P175_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_RESERVATION_ID ======================
+  id: 261442627488839931
+  identification: 
+    name: P175_RESERVATION_ID
+    type: Display Only
+
+  label: 
+    label: كود الحجز
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: RESERVATION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_ROOM_ID =============================
+  id: 261443038802839932
+  identification: 
+    name: P175_ROOM_ID
+    type: Select One
+
+  label: 
+    label: غرفة الحجز
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 30
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-bed
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          CASE WHEN room_type_count > 1 
+               THEN room_name || ' (' || rn || ')' 
+               ELSE room_name 
+          END || ' - (' || night_count || ' ليلة)' AS display_value,
+          id AS return_value
+      FROM (
+          SELECT 
+              R.ID,
+              RT.ROOM_NAME,
+              R.ROOM_TYPE_ID,
+              R.DATE_FROM,
+              R.DATE_TO,
+              -- Calculate number of nights from the room's own FROM/TO dates
+              CASE 
+                  WHEN R.DATE_FROM IS NOT NULL AND R.DATE_TO IS NOT NULL THEN 
+                      TRUNC(R.DATE_TO) - TRUNC(R.DATE_FROM)
+                  ELSE NULL 
+              END AS night_count,
+              COUNT(*) OVER (PARTITION BY R.ROOM_TYPE_ID, R.HOTEL_RESERVATION_ID) AS room_type_count,
+              ROW_NUMBER() OVER (
+                  PARTITION BY R.ROOM_TYPE_ID, R.HOTEL_RESERVATION_ID 
+                  ORDER BY R.CREATED_DATE
+              ) AS rn
+          FROM HOTEL_RESERVATION_ROOMS R
+          JOIN HOTEL_ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ROOM_TYPE_ID
+          WHERE R.HOTEL_RESERVATION_ID = :P175_RESERVATION_ID
+      )
+      ORDER BY display_value
+      
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P175_RESERVATION_ID
+    items-to-submit: 
+    - P175_RESERVATION_ID
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: ROOM_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_FEE_TYPE ============================
+  id: 261443472785839934
+  identification: 
+    name: P175_FEE_TYPE
+    type: Select One
+
+  label: 
+    label: نوع الرسوم / العمولة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 40
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 100
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: HOTELS SUPPLIERS FEES TYPE # 261472611293984981
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: FEE_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_AMOUNT ==============================
+  id: 261443859671839934
+  identification: 
+    name: P175_AMOUNT
+    type: Number Field
+
+  label: 
+    label: القيمة
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Numeric
+
+  layout: 
+    sequence: 70
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-file-invoice-dollar
+    format-mask: 999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: AMOUNT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_CURRENCY ============================
+  id: 261444255526839934
+  identification: 
+    name: P175_CURRENCY
+    type: Select One
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 60
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill-wave
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 10
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_EXCHANGE_RATE =======================
+  id: 261444614173839935
+  identification: 
+    name: P175_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 80
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-exchange-alt
+    format-mask: FML999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_RECORDED_TO_ACCOUNT_YN ==============
+  id: 261445060689839935
+  identification: 
+    name: P175_RECORDED_TO_ACCOUNT_YN
+    type: Switch
+
+  label: 
+    label: حساب مسجل
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 90
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: RECORDED_TO_ACCOUNT_YN
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_ACCOUNT_NUMBER ======================
+  id: 261445482390839935
+  identification: 
+    name: P175_ACCOUNT_NUMBER
+    type: Text Field
+
+  label: 
+    label: رقم الحساب
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 100
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 10
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: ACCOUNT_NUMBER
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_PAYMENT_STATUS ======================
+  id: 261445832010839936
+  identification: 
+    name: P175_PAYMENT_STATUS
+    type: Radio Group
+
+  label: 
+    label: حالة السداد
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 120
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:PAID;PAID,UNPAID;UNPAID'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: PAYMENT_STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: UNPAID
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P175_CREATED =============================
+  id: 261446278009839936
+  identification: 
+    name: P175_CREATED
+    type: Date Picker
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 140
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P175_CREATED_BY ==========================
+  id: 261447009547839937
+  identification: 
+    name: P175_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 150
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P175_UPDATED =============================
+  id: 261447465469839937
+  identification: 
+    name: P175_UPDATED
+    type: Date Picker
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 160
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P175_UPDATED_BY ==========================
+  id: 261448229434839938
+  identification: 
+    name: P175_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 170
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P175_AMOUNT_EGP ==========================
+  id: 261448631753839938
+  identification: 
+    name: P175_AMOUNT_EGP
+    type: Number Field
+
+  label: 
+    label: Amount Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 180
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: AMOUNT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P175_AMOUNT_TOTAL_CURRENCY ===============
+  id: 261449028001839938
+  identification: 
+    name: P175_AMOUNT_TOTAL_CURRENCY
+    type: Number Field
+
+  label: 
+    label: Amount Total Currency
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 190
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: AMOUNT_TOTAL_CURRENCY
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P175_NOTES ===============================
+  id: 261460008742890947
+  identification: 
+    name: P175_NOTES
+    type: Textarea
+
+  label: 
+    label: '<i class="fa6-solid fa6-note-sticky"></i> ملاحظات '
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 110
+    region: Hotel Supplier Fee Form # 261441930301839924
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 250
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 261454669929839943
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 261454258498839943
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 261456063912839946
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 261454258498839943
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P175_ID
+
+- # ====== Button: SAVE ========================================
+  id: 261456420527839946
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 261454258498839943
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P175_ID
+
+- # ====== Button: CREATE ======================================
+  id: 261456860601839946
+  identification: 
+    button-name: CREATE
+    label: اضافة البيان
+
+  layout: 
+    sequence: 40
+    region: Buttons # 261454258498839943
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P175_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 261454744011839943
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 261454669929839943
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 261455516685839945
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 261454744011839943
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show/Hide Account Number ============
+  id: 261459729353890944
+  identification: 
+    name: Show/Hide Account Number
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P175_RECORDED_TO_ACCOUNT_YN
+
+  client-side-condition: 
+    type: Item = Value
+    item: P175_RECORDED_TO_ACCOUNT_YN
+    value: N
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 261459832038890945
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_ACCOUNT_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Show/Hide Account Number # 261459729353890944
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 261460000472890946
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_ACCOUNT_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Show/Hide Account Number # 261459729353890944
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Update Currency & Rates =============
+  id: 261460190552890948
+  identification: 
+    name: Update Currency & Rates
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P175_ROOM_ID
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 261460212430890949
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT CURRENCY
+        FROM HOTEL_RESERVATION_ROOMS
+        WHERE ID = :P175_ROOM_ID
+        
+      items-to-submit: 
+      - P175_ROOM_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_CURRENCY
+
+    execution: 
+      sequence: 10
+      event: Update Currency & Rates # 261460190552890948
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 261460375702890950
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE
+        FROM HOTEL_RESERVATION_ROOMS
+        WHERE ID = :P175_ROOM_ID
+        
+      items-to-submit: 
+      - P175_ROOM_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_EXCHANGE_RATE
+
+    execution: 
+      sequence: 20
+      event: Update Currency & Rates # 261460190552890948
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: UpdateExchangeRate ==================
+  id: 261460517246890952
+  identification: 
+    name: UpdateExchangeRate
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P175_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 261460688654890953
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P175_CURRENCY
+        
+      items-to-submit: 
+      - P175_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: UpdateExchangeRate # 261460517246890952
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: HideExchangeRate ====================
+  id: 261460727833890954
+  identification: 
+    name: HideExchangeRate
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P175_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P175_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 261460871210890955
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: HideExchangeRate # 261460727833890954
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 261460949992890956
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P175_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: HideExchangeRate # 261460727833890954
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+validations: 
+- # ====== Validation: P175_CREATED must be timestamp ==========
+  id: 261446731824839937
+  identification: 
+    name: P175_CREATED must be timestamp
+
+  execution: 
+    sequence: 100
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P175_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P175_CREATED # 261446278009839936
+
+- # ====== Validation: P175_UPDATED must be timestamp ==========
+  id: 261447949158839938
+  identification: 
+    name: P175_UPDATED must be timestamp
+
+  execution: 
+    sequence: 120
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P175_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P175_UPDATED # 261447465469839937
+
+processes: 
+- # ====== Process: Initialize form Hotel Supplier Fee Form ====
+  id: 261457208711839947
+  identification: 
+    name: Initialize form Hotel Supplier Fee Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Hotel Supplier Fee Form =======
+  id: 261457625169839947
+  identification: 
+    name: Process form Hotel Supplier Fee Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Hotel Supplier Fee Form # 261441930301839924
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 261458037255839947
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

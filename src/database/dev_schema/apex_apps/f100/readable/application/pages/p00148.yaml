@@ -1,0 +1,2203 @@
+---
+# ====== Page: Currencies List ===============================
+id: 148
+identification: 
+  name: Currencies List
+  alias: CURRENCIES-LIST
+  title: قائمة العملات واسعار الصرف
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+  css-classes: 
+  - rw-pillar--sienna
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authorization-scheme: Administration Rights # 149832818388153023719
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Rates List ==================================
+  id: 256814487458828636
+  identification: 
+    name: Rates List
+    title: سجل اسعار الصرف المسجلة
+    type: Interactive Grid
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: CURRENCY_RATES
+    include-rowid-column: false
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--noBorders
+    - js-showMaximizeButton
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    header-text: |
+      
+      <div class="ui-dialog-titlebar ui-corner-all ui-widget-header">
+        <h1 class="ui-dialog-title" aria-roledescription="عنوان مربع الحوار"> قائمة اسعار الصرف </h1>
+      </div>
+      
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 256814546997828637
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Delete Row
+      lost-update-type: Row Values
+      add-row-if-empty: true
+
+    performance: 
+      lazy-loading: false
+
+    appearance: 
+      select-first-row: true
+      fixed-row-height: true
+
+    pagination: 
+      type: Scroll
+      show-total-count: true
+
+    toolbar: 
+      show: true
+      controls: 
+      - Actions Menu
+      - Reset Button
+      - Save Button
+      add-button-label: اضافة سعر صرف
+
+    enable-users-to: 
+      save-public-report: false
+      flashback: true
+      define-chart-view: false
+      download: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 256830854847865268
+      identification: 
+        name: Primary Report
+        alias: 278518
+
+    - # ====== Saved Report: مختصر لوجهة الهاتف ====================
+      id: 284773533613514599
+      identification: 
+        name: مختصر لوجهة الهاتف
+        alias: 279427
+
+  columns: 
+  - # ====== Column: RATE_ID =====================================
+    id: 256814697709828638
+    identification: 
+      column-name: RATE_ID
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 30
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: RATE_ID
+      data-type: NUMBER
+      query-only: true
+      primary-key: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 256814746520828639
+    identification: 
+      column-name: CURRENCY_CODE
+      type: Select List
+
+    heading: 
+      heading: كود العملة
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: true
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CURRENCIESLIST # 256545237650959739
+      display-extra-values: false
+      display-null-value: false
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY_CODE
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: RATE_DATE ===================================
+    id: 256814857074828640
+    identification: 
+      column-name: RATE_DATE
+      type: Date Picker
+
+    heading: 
+      heading: تاريخ العمل بالسعر
+      alignment: start
+
+    settings: 
+      show-time: false
+      display-as: Popup
+      minimum-date: None
+      maximum-date: None
+      multiple-months: No
+      use-defaults: true
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: true
+
+    source: 
+      type: Database Column
+      database-column: RATE_DATE
+      data-type: DATE
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+      date-ranges: All
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: EXCHANGE_RATE ===============================
+    id: 256814960432828641
+    identification: 
+      column-name: EXCHANGE_RATE
+      type: Number Field
+
+    heading: 
+      heading: سعر الصرف
+      alignment: end
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 60
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: FML999G999G999G999G990D00
+
+    validation: 
+      value-required: true
+
+    source: 
+      type: Database Column
+      database-column: EXCHANGE_RATE
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: SOURCE ======================================
+    id: 256815035107828642
+    identification: 
+      column-name: SOURCE
+      type: Text Field
+
+    heading: 
+      heading: المصدر
+      alignment: start
+
+    settings: 
+      trim-spaces: Leading and Trailing
+      text-case: NO CHANGE
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+      maximum-length: 100
+
+    source: 
+      type: Database Column
+      database-column: SOURCE
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Distinct Column
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: NOTES =======================================
+    id: 256815168199828643
+    identification: 
+      column-name: NOTES
+      type: Textarea
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: false
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+      maximum-length: 500
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: CREATED =====================================
+    id: 256815240181828644
+    identification: 
+      column-name: CREATED
+      type: Display Only
+
+    heading: 
+      heading: تاريخ التسجيل
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH:MIPM'
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+      date-ranges: All
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 256815343399828645
+    identification: 
+      column-name: CREATED_BY
+      type: Display Only
+
+    heading: 
+      heading: القائم بالتسجيل
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Display Value of List of Values
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+      display-extra-values: false
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 256815472192828646
+    identification: 
+      column-name: UPDATED
+      type: Display Only
+
+    heading: 
+      heading: تاريخ التحديث
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH:MIPM'
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+      date-ranges: All
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 256815512610828647
+    identification: 
+      column-name: UPDATED_BY
+      type: Display Only
+
+    heading: 
+      heading: القائم بالتحديث
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Display Value of List of Values
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+      display-extra-values: false
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: APEX$ROW_ACTION =============================
+    id: 256815668969828648
+    identification: 
+      column-name: APEX$ROW_ACTION
+      type: Actions Menu
+
+    layout: 
+      sequence: 20
+
+  - # ====== Column: APEX$ROW_SELECTOR ===========================
+    id: 256815757827828649
+    identification: 
+      column-name: APEX$ROW_SELECTOR
+      type: Row Selector
+
+    settings: 
+      enable-multi-select: true
+      show-select-all: true
+      hide-control: false
+
+    layout: 
+      sequence: 10
+
+- # ====== Region: Default Currency ============================
+  id: 256816581289828657
+  identification: 
+    name: Default Currency
+    title: العملة الاساسية
+    type: Interactive Grid
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: DEFAULT_CURRENCY
+    include-rowid-column: false
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--noBorders
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    header-text: |
+      
+      <div class="ui-dialog-titlebar ui-corner-all ui-widget-header">
+        <h1 class="ui-dialog-title" aria-roledescription="عنوان مربع الحوار"> العملة الاساسية</h1>
+      </div>
+      
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 256816632988828658
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Update Row
+      lost-update-type: Row Values
+
+    performance: 
+      lazy-loading: false
+
+    appearance: 
+      select-first-row: true
+      fixed-row-height: true
+
+    pagination: 
+      type: Scroll
+      show-total-count: true
+
+    toolbar: 
+      show: true
+      controls: 
+      - Save Button
+
+    enable-users-to: 
+      save-public-report: false
+      flashback: true
+      define-chart-view: false
+      download: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 256862682750092819
+      identification: 
+        name: Primary Report
+        alias: 278836
+
+  columns: 
+  - # ====== Column: ID ==========================================
+    id: 256816798669828659
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 30
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID
+      data-type: NUMBER
+      query-only: true
+      primary-key: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: CURRENCY_CODE ===============================
+    id: 256816873707828660
+    identification: 
+      column-name: CURRENCY_CODE
+      type: Select List
+
+    heading: 
+      heading: العملة الاساسية
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: true
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: CURRENCIESLIST # 256545237650959739
+      display-extra-values: false
+      display-null-value: false
+
+    source: 
+      type: Database Column
+      database-column: CURRENCY_CODE
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: SET_DATE ====================================
+    id: 256816988164828661
+    identification: 
+      column-name: SET_DATE
+      type: Display Only
+
+    heading: 
+      heading: تاريخ التعين
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH:MIPM'
+
+    source: 
+      type: Database Column
+      database-column: SET_DATE
+      data-type: TIMESTAMP WITH TIME ZONE
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+      date-ranges: All
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: SET_BY ======================================
+    id: 256817075644828662
+    identification: 
+      column-name: SET_BY
+      type: Display Only
+
+    heading: 
+      heading: القائم بالتعين
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Display Value of List of Values
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+      display-extra-values: false
+
+    source: 
+      type: Database Column
+      database-column: SET_BY
+      data-type: VARCHAR2
+      query-only: true
+      primary-key: false
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: APEX$ROW_ACTION =============================
+    id: 256817133170828663
+    identification: 
+      column-name: APEX$ROW_ACTION
+      type: Actions Menu
+
+    layout: 
+      sequence: 20
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: APEX$ROW_SELECTOR ===========================
+    id: 256817278814828664
+    identification: 
+      column-name: APEX$ROW_SELECTOR
+      type: Row Selector
+
+    settings: 
+      enable-multi-select: true
+      show-select-all: true
+      hide-control: false
+
+    layout: 
+      sequence: 10
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+- # ====== Region: Menubar =====================================
+  id: 20465492490584193304
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: Breadcrumb # 21599760403788119140
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20465493724090193316
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: تسجيل عملة ==================================
+    id: 16577020313381935928
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تسجيل عملة
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:165:&SESSION.::&DEBUG.:RP,165::'
+        page: 165 # Add Currency Form
+        clear-cache: RP,165
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20465492791163193307
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: عرض سجل الاعضاء ===============================
+      id: 14680477440299258077
+      identification: 
+        type: Menu Entry
+        label: عرض سجل الاعضاء
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:19:&SESSION.::&DEBUG.:RP,::'
+          page: 19 # Update Identity
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Separator =====================================
+      id: 14680479127023258094
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: Add Multiple &NOMENCLATURE_USERS. (admin) =====
+      id: 16292265102562299035
+      identification: 
+        type: Menu Entry
+        label: Add Multiple &NOMENCLATURE_USERS. (admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:54:&SESSION.::&DEBUG.:RP,54::'
+          page: 54
+          clear-cache: RP,54
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: اعدة ظبط ======================================
+      id: 17696813520190290573
+      identification: 
+        type: Menu Entry
+        label: اعدة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:148:&SESSION.::&DEBUG.:RP,74::'
+          page: 148 # Currencies List
+          clear-cache: RP,74
+
+      appearance: 
+        icon: fa-undo-alt
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عن &NOMENCLATURE_USER. ========================
+      id: 17696813711342290574
+      identification: 
+        type: Menu Entry
+        label: عن &NOMENCLATURE_USER.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:109:&SESSION.::&DEBUG.:RP,::'
+          page: 109
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-info
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Manage Groups =================================
+      id: 19311998687134501580
+      identification: 
+        type: Menu Entry
+        label: Manage Groups
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:103:&SESSION.::&DEBUG.:RP,::'
+          page: 103
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+    - # ====== Menu: تحديث =========================================
+      id: 20465493497070193314
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:148:&SESSION.::&DEBUG.:RP,::'
+          page: 148 # Currencies List
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Currencies List =============================
+  id: 21599755761408119120
+  identification: 
+    name: Currencies List
+    title: العملات المسجلة
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: V_CURRENCY_DETAILS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Form--labelsAbove
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  header-and-footer: 
+    header-text: |
+      <div class="ui-dialog-titlebar ui-corner-all ui-widget-header">
+        <h1 class="ui-dialog-title" aria-roledescription="عنوان مربع الحوار">قائمة العملات المسجلة</h1>
+      </div>
+      
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 21599755879492119120
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:165:&SESSION.::&DEBUG.:RP,:P165_CURRENCY_CODE:#CURRENCY_CODE##ID#'
+        page: 165 # Add Currency Form
+        clear-cache: RP
+        values: 
+          p165_currency_code: '#CURRENCY_CODE##ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: No data found.
+      when-more-data-found: 'The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.'
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 21599768313539120594
+      identification: 
+        name: Primary Report
+        alias: 110357754
+
+    columns: 
+    - # ====== Column: CURRENCY_CODE ===============================
+      id: 256813861930828630
+      identification: 
+        column-name: CURRENCY_CODE
+        type: Plain Text
+
+      heading: 
+        heading: كود العملة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: true
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CURRENCY_NAME_AR ============================
+      id: 256813927993828631
+      identification: 
+        column-name: CURRENCY_NAME_AR
+        type: Plain Text
+
+      heading: 
+        heading: اسم العملة (عربي)
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CURRENCY_NAME_EN ============================
+      id: 256814039961828632
+      identification: 
+        column-name: CURRENCY_NAME_EN
+        type: Plain Text
+
+      heading: 
+        heading: اسم العملة (انجليزي)
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 30
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: SYMBOL ======================================
+      id: 256814150453828633
+      identification: 
+        column-name: SYMBOL
+        type: Plain Text
+
+      heading: 
+        heading: علامة العملة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: STATUS ======================================
+      id: 256814294944828634
+      identification: 
+        column-name: STATUS
+        type: Plain Text
+
+      heading: 
+        heading: حالة الإتاحة
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: IS_DEFAULT_YN ===============================
+      id: 256814376520828635
+      identification: 
+        column-name: IS_DEFAULT_YN
+        type: Plain Text
+
+      heading: 
+        heading: عملة اساسية
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED =====================================
+      id: 256816208490828654
+      identification: 
+        column-name: UPDATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ التحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 130
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: 'DD-MON-YYYY HH:MIPM'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: EXCHANGE_RATE_TEXT ==========================
+      id: 256816356283828655
+      identification: 
+        column-name: EXCHANGE_RATE_TEXT
+        type: Plain Text
+
+      heading: 
+        heading: سعر الصرف
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 80
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: EXCHANGE_RATE_VALUE =========================
+      id: 256816418055828656
+      identification: 
+        column-name: EXCHANGE_RATE_VALUE
+        type: Plain Text
+
+      heading: 
+        heading: Exchange Rate Value
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Column: CREATED =====================================
+      id: 21599757417218119134
+      identification: 
+        column-name: CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ التسجيل
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: 'DD-MON-YYYY HH:MIPM'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED_BY ==================================
+      id: 21599757821878119134
+      identification: 
+        column-name: CREATED_BY
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+      heading: 
+        heading: القائم بالتسجيل
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: UPDATED_BY ==================================
+      id: 21599758680246119135
+      identification: 
+        column-name: UPDATED_BY
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+      heading: 
+        heading: القائم بالتحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: center
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 21599760403788119140
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+buttons: 
+- # ====== Button: Up ==========================================
+  id: 256810990355824715
+  identification: 
+    button-name: Up
+    label: Up
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 21599760403788119140
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:10000:&SESSION.::&DEBUG.:::'
+      page: 10000
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Edit Report - Dialog Closed =========
+  id: 256811885428824726
+  identification: 
+    name: Edit Report - Dialog Closed
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Currencies List # 21599755761408119120
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 256812350141824729
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Currencies List # 21599755761408119120
+
+    execution: 
+      sequence: 10
+      event: Edit Report - Dialog Closed # 256811885428824726
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 256818383456828675
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Default Currency # 256816581289828657
+
+    execution: 
+      sequence: 20
+      event: Edit Report - Dialog Closed # 256811885428824726
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 256818444750828676
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Rates List # 256814487458828636
+
+    execution: 
+      sequence: 30
+      event: Edit Report - Dialog Closed # 256811885428824726
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh report on dialog close ======
+  id: 256812784185824729
+  identification: 
+    name: refresh report on dialog close
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 21599760403788119140
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 256813228302824730
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Currencies List # 21599755761408119120
+
+    execution: 
+      sequence: 10
+      event: refresh report on dialog close # 256812784185824729
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: RefreshChanges_CURDEF ===============
+  id: 256817798632828669
+  identification: 
+    name: RefreshChanges_CURDEF
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: NATIVE_IG|REGION TYPE|interactivegridsave
+    selection-type: Region
+    region: Default Currency # 256816581289828657
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 256817887895828670
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Currencies List # 21599755761408119120
+
+    execution: 
+      sequence: 10
+      event: RefreshChanges_CURDEF # 256817798632828669
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: RefreshChanges_CURRATES =============
+  id: 256818011584828672
+  identification: 
+    name: RefreshChanges_CURRATES
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: NATIVE_IG|REGION TYPE|interactivegridsave
+    selection-type: Region
+    region: Rates List # 256814487458828636
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 256818303502828674
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Currencies List # 21599755761408119120
+
+    execution: 
+      sequence: 10
+      event: RefreshChanges_CURRATES # 256818011584828672
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Rates List - Save Interactive Grid Data ====
+  id: 256815833108828650
+  identification: 
+    name: Rates List - Save Interactive Grid Data
+    type: Interactive Grid - Automatic Row Processing (DML)
+    execution-chain: None
+    editable-region: Rates List # 256814487458828636
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    execution-scope: For Created and Modified Rows
+
+- # ====== Process: Default Currency - Save Interactive Grid Dat
+  id: 256817399773828665
+  identification: 
+    name: Default Currency - Save Interactive Grid Data
+    type: Interactive Grid - Automatic Row Processing (DML)
+    execution-chain: None
+    editable-region: Default Currency # 256816581289828657
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    execution-scope: For Created and Modified Rows
+

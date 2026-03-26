@@ -1,0 +1,1614 @@
+---
+# ====== Page: Company Driver Profile Page ===================
+id: 366
+identification: 
+  name: Company Driver Profile Page
+  alias: COMPANY-DRIVER-PROFILE-PAGE
+  title: ملف حساب سائق شركة &P366_DRIVER_NAME.
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    // Utility to clean numbers
+    function cleanAmount(val) {
+      if (typeof val !== "string") val = String(val ?? '');
+      val = val.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+      val = val.replace(/[^0-9.\-]/g, "");
+      const parts = val.split(".");
+      if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
+      return val;
+    }
+    
+    // Open Collect Modal
+    window.openCollectModal = function (currency, amount, amount_egp, driverId, assignmentId, productId) {
+      const modal = document.getElementById("collectModal");
+      modal.classList.remove("hidden");
+      document.getElementById("collectCurrency").value = currency;
+      document.getElementById("collectCurrencyLabel").textContent = currency;
+      document.getElementById("collectAmount").value = cleanAmount(amount);
+      document.getElementById("collectDriverId").value = driverId;
+      document.getElementById("collectAssignmentId").value = assignmentId;
+      document.getElementById("collectProductId").value = productId;
+    
+      // Calculate exchange rate
+      const rate = (parseFloat(cleanAmount(amount_egp)) / parseFloat(cleanAmount(amount)));
+      document.getElementById("collectExchangeRate").value = isFinite(rate) ? rate.toFixed(2) : "";
+    
+      // Load accounts
+      apex.server.process("P190_FETCH_ACCOUNTS", { x01: currency }, {
+        success: function (data) {
+          const sel = document.getElementById("collectAccountId");
+          sel.innerHTML = '<option value="">-- اختر الحساب --</option>';
+          data.accounts.forEach(acc => {
+            const opt = document.createElement("option");
+            opt.value = acc.id;
+            opt.textContent = acc.name;
+            sel.appendChild(opt);
+          });
+        }
+      });
+    };
+    
+    window.closeCollectModal = function () {
+      document.getElementById("collectModal").classList.add("hidden");
+    };
+    
+    window.closeSettleModal = function () {
+      document.getElementById("settleModal").classList.add("hidden");
+    };
+    
+    // Open Settle Modal
+    window.openSettleWithDriver = function (driverId, amount, assignmentId, productId) {
+      const modal = document.getElementById("settleModal");
+      modal.classList.remove("hidden");
+      document.getElementById("settleAmount").value = cleanAmount(amount);
+      document.getElementById("settleDriverId").value = driverId;
+      document.getElementById("settleAssignmentId").value = assignmentId;
+      document.getElementById("settleProductId").value = productId;
+    
+      apex.server.process("P190_FETCH_ACCOUNTS", { x01: "EGP" }, {
+        success: function (data) {
+          const sel = document.getElementById("settleAccountId");
+          sel.innerHTML = '<option value="">-- اختر الحساب --</option>';
+          data.accounts.forEach(acc => {
+            const opt = document.createElement("option");
+            opt.value = acc.id;
+            opt.textContent = acc.name;
+            sel.appendChild(opt);
+          });
+        }
+      });
+    };
+    
+    // Submit Collect
+    window.submitCollect = function () {
+      const accountId = document.getElementById("collectAccountId").value;
+      if (!accountId) {
+        apex.message.showErrors([{ type: "error", message: "يجب اختيار الحساب." }]);
+        return;
+      }
+      const payload = {
+        type: "FROM_DRIVER",
+        driver_id: document.getElementById("collectDriverId").value,
+        currency: document.getElementById("collectCurrency").value,
+        amount: cleanAmount(document.getElementById("collectAmount").value),
+        exchange_rate: document.getElementById("collectExchangeRate").value,
+        notes: document.getElementById("collectNotes").value,
+        assignment_id: document.getElementById("collectAssignmentId").value,
+        product_id: document.getElementById("collectProductId").value,
+        account_id: accountId
+      };
+    
+      apex.server.process("P190_INSERT_SETTLEMENT", { x01: JSON.stringify(payload) }, {
+        success: function (data) {
+          if (data.status === "error") {
+            apex.message.showErrors([{ type: "error", message: data.sqlerrm }]);
+            return;
+          }
+          closeCollectModal();
+          apex.message.showPageSuccess("تم تسجيل التحصيل بنجاح");
+          apex.region("driver-card").refresh();
+        }
+      });
+    };
+    
+    // Submit Settle
+    window.submitSettle = function () {
+      const accountId = document.getElementById("settleAccountId").value;
+      if (!accountId) {
+        apex.message.showErrors([{ type: "error", message: "يجب اختيار الحساب." }]);
+        return;
+      }
+      const payload = {
+        type: "TO_DRIVER",
+        driver_id: document.getElementById("settleDriverId").value,
+        currency: "EGP",
+        amount: cleanAmount(document.getElementById("settleAmount").value),
+        notes: document.getElementById("settleNotes").value,
+        assignment_id: document.getElementById("settleAssignmentId").value,
+        product_id: document.getElementById("settleProductId").value,
+        account_id: accountId
+      };
+    
+      apex.server.process("P190_INSERT_SETTLEMENT", { x01: JSON.stringify(payload) }, {
+        success: function (data) {
+          if (data.status === "error") {
+            apex.message.showErrors([{ type: "error", message: data.sqlerrm }]);
+            return;
+          }
+          closeSettleModal();
+          apex.message.showPageSuccess("تمت التسوية بنجاح");
+          apex.region("driver-card").refresh();
+        }
+      });
+    };
+    
+
+css: 
+  file-urls: 
+  - 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    
+    
+    .tripinfo-span-tag {
+      display: inline-block;
+      background: #e0f2fe;      /* Tailwind bg-sky-100 */
+      color: #0369a1;           /* Tailwind text-sky-900 */
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-top: 4px;
+      border: 1px solid #bae6fd; /* Tailwind border-sky-300 */
+      font-weight: 600;
+    }
+    
+    .tripnotes-span-tag {
+      display: inline-block;
+      background: #fffbeb;      /* Tailwind bg-amber-50 */
+      color: #92400e;           /* Tailwind text-amber-800 */
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-top: 4px;
+      border: 1px solid #fde68a; /* Tailwind border-amber-300 */
+      font-weight: 500;
+    }
+    
+    .assignmentnotes-span-tag {
+      display: inline-block;
+      background: #f7fee7;      /* Tailwind bg-lime-50 */
+      color: #365314;           /* Tailwind text-lime-800 */
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-top: 4px;
+      border: 1px solid #bef264; /* Tailwind border-lime-300 */
+      font-weight: 500;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Current Active Trip =========================
+  id: 176417529646661014
+  identification: 
+    name: Current Active Trip
+    title: 'تشغيلات نشطة '
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html        CLOB;
+        v_trip_index  INTEGER := 0;
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        FOR rec IN (
+          SELECT *
+          FROM LIMO_CURRENT_DRIVERS_V
+          WHERE DRIVER_ID = :P366_DRIVER_ID
+          ORDER BY STATUS_ORDER, TRIP_TIME
+        ) LOOP
+          BEGIN
+            v_trip_index := v_trip_index + 1;
+      
+            DBMS_LOB.APPEND(l_html, '
+      <a href="' || APEX_UTIL.PREPARE_URL(
+                     'f?p=' || :APP_ID || ':6001:' || :APP_SESSION || 
+                     '::::P6001_PRODUCT_ID:' || rec.PRODUCT_ID) || '" 
+         class="block transition hover:shadow-md bg-white rounded-xl border border-gray-200 p-4 mb-4 space-y-3">
+      
+        <!-- Top Row -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <img src="' || NVL(rec.CAR_PHOTO_URL, '#APP_FILES#placeholders/car-default.png') || '" 
+               class="w-16 h-14 object-contain rounded border" alt="Car">
+          <div class="flex-1 min-w-0">
+            <div class="text-base font-bold text-gray-900">' || NVL(rec.CLIENT_CODE, '-') || '</div>
+            <div class="flex flex-wrap text-xs text-gray-500 mt-1 gap-1">
+              <span> كود التشغيلة: ' || NVL(rec.PRODUCT_ID, '-') || ' - </span>
+              <span> كود التوزيعة: ' || NVL(rec.ASSIGNMENT_ID, '-') || '</span>
+            </div>
+          </div>
+          <div class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded-full mt-2 sm:mt-0 whitespace-nowrap">' 
+            || rec.STATUS_LABEL_AR || '
+          </div>
+        </div>
+      
+        <!-- Date and Location -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2 text-sm text-gray-700">
+          <div class="flex items-center gap-1 flex-wrap">
+            <i class="fa6 fa6-calendar-days text-gray-500 text-base"></i>
+            <span class="text-red-900 font-bold px-2 py-0.5 rounded text-xs tracking-widest" 
+                  style="font-family:monospace;">' 
+                  || NVL(TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(rec.TRIP_DATE_FROM), 'YYYY-MM-DD'), '-') 
+                  || ' ' || NVL(rec.TRIP_TIME, '-') || '</span>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <i class="fa6 fa6-map-location-dot ml-1 text-gray-500"></i>
+            <span>' || NVL(rec.FROM_LOCATION, '-') || '</span>
+            <i class="fa6 fa6-arrow-left-long text-gray-400"></i>
+            <span>' || NVL(rec.TO_LOCATION, '-') || '</span>
+          </div>
+        </div>
+      
+        <!-- Trip Types -->
+        <div class="flex flex-wrap gap-2 mt-2">
+          <span class="bg-blue-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1 text-xs font-semibold">
+            <i class="fa6 fa6-headset"></i>' || NVL(rec.CREATED_BY, '-') ||'
+          </span>
+          <span class="bg-blue-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1 text-xs font-semibold">
+            <i class="fa6 fa6-layer-group"></i>' || NVL(rec.CLASSIFICATION_LABEL_AR, '-') || '
+          </span>
+          <span class="bg-blue-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1 text-xs font-semibold">
+            <i class="fa6 fa6-car-side"></i>' || NVL(rec.TRIP_TYPE_NAME_AR, '-') || '
+          </span>' ||
+          CASE WHEN rec.TRIP_TYPE = 'DAILY' THEN
+            '<span class="bg-gray-800 text-white rounded-full px-2 py-0.5 flex items-center gap-1 text-xs font-semibold">
+              <i class="fa6 fa6-calendar-day"></i>' || NVL(rec.TRIPS_COUNT,0) || ' / ' || NVL(rec.NOD,0) || '
+            </span>'
+          ELSE '' END || '
+        </div>');
+      
+            -- Prebuilt details (ticket, signage, notes, assignment notes)
+            IF rec.DETAILS_HTML IS NOT NULL THEN
+              DBMS_LOB.APPEND(l_html, '
+            <div class="flex flex-col sm:flex-row flex-wrap gap-2 text-xs text-gray-500 mt-2">'
+            || rec.DETAILS_HTML || '
+            </div>');
+            END IF;
+      
+            -- Progress Bar
+            DBMS_LOB.APPEND(l_html, '
+        <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden mt-3">
+          <div class="h-full bg-blue-600 transition-all" style="width:' || rec.TRIP_PROGRESS_PCT || '%"></div>
+        </div>
+      </a>');
+      
+          EXCEPTION
+            WHEN OTHERS THEN
+              DBMS_LOB.APPEND(l_html, '
+                <div style="color:red;background:#fee;border:1px solid #faa;margin:10px 0;padding:8px;border-radius:8px;">
+                خطأ في الرحلة رقم: '|| v_trip_index ||'، المنتج: '|| NVL(rec.PRODUCT_ID,'?') ||'<br>'||SQLERRM||'
+                </div>');
+          END;
+        END LOOP;
+      
+        -- If no trips found
+        IF v_trip_index = 0 THEN
+          DBMS_LOB.APPEND(l_html, '
+      <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-center font-semibold flex flex-col items-center gap-2 mt-6">
+        <i class="fa6 fa6-circle-exclamation text-2xl"></i>
+        لا توجد أي رحلات حالياً.
+      </div>');
+        END IF;
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: Assignment Records # 279056150352864247
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Driver Wallets ==============================
+  id: 230533552311461313
+  identification: 
+    name: Driver Wallets
+    title: محافظ السائق
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html         CLOB;
+        l_section      CLOB;
+        l_url          VARCHAR2(4000);
+        l_flag_url     VARCHAR2(4000);
+        l_egp_amount   NUMBER;
+        l_sec_id       VARCHAR2(40);
+      
+        l_type_options      VARCHAR2(4000) := '';
+        l_currency_options  VARCHAR2(4000) := '';
+        -- l_owner_type_options is now just one fixed value (Driver)
+        l_owner_type_options VARCHAR2(4000) := '';
+      
+        FUNCTION format_number(p_value NUMBER) RETURN VARCHAR2 IS
+        BEGIN
+          IF p_value IS NULL THEN
+            RETURN '0';
+          ELSIF TRUNC(p_value) = p_value THEN
+            RETURN TO_CHAR(p_value, 'FM999G999G999G999G999G990');
+          ELSE
+            RETURN TO_CHAR(p_value, 'FM999G999G999G999G999G990.00');
+          END IF;
+        EXCEPTION
+          WHEN OTHERS THEN
+            RETURN TO_CHAR(NVL(p_value,0));
+        END;
+      BEGIN
+      
+        -- Account type options
+        FOR t IN (SELECT ACCOUNT_TYPE_CODE, NAME_AR FROM ACCOUNT_TYPES ORDER BY NAME_AR) LOOP
+          l_type_options := l_type_options || '<option value="' || t.ACCOUNT_TYPE_CODE || '">' || t.NAME_AR || '</option>';
+        END LOOP;
+        -- Currency options
+        FOR cur IN (SELECT DISTINCT CURRENCY_CODE FROM ACCOUNTS ORDER BY CURRENCY_CODE) LOOP
+          l_currency_options := l_currency_options || '<option value="' || cur.CURRENCY_CODE || '">' || cur.CURRENCY_CODE || '</option>';
+        END LOOP;
+        -- Owner type options: **ONLY Driver, not selectable**
+        l_owner_type_options := '<option value="Driver" selected>سائق</option>';
+      
+        l_html := '
+        <style>
+          .acc-filters-bar {background:#fafcff;border-radius:22px;box-shadow:0 2px 16px 0 #e8ecf2;padding:22px 18px 18px 18px;margin-bottom:38px;border:1px solid #e6eaf0;position:relative;z-index:2;}
+          .acc-filters-grid {display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;}
+          @media (max-width:700px){
+            .acc-filters-bar{padding:12px 6px 14px 6px;border-radius:14px;box-shadow:0 2px 6px 0 #e8ecf2;}
+            .acc-filters-grid{flex-direction:column;gap:9px 0;}
+            .acc-hide-toggle-box{position:static!important;margin-bottom:7px;width:100%;justify-content:flex-end;}
+          }
+          .acc-hide-toggle-box{position:absolute;left:26px;top:19px;display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:4px 14px 4px 12px;box-shadow:0 1px 6px 0 #e8ecf2;min-width:150px;z-index:5;}
+          .acc-hide-toggle-box label{font-weight:600;font-size:0.96rem;color:#626985;margin-bottom:0!important;cursor:pointer;}
+          .acc-hide-toggle-box input[type=checkbox]{width:1.1em;height:1.1em;accent-color:#206fce;margin-left:0.4em;vertical-align:middle;cursor:pointer;}
+          .acc-filters-bar select, .acc-filters-bar input[type=text]{border-radius:11px;background:#f4f6fa;border:1px solid #dde3ed;font-size:1rem;color:#394667;min-width:115px;padding:10px 14px;transition:border .15s;}
+          .acc-filters-bar select:focus, .acc-filters-bar input[type=text]:focus{outline:none;border-color:#206fce;background:#fafdff;box-shadow:0 2px 8px 0 #e3eefd5e;}
+        </style>
+        <script>
+          document.addEventListener("DOMContentLoaded",function(){
+            document.getElementById("toggleBalanceSwitch").checked=true;
+            hideBalances(true);
+            filterAllAccountsBar();
+          });
+          function filterAllAccountsBar(){
+            var search=document.getElementById("accSearchBar").value.trim().toLowerCase();
+            var type=document.getElementById("accTypeFilterBar").value;
+            var currency=document.getElementById("accCurrFilterBar").value;
+            // OwnerType is always Driver now, not changeable
+            var ownerType="Driver";
+            var ownerInput=document.getElementById("accOwnerNameBar").value.trim().toLowerCase();
+            var sections=document.querySelectorAll(".acc-section-group");
+            sections.forEach(function(sec){
+              var visibleCards=0;
+              var cards=sec.querySelectorAll(".account-card");
+              cards.forEach(function(card){
+                var text=card.innerText||card.textContent;
+                var cardType=card.getAttribute("data-type");
+                var cardCurr=card.getAttribute("data-currency");
+                var cardOwnerType=card.getAttribute("data-owner-type")||"";
+                var cardOwnerName=card.getAttribute("data-owner-name")?card.getAttribute("data-owner-name").toLowerCase():"";
+                var cardOwnerId=card.getAttribute("data-owner-id")?card.getAttribute("data-owner-id").toLowerCase():"";
+                var show=true;
+                if(search&&text.indexOf(search)===-1)show=false;
+                if(type&&cardType!==type)show=false;
+                if(currency&&cardCurr!==currency)show=false;
+                if(ownerType&&cardOwnerType!==ownerType)show=false;
+                if(ownerInput&&cardOwnerName.indexOf(ownerInput)===-1&&cardOwnerId.indexOf(ownerInput)===-1)show=false;
+                card.style.display=show?"":"none";
+                if(show)visibleCards++;
+              });
+              sec.style.display=(visibleCards>0)?"":"none";
+            });
+          }
+          function hideBalances(isHidden){
+            var els=document.querySelectorAll(".acc-balance-value,.acc-balance-egp");
+            els.forEach(function(el){
+              if(isHidden){
+                el.innerHTML="******";
+                el.classList.add("opacity-70","tracking-widest");
+              }else{
+                el.innerHTML=el.getAttribute("data-show");
+                el.classList.remove("opacity-70","tracking-widest");
+              }
+            });
+          }
+          function toggleBalanceSwitchFunc(){
+            var isHidden=document.getElementById("toggleBalanceSwitch").checked;
+            hideBalances(isHidden);
+          }
+        </script>
+        <div class="acc-filters-bar">
+          <div class="acc-hide-toggle-box">
+            <label for="toggleBalanceSwitch">اخفاء الأرصدة</label>
+            <input type="checkbox" id="toggleBalanceSwitch" checked onclick="toggleBalanceSwitchFunc()">
+          </div>
+          <div class="acc-filters-grid">
+            <input id="accSearchBar" type="text" class="shadow-sm"
+              placeholder="بحث شامل (اسم - رقم - مالك ...)" oninput="filterAllAccountsBar()">
+            <select id="accTypeFilterBar" onchange="filterAllAccountsBar()">
+              <option value="">كل أنواع الحسابات</option>' || l_type_options || '
+            </select>
+            <select id="accCurrFilterBar" onchange="filterAllAccountsBar()">
+              <option value="">كل العملات</option>' || l_currency_options || '
+            </select>
+            <select id="accOwnerTypeFilterBar" disabled style="background:#e4e8ee;cursor:not-allowed;">
+              ' || l_owner_type_options || '
+            </select>
+            <input id="accOwnerNameBar" type="text" class="shadow-sm"
+              placeholder="اسم أو رقم المالك..." oninput="filterAllAccountsBar()">
+          </div>
+        </div>
+        <div class="space-y-12">
+        ';
+      
+        FOR t IN (SELECT ACCOUNT_TYPE_CODE, NAME_AR FROM ACCOUNT_TYPES ORDER BY NAME_AR) LOOP
+          l_section := '';
+          l_sec_id := 'section_' || t.ACCOUNT_TYPE_CODE;
+          DECLARE
+            l_has_accounts BOOLEAN := FALSE;
+          BEGIN
+            FOR a IN (
+              SELECT
+                a.ACCOUNT_ID,
+                a.ACCOUNT_NAME,
+                a.ACCOUNT_CODE,
+                a.ACCOUNT_TYPE,
+                a.CURRENCY_CODE,
+                NVL(a.STATUS, 'ACTIVE') STATUS,
+                a.OWNER_TYPE,
+                a.OWNER_ID,
+                vo.OWNER_NAME,
+                NVL((SELECT EXCHANGE_RATE
+                      FROM CURRENCY_RATES
+                      WHERE CURRENCY_CODE = a.CURRENCY_CODE
+                        AND RATE_DATE = (SELECT MAX(RATE_DATE) FROM CURRENCY_RATES WHERE CURRENCY_CODE = a.CURRENCY_CODE)
+                    ), 1) EXCHANGE_RATE,
+                NVL((SELECT BALANCE FROM V_ACCOUNT_BALANCES WHERE ACCOUNT_ID = a.ACCOUNT_ID), 0) BALANCE
+              FROM ACCOUNTS a
+              LEFT JOIN V_ACCOUNT_OWNERS vo
+                ON a.OWNER_TYPE = vo.OWNER_TYPE AND a.OWNER_ID = vo.OWNER_ID
+              WHERE a.ACCOUNT_TYPE = t.ACCOUNT_TYPE_CODE
+                AND a.OWNER_TYPE = 'Driver'
+                AND a.OWNER_ID = :P366_DRIVER_ID
+              ORDER BY a.ACCOUNT_NAME
+            ) LOOP
+              l_has_accounts := TRUE;
+              l_url := APEX_UTIL.PREPARE_URL(
+                p_url => 'f?p=' || :APP_ID || ':6008:' || :APP_SESSION || '::NO::P6008_ACCOUNT_ID:' || a.ACCOUNT_ID,
+                p_checksum_type => 'SESSION'
+              );
+              l_flag_url := 'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/CURFLAG/' || a.CURRENCY_CODE;
+              l_egp_amount := NVL(a.BALANCE,0) * NVL(a.EXCHANGE_RATE,1);
+      
+              l_section := l_section || '
+                <a href="' || l_url || '" class="account-card block border-2 rounded-2xl bg-white p-5 shadow hover:shadow-lg hover:border-blue-200 transition group relative"
+                   data-type="' || a.ACCOUNT_TYPE || '" 
+                   data-currency="' || a.CURRENCY_CODE || '" 
+                   data-owner-type="' || a.OWNER_TYPE || '" 
+                   data-owner-id="' || NVL(a.OWNER_ID, '') || '"
+                   data-owner-name="' || NVL(a.OWNER_NAME, '') || '">
+                  <div class="flex justify-between items-center">
+                    <div class="flex-1 text-right">
+                      <div class="font-bold text-gray-900 text-xl group-hover:text-blue-600 transition">' || a.ACCOUNT_NAME || '</div>
+                      <div class="text-xs text-gray-500 mb-2">' || a.ACCOUNT_CODE || '</div>
+                      <div class="flex items-center gap-2 mt-2">
+                        <span class="acc-balance-value text-2xl font-black ' ||
+                          CASE
+                            WHEN NVL(a.BALANCE,0) < 0 THEN 'text-red-600'
+                            WHEN NVL(a.BALANCE,0) > 0 THEN 'text-green-600'
+                            ELSE 'text-gray-700'
+                          END || '" data-show="' || format_number(NVL(a.BALANCE,0)) || '">' ||
+                          '******' || '</span>
+                        <span class="text-base font-bold text-gray-500">' || a.CURRENCY_CODE || '</span>
+                      </div>
+                      <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                        <i class="fa6 fa6-money-bill-wave text-sm text-blue-400"></i>
+                        الرصيد المعدل: 
+                        <span class="acc-balance-egp font-bold text-blue-900" data-show="' || format_number(l_egp_amount) || '">' || '******' || '</span> ج.م
+                      </div>
+                      <div class="mt-2 flex flex-wrap gap-2 items-center">
+                        <span class="inline-block px-2 py-1 text-xs rounded-full ' ||
+                          CASE WHEN a.STATUS = 'ACTIVE' THEN 'bg-green-100 text-green-700'
+                               ELSE 'bg-gray-100 text-gray-600' END || '">' ||
+                          CASE WHEN a.STATUS = 'ACTIVE' THEN 'نشط' ELSE 'غير نشط' END || '</span>
+                        <span class="inline-block px-2 py-1 text-xs rounded-full bg-blue-50 text-blue-700">'
+                        || 
+                          CASE a.OWNER_TYPE
+                            WHEN 'Employee' THEN 'موظف: '
+                            WHEN 'Supplier' THEN 'مورد: '
+                            WHEN 'Driver'   THEN 'سائق: '
+                            WHEN 'Company'  THEN 'الشركة'
+                            ELSE NVL(a.OWNER_TYPE,'')
+                          END || ' ' ||
+                          NVL(a.OWNER_NAME, '') || '</span>
+                      </div>
+                    </div>
+                    <div class="ml-4 flex-shrink-0 flex flex-col items-center gap-1">
+                      <img src="' || l_flag_url || '" alt="Flag" class="w-14 h-14 rounded-full border-2 border-gray-100 object-cover group-hover:border-blue-400 transition">
+                    </div>
+                  </div>
+                </a>
+              ';
+            END LOOP;
+      
+            IF l_has_accounts THEN
+              l_html := l_html || '
+                <div id="' || l_sec_id || '" class="acc-section-group mb-10">
+                  <h2 class="text-lg font-semibold text-gray-700 mb-4">' || t.NAME_AR || '</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ' || l_section || '
+                  </div>
+                </div>
+              ';
+            END IF;
+          END;
+        END LOOP;
+      
+        l_html := l_html || '</div>'; -- main container
+      
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P366_DRIVER_ID
+
+  layout: 
+    sequence: 60
+    parent-region: Tabs Container # 279055956203864245
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: driver_wallet
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Driver Profile ==============================
+  id: 279055865969864244
+  identification: 
+    name: Driver Profile
+    title: تفاصيل الحساب
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        CURSOR c_driver IS
+          SELECT *
+          FROM VW_DRIVER_ACCOUNTING
+          WHERE DRIVER_ID = :P366_DRIVER_ID;
+      
+        l_output       CLOB := '';
+        l_photo_url    VARCHAR2(2000);
+        l_found        BOOLEAN := FALSE;
+        l_trips_str    VARCHAR2(200);
+        l_dues_tiles   CLOB := '';
+        l_driver_info  CLOB := '';
+        l_any_dues     BOOLEAN := FALSE;
+      BEGIN
+        FOR rec IN c_driver LOOP
+          l_found := TRUE;
+      
+          l_photo_url := NVL(rec.PROFILE_PHOTO, '#APP_FILES#placeholders/unknown.png');
+      
+          IF rec.TOTAL_TRIPS_MADE > 0 THEN
+            l_trips_str := TO_CHAR(rec.TOTAL_TRIPS_MADE) || ' رحلة مكتملة';
+          ELSE
+            l_trips_str := 'لا يوجد رحلات مكتملة';
+          END IF;
+      
+          -- Driver Card
+          l_output := l_output || '
+          <section class="w-full bg-white rounded-2xl shadow border border-gray-200 p-5 mt-5" dir="rtl">
+            <div class="flex flex-col items-center text-center">
+              <div class="w-24 h-24 rounded-full border-4 border-blue-100 shadow-md overflow-hidden -mt-12 mb-3 bg-white">
+                <img src="'||l_photo_url||'" class="object-cover w-full h-full" alt="صورة السائق"
+                  onerror="this.onerror=null;this.src=''#APP_FILES#placeholders/unknown.png'';">
+              </div>
+              <h2 class="text-xl font-bold text-gray-900 mb-1">'||rec.DRIVER_NAME||'</h2>
+              <div class="flex flex-wrap justify-center items-center gap-2 text-sm text-gray-600 mb-2">
+                <a href="tel:'||rec.CONTACT_PHONE||'" class="flex items-center gap-1 hover:underline text-blue-600">
+                  <i class="fa6 fa-phone"></i>'||rec.CONTACT_PHONE||'
+                </a>
+              </div>
+              <div class="flex flex-wrap justify-center items-center gap-2 mt-2">
+                <span class="inline-flex items-center gap-1 text-blue-700 bg-blue-50 rounded-full px-2 py-1 text-xs font-medium">
+                  <i class="fa6 fa-car-side"></i>'||l_trips_str||'
+                </span>
+              </div>
+            </div>
+          </section>';
+      
+          -- Dues Tiles
+          -- l_dues_tiles := '
+          -- <section class="w-full mt-4">
+          --   <h3 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+          --     <i class="fa6 fa-wallet text-blue-500"></i>
+          --     المستحقات المالية
+          --   </h3>
+          --   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+      
+          -- IF rec.REMAINING_DUES_BY_CURRENCY_JSON IS NOT NULL THEN
+      
+          --   -- Positive balances
+          --   FOR c IN (
+          --     SELECT currency, remaining_amount, remaining_amount_egp
+          --     FROM JSON_TABLE(rec.REMAINING_DUES_BY_CURRENCY_JSON, '$[*]'
+          --       COLUMNS (
+          --         currency VARCHAR2(20) PATH '$.currency',
+          --         remaining_amount VARCHAR2(40) PATH '$.remaining_amount',
+          --         remaining_amount_egp VARCHAR2(40) PATH '$.remaining_amount_egp'
+          --       )
+          --     )
+          --     WHERE TO_NUMBER(REPLACE(remaining_amount, ',', '')) > 0
+          --   ) LOOP
+          --     l_any_dues := TRUE;
+      
+          --     l_dues_tiles := l_dues_tiles || '
+          --     <div class="bg-red-50 border border-red-200 rounded-2xl shadow flex items-center gap-3 px-4 py-3 w-full">
+          --       <i class="fa6 fa-building-columns text-xl text-red-400"></i>
+          --       <div class="flex-1 text-right">
+          --         <div class="font-semibold text-red-700 mb-1">'||
+          --           CASE
+          --             WHEN :USER_TYPE = 'EMPLOYEE' THEN 'مستحق للشركة'
+          --             ELSE 'عليك'
+          --           END ||'</div>
+          --         <div class="font-bold text-lg text-red-900">'||c.currency||' '||c.remaining_amount||'</div>
+          --         <div class="text-xs text-gray-500">≈ '||c.remaining_amount_egp||' جنيه</div>
+          --       </div>
+          --     </div>';
+          --   END LOOP;
+      
+          --   -- Negative balances
+          --   FOR c IN (
+          --     SELECT currency, remaining_amount, remaining_amount_egp
+          --     FROM JSON_TABLE(rec.REMAINING_DUES_BY_CURRENCY_JSON, '$[*]'
+          --       COLUMNS (
+          --         currency VARCHAR2(20) PATH '$.currency',
+          --         remaining_amount VARCHAR2(40) PATH '$.remaining_amount',
+          --         remaining_amount_egp VARCHAR2(40) PATH '$.remaining_amount_egp'
+          --       )
+          --     )
+          --     WHERE TO_NUMBER(REPLACE(remaining_amount, ',', '')) < 0
+          --   ) LOOP
+          --     l_any_dues := TRUE;
+      
+          --     l_dues_tiles := l_dues_tiles || '
+          --     <div class="bg-green-50 border border-green-200 rounded-2xl shadow flex items-center gap-3 px-4 py-3 w-full">
+          --       <i class="fa6 fa-coins text-xl text-green-500"></i>
+          --       <div class="flex-1 text-right">
+          --         <div class="font-semibold text-green-700 mb-1">'||
+          --           CASE
+          --             WHEN :USER_TYPE = 'EMPLOYEE' THEN 'مستحق للسائق'
+          --             ELSE 'مستحق لك'
+          --           END ||'</div>
+          --         <div class="font-bold text-lg text-green-900">'||
+          --           TO_CHAR(ABS(TO_NUMBER(REPLACE(c.remaining_amount, ',', ''))),'999G999G990D00')||' '||c.currency||'</div>
+          --         <div class="text-xs text-gray-500">≈ '||
+          --           TO_CHAR(ABS(TO_NUMBER(REPLACE(c.remaining_amount_egp, ',', ''))),'999G999G990D00')||' جنيه</div>
+          --       </div>
+          --     </div>';
+          --   END LOOP;
+      
+          -- END IF;
+      
+          -- IF NOT l_any_dues THEN
+          --   l_dues_tiles := l_dues_tiles || '
+          --   <div class="bg-green-50 border border-green-200 text-green-800 font-semibold rounded-xl p-4 text-center w-full">
+          --     <i class="fa6 fa-circle-check text-xl"></i>
+          --     جميع المستحقات تمت تسويتها
+          --   </div>';
+          -- END IF;
+      
+          -- l_dues_tiles := l_dues_tiles || '</div></section>';
+      
+          -- Driver Info
+          l_driver_info := '
+          <section class="w-full bg-white rounded-2xl shadow border border-gray-200 p-5 mt-5">
+            <h3 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <i class="fa6 fa-id-card-clip text-blue-500"></i>
+              معلومات السائق
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
+              <div><span class="font-medium">الاسم:</span> '||rec.DRIVER_NAME||'</div>
+              <div><span class="font-medium">النوع:</span> '||rec.ASSIGNMENT_TYPE||'</div>
+              <div><span class="font-medium">البريد الإلكتروني:</span> '||NVL(rec.CONTACT_EMAIL, 'غير متوفر')||'</div>
+              <div><span class="font-medium">العنوان:</span> '||NVL(rec.CONTACT_ADDRESS, 'غير متوفر')||'</div>
+              <div><span class="font-medium">الحالة:</span> '||rec.STATUS||'</div>
+              <div><span class="font-medium">تاريخ الانضمام:</span> '||TO_CHAR(rec.JOIN_DATE, 'YYYY-MM-DD')||'</div>
+              <div class="sm:col-span-2"><span class="font-medium">الملاحظات:</span> '||NVL(rec.NOTES, 'لا توجد ملاحظات')||'</div>
+            </div>
+          </section>';
+      
+          l_output := l_output || l_dues_tiles || l_driver_info;
+        END LOOP;
+      
+        IF NOT l_found THEN
+          l_output := '
+          <div class="w-full bg-white rounded-2xl shadow p-4 flex flex-col items-center mt-3 border text-red-700 text-center">
+            <i class="fa6 fa-user-xmark text-4xl mb-2"></i>
+            لم يتم العثور على بيانات هذا السائق.
+          </div>';
+        END IF;
+      
+        RETURN l_output;
+      END;
+      
+    page-items-to-submit: 
+    - P366_DRIVER_ID
+
+  layout: 
+    sequence: 20
+    parent-region: Tabs Container # 279055956203864245
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: driver_profile_region
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Tabs Container ==============================
+  id: 279055956203864245
+  identification: 
+    name: Tabs Container
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      return '<div id="IG20"></div>';
+      
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--fillLabels
+    - t-TabsRegion-mod--pill
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Assignment Records ==========================
+  id: 279056150352864247
+  identification: 
+    name: Assignment Records
+    title: سجل التوزيعات
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: Tabs Container # 279055956203864245
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--fillLabels
+    - t-TabsRegion-mod--pill
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: driver_tabs
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 279072234639218181
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Previous Trips ==============================
+  id: 327138895768445458
+  identification: 
+    name: Previous Trips
+    title: توزيعات سابقة
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html        CLOB;
+        v_trip_index  INTEGER := 0;
+      BEGIN
+        DBMS_LOB.CREATETEMPORARY(l_html, TRUE);
+      
+        -- Search box
+        DBMS_LOB.APPEND(l_html, q'[
+          <div id="previous-trips-region">
+            <div class="mb-3">
+              <input type="text" id="searchPreviousTrips" placeholder="ابحث عن الرحلة..." 
+                     class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 text-right" 
+                     onkeyup="filterPreviousTrips(this.value)">
+            </div>
+            <script>
+              function filterPreviousTrips(term) {
+                const cards = document.querySelectorAll('.previous-trip-card');
+                term = term.trim().toLowerCase();
+                cards.forEach(card => {
+                  card.style.display = card.innerText.toLowerCase().includes(term) ? 'block' : 'none';
+                });
+              }
+            </script>
+        ]');
+      FOR rec IN (
+        SELECT *
+        FROM (
+          SELECT v.*,
+                 ROW_NUMBER() OVER (
+                   PARTITION BY v.PRODUCT_ID 
+                   ORDER BY v.TRIP_DATE_FROM DESC, v.TRIP_TIME DESC
+                 ) rn
+          FROM LIMO_PAST_DRIVERS_V v
+          WHERE v.DRIVER_ID = :P366_DRIVER_ID
+        )
+        WHERE rn = 1
+        ORDER BY TRIP_DATE_FROM DESC , TRIP_TIME DESC
+      ) LOOP
+      
+      
+          BEGIN
+            v_trip_index := v_trip_index + 1;
+      
+            DBMS_LOB.APPEND(l_html, '
+          <a href="' || APEX_UTIL.PREPARE_URL(
+                         'f?p=' || :APP_ID || ':6001:' || :APP_SESSION ||
+                         '::::P6001_PRODUCT_ID:' || NVL(rec.PRODUCT_ID, '-')) || '" 
+             class="block previous-trip-card transition hover:shadow-md bg-white rounded-xl border border-gray-200 p-4 mb-4 space-y-2">
+            
+            <div class="flex items-center gap-3">
+              <img src="' || NVL(rec.CAR_PHOTO_URL, '#APP_FILES#placeholders/car-default.png') || '" 
+                   class="w-14 h-12 object-contain rounded border">
+              <div class="flex-1 text-sm text-gray-800">
+                <div class="font-bold text-gray-900">' || NVL(rec.CLIENT_CODE, '-') || '</div>
+                <div class="text-xs text-gray-500 mt-0.5">
+                  <i class="fa6 fa6-hashtag ml-1"></i> رقم الرحلة: ' || NVL(rec.PRODUCT_ID, '-') || '
+                  ' || NVL(rec.DETAILS_HTML, '') || '
+                </div>
+              </div>
+            </div>
+      
+            <!-- Dates, Time, and Locations -->
+            <div class="flex flex-wrap items-center justify-between text-sm text-gray-700 gap-2 mt-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <i class="fa6 fa6-calendar-days ml-1 text-gray-500"></i> 
+                <span class="font-mono text-red-900 font-bold text-xs">
+                  ' || NVL(TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(rec.TRIP_DATE_FROM), 'YYYY-MM-DD'), '-') || '
+                </span>
+                <span class="text-gray-500">الي</span>
+                <span class="font-mono text-red-900 font-bold text-xs">
+                  ' || NVL(TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(rec.TRIP_DATE_TO), 'YYYY-MM-DD'), '-') || '
+                </span>
+                <span class="text-gray-400 mx-1">|</span>
+                <i class="fa6 fa6-clock ml-1 text-gray-500"></i> 
+                <span class="font-mono text-xs">' || NVL(rec.TRIP_TIME, '-') || '</span>
+              </div>
+      
+              <div class="flex items-center gap-2 text-xs font-semibold">
+                <span class="bg-gray-500 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <i class="fa6 fa6-layer-group text-white"></i> ' || NVL(rec.CLASSIFICATION_LABEL_AR, '-') || '
+                </span>
+                <span class="bg-gray-500 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                  <i class="fa6 fa6-car-side text-white"></i> ' || NVL(rec.TRIP_TYPE_NAME_AR, '-') || '
+                </span>' ||
+                CASE WHEN rec.TRIP_TYPE = 'DAILY' THEN
+                  '<span class="bg-gray-700 text-white rounded-full px-2 py-0.5 flex items-center gap-1">
+                    <i class="fa6 fa6-calendar-day text-white"></i> ' || rec.TRIPS_COUNT || ' / ' || rec.NOD || '
+                  </span>'
+                ELSE '' END || '
+              </div>
+            </div>
+      
+            <!-- Progress Bar -->
+            <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden mt-2">
+              <div class="h-full bg-gray-400 transition-all" style="width:' || rec.TRIP_PROGRESS_PCT || '%"></div>
+            </div>
+          </a>');
+      
+          EXCEPTION
+            WHEN OTHERS THEN
+              DBMS_LOB.APPEND(l_html, 
+                '<div style="color:red;background:#fee;padding:8px;margin:6px 0;border-radius:8px;">
+                   خطأ: '||SQLERRM||' <br>Product: '||NVL(rec.PRODUCT_ID,'?')||'
+                 </div>');
+          END;
+        END LOOP;
+      
+        -- No trips fallback
+        IF v_trip_index = 0 THEN
+          DBMS_LOB.APPEND(l_html, '
+          <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl text-center font-semibold flex flex-col items-center gap-2 mt-6">
+            <i class="fa6 fa6-circle-info text-2xl"></i>
+            لا توجد أي رحلات سابقة مرتبطة بك.
+          </div>');
+        END IF;
+      
+        DBMS_LOB.APPEND(l_html, '</div>');
+        RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - APP_USER_ID
+
+  layout: 
+    sequence: 20
+    parent-region: Assignment Records # 279056150352864247
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    static-id: previous-trips-region
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: modal holders sattle and collect ============
+  id: 327148231352549075
+  identification: 
+    name: modal holders sattle and collect
+    type: Static Content
+
+  source: 
+    html-code: |
+      <!-- GAMIFIED COLLECT MODAL -->
+      <div id="collectModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 transition-opacity duration-300" ontouchstart="">
+        <div class="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 flex flex-col items-center animate__animated animate__fadeInDown"
+          style="direction: rtl; touch-action: none;"
+          ontouchstart="handleTouchStart(event, 'collectModal')"
+          ontouchmove="handleTouchMove(event, 'collectModal')"
+          ontouchend="handleTouchEnd(event, 'collectModal')">
+          
+          <div class="flex flex-col items-center w-full mb-2">
+            <div class="bg-yellow-100 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-lg border-4 border-yellow-300 mb-2 animate__animated animate__tada">
+              <i class="fa6 fa6-coins text-4xl sm:text-5xl text-yellow-500"></i>
+            </div>
+          </div>
+          <div class="w-full text-center text-base sm:text-lg font-extrabold text-yellow-700 mb-2">🏆 مع كل تحصيلة ومتابعة كاملة للتشغيلة، رصيد حافز التوزيع والمتابعة بتاعك هيزد</div>
+       <div class="text-xs text-gray-600 text-right mt-1">يرجي التأكد من ملف حساب السائق بالضغط على اسم السائق في كرت التسوية لعرض الحساب الاجمالى عن كل التشغيلات</div>
+          <input type="hidden" id="collectDriverId">
+          <input type="hidden" id="collectExchangeRate">
+          <input type="hidden" id="collectAssignmentId">
+          <input type="hidden" id="collectProductId">
+      
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">العملة</label>
+            <input id="collectCurrency" type="text" readonly
+              class="w-full rounded-xl border-2 border-yellow-400 bg-yellow-50 text-yellow-800 font-bold p-2 sm:p-3 text-lg text-center shadow-inner"/>
+           
+          </div>
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">المبلغ</label>
+            <div class="relative flex items-center">
+              <input id="collectAmount" type="number" step="0.01"
+                class="w-full rounded-xl border-2 border-yellow-400 bg-white text-xl sm:text-2xl font-black text-yellow-800 p-3 pl-12 text-left shadow-inner focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400"/>
+              <span class="absolute left-4">
+                <i class="fa6 fa6-sack-dollar text-xl sm:text-2xl text-yellow-500"></i>
+              </span>
+            </div>
+          </div>
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">اختر الحساب (<span id="collectCurrencyLabel"></span>)</label>
+            <select id="collectAccountId"
+              class="w-full rounded-xl border-2 border-yellow-400 bg-white text-gray-900 text-base sm:text-lg p-2 sm:p-3 font-bold shadow-inner focus:ring-2 focus:ring-yellow-300 focus:border-yellow-400">
+              <option value="">-- اختر الحساب --</option>
+            </select>
+          </div>
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">ملاحظات</label>
+            <textarea id="collectNotes" rows="3"
+              class="w-full rounded-xl border-2 border-yellow-200 bg-yellow-50 text-gray-800 text-base sm:text-lg p-2 sm:p-3 shadow-inner"></textarea>
+          </div>
+          <div class="flex justify-center gap-3 pt-2 w-full">
+            <button type="button" onclick="submitCollect()"
+              class="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold px-8 py-3 rounded-xl shadow-2xl text-base sm:text-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105 animate__animated animate__pulse w-1/2">
+              <i class="fa6 fa6-bolt"></i>
+              تحصيل الآن
+            </button>
+            <button type="button" onclick="closeCollectModal()"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-6 py-3 rounded-xl shadow text-base sm:text-lg flex items-center gap-2 transition-all duration-200 w-1/2">
+              <i class="fa6 fa6-xmark"></i>
+              إلغاء
+            </button>
+          </div>
+          <button type="button" onclick="closeCollectModal()" class="absolute left-4 top-4 text-gray-400 hover:text-yellow-600 text-2xl" title="إغلاق">
+            <i class="fa6 fa6-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- GAMIFIED SETTLE MODAL -->
+      <div id="settleModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 transition-opacity duration-300" ontouchstart="">
+        <div class="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 flex flex-col items-center animate__animated animate__fadeInDown"
+          style="direction: rtl; touch-action: none;"
+          ontouchstart="handleTouchStart(event, 'settleModal')"
+          ontouchmove="handleTouchMove(event, 'settleModal')"
+          ontouchend="handleTouchEnd(event, 'settleModal')">
+          
+          <div class="flex flex-col items-center w-full mb-2">
+            <div class="bg-pink-100 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-lg border-4 border-pink-200 mb-2 animate__animated animate__tada">
+              <i class="fa6 fa6-hand-holding-dollar text-4xl sm:text-5xl text-pink-500"></i>
+            </div>
+          </div>
+            <div class="text-xs text-gray-600 text-right mt-1">يرجي التأكد من ملف حساب السائق بالضغط على اسم السائق في كرت التسوية لعرض الحساب الاجمالى عن كل التشغيلات</div>
+      
+          <input type="hidden" id="settleDriverId">
+          <input type="hidden" id="settleCurrency" value="EGP">
+          <input type="hidden" id="settleAssignmentId">
+          <input type="hidden" id="settleProductId">
+      
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">المبلغ</label>
+            <div class="relative flex items-center">
+              <input id="settleAmount" type="number" step="0.01"
+                class="w-full rounded-xl border-2 border-pink-400 bg-white text-xl sm:text-2xl font-black text-pink-600 p-3 pl-12 text-left shadow-inner focus:ring-2 focus:ring-pink-300 focus:border-pink-400"/>
+              <span class="absolute left-4">
+                <i class="fa6 fa6-hand-holding-dollar text-xl sm:text-2xl text-pink-400"></i>
+              </span>
+            </div>
+          </div>
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">اختر الحساب (EGP)</label>
+            <select id="settleAccountId"
+              class="w-full rounded-xl border-2 border-pink-400 bg-white text-gray-900 text-base sm:text-lg p-2 sm:p-3 font-bold shadow-inner focus:ring-2 focus:ring-pink-300 focus:border-pink-400">
+              <option value="">-- اختر الحساب --</option>
+            </select>
+          </div>
+          <div class="w-full">
+            <label class="block text-sm sm:text-base font-bold mb-2 text-gray-800">ملاحظات</label>
+            <textarea id="settleNotes" rows="3"
+              class="w-full rounded-xl border-2 border-pink-200 bg-pink-50 text-gray-800 text-base sm:text-lg p-2 sm:p-3 shadow-inner"></textarea>
+          </div>
+          <div class="flex justify-center gap-3 pt-2 w-full">
+            <button type="button" onclick="submitSettle()"
+              class="bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white font-bold px-8 py-3 rounded-xl shadow-2xl text-base sm:text-lg flex items-center gap-2 transition-all duration-200 transform hover:scale-105 animate__animated animate__pulse w-1/2">
+              <i class="fa6 fa6-bolt"></i>
+              تسوية الآن
+            </button>
+            <button type="button" onclick="closeSettleModal()"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-6 py-3 rounded-xl shadow text-base sm:text-lg flex items-center gap-2 transition-all duration-200 w-1/2">
+              <i class="fa6 fa6-xmark"></i>
+              إلغاء
+            </button>
+          </div>
+          <button type="button" onclick="closeSettleModal()" class="absolute left-4 top-4 text-gray-400 hover:text-pink-500 text-2xl" title="إغلاق">
+            <i class="fa6 fa6-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
+      
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BEFORE_NAVIGATION_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P366_DRIVER_HTML =========================
+  id: 176417000382661009
+  identification: 
+    name: P366_DRIVER_HTML
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P366_DRIVER_ID ===========================
+  id: 279055471758864240
+  identification: 
+    name: P366_DRIVER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: REGION_POSITION_01
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P366_DRIVER_NAME =========================
+  id: 279055521139864241
+  identification: 
+    name: P366_DRIVER_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: REGION_POSITION_01
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Up ==========================================
+  id: 279055641141864242
+  identification: 
+    button-name: Up
+    label: Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 279072234639218181
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:364:&SESSION.::&DEBUG.:364::'
+      page: 364 # Drivers Accounts
+      clear-cache: 364
+
+    warn-on-unsaved-changes: Do Not Check
+
+computations: 
+- # ====== Computation: P366_DRIVER_NAME =======================
+  id: 279055752999864243
+  identification: 
+    item-name: P366_DRIVER_NAME
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select driver_name from company_drivers where driver_id = :P366_DRIVER_ID'
+
+processes: 
+- # ====== Process: P190_FETCH_ACCOUNTS ========================
+  id: 229055229348227604
+  identification: 
+    name: P190_FETCH_ACCOUNTS
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_currency VARCHAR2(10) := APEX_APPLICATION.g_x01;
+      BEGIN
+        APEX_JSON.OPEN_OBJECT;
+        APEX_JSON.OPEN_ARRAY('accounts');
+        FOR r IN (
+          SELECT ACCOUNT_ID, ACCOUNT_NAME
+          FROM ACCOUNTS
+          WHERE CURRENCY_CODE = l_currency AND STATUS = 'ACTIVE' AND OWNER_TYPE = 'Company'
+        ) LOOP
+          APEX_JSON.OPEN_OBJECT;
+          APEX_JSON.WRITE('id', r.ACCOUNT_ID);
+          APEX_JSON.WRITE('name', r.ACCOUNT_NAME);
+          APEX_JSON.CLOSE_OBJECT;
+        END LOOP;
+        APEX_JSON.CLOSE_ARRAY;
+        APEX_JSON.CLOSE_OBJECT;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: P190_INSERT_SETTLEMENT =====================
+  id: 279096882525504574
+  identification: 
+    name: P190_INSERT_SETTLEMENT
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_json           CLOB := APEX_APPLICATION.g_x01;
+        l_data           JSON_OBJECT_T;
+        l_type           VARCHAR2(30);
+        l_driver_id      VARCHAR2(30);
+        l_assignment     VARCHAR2(30);
+        l_product        VARCHAR2(30);
+        l_account_id     VARCHAR2(30);
+        l_currency       VARCHAR2(10);
+        l_amount         NUMBER := 0;
+        l_notes          VARCHAR2(4000);
+        l_exchange_rate  NUMBER := 1;
+        l_id             VARCHAR2(50);
+        l_transaction_id TRANSACTIONS.TRANSACTION_ID%TYPE;
+        l_account_name   VARCHAR2(4000);
+        l_desc           VARCHAR2(200);
+        l_ref            VARCHAR2(400);
+      BEGIN
+        l_data := JSON_OBJECT_T.parse(l_json);
+        l_type := l_data.get_string('type');
+        l_driver_id := l_data.get_string('driver_id');
+        l_assignment := l_data.get_string('assignment_id');
+        l_product := l_data.get_string('product_id');
+        l_currency := l_data.get_string('currency');
+        l_account_id := l_data.get_string('account_id');
+        l_notes := l_data.get_string('notes');
+      
+        BEGIN
+          l_amount := TO_NUMBER(REPLACE(l_data.get_string('amount'), ',', ''), '9999999990.9999');
+        EXCEPTION
+          WHEN OTHERS THEN l_amount := 0;
+        END;
+      
+        IF l_data.has('exchange_rate') THEN
+          BEGIN
+            l_exchange_rate := TO_NUMBER(REPLACE(l_data.get_string('exchange_rate'), ',', ''), '9999999990.9999');
+          EXCEPTION
+            WHEN OTHERS THEN l_exchange_rate := 1;
+          END;
+        END IF;
+      
+        SELECT ACCOUNT_NAME INTO l_account_name FROM ACCOUNTS WHERE ACCOUNT_ID = l_account_id;
+      
+        l_desc := CASE WHEN l_type = 'TO_DRIVER' THEN 'تسوية للسائق' ELSE 'تحصيل من السائق' END;
+        l_ref := l_product || ' : ' || l_assignment || ' : ' || l_driver_id;
+        l_notes := NVL(l_notes, '') || ' | تم تنفيذ العملية على حساب ' || l_account_name;
+      
+        l_id := 'LDS-' || TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') || '-' || DBMS_RANDOM.STRING('U', 4);
+        INSERT INTO LIMO_DRIVER_SETTLEMENTS (
+          ID, DRIVER_ID, ASSIGNMENT_ID, PRODUCT_ID, SETTLEMENT_DATE, SETTLEMENT_TYPE,
+          CURRENCY, AMOUNT, EXCHANGE_RATE, SETTLED_BY, CREATED_BY, NOTES
+        ) VALUES (
+          l_id, l_driver_id, l_assignment, l_product, SYSDATE, l_type, l_currency,
+          l_amount, l_exchange_rate, :APP_USER_ID, :APP_USER_ID, l_notes
+        );
+      
+        INSERT INTO TRANSACTIONS (
+          TRANSACTION_DATE, DESCRIPTION, REFERENCE_NUMBER, STATUS, CREATED, CREATED_BY
+        ) VALUES (
+          SYSTIMESTAMP, l_desc, l_ref, 'POSTED', SYSTIMESTAMP, :APP_USER_ID
+        ) RETURNING TRANSACTION_ID INTO l_transaction_id;
+      
+        INSERT INTO TRANSACTION_ENTRIES (
+          TRANSACTION_ID, ACCOUNT_ID, CURRENCY_CODE, DEBIT_AMOUNT, CREDIT_AMOUNT,
+          NOTES, TRANSACTION_TYPE, CREATED, CREATED_BY
+        ) VALUES (
+          l_transaction_id,
+          l_account_id,
+          l_currency,
+          CASE WHEN l_type = 'TO_DRIVER' THEN l_amount ELSE NULL END,
+          CASE WHEN l_type = 'FROM_DRIVER' THEN l_amount ELSE NULL END,
+          l_notes,
+          CASE WHEN l_type = 'TO_DRIVER' THEN 'DEBIT' ELSE 'CREDIT' END,
+          SYSTIMESTAMP,
+          :APP_USER_ID
+        );
+      
+        APEX_JSON.OPEN_OBJECT;
+        APEX_JSON.WRITE('status', 'success');
+        APEX_JSON.WRITE('id', l_id);
+        APEX_JSON.CLOSE_OBJECT;
+      
+      EXCEPTION
+        WHEN OTHERS THEN
+          APEX_JSON.OPEN_OBJECT;
+          APEX_JSON.WRITE('status', 'error');
+          APEX_JSON.WRITE('sqlerrm', SQLERRM);
+          APEX_JSON.CLOSE_OBJECT;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+

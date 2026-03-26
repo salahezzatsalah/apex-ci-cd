@@ -1,0 +1,1287 @@
+---
+# ====== Page: Financial Department - Account Page ===========
+id: 754
+identification: 
+  name: Financial Department - Account Page
+  alias: FINANCIAL-DEPARTMENT-ACCOUNT-PAGE
+  title: اسم الحساب / &P754_ACCOUNT_NAME.
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+  css-classes: 
+  - rw-pillar--sienna
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Account Summary =============================
+  id: 281250462862651375
+  identification: 
+    name: Account Summary
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html          CLOB;
+        l_flag          VARCHAR2(4000);
+        l_balance       NUMBER;
+        l_currencycode  VARCHAR2(10);
+        l_balance_disp  VARCHAR2(100);
+      BEGIN
+        SELECT
+          'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/CURFLAG/' || CURRENCY_CODE,
+          NVL((SELECT BALANCE FROM V_ACCOUNT_BALANCES WHERE ACCOUNT_ID = :P754_ACCOUNT_ID), 0),
+          currency_code
+        INTO l_flag, l_balance, l_currencycode
+        FROM ACCOUNTS
+        WHERE ACCOUNT_ID = :P754_ACCOUNT_ID;
+      
+        -- Format conditionally
+        IF TRUNC(l_balance) = l_balance THEN
+          -- No decimals: remove them
+          l_balance_disp := TO_CHAR(l_balance, 'FM999G999G999G999');
+        ELSE
+          -- With decimals: show 2 decimals
+          l_balance_disp := TO_CHAR(l_balance, 'FM999G999G999G999D00');
+        END IF;
+      
+        l_html := '
+          <div class="w-full max-w-2xl bg-white border rounded-2xl shadow-lg p-7 mb-5 flex items-center justify-between" dir="rtl">
+            <div class="flex flex-col flex-1 text-right pr-4">
+              <div class="text-2xl font-bold text-gray-900 mb-1">' || :P754_ACCOUNT_NAME || '</div>
+              <div class="text-base text-gray-500 mb-2">' || :P754_ACCOUNT_CODE || '</div>
+              <div class="text-3xl font-extrabold mb-1 ' ||
+                CASE WHEN l_balance < 0 THEN 'text-red-600' ELSE 'text-green-600' END || '">'
+                || l_balance_disp ||
+                '<span class="text-lg text-gray-600 font-normal ml-2">' || l_currencycode || '</span>
+              </div>
+              <div class="text-base text-gray-500">الرصيد الحالي</div>
+            </div>
+            <div class="ml-6 flex-shrink-0 flex items-center justify-center">
+              <img src="' || l_flag || '" alt="Flag" class="w-16 h-16 rounded-full border border-gray-300 shadow object-cover">
+            </div>
+          </div>
+        ';
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Account Summary Data Query ==================
+  id: 281250592955651376
+  identification: 
+    name: Account Summary Data Query
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+        a.ACCOUNT_ID,
+        a.ACCOUNT_NAME,
+        a.ACCOUNT_CODE,
+        a.ACCOUNT_TYPE,
+        t.NAME_AR AS ACCOUNT_TYPE_NAME,
+        a.CURRENCY_CODE,
+        c.SYMBOL,
+        'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/CURFLAG/' || c.CURRENCY_CODE AS FLAG_URL,
+        NVL(vb.BALANCE, 0) AS BALANCE,
+        a.STATUS,
+        a.OWNER_TYPE,
+        a.OWNER_ID
+      FROM ACCOUNTS a
+      JOIN ACCOUNT_TYPES t
+        ON a.ACCOUNT_TYPE = t.ACCOUNT_TYPE_CODE
+      JOIN CURRENCIES c
+        ON a.CURRENCY_CODE = c.CURRENCY_CODE
+      LEFT JOIN V_ACCOUNT_BALANCES vb
+        ON a.ACCOUNT_ID = vb.ACCOUNT_ID
+      WHERE a.ACCOUNT_ID = :P754_ACCOUNT_ID
+      
+    page-items-to-submit: 
+    - ':P754_ACCOUNT_ID'
+
+  layout: 
+    sequence: 10
+    parent-region: Account Summary # 281250462862651375
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    custom-attributes: 
+    - class="hidden"
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 281578241335615431
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Transactions History ========================
+  id: 281587592789694057
+  identification: 
+    name: Transactions History
+    title: سجل العمليات
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html        CLOB := '';
+          l_account_id  VARCHAR2(40) := :P754_ACCOUNT_ID;
+          l_edit_url    VARCHAR2(4000);
+          l_disable_edit BOOLEAN;
+      
+          -- Format amount with commas, decimals only if needed
+          FUNCTION format_amount(p_value NUMBER) RETURN VARCHAR2 IS
+          BEGIN
+              IF p_value IS NULL THEN
+                  RETURN '0';
+              ELSIF TRUNC(p_value) = p_value THEN
+                  RETURN TO_CHAR(p_value, 'FM999G999G999G990');
+              ELSE
+                  RETURN TO_CHAR(p_value, 'FM999G999G999G990D00');
+              END IF;
+          END;
+      BEGIN
+          l_html := l_html || '
+          <style>
+            @media (max-width: 900px) {
+              .desktop-table { display: none !important; }
+              .mobile-cards { display: block !important; }
+            }
+            @media (min-width: 901px) {
+              .desktop-table { display: block !important; }
+              .mobile-cards { display: none !important; }
+            }
+          </style>
+          <div class="w-full max-w-5xl mx-auto" style="margin-right: 0px; margin-left: 0px;" dir="rtl">
+          ';
+      
+          -- Desktop Table
+          l_html := l_html || '
+          <div class="desktop-table" style="display:block">
+            <table class="min-w-full bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+              <thead>
+                <tr>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-calendar-days fa6-fw text-gray-400"></i> التاريخ</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-file-lines fa6-fw text-gray-400"></i> الوصف</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-hashtag fa6-fw text-gray-400"></i> الرقم المرجعي</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-money-bill-wave fa6-fw text-gray-400"></i> المبلغ</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-wallet fa6-fw text-gray-400"></i> الرصيد بعد المعاملة</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-user fa6-fw text-gray-400"></i> القائم بالتنفيذ</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-clock fa6-fw text-gray-400"></i> تاريخ التنفيذ</th>
+                  <th class="py-4 px-4 text-base font-bold text-gray-700 text-center"><i class="fa6-solid fa6-pen-to-square fa6-fw text-gray-400"></i> إجراء</th>
+                </tr>
+              </thead>
+              <tbody>
+          ';
+      
+          FOR rec IN (
+              SELECT ENTRY_ID, TRANSACTION_DATE, DESCRIPTION, REFERENCE_NUMBER, SIGNED_AMOUNT,
+                     BALANCE_AFTER_TRANSACTION, CURRENCY_CODE, CREATED_BY_NAME, CREATED
+              FROM V_TRANSACTION_HISTORY
+              WHERE ACCOUNT_ID = l_account_id
+              ORDER BY CREATED DESC
+          ) LOOP
+              IF rec.ENTRY_ID IS NOT NULL THEN
+                  l_edit_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':756:' || :APP_SESSION || '::::P756_ENTRY_ID:' || rec.ENTRY_ID);
+              ELSE
+                  l_edit_url := NULL;
+              END IF;
+      
+              l_disable_edit := rec.CREATED IS NULL OR rec.CREATED + INTERVAL '24' HOUR < SYSTIMESTAMP;
+      
+              l_html := l_html || '
+              <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                <td class="py-4 px-4 text-base text-gray-800 text-center font-semibold">' || TO_CHAR(rec.TRANSACTION_DATE, 'DD/MM/YY') || '</td>
+                <td class="py-4 px-4 text-base text-gray-900 font-semibold max-w-xs break-words">' || APEX_ESCAPE.HTML(rec.DESCRIPTION) || '</td>
+                <td class="py-4 px-4 text-base text-blue-700 text-center font-mono font-bold">
+                  <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-bold font-mono">' || APEX_ESCAPE.HTML(rec.REFERENCE_NUMBER) || '</span>
+                </td>
+                <td class="py-4 px-4 text-lg text-center font-bold ' ||
+                    CASE WHEN rec.SIGNED_AMOUNT < 0 THEN 'text-red-500'
+                         WHEN rec.SIGNED_AMOUNT > 0 THEN 'text-green-600'
+                         ELSE 'text-gray-700' END || '">'
+                    || CASE WHEN rec.SIGNED_AMOUNT < 0 THEN '-' ELSE '' END
+                    || format_amount(ABS(rec.SIGNED_AMOUNT)) || 
+                    '<span class="text-base text-gray-500 font-normal pl-1">' || NVL(rec.CURRENCY_CODE, '') || '</span>
+                </td>
+                <td class="py-4 px-4 text-lg text-center font-bold text-gray-900">'
+                    || NVL(rec.CURRENCY_CODE, '') || ' ' || format_amount(rec.BALANCE_AFTER_TRANSACTION) || '</td>
+                <td class="py-4 px-4 text-base text-gray-800 text-center">' || NVL(APEX_ESCAPE.HTML(rec.CREATED_BY_NAME), '-') || '</td>
+                <td class="py-4 px-4 text-base text-gray-500 text-center">' || TO_CHAR(convert_to_local_timezone(rec.CREATED), 'DD/MM/YY HH24:MI') || '</td>
+                <td class="py-4 px-2 text-center">' || 
+                    CASE 
+                        WHEN l_edit_url IS NOT NULL THEN
+                            '<a href="' || l_edit_url || '"'
+                            || CASE WHEN l_disable_edit THEN ' tabindex="-1" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-300 text-white font-bold shadow transition cursor-not-allowed pointer-events-none" title="تجاوزت مدة السماح بالتعديل (ساعة)"'
+                                    ELSE ' class="inline-flex items-center px-3 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white font-bold shadow transition" title="تعديل"' END
+                            || '><i class="fa6-solid fa6-pen-to-square fa6-fw"></i> تعديل</a>'
+                        ELSE ''
+                    END || '
+                </td>
+              </tr>';
+          END LOOP;
+      
+          l_html := l_html || '
+              </tbody>
+            </table>
+          </div>'; -- Close desktop table
+      
+          -- Mobile Cards
+          l_html := l_html || '
+          <div class="mobile-cards" style="display:none">';
+      
+          FOR rec IN (
+              SELECT ENTRY_ID, TRANSACTION_DATE, DESCRIPTION, REFERENCE_NUMBER, SIGNED_AMOUNT,
+                     BALANCE_AFTER_TRANSACTION, CURRENCY_CODE, CREATED_BY_NAME, CREATED
+              FROM V_TRANSACTION_HISTORY
+              WHERE ACCOUNT_ID = l_account_id
+              ORDER BY CREATED DESC
+          ) LOOP
+              IF rec.ENTRY_ID IS NOT NULL THEN
+                  l_edit_url := APEX_UTIL.PREPARE_URL('f?p=' || :APP_ID || ':756:' || :APP_SESSION || '::::P756_ENTRY_ID:' || rec.ENTRY_ID);
+              ELSE
+                  l_edit_url := NULL;
+              END IF;
+      
+              l_disable_edit := rec.CREATED IS NULL OR rec.CREATED + INTERVAL '5' HOUR < SYSTIMESTAMP;
+      
+              l_html := l_html || '
+              <div class="bg-white rounded-2xl border border-gray-100 shadow mb-6 p-5">
+                  <div class="flex items-center gap-2 mb-2">
+                      <i class="fa6-solid fa6-calendar-days fa6-fw text-gray-400"></i>
+                      <span class="text-xl font-bold text-gray-700">' || TO_CHAR(rec.TRANSACTION_DATE, 'DD/MM/YY') || '</span>
+                  </div>
+                  <div class="mb-2 text-base font-semibold text-gray-900" style="word-break:break-word;">
+                      <i class="fa6-solid fa6-file-lines fa6-fw text-gray-400"></i> ' || APEX_ESCAPE.HTML(rec.DESCRIPTION) || '
+                  </div>
+                  <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-500"><i class="fa6-solid fa6-hashtag fa6-fw text-gray-400"></i> الرقم المرجعي</span>
+                      <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs font-bold font-mono">' || APEX_ESCAPE.HTML(rec.REFERENCE_NUMBER) || '</span>
+                  </div>
+                  <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-500"><i class="fa6-solid fa6-money-bill-wave fa6-fw text-gray-400"></i> المبلغ</span>
+                      <span class="text-2xl font-bold ' || CASE WHEN rec.SIGNED_AMOUNT < 0 THEN 'text-red-500'
+                                                             WHEN rec.SIGNED_AMOUNT > 0 THEN 'text-green-600'
+                                                             ELSE 'text-gray-700' END || '">'
+                      || CASE WHEN rec.SIGNED_AMOUNT < 0 THEN '-' ELSE '' END || format_amount(ABS(rec.SIGNED_AMOUNT)) || 
+                      '<span class="text-base text-gray-500 font-normal pl-1">' || NVL(rec.CURRENCY_CODE, '') || '</span></span>
+                  </div>
+                  <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-500"><i class="fa6-solid fa6-wallet fa6-fw text-gray-400"></i> الرصيد بعد المعاملة</span>
+                      <span class="text-base font-bold text-gray-900">' || NVL(rec.CURRENCY_CODE, '') || ' ' || format_amount(rec.BALANCE_AFTER_TRANSACTION) || '</span>
+                  </div>
+                  <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-500"><i class="fa6-solid fa6-user fa6-fw text-gray-400"></i> القائم بالتنفيذ</span>
+                      <span class="text-xs text-gray-800 font-medium">' || NVL(APEX_ESCAPE.HTML(rec.CREATED_BY_NAME), '-') || '</span>
+                  </div>
+                  <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs text-gray-500"><i class="fa6-solid fa6-clock fa6-fw text-gray-400"></i> تاريخ التنفيذ</span>
+                      <span class="text-xs text-gray-400">' || TO_CHAR(convert_to_local_timezone(rec.CREATED), 'DD/MM/YY HH24:MI') || '</span>
+                  </div>' ||
+                  CASE 
+                      WHEN l_edit_url IS NOT NULL THEN
+                          '<div class="mt-3 flex justify-end"><a href="' || l_edit_url || '"'
+                          || CASE WHEN l_disable_edit THEN ' tabindex="-1" class="inline-flex items-center px-4 py-1.5 rounded-lg bg-gray-300 text-white font-bold shadow transition cursor-not-allowed pointer-events-none" title="تجاوزت مدة السماح بالتعديل (ساعة)"'
+                                  ELSE ' class="inline-flex items-center px-4 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white font-bold shadow transition" title="تعديل"' END
+                          || '><i class="fa6-solid fa6-pen-to-square fa6-fw mr-1"></i> تعديل</a></div>'
+                      ELSE ''
+                  END || '
+              </div>';
+          END LOOP;
+      
+          l_html := l_html || '</div></div>'; -- Close both views
+      
+          RETURN l_html;
+      END;
+      
+    page-items-to-submit: 
+    - P754_ACCOUNT_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - js-showMaximizeButton
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Menubar =====================================
+  id: 333849651172278468
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 20
+    parent-region: Breadcrumb # 281578241335615431
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: menuaction ==================================
+    id: 230532051454461298
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: menuaction
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display-type: Icon
+      icon: fa-angle-double-down
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: تعديل بيانات الحساب ===========================
+      id: 230532081146461299
+      identification: 
+        type: Menu Entry
+        label: تعديل بيانات الحساب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:752:&SESSION.::&DEBUG.:752:P752_ACCOUNT_ID:&P754_ACCOUNT_ID.'
+          page: 752 # Finance Account Form
+          clear-cache: 752
+          values: 
+            p752_account_id: '&P754_ACCOUNT_ID.'
+
+    - # ====== Menu: تحويل الى حساب اخر ============================
+      id: 230534734356461325
+      identification: 
+        type: Menu Entry
+        label: تحويل الى حساب اخر
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:757:&SESSION.::&DEBUG.:757:P757_FROM_ACC:&P754_ACCOUNT_ID.'
+          page: 757 # Finance Account Balance Transfer Form
+          clear-cache: 757
+          values: 
+            p757_from_acc: '&P754_ACCOUNT_ID.'
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 230534797442461326
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:754:&SESSION.::&DEBUG.:RP,754:P754_ACCOUNT_ID:&P754_ACCOUNT_ID.'
+          page: 754 # Financial Department - Account Page
+          clear-cache: RP,754
+          values: 
+            p754_account_id: '&P754_ACCOUNT_ID.'
+
+    - # ====== Menu: تحميل كشف حساب ================================
+      id: 232070091319887994
+      identification: 
+        type: Menu Entry
+        label: تحميل كشف حساب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:759:&SESSION.::&DEBUG.:759:P759_ACCOUNTNUMBER,P759_ACCOUNTNAME:&P754_ACCOUNT_ID.,&P754_ACCOUNT_NAME.'
+          page: 759 # Print Financial Account Balance Window Control
+          clear-cache: 759
+          values: 
+            p759_accountnumber: '&P754_ACCOUNT_ID.'
+            p759_accountname: '&P754_ACCOUNT_NAME.'
+
+    - # ====== Menu: Separator =====================================
+      id: 232070225176887995
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+  - # ====== Action: تسجيل عملية =================================
+    id: 333849737144278469
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: تسجيل عملية
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:756:&SESSION.::&DEBUG.:756:P756_ACCOUNT_ID:&P754_ACCOUNT_ID.'
+        page: 756 # Account Transaction Form
+        clear-cache: 756
+        values: 
+          p756_account_id: '&P754_ACCOUNT_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+page-items: 
+- # ====== Page Item: P754_ACCOUNT_NAME_1 ======================
+  id: 223909865766331726
+  identification: 
+    name: P754_ACCOUNT_NAME_1
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 120
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: ACCOUNT_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_CODE_1 ======================
+  id: 223909964572331727
+  identification: 
+    name: P754_ACCOUNT_CODE_1
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 130
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: ACCOUNT_CODE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_ID ==========================
+  id: 281249931363651370
+  identification: 
+    name: P754_ACCOUNT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: AFTER_NAVIGATION_BAR
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_CODE ========================
+  id: 281250038052651371
+  identification: 
+    name: P754_ACCOUNT_CODE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: REGION_POSITION_01
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_NAME ========================
+  id: 281250187897651372
+  identification: 
+    name: P754_ACCOUNT_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: REGION_POSITION_01
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_TYPE ========================
+  id: 281584961076694031
+  identification: 
+    name: P754_ACCOUNT_TYPE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: ACCOUNT_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_TYPE_NAME ===================
+  id: 281585024770694032
+  identification: 
+    name: P754_ACCOUNT_TYPE_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: ACCOUNT_TYPE_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_CURRENCY_CODE =======================
+  id: 281585143288694033
+  identification: 
+    name: P754_CURRENCY_CODE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: CURRENCY_CODE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_SYMBOL ==============================
+  id: 281585286888694034
+  identification: 
+    name: P754_SYMBOL
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: SYMBOL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_FLAG_URL ============================
+  id: 281585314413694035
+  identification: 
+    name: P754_FLAG_URL
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: FLAG_URL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_BALANCE =============================
+  id: 281585490656694036
+  identification: 
+    name: P754_BALANCE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: BALANCE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_STATUS ==============================
+  id: 281585572957694037
+  identification: 
+    name: P754_STATUS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_OWNER_TYPE ==========================
+  id: 281585605492694038
+  identification: 
+    name: P754_OWNER_TYPE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 100
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: OWNER_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_OWNER_ID ============================
+  id: 281585764655694039
+  identification: 
+    name: P754_OWNER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: OWNER_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P754_ACCOUNT_ID_FETCH ====================
+  id: 281587620019694058
+  identification: 
+    name: P754_ACCOUNT_ID_FETCH
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: Account Summary Data Query # 281250592955651376
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Account Summary Data Query # 281250592955651376
+    column: ACCOUNT_ID
+    data-type: NUMBER
+    query-only: true
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Up ==========================================
+  id: 281579383703622007
+  identification: 
+    button-name: Up
+    label: Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 281578241335615431
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:751:&SESSION.::&DEBUG.:751::'
+      page: 751 # Finance Department Accounts Page
+      clear-cache: 751
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh regions from transactions ===
+  id: 230533249613461310
+  identification: 
+    name: refresh regions from transactions
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Transactions History # 281587592789694057
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 230533283941461311
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Transactions History # 281587592789694057
+
+    execution: 
+      sequence: 10
+      event: refresh regions from transactions # 230533249613461310
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 230533411646461312
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Account Summary # 281250462862651375
+
+    execution: 
+      sequence: 20
+      event: refresh regions from transactions # 230533249613461310
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh regions =====================
+  id: 281587750167694059
+  identification: 
+    name: refresh regions
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed or Canceled
+    selection-type: Region
+    region: Menubar # 333849651172278468
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 281587864843694060
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Transactions History # 281587592789694057
+
+    execution: 
+      sequence: 10
+      event: refresh regions # 281587750167694059
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 281587990312694061
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Account Summary # 281250462862651375
+
+    execution: 
+      sequence: 20
+      event: refresh regions # 281587750167694059
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+computations: 
+- # ====== Computation: P754_ACCOUNT_CODE ======================
+  id: 281250297102651373
+  identification: 
+    item-name: P754_ACCOUNT_CODE
+
+  execution: 
+    sequence: 10
+    point: Before Regions
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select account_code from accounts where account_id = :P754_ACCOUNT_ID'
+
+- # ====== Computation: P754_ACCOUNT_NAME ======================
+  id: 281250376405651374
+  identification: 
+    item-name: P754_ACCOUNT_NAME
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select account_name from accounts where account_id = :P754_ACCOUNT_ID'
+
+processes: 
+- # ====== Process: Initialize form Financial Department - Accou
+  id: 281250610016651377
+  identification: 
+    name: Initialize form Financial Department - Account Page
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Account Summary Data Query # 281250592955651376
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+

@@ -1,0 +1,475 @@
+---
+# ====== Page: Finance Department Accounts Page ==============
+id: 751
+identification: 
+  name: Finance Department Accounts Page
+  alias: FINANCE-DEPARTMENT-ACCOUNTS-PAGE
+  title: الإدارة المالية / الحسابات
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+  css-classes: 
+  - rw-pillar--sienna
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Menubar =====================================
+  id: 281249219524651363
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 281328260011843898
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: إنشاء حساب ==================================
+    id: 281249305496651364
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: إنشاء حساب
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:752:&SESSION.::&DEBUG.:752::'
+        page: 752 # Finance Account Form
+        clear-cache: 752
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+- # ====== Region: Accounts Grouping ===========================
+  id: 281249433867651365
+  identification: 
+    name: Accounts Grouping
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html         CLOB;
+        l_section      CLOB;
+        l_url          VARCHAR2(4000);
+        l_flag_url     VARCHAR2(4000);
+        l_egp_amount   NUMBER;
+        l_sec_id       VARCHAR2(40);
+      
+        l_type_options      VARCHAR2(4000) := '';
+        l_currency_options  VARCHAR2(4000) := '';
+        l_owner_type_options VARCHAR2(4000) := '';
+      
+        -- دالة تنسيق الأرقام
+        FUNCTION format_number(p_value NUMBER) RETURN VARCHAR2 IS
+        BEGIN
+          IF p_value IS NULL THEN
+            RETURN '0';
+          ELSIF TRUNC(p_value) = p_value THEN
+            RETURN TO_CHAR(p_value, 'FM999G999G999G999G999G990');
+          ELSE
+            RETURN TO_CHAR(p_value, 'FM999G999G999G999G999G990.00');
+          END IF;
+        EXCEPTION
+          WHEN OTHERS THEN
+            RETURN TO_CHAR(NVL(p_value,0));
+        END;
+      BEGIN
+      
+        -- خيارات نوع الحساب
+        FOR t IN (SELECT ACCOUNT_TYPE_CODE, NAME_AR FROM ACCOUNT_TYPES ORDER BY NAME_AR) LOOP
+          l_type_options := l_type_options || '<option value="' || t.ACCOUNT_TYPE_CODE || '">' || t.NAME_AR || '</option>';
+        END LOOP;
+        -- خيارات العملة
+        FOR cur IN (SELECT DISTINCT CURRENCY_CODE FROM ACCOUNTS ORDER BY CURRENCY_CODE) LOOP
+          l_currency_options := l_currency_options || '<option value="' || cur.CURRENCY_CODE || '">' || cur.CURRENCY_CODE || '</option>';
+        END LOOP;
+        -- خيارات نوع المالك
+        FOR own IN (SELECT DISTINCT OWNER_TYPE FROM V_ACCOUNT_OWNERS ORDER BY OWNER_TYPE) LOOP
+          l_owner_type_options := l_owner_type_options ||
+            '<option value="' || own.OWNER_TYPE || '"' ||
+            CASE WHEN own.OWNER_TYPE = 'Company' THEN ' selected' ELSE '' END ||
+            '>' ||
+            CASE own.OWNER_TYPE
+              WHEN 'Employee' THEN 'موظف'
+              WHEN 'Supplier' THEN 'مورد'
+              WHEN 'Driver'   THEN 'سائق'
+              WHEN 'Company'  THEN 'الشركة'
+              ELSE own.OWNER_TYPE
+            END
+          || '</option>';
+        END LOOP;
+      
+        -- شريط الفلاتر + السويتش
+        l_html := '
+        <style>
+          .acc-filters-bar {background:#fafcff;border-radius:22px;box-shadow:0 2px 16px 0 #e8ecf2;padding:22px 18px 18px 18px;margin-bottom:38px;border:1px solid #e6eaf0;position:relative;z-index:2;}
+          .acc-filters-grid {display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;}
+          @media (max-width:700px){
+            .acc-filters-bar{padding:12px 6px 14px 6px;border-radius:14px;box-shadow:0 2px 6px 0 #e8ecf2;}
+            .acc-filters-grid{flex-direction:column;gap:9px 0;}
+            .acc-hide-toggle-box{position:static!important;margin-bottom:7px;width:100%;justify-content:flex-end;}
+          }
+          .acc-hide-toggle-box{position:absolute;left:26px;top:19px;display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:4px 14px 4px 12px;box-shadow:0 1px 6px 0 #e8ecf2;min-width:150px;z-index:5;}
+          .acc-hide-toggle-box label{font-weight:600;font-size:0.96rem;color:#626985;margin-bottom:0!important;cursor:pointer;}
+          .acc-hide-toggle-box input[type=checkbox]{width:1.1em;height:1.1em;accent-color:#206fce;margin-left:0.4em;vertical-align:middle;cursor:pointer;}
+          .acc-filters-bar select, .acc-filters-bar input[type=text]{border-radius:11px;background:#f4f6fa;border:1px solid #dde3ed;font-size:1rem;color:#394667;min-width:115px;padding:10px 14px;transition:border .15s;}
+          .acc-filters-bar select:focus, .acc-filters-bar input[type=text]:focus{outline:none;border-color:#206fce;background:#fafdff;box-shadow:0 2px 8px 0 #e3eefd5e;}
+        </style>
+        <script>
+          document.addEventListener("DOMContentLoaded",function(){
+            document.getElementById("toggleBalanceSwitch").checked=true;
+            hideBalances(true);
+            filterAllAccountsBar();
+          });
+          function filterAllAccountsBar(){
+            var search=document.getElementById("accSearchBar").value.trim().toLowerCase();
+            var type=document.getElementById("accTypeFilterBar").value;
+            var currency=document.getElementById("accCurrFilterBar").value;
+            var ownerType=document.getElementById("accOwnerTypeFilterBar").value;
+            var ownerInput=document.getElementById("accOwnerNameBar").value.trim().toLowerCase();
+            var sections=document.querySelectorAll(".acc-section-group");
+            sections.forEach(function(sec){
+              var visibleCards=0;
+              var cards=sec.querySelectorAll(".account-card");
+              cards.forEach(function(card){
+                var text=card.innerText||card.textContent;
+                var cardType=card.getAttribute("data-type");
+                var cardCurr=card.getAttribute("data-currency");
+                var cardOwnerType=card.getAttribute("data-owner-type")||"";
+                var cardOwnerName=card.getAttribute("data-owner-name")?card.getAttribute("data-owner-name").toLowerCase():"";
+                var cardOwnerId=card.getAttribute("data-owner-id")?card.getAttribute("data-owner-id").toLowerCase():"";
+                var show=true;
+                if(search&&text.indexOf(search)===-1)show=false;
+                if(type&&cardType!==type)show=false;
+                if(currency&&cardCurr!==currency)show=false;
+                if(ownerType&&cardOwnerType!==ownerType)show=false;
+                if(ownerInput&&cardOwnerName.indexOf(ownerInput)===-1&&cardOwnerId.indexOf(ownerInput)===-1)show=false;
+                card.style.display=show?"":"none";
+                if(show)visibleCards++;
+              });
+              sec.style.display=(visibleCards>0)?"":"none";
+            });
+          }
+          function hideBalances(isHidden){
+            var els=document.querySelectorAll(".acc-balance-value,.acc-balance-egp");
+            els.forEach(function(el){
+              if(isHidden){
+                el.innerHTML="******";
+                el.classList.add("opacity-70","tracking-widest");
+              }else{
+                el.innerHTML=el.getAttribute("data-show");
+                el.classList.remove("opacity-70","tracking-widest");
+              }
+            });
+          }
+          function toggleBalanceSwitchFunc(){
+            var isHidden=document.getElementById("toggleBalanceSwitch").checked;
+            hideBalances(isHidden);
+          }
+        </script>
+        <div class="acc-filters-bar">
+          <div class="acc-hide-toggle-box">
+            <label for="toggleBalanceSwitch">اخفاء الأرصدة</label>
+            <input type="checkbox" id="toggleBalanceSwitch" checked onclick="toggleBalanceSwitchFunc()">
+          </div>
+          <div class="acc-filters-grid">
+            <input id="accSearchBar" type="text" class="shadow-sm"
+              placeholder="بحث شامل (اسم - رقم - مالك ...)" oninput="filterAllAccountsBar()">
+            <select id="accTypeFilterBar" onchange="filterAllAccountsBar()">
+              <option value="">كل أنواع الحسابات</option>' || l_type_options || '
+            </select>
+            <select id="accCurrFilterBar" onchange="filterAllAccountsBar()">
+              <option value="">كل العملات</option>' || l_currency_options || '
+            </select>
+            <select id="accOwnerTypeFilterBar" onchange="filterAllAccountsBar()">
+              <option value="">كل أنواع المالكين</option>' || l_owner_type_options || '
+            </select>
+            <input id="accOwnerNameBar" type="text" class="shadow-sm"
+              placeholder="اسم أو رقم المالك..." oninput="filterAllAccountsBar()">
+          </div>
+        </div>
+        <div class="space-y-12">
+        ';
+      
+        -- الأقسام حسب نوع الحساب
+        FOR t IN (SELECT ACCOUNT_TYPE_CODE, NAME_AR FROM ACCOUNT_TYPES ORDER BY NAME_AR) LOOP
+          l_section := '';
+          l_sec_id := 'section_' || t.ACCOUNT_TYPE_CODE;
+          DECLARE
+            l_has_accounts BOOLEAN := FALSE;
+          BEGIN
+            FOR a IN (
+              SELECT
+                a.ACCOUNT_ID,
+                a.ACCOUNT_NAME,
+                a.ACCOUNT_CODE,
+                a.ACCOUNT_TYPE,
+                a.CURRENCY_CODE,
+                NVL(a.STATUS, 'ACTIVE') STATUS,
+                a.OWNER_TYPE,
+                a.OWNER_ID,
+                vo.OWNER_NAME,
+                NVL((SELECT EXCHANGE_RATE
+                      FROM CURRENCY_RATES
+                      WHERE CURRENCY_CODE = a.CURRENCY_CODE
+                        AND RATE_DATE = (SELECT MAX(RATE_DATE) FROM CURRENCY_RATES WHERE CURRENCY_CODE = a.CURRENCY_CODE)
+                    ), 1) EXCHANGE_RATE,
+                NVL((SELECT BALANCE FROM V_ACCOUNT_BALANCES WHERE ACCOUNT_ID = a.ACCOUNT_ID), 0) BALANCE
+              FROM ACCOUNTS a
+              LEFT JOIN V_ACCOUNT_OWNERS vo
+                ON a.OWNER_TYPE = vo.OWNER_TYPE AND a.OWNER_ID = vo.OWNER_ID
+              WHERE a.ACCOUNT_TYPE = t.ACCOUNT_TYPE_CODE
+              ORDER BY a.ACCOUNT_NAME
+            ) LOOP
+              l_has_accounts := TRUE;
+              l_url := APEX_UTIL.PREPARE_URL(
+                p_url => 'f?p=' || :APP_ID || ':754:' || :APP_SESSION || '::NO::P754_ACCOUNT_ID:' || a.ACCOUNT_ID,
+                p_checksum_type => 'SESSION'
+              );
+              l_flag_url := 'https://g84c211b3b16868-apexadb1.adb.me-jeddah-1.oraclecloudapps.com/ords/blitzlayali333/CURFLAG/' || a.CURRENCY_CODE;
+              l_egp_amount := NVL(a.BALANCE,0) * NVL(a.EXCHANGE_RATE,1);
+      
+              l_section := l_section || '
+                <a href="' || l_url || '" class="account-card block border-2 rounded-2xl bg-white p-5 shadow hover:shadow-lg hover:border-blue-200 transition group relative"
+                   data-type="' || a.ACCOUNT_TYPE || '" 
+                   data-currency="' || a.CURRENCY_CODE || '" 
+                   data-owner-type="' || a.OWNER_TYPE || '" 
+                   data-owner-id="' || NVL(a.OWNER_ID, '') || '"
+                   data-owner-name="' || NVL(a.OWNER_NAME, '') || '">
+                  <div class="flex justify-between items-center">
+                    <div class="flex-1 text-right">
+                      <div class="font-bold text-gray-900 text-xl group-hover:text-blue-600 transition">' || a.ACCOUNT_NAME || '</div>
+                      <div class="text-xs text-gray-500 mb-2">' || a.ACCOUNT_CODE || '</div>
+                      <div class="flex items-center gap-2 mt-2">
+                        <span class="acc-balance-value text-2xl font-black ' ||
+                          CASE
+                            WHEN NVL(a.BALANCE,0) < 0 THEN 'text-red-600'
+                            WHEN NVL(a.BALANCE,0) > 0 THEN 'text-green-600'
+                            ELSE 'text-gray-700'
+                          END || '" data-show="' || format_number(NVL(a.BALANCE,0)) || '">' ||
+                          '******' || '</span>
+                        <span class="text-base font-bold text-gray-500">' || a.CURRENCY_CODE || '</span>
+                      </div>
+                      <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                        <i class="fa6 fa6-money-bill-wave text-sm text-blue-400"></i>
+                        الرصيد المعدل: 
+                        <span class="acc-balance-egp font-bold text-blue-900" data-show="' || format_number(l_egp_amount) || '">' || '******' || '</span> ج.م
+                      </div>
+                      <div class="mt-2 flex flex-wrap gap-2 items-center">
+                        <span class="inline-block px-2 py-1 text-xs rounded-full ' ||
+                          CASE WHEN a.STATUS = 'ACTIVE' THEN 'bg-green-100 text-green-700'
+                               ELSE 'bg-gray-100 text-gray-600' END || '">' ||
+                          CASE WHEN a.STATUS = 'ACTIVE' THEN 'نشط' ELSE 'غير نشط' END || '</span>
+                        <span class="inline-block px-2 py-1 text-xs rounded-full bg-blue-50 text-blue-700">'
+                        || 
+                          CASE a.OWNER_TYPE
+                            WHEN 'Employee' THEN 'موظف: '
+                            WHEN 'Supplier' THEN 'مورد: '
+                            WHEN 'Driver'   THEN 'سائق: '
+                            WHEN 'Company'  THEN 'الشركة'
+                            ELSE NVL(a.OWNER_TYPE,'')
+                          END || ' ' ||
+                          NVL(a.OWNER_NAME, '') || '</span>
+                      </div>
+                    </div>
+                    <div class="ml-4 flex-shrink-0 flex flex-col items-center gap-1">
+                      <img src="' || l_flag_url || '" alt="Flag" class="w-14 h-14 rounded-full border-2 border-gray-100 object-cover group-hover:border-blue-400 transition">
+                    </div>
+                  </div>
+                </a>
+              ';
+            END LOOP;
+      
+            -- فقط إذا كان هناك حسابات نعرض القسم
+            IF l_has_accounts THEN
+              l_html := l_html || '
+                <div id="' || l_sec_id || '" class="acc-section-group mb-10">
+                  <h2 class="text-lg font-semibold text-gray-700 mb-4">' || t.NAME_AR || '</h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ' || l_section || '
+                  </div>
+                </div>
+              ';
+            END IF;
+          END;
+        END LOOP;
+      
+        l_html := l_html || '</div>'; -- main container
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 281328260011843898
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+buttons: 
+- # ====== Button: Up ==========================================
+  id: 281249069875651361
+  identification: 
+    button-name: Up
+    label: Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 281328260011843898
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:750:&SESSION.::&DEBUG.:750::'
+      page: 750 # Finance Department Home
+      clear-cache: 750
+
+    warn-on-unsaved-changes: Do Not Check
+

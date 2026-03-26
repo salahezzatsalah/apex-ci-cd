@@ -1,0 +1,1476 @@
+---
+# ====== Page: FastTrack Department Home =====================
+id: 450
+identification: 
+  name: FastTrack Department Home
+  alias: FASTTRACK-DEPARTMENT-HOME
+  title: إدارة المسار السريع
+  page-group: Home # 18677563246010402822
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  function-and-global-variable-declaration: |
+    document.querySelectorAll('.ft-tooltip').forEach(el => {
+      const tooltipHtml = el.querySelector('.passengers-tooltip-list').outerHTML;
+      let tooltipDiv = document.createElement('div');
+      tooltipDiv.className = 'passengers-tooltip-content';
+      tooltipDiv.innerHTML = tooltipHtml;
+      document.body.appendChild(tooltipDiv);
+    
+      el.addEventListener('mouseenter', () => {
+        tooltipDiv.style.display = 'block'; // يظهر عند hover
+      });
+    
+      el.addEventListener('mouseleave', () => {
+        tooltipDiv.style.display = 'none';  // يختفي لما يخرج الماوس
+      });
+    
+      el.addEventListener('mousemove', e => {
+        tooltipDiv.style.top = (e.clientY + 15) + 'px';
+        tooltipDiv.style.left = (e.clientX + 15) + 'px';
+      });
+    });
+    
+    /*************************************
+     * FLOATING ACTIONS MENU
+     *************************************/
+    document.querySelectorAll('.ft-actions').forEach(el => {
+      const toggleBtn = el.querySelector('.ft-actions-toggle');
+      const menuTemplate = el.querySelector('.ft-actions-menu');
+      if (!toggleBtn || !menuTemplate) return;
+    
+      const menuDiv = document.createElement('div');
+      menuDiv.className = 'ft-actions-menu-float';
+      menuDiv.innerHTML = menuTemplate.innerHTML;
+      menuDiv.style.position = 'fixed';
+      menuDiv.style.display = 'none';
+      menuDiv.style.zIndex = 9999;
+    
+      // Attach row URLs
+      const row = el.closest('tr');
+      if (row) {
+        menuDiv.querySelectorAll('button').forEach(btn => {
+          btn.dataset.assignUrl   = row.dataset.assignUrl;
+          btn.dataset.viewSubUrl  = row.dataset.viewSubUrl;
+          btn.dataset.viewMainUrl = row.dataset.viewMainUrl;
+        });
+      }
+    
+      document.body.appendChild(menuDiv);
+    
+      toggleBtn.addEventListener('click', e => {
+        e.stopPropagation();
+    
+        const rect = toggleBtn.getBoundingClientRect();
+        const isVisible = menuDiv.style.display === 'block';
+    
+        document.querySelectorAll('.ft-actions-menu-float')
+          .forEach(m => m.style.display = 'none');
+    
+        if (!isVisible) {
+          menuDiv.style.top  = rect.bottom + window.scrollY + 5 + 'px';
+          menuDiv.style.left = rect.left   + window.scrollX + 'px';
+          menuDiv.style.display = 'block';
+        }
+      });
+    });
+    
+    
+    /*************************************
+     * MENU + ASSIGN HANDLER (APEX SAFE)
+     *************************************/
+    document.addEventListener('click', function (e) {
+    
+      /* ===== Assign Vendor ===== */
+      const assignBtn = e.target.closest('.assign-btn');
+      if (assignBtn) {
+        e.stopPropagation();
+    
+        const row = assignBtn.closest('tr');
+        if (!row || !row.dataset.assignUrl) return;
+    
+        apex.navigation.dialog(row.dataset.assignUrl, {
+          modal: true,
+          width: "90%",
+          height: "90%"
+        });
+        return;
+      }
+    
+      /* ===== View Sub / Main ===== */
+      const menuBtn = e.target.closest('.ft-actions-menu-float button');
+      if (menuBtn) {
+        e.stopPropagation();
+    
+        if (menuBtn.dataset.viewSubUrl) {
+          apex.navigation.redirect(menuBtn.dataset.viewSubUrl);
+        }
+        else if (menuBtn.dataset.viewMainUrl) {
+          apex.navigation.redirect(menuBtn.dataset.viewMainUrl);
+        }
+        return;
+      }
+    
+      /* ===== Hide menus on outside click ===== */
+      document.querySelectorAll('.ft-actions-menu-float')
+        .forEach(menu => menu.style.display = 'none');
+    });
+    
+  execute-when-page-loads: |
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.assign-btn');
+      if (!btn) return;
+    
+      e.stopPropagation();
+    
+      const row = btn.closest('tr');
+      if (!row) return;
+    
+      const assignUrl = row.dataset.assignUrl;
+      if (!assignUrl) return;
+    
+      // نفس اللي بيحصل في LIMO
+      apex.navigation.dialog(assignUrl, {
+        modal: true,
+        width: "90%",
+        height: "90%"
+      });
+    });
+    
+
+css: 
+  inline: |
+    /* ===== Passengers Tooltip ===== */
+    .ft-tooltip-content {
+      position: fixed;      /* Fixed عشان يظهر فوق كل شيء */
+      z-index: 9999;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      transition: opacity 0.2s ease;
+      white-space: normal;
+      pointer-events: none; /* عشان الماوس يمر عليه */
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    /* .ft-tooltip:hover .ft-tooltip-content {
+      opacity: 1;
+      visibility: visible;
+    }*/
+    
+    
+    /* Passengers list */
+    .passengers-tooltip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .passenger-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #374151;
+      padding: 8px 0;
+      min-height: 34px;
+    }
+    
+    .p-name { font-weight: 600; }
+    .p-nationality {
+      background: #2563eb;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    
+    .ft-actions-menu-float {
+      position: fixed;
+      display: none;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      min-width: 180px;
+      z-index: 9999;
+      padding: 8px 0;
+    }
+    
+    .ft-actions-menu-float button {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      text-align: right;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    
+    .ft-actions-menu-float button:hover {
+      background-color: #f1f5f9;
+    }
+    
+    
+    
+    /* Tooltip base */
+    .passengers-tooltip-content {
+      position: fixed;
+      z-index: 9999;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px 12px;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      white-space: normal;
+      pointer-events: none;
+      display: none; /* نخفيه بالافتراضي */
+    }
+    
+    /* Passenger list */
+    .passengers-tooltip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .passenger-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #374151;
+      padding: 8px 0;
+      min-height: 34px;
+    }
+    .p-name { font-weight: 600; }
+    .p-nationality {
+      background: #2563eb;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    
+    /* ========== TODAY & FOLLOW-UP TRIPS STYLES - Uber Base Design ========== */
+    
+    .today-trips-wrapper,
+    .today-trips-wrapper-followup {
+      font-family: 'Cairo', 'Segoe UI', sans-serif;
+      font-size: 12px;
+      direction: rtl;
+      padding: 1.5rem;
+      color: #2e2e2e;
+      overflow-x: auto;
+      background-color: #f9fafb;
+    }
+    
+    .today-trips-table,
+    .today-trips-table-followup {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      table-layout: auto;
+      border-color: orange;
+    }
+    
+    .today-trips-table thead th,
+    .today-trips-table-followup thead th {
+      text-align: center;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid #374151;
+      background: orangered;
+      color: black;
+      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-color: orange;
+    }
+    
+    .today-trips-table tbody td,
+    .today-trips-table-followup tbody td {
+      text-align: center;
+      vertical-align: middle;
+      font-size: 12px;
+      color: #1f2937;
+      padding: 0.6rem 0.75rem;
+      background-color: #fff;
+      border-bottom: 1px solid #f3f4f6;
+      line-height: 1.4;
+      white-space: normal;
+      overflow-wrap: break-word;
+      max-width: 200px;
+      border-color: black;
+      font-weight: bold;
+      min-height: 48px; /* ✅ Uniform row height */
+    }
+    
+    /* تكبير ارتفاع الصفوف في الجدول */
+    .today-trips-table tbody tr,
+    .today-trips-table-followup tbody tr {
+      min-height: 100px;    /* زوّدي الارتفاع حسب الحاجة */
+      height: auto;        /* خلي الصف يتوسع حسب محتوى الـ td */
+    }
+    
+    .today-trips-table tbody td,
+    .today-trips-table-followup tbody td {
+      padding: 12px 10px;   /* يزيد المسافة الداخلية داخل كل خلية */
+      line-height: 1.8;     /* لتكبير المسافة بين الأسطر داخل الـ td */
+      vertical-align: middle; /* لضبط محتوى الخلية في المنتصف */
+      font-size: 13px;       /* ممكن تزودي الخط شوية لو حابة */
+    }
+    
+    
+    .trip-row {
+      transition: all 0.25s ease;
+    }
+    .trip-row:hover {
+      transform: scale(1.002);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+    }
+    
+    .status-alert {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+    
+    /* ===== Context Menu ===== */
+    .context-menu,
+    .context-menu-followup {
+      position: absolute;
+      z-index: 1000;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      min-width: 160px;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .context-menu .menu-item,
+    .context-menu-followup .menu-item-followup {
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #111827;
+      transition: background-color 0.2s;
+    }
+    .context-menu .menu-item:hover,
+    .context-menu-followup .menu-item-followup:hover {
+      background-color: #f3f4f6;
+    }
+    
+    /* ===== Overlay ===== */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.85);
+      font-size: 18px;
+      font-weight: bold;
+      color: #374151;
+      z-index: 999;
+    }
+    
+    /* ===== Time-based Highlighting ===== */
+    .trip-row-past {
+      background: linear-gradient(90deg, #e0e7ef 0%, #f3f4f6 100%);
+      opacity: 0.6;
+    }
+    .trip-row-now {
+      background: linear-gradient(90deg, #fdf6b2 10%, #fff9db 100%);
+      box-shadow: 0 0 12px 0 #ffd90040, 0 0 0 2px #facc1530;
+      animation: glow-now 2s infinite alternate;
+    }
+    @keyframes glow-now {
+      0% { box-shadow: 0 0 8px 0 #ffd90020; }
+      100% { box-shadow: 0 0 20px 0 #ffd90070, 0 0 0 3px #fde04740; }
+    }
+    .trip-row-future {
+      background: linear-gradient(90deg, #f0fdf4 0%, #ecfdf5 100%);
+      opacity: 0.9;
+    }
+    
+    /* ===== Row Statuses ===== */
+    .row-cancelled {
+      background: linear-gradient(90deg, #ffe5e5 0%, #fff1f2 100%);
+      border-left: 8px solid #ef4444;
+      color: #991b1b;
+      opacity: 0.85;
+    }
+    
+    .row-unassigned {
+      background: linear-gradient(90deg, #fef2f2 0%, #fff7ed 100%);
+      border-left: 8px dashed #f59e42;
+      color: #b45309;
+      font-weight: 500;
+    }
+    
+    .row-active {
+      background: linear-gradient(90deg, #d1fae5 0%, #e0f2fe 100%);
+      border-left: 8px solid #22d3ee;
+      color: #065f46;
+      animation: active-row-glow 2s infinite alternate;
+    }
+    @keyframes active-row-glow {
+      from { box-shadow: 0 0 8px 0 #38bdf820; }
+      to   { box-shadow: 0 0 32px 0 #38bdf870; }
+    }
+    
+    .row-paused {
+      background: linear-gradient(90deg, #fef9c3 0%, #fdf6b2 100%);
+      border-left: 8px solid #facc15;
+      color: #a16207;
+    }
+    
+    .row-partial {
+      background: linear-gradient(90deg, #f3e8ff 0%, #ede9fe 100%);
+      border-left: 8px dashed #a78bfa;
+      color: #6d28d9;
+    }
+    
+    .row-completed {
+      background: linear-gradient(90deg, #e0f2fe 0%, #d1fae5 100%);
+      border-left: 8px solid #34d399;
+      color: #166534;
+      font-weight: 700;
+    }
+    
+    .row-error {
+      background: linear-gradient(90deg, #fcd34d 0%, #fecaca 100%);
+      border-left: 8px solid #f87171;
+      color: #b91c1c;
+      font-style: italic;
+    }
+    
+    /* ===== Status Badges ===== */
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      color: #fff;
+    }
+    .status-badge.active { background: #10b981; }
+    .status-badge.cancelled { background: #ef4444; }
+    .status-badge.paused { background: #f59e0b; }
+    .status-badge.completed { background: #3b82f6; }
+    .status-badge.partial { background: #8b5cf6; }
+    .status-badge.unassigned { background: #f97316; }
+    .status-badge.error { background: #dc2626; }
+    
+    /* ===== Utility Labels ===== */
+    .driver-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    
+    .copy-btn {
+      background-color: transparent;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      color: #4b5563;
+      transition: color 0.2s;
+      vertical-align: middle;
+    }
+    .copy-btn:hover { color: #1d4ed8; }
+    
+    .tag,
+    .requested-car,
+    .client-code {
+      display: inline-block;
+      margin-top: 6px;
+      margin-left: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+    .tag i { margin-left: 4px; }
+    .tag.badge { background: #f3f4f6; color: #1f2937; }
+    .requested-car,
+    .client-code { background: #fb923c; color: #fff; }
+    
+    /* ===== Selection Control ===== */
+    .today-trips-wrapper .trip-row,
+    .today-trips-wrapper-followup .trip-row {
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    .selectable {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+    
+    /* ===== Responsive (Mobile) ===== */
+    @media (max-width: 768px) {
+      .today-trips-wrapper,
+      .today-trips-wrapper-followup {
+        padding: 1rem 0.5rem;
+        font-size: 14px;
+      }
+      .today-trips-table thead th,
+      .today-trips-table-followup thead th,
+      .today-trips-table tbody td,
+      .today-trips-table-followup tbody td {
+        font-size: 12px;
+        padding: 0.5rem 0.4rem;
+      }
+    }
+    
+    /* ===== Header & Search Enhancements ===== */
+    .today-trips-wrapper h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .search-input-with-icon {
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      padding: 0.5rem 1rem 0.5rem 2.25rem;
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      background-color: #fff;
+      color: #1f2937;
+      direction: rtl;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-input-with-icon:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      outline: none;
+    }
+    .search-placeholder-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 14px;
+      pointer-events: none;
+    }
+    
+    /* ===== Flashing Tag ===== */
+    .ft-today-tag {
+      display: inline-block;
+      background: linear-gradient(90deg, #FBBF24 60%, #fde68a 100%);
+      color: #915c09;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 14px;
+      padding: 2px 10px 2px 8px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      letter-spacing: 0.2px;
+      box-shadow: 0 1px 6px 0 #fbbf243a;
+      border: 1px solid #f5e09a;
+      vertical-align: middle;
+      animation: flashft 1s infinite alternate;
+    }
+    @keyframes flashft {
+      from { filter: brightness(1.07); }
+      to   { filter: brightness(1.16); }
+    }
+    
+    /* ===== Dark Mode Support ===== */
+    .dark .today-trips-table,
+    .dark .today-trips-table-followup {
+      background: #1f2937;
+      color: #f3f4f6;
+    }
+    .dark .today-trips-table thead th,
+    .dark .today-trips-table-followup thead th {
+      background: #111827;
+      color: #f9fafb;
+    }
+    .dark .row-active {
+      background: linear-gradient(90deg, #064e3b 0%, #065f46 100%);
+      border-left-color: #10b981;
+    }
+    
+    
+    .ft-actions {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .ft-actions-menu {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      background: #fff;
+      min-width: 190px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.15);
+      z-index: 60;
+      overflow: hidden;
+    }
+    
+    .ft-actions-menu button {
+      width: 100%;
+      text-align: right;
+      padding: 10px 14px;
+      font-size: 13px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .ft-actions-menu button:hover {
+      background: #f3f4f6;
+    }
+    
+    .ft-actions.open .ft-actions-menu {
+      display: block;
+    }
+    
+    
+    
+    
+    /* ===== Scrollable Table Container ===== */
+    .ft-table-container {
+      max-height: 65vh;
+      overflow-y: visible; /* بدل auto */
+      overflow-x: auto;    /* لو محتاجين scroll أفقي نتركه */
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      position: relative; /* مهم لو هنعمل position:absolute للtooltip داخل body */
+    }
+    
+    /* ===== Sticky Header ===== */
+    .ft-table-container thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #f9fafb;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    /* Optional subtle shadow under header while scrolling */
+    .ft-table-container thead th::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 1px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0));
+    }
+    
+    /* ===== Smooth scrolling ===== */
+    .ft-table-container {
+      scroll-behavior: smooth;
+    }
+    
+    /* Keep dropdowns above scroll */
+    .ft-actions-menu,
+    .ft-tooltip-content {
+      z-index: 50;
+    }
+    /* Assign as button-look link */
+    .ft-actions-menu-float .assign-link,
+    .ft-actions-menu .assign-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;              /* مسافة أحسن */
+      width: 100%;
+      padding: 10px 14px;     /* أكبر شوية */
+    
+      text-decoration: none;
+      background: none;
+      border: none;
+    
+      font-size: 14.5px;      /* تكبير الخط */
+      font-weight: 500;       /* أوضح */
+      color: #000;            /* النص أسود */
+      cursor: pointer;
+    }
+    
+    /* icon */
+    .ft-actions-menu-float .assign-link i,
+    .ft-actions-menu .assign-link i {
+      font-size: 16px;       
+      color: #000;            
+    }
+    
+    /* hover */
+    .ft-actions-menu-float .assign-link:hover,
+    .ft-actions-menu .assign-link:hover {
+      background: #f3f4f6;
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+comments: 
+  comments: home
+
+regions: 
+- # ====== Region: Today's Reservations ========================
+  id: 229969113173398208
+  identification: 
+    name: Today's Reservations
+    title: تقرير شغل اليوم - مسار سريع
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html                 CLOB := '';
+        l_row_class            VARCHAR2(200);
+        l_PHONE_link           VARCHAR2(4000);
+        l_PHONE_digits         VARCHAR2(100);
+        l_status_display       VARCHAR2(100);
+        l_passengers_html      CLOB;
+      
+        /* URLs */
+        l_assign_url           VARCHAR2(4000);
+        l_view_sub_url         VARCHAR2(4000);
+        l_view_main_url        VARCHAR2(4000);
+      
+      BEGIN
+        l_html := '
+        <div class="today-trips-wrapper-followup">
+          <div class="ft-table-container">
+            <table class="min-w-full divide-y divide-gray-200 text-sm rtl text-right today-trips-table-followup">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>الخدمة</th>
+                  <th>رقم الحجز</th>
+                  <th>العميل</th>
+                  <th>المطار / الصالة</th>
+                  <th>اليوم</th>
+                  <th>الحالة</th>
+                  <th>الركاب</th>
+                  <th>المورد</th>
+                  <th>ملاحظات</th>
+                  <th>الإجمالي</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>';
+      
+        FOR rec IN (
+          SELECT
+            ROW_NUMBER() OVER (
+              ORDER BY
+                r.RES_DATE +
+                TO_DSINTERVAL('0 ' || NVL(r.RES_TIME,'00:00') || ':00')
+            ) AS RES_INDEX,
+      
+            r.SUB_RES_ID,
+            r.MAIN_RES_ID,
+            r.PASSENGERS_NO,
+            r.PASSENGERS_INFO,
+            r.RES_DATE,
+            r.RES_TIME,
+      
+            /* Combined DateTime */
+            r.RES_DATE +
+            TO_DSINTERVAL('0 ' || NVL(r.RES_TIME,'00:00') || ':00') AS RES_DATETIME,
+      
+            r.TOTAL_AMOUNT,
+            r.CURRENCY,
+            r.STATUS,
+            r.NOTES,
+            s.SERVICE_NAME,
+            a.AIRPORT_NAME,
+            a.AIRPORT_CODE,
+            r.TERMINAL_NO,
+      
+            /* ✅ NEW CLIENT MODEL (like limo view) */
+            c.CLIENT_ID,
+            c.CLIENT_CODE      AS CLIENT_NAME,
+            cc.CONTACT_VALUE   AS CLIENT_PHONE,
+      
+            sup.SUPPLIER_NAME
+          FROM SUBLEVEL_FAST_TRACK_RES r
+          JOIN FAST_TRACK_SERVICE_CATALOG s
+            ON s.SERVICE_ID = r.CAT_ITEM_ID
+          JOIN AIRPORTS a
+            ON a.AIRPORT_ID = r.AIRPORT_ID
+          JOIN MAIN_RESERVATIONS m
+            ON m.MAIN_RES_ID = r.MAIN_RES_ID
+      
+          /* ✅ New client module */
+          JOIN CLIENTS c
+            ON m.CUSTOMER_ID = c.CLIENT_ID
+          LEFT JOIN CLIENT_CONTACTS cc
+            ON cc.CLIENT_ID = c.CLIENT_ID
+           AND cc.CONTACT_TYPE = 'PHONE'
+           AND cc.IS_PRIMARY   = 'Y'
+      
+          LEFT JOIN FAST_TRACK_ASSIGNMENTS fa
+            ON fa.RESERVATION_ID = r.SUB_RES_ID
+           AND fa.VENDOR_STATUS = 'CURRENT'
+          LEFT JOIN SUPPLIERS sup
+            ON sup.SUPPLIER_ID = fa.VENDOR_ID
+      
+          WHERE r.IS_DELETED = 'N'
+          ORDER BY
+            r.RES_DATE +
+            TO_DSINTERVAL('0 ' || NVL(r.RES_TIME,'00:00') || ':00')
+        ) LOOP
+      
+          /* ===== Status ===== */
+          DECLARE
+            l_count NUMBER;
+          BEGIN
+            SELECT COUNT(*)
+            INTO l_count
+            FROM FAST_TRACK_ASSIGNMENTS a
+            WHERE a.RESERVATION_ID = rec.SUB_RES_ID
+              AND a.VENDOR_STATUS = 'CURRENT';
+      
+            IF rec.STATUS = 'CANCELLED' THEN
+              l_status_display := 'ملغية';
+              l_row_class := 'row-cancelled';
+            ELSIF l_count = 0 THEN
+              l_status_display := 'في انتظار التوزيع';
+              l_row_class := 'row-unassigned';
+            ELSE
+              l_status_display := 'تم التوزيع';
+              l_row_class := 'row-assigned';
+            END IF;
+          END;
+      
+          /* ===== URLs ===== */
+          l_assign_url := APEX_UTIL.PREPARE_URL(
+            'f?p=' || :APP_ID || ':247:' || :APP_SESSION ||
+            '::::P247_SUB_RES_ID:' || rec.SUB_RES_ID
+          );
+      
+          l_view_sub_url := APEX_UTIL.PREPARE_URL(
+            'f?p=' || :APP_ID || ':250:' || :APP_SESSION ||
+            '::::P250_SUB_RES_ID:' || rec.SUB_RES_ID
+          );
+      
+          l_view_main_url := APEX_UTIL.PREPARE_URL(
+            'f?p=' || :APP_ID || ':251:' || :APP_SESSION ||
+            '::::P251_MAIN_RES_ID:' || rec.MAIN_RES_ID
+          );
+      
+          /* ===== Phone (NEW source) ===== */
+          IF rec.CLIENT_PHONE IS NOT NULL THEN
+            l_PHONE_digits := REGEXP_REPLACE(rec.CLIENT_PHONE,'[^0-9]','');
+            l_PHONE_link :=
+              '<button type="button" class="copy-phone-btn"
+                 data-phone="'||l_PHONE_digits||'"
+                 onclick="copyPhoneToClipboard(this)"
+                 style="background:none;border:none;color:#22c55e;cursor:pointer">
+                 <span dir="ltr">'||rec.CLIENT_PHONE||'</span> <i class="fa6 fa6-solid fa6-copy"></i>
+               </button>';
+          ELSE
+            l_PHONE_link := '-';
+          END IF;
+      
+          /* ===== Passengers Tooltip ===== */
+          l_passengers_html := '<div class="passengers-tooltip-list">';
+          FOR p IN (
+            SELECT jt.name, jt.nationality
+            FROM JSON_TABLE(
+              rec.PASSENGERS_INFO,
+              '$[*]' COLUMNS (
+                name        VARCHAR2(200) PATH '$.name',
+                nationality VARCHAR2(50)  PATH '$.nationality'
+              )
+            ) jt
+          ) LOOP
+            l_passengers_html := l_passengers_html ||
+              '<div class="passenger-row">
+                 <span class="p-name">'||p.name||'</span>
+                 <span class="p-nationality">'||p.nationality||'</span>
+               </div>';
+          END LOOP;
+          l_passengers_html := l_passengers_html || '</div>';
+      
+          IF l_passengers_html = '<div class="passengers-tooltip-list"></div>' THEN
+            l_passengers_html := '<div class="text-xs">لا توجد بيانات ركاب</div>';
+          END IF;
+      
+          /* ===== Row ===== */
+          l_html := l_html || '
+            <tr class="trip-row '||l_row_class||'">
+      
+              <td>'||rec.RES_INDEX||'</td>
+              <td>'||rec.SERVICE_NAME||'</td>
+              <td class="font-bold text-blue-700">'||rec.SUB_RES_ID||'</td>
+      
+              <td>
+                <div>'||rec.CLIENT_NAME||'</div>
+                <div class="text-xs">'||l_PHONE_link||'</div>
+              </td>
+      
+              <td>'||rec.AIRPORT_NAME||' ('||rec.AIRPORT_CODE||') - صالة '||rec.TERMINAL_NO||'</td>
+      
+              <td>
+                <div class="font-medium">
+                  '||TO_CHAR(rec.RES_DATETIME,'YYYY-MM-DD')||'
+                </div>
+                <div class="text-xs text-gray-500">
+                  '||TO_CHAR(rec.RES_DATETIME,'HH24:MI')||'
+                </div>
+              </td>
+      
+              <td>'||l_status_display||'</td>
+      
+              <td>
+                <div class="ft-tooltip">
+                  <strong>'||rec.PASSENGERS_NO||'</strong>
+                  <div class="ft-tooltip-content passengers-tooltip">'||l_passengers_html||'</div>
+                </div>
+              </td>
+      
+              <td>'||NVL(rec.SUPPLIER_NAME,'<span class="text-xs text-gray-400">غير معين</span>')||'</td>
+              <td>'||NVL(rec.NOTES,'<span class="notes-empty">لا توجد ملاحظات</span>')||'</td>
+              <td>'||rec.TOTAL_AMOUNT||' '||rec.CURRENCY||'</td>
+      
+              <td class="text-center">
+                <div class="ft-actions">
+                  <button class="ft-actions-toggle" type="button">
+                    <i class="fa6 fa6-solid fa6-ellipsis-vertical"></i>
+                  </button>
+                  <div class="ft-actions-menu">
+                    <a href="'||l_view_sub_url||'" class="ft-action-link">
+                      <i class="fa6 fa6-solid fa6-eye"></i> عرض تفاصيل الحجز
+                    </a>
+                    <a href="'||l_view_main_url||'" class="ft-action-link">
+                      <i class="fa6 fa6-solid fa6-file-lines"></i> عرض الطلب الرئيسي
+                    </a>
+                    <a href="'||l_assign_url||'" class="ft-action-link">
+                      <i class="fa6 fa6-solid fa6-user-gear"></i>
+                      '||CASE WHEN rec.SUPPLIER_NAME IS NOT NULL THEN 'تغيير مورد' ELSE 'تعيين مورد' END||'
+                    </a>
+                  </div>
+                </div>
+              </td>
+      
+            </tr>';
+        END LOOP;
+      
+        l_html := l_html || '
+              </tbody>
+            </table>
+          </div>
+        </div>';
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 13860952749564670503
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 75
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 14725296104597685321
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 13860952749564670503
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14725296405176685324
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: الانشطة الشخصية  ==============================
+      id: 11972535968516272551
+      identification: 
+        type: Menu Entry
+        label: 'الانشطة الشخصية '
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض حجوزاتي ===================================
+      id: 12727832926640985283
+      identification: 
+        type: Menu Entry
+        label: عرض حجوزاتي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: Separator =====================================
+      id: 12743541723890308490
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Separator =====================================
+      id: 13336897129630525383
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 14725297111083685331
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 150
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:450:&SESSION.::&DEBUG.:RP,1::'
+          page: 450 # FastTrack Department Home
+          clear-cache: RP,1
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: مهامي =========================================
+      id: 20637293936367921355
+      identification: 
+        type: Menu Entry
+        label: مهامي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:RP,500:P500_ASSIGNED_TO:&APP_USER_FIRST_LAST_NAME.'
+          page: 500 # Tasks
+          clear-cache: RP,500
+          values: 
+            p500_assigned_to: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-clipboard-list
+
+    - # ====== Menu: اضافة نشاط ====================================
+      id: 22983854243120321974
+      identification: 
+        type: Menu Entry
+        label: اضافة نشاط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:101:&SESSION.::&DEBUG.:RP,101::'
+          page: 101
+          clear-cache: RP,101
+
+      appearance: 
+        icon: fa-plus
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: مفضل ========================================
+    id: 19976635908846965076
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: مفضل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,:P362_FAVORITE:نعم'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP
+        values: 
+          p362_favorite: نعم
+
+    appearance: 
+      display-type: Icon
+      icon: fa-heart
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: عرض جميع الطلابات ===========================
+    id: 22983854123884321973
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: عرض جميع الطلابات
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:454:&SESSION.::&DEBUG.:RP,454::'
+        page: 454 # Fast Track Reservations Requests
+        clear-cache: RP,454
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 280988666163411328
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 13860952749564670503
+
+- # ====== Dynamic Action: toggle favorite =====================
+  id: 280989026818411328
+  identification: 
+    name: toggle favorite
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P450_RESERVATION_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 280989562117411328
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        RESERVATION_FAVORITE_TOGGLE(
+            p_reservation_id  => :P450_RESERVATION_TO_FAVORITE, 
+            p_user_id => :APP_USER_ID );
+      items-to-submit: 
+      - P450_RESERVATION_TO_FAVORITE
+      - APP_USER_ID
+
+    execution: 
+      sequence: 10
+      event: toggle favorite # 280989026818411328
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 280990020181411329
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-reservation-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-reservation-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('تم اضافة الحجز في قائمة المفضل!');
+        }
+        apex.items.P450_RESERVATION_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: toggle favorite # 280989026818411328
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: dismiss notif =======================
+  id: 280990444866411329
+  identification: 
+    name: dismiss notif
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P450_NOTIF_TO_DISMISS
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 280990986990411330
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        update sp_team_member_notifications
+           set dismissed_yn = 'Y'
+         where id = :P450_NOTIF_TO_DISMISS
+           and team_member_id =  :APP_USER_ID;
+      items-to-submit: 
+      - P450_NOTIF_TO_DISMISS
+
+    execution: 
+      sequence: 10
+      event: dismiss notif # 280990444866411329
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 280991483042411330
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.items.P450_NOTIF_TO_DISMISS.setValue('',undefined,true);
+
+    execution: 
+      sequence: 20
+      event: dismiss notif # 280990444866411329
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

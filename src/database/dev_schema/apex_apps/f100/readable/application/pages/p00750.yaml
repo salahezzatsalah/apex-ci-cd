@@ -1,0 +1,433 @@
+---
+# ====== Page: Finance Department Home =======================
+id: 750
+identification: 
+  name: Finance Department Home
+  alias: FINANCE-DEPARTMENT-HOME
+  title: الإدارة المالية
+  page-group: Home # 18677563246010402822
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+  css-classes: 
+  - rw-pillar--sienna
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+comments: 
+  comments: home
+
+regions: 
+- # ====== Region: Nav Menu ====================================
+  id: 281248876003651359
+  identification: 
+    name: Nav Menu
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html CLOB := '';
+        l_url  VARCHAR2(4000);
+      BEGIN
+        l_html := l_html ||
+          '<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 text-right">';
+      
+        FOR r IN (
+          SELECT
+            MENU_LABEL,
+            MENU_PAGE_ID,
+            MENU_ICON,
+            MENU_IMAGE_URL
+          FROM APP_MENU
+          WHERE PARENT_MENU_ID IS NULL
+            AND IS_ACTIVE = 'Y'
+          ORDER BY DISPLAY_ORDER
+        )
+        LOOP
+          l_url := APEX_UTIL.PREPARE_URL(
+            p_url => 'f?p=' || V('APP_ID') || ':' || r.MENU_PAGE_ID || ':' || V('APP_SESSION'),
+            p_checksum_type => 'SESSION'
+          );
+      
+          l_html := l_html ||
+            CASE WHEN r.MENU_IMAGE_URL IS NOT NULL THEN
+              '<a href="' || l_url || '" class="block bg-white rounded-lg shadow hover:shadow-lg transition p-4 text-center">' ||
+              '<img src="' || r.MENU_IMAGE_URL || '" alt="' || r.MENU_LABEL || '" class="mx-auto h-20 w-20 object-contain mb-4">'
+            ELSE
+              '<a href="' || l_url || '" class="block bg-white rounded-lg shadow hover:shadow-lg transition p-4 text-center">' ||
+              '<i class="' || r.MENU_ICON || ' text-4xl text-gray-600 mb-4"></i>'
+            END ||
+            '<div class="text-lg font-semibold text-gray-800">' || r.MENU_LABEL || '</div>' ||
+            '</a>';
+        END LOOP;
+      
+        l_html := l_html || '</div>';
+      
+        RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 14017180626651231671
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 75
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 14881523981684246489
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 14017180626651231671
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14881524282263246492
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+    menus: 
+    - # ====== Menu: الانشطة الشخصية  ==============================
+      id: 12128763845602833719
+      identification: 
+        type: Menu Entry
+        label: 'الانشطة الشخصية '
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+    - # ====== Menu: عرض حجوزاتي ===================================
+      id: 12884060803727546451
+      identification: 
+        type: Menu Entry
+        label: عرض حجوزاتي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: Separator =====================================
+      id: 12899769600976869658
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Separator =====================================
+      id: 13493125006717086551
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 14881524988170246499
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 150
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:750:&SESSION.::&DEBUG.:RP,1::'
+          page: 750 # Finance Department Home
+          clear-cache: RP,1
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: مهامي =========================================
+      id: 20793521813454482523
+      identification: 
+        type: Menu Entry
+        label: مهامي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:RP,500:P500_ASSIGNED_TO:&APP_USER_FIRST_LAST_NAME.'
+          page: 500 # Tasks
+          clear-cache: RP,500
+          values: 
+            p500_assigned_to: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-clipboard-list
+
+    - # ====== Menu: اضافة نشاط ====================================
+      id: 23140082120206883142
+      identification: 
+        type: Menu Entry
+        label: اضافة نشاط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:101:&SESSION.::&DEBUG.:RP,101::'
+          page: 101
+          clear-cache: RP,101
+
+      appearance: 
+        icon: fa-plus
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: مفضل ========================================
+    id: 20132863785933526244
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: مفضل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,:P362_FAVORITE:نعم'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP
+        values: 
+          p362_favorite: نعم
+
+    appearance: 
+      display-type: Icon
+      icon: fa-heart
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Action: عرض جميع الطلابات ===========================
+    id: 23140082000970883141
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: عرض جميع الطلابات
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:RP,362::'
+        page: 362 # Limo Reservations Requests
+        clear-cache: RP,362
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 281071546908858378
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 14017180626651231671
+

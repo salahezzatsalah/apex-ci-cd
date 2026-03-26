@@ -1,0 +1,3287 @@
+---
+# ====== Page: Car Type Profile Page =========================
+id: 354
+identification: 
+  name: Car Type Profile Page
+  alias: CAR-TYPE-PROFILE-PAGE
+  title: تفاصيل نوع سيارة - &P354_NAME.
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .sp-tag {
+      padding: .125rem .25rem;
+      display: inline-block;
+      vertical-align: text-bottom;
+      border-radius: .1875rem;
+      background-color: rgba(0, 0, 0, .1);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .sp-tags-container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .25rem;
+      justify-content: flex-start;
+    }
+    
+    h3:first-of-type {
+      margin-block-start: 0;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Image Gallery  ==============================
+  id: 218369647893325184
+  identification: 
+    name: 'Image Gallery '
+    title: معرص الصور
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html        CLOB := '';
+        l_photos      CLOB;
+        l_count       NUMBER := 0;
+      
+        /* Escape HTML */
+        FUNCTION esc(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN apex_escape.html(NVL(p_txt,''));
+        END;
+      
+      BEGIN
+        /* ============================================
+           Get Gallery URLs
+           ============================================ */
+        SELECT photo_url
+        INTO   l_photos
+        FROM   limo_car_types
+        WHERE  car_type_id = :P354_ID;
+      
+        /* ============================================
+           CSS + JS
+           ============================================ */
+        l_html := l_html || '
+      
+      <style>
+      
+      /* Grid */
+      .car-gallery{
+        display:grid;
+        gap:12px;
+        grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+      }
+      
+      /* Card */
+      .car-img{
+        position:relative;
+        overflow:hidden;
+        border-radius:12px;
+        background:#f8fafc;
+        cursor:pointer;
+        border:1px solid #e2e8f0;
+        aspect-ratio:1/1;
+      }
+      
+      /* Image */
+      .car-img img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        transition:.3s;
+      }
+      
+      .car-img:hover img{
+        transform:scale(1.05);
+      }
+      
+      /* Overlay */
+      .car-img::after{
+        content:"🔍";
+        position:absolute;
+        inset:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:rgba(0,0,0,.35);
+        color:#fff;
+        font-size:26px;
+        opacity:0;
+        transition:.2s;
+      }
+      
+      .car-img:hover::after{
+        opacity:1;
+      }
+      
+      /* Lightbox */
+      #galleryLightbox{
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.85);
+        display:none;
+        z-index:99999;
+        align-items:center;
+        justify-content:center;
+      }
+      
+      #galleryLightbox img{
+        max-width:92%;
+        max-height:92%;
+        border-radius:12px;
+        box-shadow:0 20px 60px rgba(0,0,0,.5);
+      }
+      
+      #galleryClose{
+        position:absolute;
+        top:20px;
+        right:25px;
+        color:#fff;
+        font-size:28px;
+        cursor:pointer;
+      }
+      
+      </style>
+      
+      
+      <script>
+      
+      function openGallery(src){
+        var box = document.getElementById("galleryLightbox");
+        var img = document.getElementById("galleryLightboxImg");
+      
+        img.src = src;
+        box.style.display = "flex";
+      }
+      
+      function closeGallery(){
+        document.getElementById("galleryLightbox").style.display="none";
+      }
+      
+      document.addEventListener("keydown",function(e){
+        if(e.key==="Escape"){
+          closeGallery();
+        }
+      });
+      
+      </script>
+      
+      ';
+      
+      
+        /* ============================================
+           Container
+           ============================================ */
+        l_html := l_html || '<div class="car-gallery">';
+      
+      
+        /* ============================================
+           Split CSV → Images
+           ============================================ */
+      FOR r IN (
+        SELECT
+          TRIM(
+            REPLACE(
+              REPLACE(
+                REPLACE(
+                  REGEXP_SUBSTR(l_photos,'[^,]+',1,LEVEL),
+                '"',''),
+              '[',''),
+            ']','')
+          ) AS url
+        FROM dual
+        CONNECT BY REGEXP_SUBSTR(l_photos,'[^,]+',1,LEVEL) IS NOT NULL
+      )
+      
+        LOOP
+          l_count := l_count + 1;
+      
+          l_html := l_html || '
+      
+            <div class="car-img"
+                 onclick="openGallery('''||esc(r.url)||''')">
+      
+              <img src="'||esc(r.url)||'"
+                   loading="lazy"
+                   alt="Car Image '||l_count||'">
+      
+            </div>
+      
+          ';
+        END LOOP;
+      
+      
+        l_html := l_html || '</div>';
+      
+      
+        /* ============================================
+           Empty Case
+           ============================================ */
+        IF l_count = 0 THEN
+      
+          l_html := '
+      
+            <div style="
+              padding:20px;
+              text-align:center;
+              color:#64748b;
+              font-size:14px;
+            ">
+      
+              No gallery images uploaded.
+      
+            </div>
+      
+          ';
+      
+        END IF;
+      
+      
+        /* ============================================
+           Lightbox
+           ============================================ */
+        l_html := l_html || '
+      
+      <div id="galleryLightbox" onclick="closeGallery()">
+      
+        <span id="galleryClose">✕</span>
+      
+        <img id="galleryLightboxImg" src="">
+      
+      </div>
+      
+      ';
+      
+      
+        /* ============================================
+           Output
+           ============================================ */
+        htp.p(l_html);
+      
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+      
+          htp.p('
+            <div style="padding:15px;color:#dc2626;">
+              Car record not found.
+            </div>
+          ');
+      
+      END;
+      
+    page-items-to-submit: 
+    - P354_ID
+
+  layout: 
+    sequence: 30
+    parent-region: RDS # 11513457885127049954
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 315600340719823975
+  identification: 
+    name: Breadcrumb
+    title: محرك الوصول
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Prices List =================================
+  id: 331618575871664054
+  identification: 
+    name: Prices List
+    title: التسعيرات
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      /* ======================================================
+         TRIP / DAILY PRICES
+      ====================================================== */
+      SELECT
+          'TRIP'                              AS price_type_code,
+      
+          'رحلة / يوم كامل'                  AS price_type,
+      
+          '-'                                 AS hours_package,
+      
+          TO_CHAR(p.price_per_trip,'FM999G999G990D00')
+            || ' ' || p.currency             AS price,
+      
+          p.start_date                        AS valid_from,
+      
+          p.end_date                          AS valid_to,
+      
+          CASE
+            WHEN p.end_date IS NULL
+             OR p.end_date >= SYSDATE
+            THEN 'نشط'
+            ELSE 'منتهي'
+          END                                 AS status,
+      
+          p.notes,
+      
+          p.created,
+          p.created_by,
+          p.updated,
+          p.updated_by
+      
+      FROM limo_car_type_prices p
+      WHERE p.car_type_id = :P354_ID
+      
+      
+      
+      UNION ALL
+      
+      
+      
+      /* ======================================================
+         HOURLY PACKAGES
+      ====================================================== */
+      SELECT
+          'HOUR'                             AS price_type_code,
+      
+          'بالساعة'                          AS price_type,
+      
+          h.hours || ' ساعة'                AS hours_package,
+      
+          TO_CHAR(h.base_price,'FM999G999G990D00')
+            || ' ' || h.currency            AS price,
+      
+          h.effective_from                  AS valid_from,
+      
+          h.effective_to                    AS valid_to,
+      
+          CASE
+            WHEN h.is_active = 'Y'
+            THEN 'نشط'
+            ELSE 'غير نشط'
+          END                                AS status,
+      
+          h.notes,
+      
+          h.created,
+          h.created_by,
+          h.updated,
+          h.updated_by
+      
+      FROM limo_car_type_hourly_rates h
+      WHERE h.car_type_id = :P354_ID
+      
+      
+      
+      UNION ALL
+      
+      
+      
+      /* ======================================================
+         KM PRICES
+      ====================================================== */
+      SELECT
+          'KM'                              AS price_type_code,
+      
+          'لكل كيلومتر'                     AS price_type,
+      
+          '-'                                AS hours_package,
+      
+          TO_CHAR(k.price_per_km,'FM999G999G990D00')
+            || ' ' || k.currency            AS price,
+      
+          k.effective_from                 AS valid_from,
+      
+          k.effective_to                   AS valid_to,
+      
+          CASE
+            WHEN k.is_active = 'Y'
+            THEN 'نشط'
+            ELSE 'غير نشط'
+          END                                AS status,
+      
+          k.notes,
+      
+          k.created,
+          k.created_by,
+          k.updated,
+          k.updated_by
+      
+      FROM limo_car_type_km_prices k
+      WHERE k.car_type_id = :P354_ID
+      
+      
+      
+    page-items-to-submit: 
+    - P354_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: RDS # 11513457885127049954
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: لا يوجد اسعار
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: PRICE_TYPE_CODE =============================
+    id: 218368788397325175
+    identification: 
+      column-name: PRICE_TYPE_CODE
+      type: Plain Text
+
+    heading: 
+      heading: Price Type Code
+      alignment: start
+
+    layout: 
+      sequence: 200
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PRICE_TYPE ==================================
+    id: 218368858869325176
+    identification: 
+      column-name: PRICE_TYPE
+      type: Plain Text
+
+    heading: 
+      heading: Price Type
+      alignment: start
+
+    layout: 
+      sequence: 210
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HOURS_PACKAGE ===============================
+    id: 218368928128325177
+    identification: 
+      column-name: HOURS_PACKAGE
+      type: Plain Text
+
+    heading: 
+      heading: Hours Package
+      alignment: start
+
+    layout: 
+      sequence: 220
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PRICE =======================================
+    id: 218369050046325178
+    identification: 
+      column-name: PRICE
+      type: Plain Text
+
+    heading: 
+      heading: Price
+      alignment: start
+
+    layout: 
+      sequence: 230
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VALID_FROM ==================================
+    id: 218369156590325179
+    identification: 
+      column-name: VALID_FROM
+      type: Plain Text
+
+    heading: 
+      heading: Valid From
+      alignment: start
+
+    layout: 
+      sequence: 240
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VALID_TO ====================================
+    id: 218369200171325180
+    identification: 
+      column-name: VALID_TO
+      type: Plain Text
+
+    heading: 
+      heading: Valid To
+      alignment: start
+
+    layout: 
+      sequence: 250
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 218369385423325181
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: Status
+      alignment: start
+
+    layout: 
+      sequence: 260
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 266834833343431257
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الانشاء
+      alignment: start
+
+    layout: 
+      sequence: 180
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 266835297847431257
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التحديث
+      alignment: start
+
+    layout: 
+      sequence: 190
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 266838084684431261
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:357:&SESSION.::&DEBUG.::P153_PRICE_ID,P357_CAR_TYPE_ID:#PRICE_ID#,&P354_ID.'
+        page: 357 # Car Type Price Form
+        values: 
+          p153_price_id: '#PRICE_ID#'
+          p357_car_type_id: '&P354_ID.'
+
+      link-text: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 266838820018431262
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: القائم بالتسعير
+      alignment: center
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 266839691117431262
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: القائم بالتحديث
+      alignment: center
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NOTES =======================================
+    id: 266889697253625051
+    identification: 
+      column-name: NOTES
+      type: Plain Text
+
+    heading: 
+      heading: ملاحظات
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: RDS =========================================
+  id: 11513457885127049954
+  identification: 
+    name: RDS
+    type: Region Display Selector
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--fillLabels
+    - t-TabsRegion-mod--pill
+    css-classes: 
+    - project-rds-region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': false
+      remember-selection: By User
+
+- # ====== Region: Car Type Detail =============================
+  id: 19040013862209996686
+  identification: 
+    name: Car Type Detail
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select ID,
+             CAR_TYPE_NAME,
+             CATEGORY,
+             SEATS,
+             TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(CREATED), 'DD-MON-YYYY HH:MIPM') created ,
+             STATUS,
+             TO_CHAR(CONVERT_TO_LOCAL_TIMEZONE(UPDATED), 'DD-MON-YYYY HH:MIPM') UPDATED ,
+             CREATED_BY,
+             UPDATED_BY,
+             DESCRIPTION,
+             HAS_PROFILE_PHOTO,
+             PRICE_ENTRIES,
+             DOCS_COUNT,
+             CURRENT_PRICE_DESCRIPTION,
+             CURRENT_PRICE_NUMERIC,
+             CURRENT_CURRENCY,
+             CURRENT_PRICE_EGP
+        from VW_ALL_CAR_TYPES
+        where id = :P354_ID
+    page-items-to-submit: 
+    - P354_ID
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 50
+    parent-region: Profile # 19404104357890132254
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    - margin-top-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Contextual Info
+      template-options: 
+      - '#DEFAULT#'
+      - t-ContextualInfo-item--stacked
+      - t-ContextualInfo-label--stacked
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CAR_TYPE_NAME ===============================
+    id: 266711135808650844
+    identification: 
+      column-name: CAR_TYPE_NAME
+      type: Plain Text
+
+    heading: 
+      heading: نوع السيارة
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CATEGORY ====================================
+    id: 266711228491650845
+    identification: 
+      column-name: CATEGORY
+      type: Plain Text
+
+    heading: 
+      heading: تصنيف
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SEATS =======================================
+    id: 266711305343650846
+    identification: 
+      column-name: SEATS
+      type: Plain Text
+
+    heading: 
+      heading: عدد المقاعد
+      alignment: end
+
+    layout: 
+      sequence: 50
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 266711477020650847
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: القائم بالانشاء
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 266711525530650848
+    identification: 
+      column-name: UPDATED_BY
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: القائم باخر تحديث
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DESCRIPTION =================================
+    id: 266711661462650849
+    identification: 
+      column-name: DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: الوصف
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PRICE_ENTRIES ===============================
+    id: 266712078275650853
+    identification: 
+      column-name: PRICE_ENTRIES
+      type: Plain Text
+
+    heading: 
+      heading: عدد التسعيرات المسجلة
+      alignment: end
+
+    layout: 
+      sequence: 130
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DOCS_COUNT ==================================
+    id: 266712180763650854
+    identification: 
+      column-name: DOCS_COUNT
+      type: Plain Text
+
+    heading: 
+      heading: عدد المستندات
+      alignment: end
+
+    layout: 
+      sequence: 140
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENT_PRICE_DESCRIPTION ===================
+    id: 266712231619650855
+    identification: 
+      column-name: CURRENT_PRICE_DESCRIPTION
+      type: Plain Text
+
+    heading: 
+      heading: السعر الحالي
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENT_PRICE_EGP ===========================
+    id: 266712517120650858
+    identification: 
+      column-name: CURRENT_PRICE_EGP
+      type: Plain Text
+
+    heading: 
+      heading: السعر بالجنية
+      alignment: end
+
+    layout: 
+      sequence: 160
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ID ==========================================
+    id: 266780356724319697
+    identification: 
+      column-name: ID
+      type: Hidden
+
+    layout: 
+      sequence: 10
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: UPDATED =====================================
+    id: 266781985658319699
+    identification: 
+      column-name: UPDATED
+      type: Plain Text
+
+    heading: 
+      heading: اخر تحديث
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 'DD-MON-YYYY HH:MIPM'
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: STATUS ======================================
+    id: 266783199474319701
+    identification: 
+      column-name: STATUS
+      type: Plain Text
+
+    heading: 
+      heading: حالة الاتاحة
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HAS_PROFILE_PHOTO ===========================
+    id: 276185765743840836
+    identification: 
+      column-name: HAS_PROFILE_PHOTO
+      type: Plain Text
+
+    heading: 
+      heading: Has Profile Photo
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENT_PRICE_NUMERIC =======================
+    id: 276186199526840840
+    identification: 
+      column-name: CURRENT_PRICE_NUMERIC
+      type: Plain Text
+
+    heading: 
+      heading: Current Price Numeric
+      alignment: end
+
+    layout: 
+      sequence: 210
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CURRENT_CURRENCY ============================
+    id: 276186209960840841
+    identification: 
+      column-name: CURRENT_CURRENCY
+      type: Plain Text
+
+    heading: 
+      heading: Current Currency
+      alignment: start
+
+    layout: 
+      sequence: 220
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 276186374102840842
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ الانشاء
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Profile =====================================
+  id: 19404104357890132254
+  identification: 
+    name: Profile
+    type: Static Content
+
+  layout: 
+    sequence: 500
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Menubar =====================================
+  id: 20360987598022082091
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 315600340719823975
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20360988831528082103
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: اضافة مستند =================================
+    id: 266713365463650866
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اضافة مستند
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:353:&SESSION.::&DEBUG.:RP,353:P353_CAR_TYPE_ID:&P354_ID.'
+        page: 353 # Add Car Type Document
+        clear-cache: RP,353
+        values: 
+          p353_car_type_id: '&P354_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: اضافة تسعيرة ================================
+    id: 292016591487225579
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: اضافة تسعيرة
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:357:&SESSION.::&DEBUG.:357:P357_CAR_TYPE_ID:&P354_ID.'
+        page: 357 # Car Type Price Form
+        clear-cache: 357
+        values: 
+          p357_car_type_id: '&P354_ID.'
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20360987898601082094
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: تعديل (Admin) =================================
+      id: 13465148747590023037
+      identification: 
+        type: Menu Entry
+        label: تعديل (Admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:133:&SESSION.::&DEBUG.:RP,133:P133_HOTEL_ID:&P354_ID.'
+          page: 133
+          clear-cache: RP,133
+          values: 
+            p133_hotel_id: '&P354_ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: Separator =====================================
+      id: 15576481447468147647
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+    - # ====== Menu: اعادة ظبط =====================================
+      id: 16218882917813122159
+      identification: 
+        type: Menu Entry
+        label: اعادة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:354:&SESSION.::&DEBUG.:RP,5:P354_ID:&P354_ID.'
+          page: 354 # Car Type Profile Page
+          clear-cache: RP,5
+          values: 
+            p354_id: '&P354_ID.'
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 20360988604508082101
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:354:&SESSION.::&DEBUG.:RP,::'
+          page: 354 # Car Type Profile Page
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: نظرة سريعة ====================================
+      id: 25291668778925287125
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:97:&SESSION.::&DEBUG.:RP,97:P97_CLIENT_ID:&P354_ID.'
+          page: 97
+          clear-cache: RP,97
+          values: 
+            p97_client_id: '&P354_ID.'
+
+      appearance: 
+        icon: fa-user
+
+      configuration: 
+        build-option: Commented Out # 253764608978089549
+
+- # ====== Region: Car Catalog Documents =======================
+  id: 159280989476077681747
+  identification: 
+    name: Car Catalog Documents
+    title: مستندات [&P354_DOCUMENTCOUNT.]
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select d.ID,
+             d.DOCUMENT_FILENAME,
+             d.UPDATED,
+             d.created,
+             case when length(d.doc_description) > 200
+                  then substr(d.doc_description,1,200)||'...'
+                  else d.doc_description
+                  end doc_description,
+             d.tags,
+             lower(created_by) created_by,
+             dbms_lob.getlength(d.DOCUMENT_BLOB) doc_size,
+             created date_created,
+             substr(DOCUMENT_FILENAME,instr(DOCUMENT_FILENAME,'.',-1)+1,length(DOCUMENT_FILENAME)-instr(DOCUMENT_FILENAME,'.',-1)) file_extension,
+             decode(important_yn,'Y','نعم','لا') important
+        from CARS_CATALOG_DOCUMENTS d
+       where car_type_id = :P354_ID
+      order by created desc
+      
+    page-items-to-submit: 
+    - P354_ID
+
+  layout: 
+    sequence: 10
+    parent-region: RDS # 11513457885127049954
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: DOCUMENTS
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 45589603287742977071
+    link: 
+      link-column: Link to Custom Target
+      target: 
+        url: 'f?p=&APP_ID.:353:&SESSION.::&DEBUG.:353:P353_ID:#ID#'
+        page: 353 # Add Car Type Document
+        clear-cache: 353
+        values: 
+          p353_id: '#ID#'
+
+      link-icon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 45591339522546569842
+      identification: 
+        name: Primary Report
+        alias: 8109551
+
+    columns: 
+    - # ====== Column: IMPORTANT ===================================
+      id: 43672638075611707106
+      identification: 
+        column-name: IMPORTANT
+        type: Plain Text
+
+      heading: 
+        heading: مهم
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 130
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED_BY ==================================
+      id: 44782185915021904566
+      identification: 
+        column-name: CREATED_BY
+        type: Plain Text (based on List of Values)
+
+      list-of-values: 
+        list-of-values: EMPLOYEES USERNAMES/NAME LIST # 252530514585761444
+
+      heading: 
+        heading: القائم باضافة المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 140
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Use Named List of Values to Filter Exact Match
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+    - # ====== Column: ID ==========================================
+      id: 45589603388906977072
+      identification: 
+        column-name: ID
+        type: Plain Text
+
+      heading: 
+        heading: Id
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOCUMENT_FILENAME ===========================
+      id: 45589603521297977073
+      identification: 
+        column-name: DOCUMENT_FILENAME
+        type: Link
+
+      heading: 
+        heading: اسم المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      link: 
+        target: 
+          url: 'f?p=&APP_ID.:356:&SESSION.::&DEBUG.:356:P356_ID,P356_PREV_PAGE:#ID#,354'
+          page: 356 # Car Type Document Details
+          clear-cache: 356
+          values: 
+            p356_id: '#ID#'
+            p356_prev_page: 354
+
+        link-text: '#DOCUMENT_FILENAME#'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: UPDATED =====================================
+      id: 45589603698261977075
+      identification: 
+        column-name: UPDATED
+        type: Plain Text
+
+      heading: 
+        heading: اخر تحديث
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: 'DD-MM-YYYY HH24:MI:SS'
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: CREATED =====================================
+      id: 45589603774104977076
+      identification: 
+        column-name: CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الانشاء
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: SINCE_SHORT
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOC_DESCRIPTION =============================
+      id: 45589603946098977077
+      identification: 
+        column-name: DOC_DESCRIPTION
+        type: Plain Text
+
+      heading: 
+        heading: وصف المستند
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DOC_SIZE ====================================
+      id: 45589604151627977079
+      identification: 
+        column-name: DOC_SIZE
+        type: Plain Text
+
+      heading: 
+        heading: حجم النستند
+        alignment: end
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: end
+
+      accessibility: 
+        value-identifies-row: false
+
+      appearance: 
+        format-mask: FILESIZE
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: DATE_CREATED ================================
+      id: 45589604168665977080
+      identification: 
+        column-name: DATE_CREATED
+        type: Plain Text
+
+      heading: 
+        heading: تاريخ الانشاء
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 100
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+        date-ranges: All
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: FILE_EXTENSION ==============================
+      id: 46026458359411825859
+      identification: 
+        column-name: FILE_EXTENSION
+        type: Plain Text
+
+      heading: 
+        heading: امتداد الملف
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 110
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: TAGS ========================================
+      id: 56686142063352374662
+      identification: 
+        column-name: TAGS
+        type: Plain Text
+
+      heading: 
+        heading: علامات مميزة
+        alignment: center
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 120
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: Letter
+        orientation: Landscape
+        units: Inches
+        width: 11
+        height: 8.5
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+        page-header-text: Documents
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+page-items: 
+- # ====== Page Item: P354_DOCUMENTCOUNT =======================
+  id: 266712650362650859
+  identification: 
+    name: P354_DOCUMENTCOUNT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Profile # 19404104357890132254
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+- # ====== Page Item: P354_ID ==================================
+  id: 317048733318227380
+  identification: 
+    name: P354_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P354_PHOTO_DEFAULT =======================
+  id: 14968431603955023881
+  identification: 
+    name: P354_PHOTO_DEFAULT
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: Image URL stored in Page Item Value
+    alternative-text: Placeholder Photo
+
+  layout: 
+    sequence: 40
+    region: Profile # 19404104357890132254
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    css-classes: 
+    - mxw160
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: '#APP_FILES#default-user-avatar.png'
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: No Rows returned
+    sql-query: 'select 1 from LIMO_CAR_TYPES where car_type_id = :P354_ID and PROFILE_PICTURE is not null'
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P354_PHOTO ===============================
+  id: 19121106426959984727
+  identification: 
+    name: P354_PHOTO
+    type: Display Image
+
+  label: 
+    label: Photo
+    alignment: Left
+
+  settings: 
+    based-on: Image URL stored in Page Item Value
+
+  layout: 
+    sequence: 20
+    region: Profile # 19404104357890132254
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    css-classes: 
+    - mxw160
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select PHOTO_URL
+      from LIMO_CAR_TYPES
+      where CAR_TYPE_ID = :P354_ID
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: 'select 1 from LIMO_CAR_TYPES where car_type_id = :P354_ID and PROFILE_PICTURE is not null'
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P354_NAME ================================
+  id: 19129648432281302192
+  identification: 
+    name: P354_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Profile # 19404104357890132254
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Blocklist HTML command characters (<>")
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 266774210499319679
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 315600340719823975
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-up
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:351:&SESSION.::&DEBUG.:RP,::'
+      page: 351 # Limo Cars Catalog
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: view_images =================================
+  id: 266833356350429849
+  identification: 
+    button-name: view_images
+    label: معرض الصور
+
+  layout: 
+    sequence: 10
+    region: Car Catalog Documents # 159280989476077681747
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:355:&SESSION.::&DEBUG.:355:P355_CAR_TYPE_ID:&P354_ID.'
+      page: 355 # Car Type Images Gallery
+      clear-cache: 355
+      values: 
+        p355_car_type_id: '&P354_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Rows returned
+    sql-query: |
+      select 1 
+        from CARS_CATALOG_DOCUMENTS d
+       where car_type_id = :P354_ID and 
+             (
+                 lower(DOCUMENT_FILENAME) like '%.png' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpg' or 
+                 lower(DOCUMENT_FILENAME) like '%.jpeg' or 
+                 lower(DOCUMENT_FILENAME) like '%.gif' or 
+                 lower(DOCUMENT_FILENAME) like '%.tiff' or 
+                 lower(DOCUMENT_FILENAME) like '%.ai' 
+             )
+
+- # ====== Button: add_document ================================
+  id: 266833705210429850
+  identification: 
+    button-name: add_document
+    label: اضافة مستند
+
+  layout: 
+    sequence: 30
+    region: Car Catalog Documents # 159280989476077681747
+    slot: RIGHT_OF_IR_SEARCH_BAR
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:353:&SESSION.::&DEBUG.:353:P353_CAR_TYPE_ID:&P354_ID.'
+      page: 353 # Add Car Type Document
+      clear-cache: 353
+      values: 
+        p353_car_type_id: '&P354_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: AddPrice ====================================
+  id: 266840404635431263
+  identification: 
+    button-name: AddPrice
+    label: اضافة سعر
+
+  layout: 
+    sequence: 10
+    region: Prices List # 331618575871664054
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:357:&SESSION.::&DEBUG.:357:P357_CAR_TYPE_ID:&P354_ID.'
+      page: 357 # Car Type Price Form
+      clear-cache: 357
+      values: 
+        p357_car_type_id: '&P354_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh region documents ============
+  id: 266714212395650875
+  identification: 
+    name: refresh region documents
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Car Catalog Documents # 159280989476077681747
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266714347448650876
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Car Catalog Documents # 159280989476077681747
+
+    execution: 
+      sequence: 10
+      event: refresh region documents # 266714212395650875
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 266714491119650877
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Car Type Detail # 19040013862209996686
+
+    execution: 
+      sequence: 20
+      event: refresh region documents # 266714212395650875
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh region pricing ==============
+  id: 266714582423650878
+  identification: 
+    name: refresh region pricing
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Prices List # 331618575871664054
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266714651842650879
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Prices List # 331618575871664054
+
+    execution: 
+      sequence: 10
+      event: refresh region pricing # 266714582423650878
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 266887508913625030
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Car Type Detail # 19040013862209996686
+
+    execution: 
+      sequence: 20
+      event: refresh region pricing # 266714582423650878
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: on include future change ============
+  id: 266813034502319738
+  identification: 
+    name: on include future change
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P354_INCLUDE_FUTURE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 266813600427319738
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P354_INCLUDE_FUTURE
+
+    execution: 
+      sequence: 10
+      event: on include future change # 266813034502319738
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: on change of include past ===========
+  id: 266813974744319738
+  identification: 
+    name: on change of include past
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P354_INCLUDE_PAST
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 266814454652319738
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P354_INCLUDE_PAST
+
+    execution: 
+      sequence: 10
+      event: on change of include past # 266813974744319738
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: refresh on modal close ==============
+  id: 266814894031319738
+  identification: 
+    name: refresh on modal close
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 315600340719823975
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266815807663319739
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Car Type Detail # 19040013862209996686
+
+    execution: 
+      sequence: 40
+      event: refresh on modal close # 266814894031319738
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: when Project Change Exclude User ====
+  id: 266816203985319739
+  identification: 
+    name: when Project Change Exclude User
+
+  execution: 
+    sequence: 60
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P354_PROJ_CHANGE_EXCLUDE_USER_YN
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 266816781410319739
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P354_PROJ_CHANGE_EXCLUDE_USER_YN
+
+    execution: 
+      sequence: 10
+      event: when Project Change Exclude User # 266816203985319739
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 266817259097319740
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        apex_util.set_preference (
+            p_preference => 'P354_PROJ_CHANGE_EXCLUDE_USER_YN',
+            p_value      => :P354_PROJ_CHANGE_EXCLUDE_USER_YN,
+            p_user       => :APP_USER );
+
+    execution: 
+      sequence: 20
+      event: when Project Change Exclude User # 266816203985319739
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: set first and last name session state ======
+  id: 266807235663319728
+  identification: 
+    name: set first and last name session state
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+        SELECT CAR_TYPE_NAME
+        INTO :P354_NAME
+        FROM LIMO_CAR_TYPES
+        WHERE CAR_TYPE_ID = :P354_ID;
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+

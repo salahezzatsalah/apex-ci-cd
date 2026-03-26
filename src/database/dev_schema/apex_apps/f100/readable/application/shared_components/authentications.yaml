@@ -1,0 +1,43 @@
+---
+- # ====== Authentication: Application Express Accounts ========
+  id: 251582727201222560
+  identification: 
+    name: Application Express Accounts
+
+  subscription: 
+    version-number: 44820204752960
+
+  settings: 
+    type: Custom
+    authentication-function-name: SECURITY_PKG.USER_IS_AUTHENTICATED
+    enable-legacy-authentication-attributes: false
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+
+- # ====== Authentication: Oracle APEX Accounts ================
+  id: 149832519084559023397
+  identification: 
+    name: Oracle APEX Accounts
+
+  subscription: 
+    version-number: 1
+
+  settings: 
+    type: Oracle APEX Accounts
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+

@@ -1,0 +1,431 @@
+---
+- # ====== Application Process: SAVE_LIMO_RUNTIME ==============
+  id: 220800921969283516
+  identification: 
+    name: SAVE_LIMO_RUNTIME
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_runtime_id limo_search_runtime.runtime_id%TYPE;
+        l_user_id    NUMBER;
+      BEGIN
+        -- مهم جداً: تهيئة إخراج JSON كـ CLOB عشان يرجع نظيف
+        apex_json.initialize_clob_output;
+      
+        -- user_id: لو APP_USER_ID مش رقم، خليه NULL بدل ما يعمل exception
+        BEGIN
+          l_user_id := TO_NUMBER(NULLIF(v('APP_USER_ID'), ''));
+        EXCEPTION WHEN OTHERS THEN
+          l_user_id := NULL;
+        END;
+      
+        INSERT INTO limo_search_runtime (
+          session_id,
+          user_id,
+          service_type,
+          car_type_id,
+          distance_km,
+          duration_min,
+          hours,
+          base_price,
+          final_price,
+          currency,
+          route_json,
+          status,
+          valid_until
+        )
+        VALUES (
+          v('APP_SESSION'),
+          l_user_id,
+          apex_application.g_x02,                          -- service_type
+          apex_application.g_x01,                          -- car_type_id
+          TO_NUMBER(NVL(apex_application.g_x03,'0')),      -- distance_km
+          TO_NUMBER(NVL(apex_application.g_x04,'0')),      -- duration_min
+          TO_NUMBER(NVL(apex_application.g_x05,'0')),      -- hours
+          TO_NUMBER(NVL(apex_application.g_x06,'0')),      -- base_price
+          TO_NUMBER(NVL(apex_application.g_x07,'0')),      -- final_price
+          apex_application.g_x08,                          -- currency
+          apex_application.g_x09,                          -- route_json
+          'NEW',
+          SYSTIMESTAMP + INTERVAL '30' MINUTE
+        )
+        RETURNING runtime_id INTO l_runtime_id;
+      
+        apex_json.open_object;
+        apex_json.write('ok', true);
+        apex_json.write('runtime_id', l_runtime_id);
+        apex_json.close_object;
+      
+        -- اطبع الـ JSON للـ response
+        htp.p(apex_json.get_clob_output);
+        apex_json.free_output;
+      
+      EXCEPTION
+        WHEN OTHERS THEN
+          -- رجّعي JSON حتى في الخطأ (بدل HTML)
+          apex_json.initialize_clob_output;
+          apex_json.open_object;
+          apex_json.write('ok', false);
+          apex_json.write('message', SQLERRM);
+          apex_json.close_object;
+      
+          htp.p(apex_json.get_clob_output);
+          apex_json.free_output;
+      END;
+      
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  security: 
+    authorization-scheme: MODEL.LOV.MUST_NOT_BE_PUBLIC_USER
+
+  subscription: 
+    version-number: 46229101238871
+
+- # ====== Application Process: viewRoomPDF ====================
+  id: 260932070671583188
+  identification: 
+    name: viewRoomPDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from HOTELS_ROOMS_DOCUMENTS
+          where id = :P171_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 44785384595346
+
+- # ====== Application Process: viewSupplierPDF ================
+  id: 264112490972628765
+  identification: 
+    name: viewSupplierPDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from SUPPLIERS_DOCUMENTS
+          where id = :P167_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 44798975611310
+
+- # ====== Application Process: viewCarTypePDF =================
+  id: 266964889806871272
+  identification: 
+    name: viewCarTypePDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from CARS_CATALOG_DOCUMENTS
+          where id = :P356_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 44835739409184
+
+- # ====== Application Process: viewReservationPDF =============
+  id: 15563907211318644381
+  identification: 
+    name: viewReservationPDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from RESERVATION_DOCUMENTS
+          where id = :P30_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 44778570496363
+
+- # ====== Application Process: viewReleasePDF =================
+  id: 27343741930276089878
+  identification: 
+    name: viewReleasePDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from SP_RELEASE_DOCUMENTS
+          where id = :P42_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 41329587315572
+
+- # ====== Application Process: viewInitiativePDF ==============
+  id: 27344045786731100911
+  identification: 
+    name: viewInitiativePDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from SP_INITIATIVE_DOCUMENTS
+          where id = :P53_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 41329589664326
+
+- # ====== Application Process: viewInitFocusAreaPDF ===========
+  id: 27637307018462760567
+  identification: 
+    name: viewInitFocusAreaPDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from SP_INIT_FOCUS_AREA_DOCUMENTS
+          where id = :P59_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 42019435288439
+
+- # ====== Application Process: viewTaskPDF ====================
+  id: 28670687858650186955
+  identification: 
+    name: viewTaskPDF
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      declare
+          l_doc blob;
+      begin
+      for c1 in (
+          select DOCUMENT_BLOB, DOCUMENT_FILENAME, DOCUMENT_MIMETYPE, dbms_lob.getlength(DOCUMENT_BLOB) doc_length
+          from RES_TASK_DOCUMENTS
+          where id = :P505_ID
+       ) loop
+      
+          l_doc := c1.DOCUMENT_BLOB;
+      
+          sys.htp.init;
+          sys.owa_util.mime_header( 'application/pdf', FALSE );
+          sys.htp.p('Content-length: ' || c1.doc_length);
+          sys.htp.p('Content-Disposition: ' || 'inline' || '; filename="'|| apex_escape.html(c1.DOCUMENT_FILENAME) || '"' );
+          sys.htp.p('Cache-Control: max-age=1');  
+          sys.owa_util.http_header_close;
+          sys.wpg_docload.download_file(l_doc);
+      
+       end loop;
+       apex_application.stop_apex_engine;
+       end;
+
+  execution: 
+    sequence: 1
+    point: Ajax Callback
+
+  subscription: 
+    version-number: 44785386043773
+
+- # ====== Application Process: set navigation strings =========
+  id: 125558736222436107672
+  identification: 
+    name: set navigation strings
+    type: NATIVE_PLSQL
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      :FOCUS_AREA := 'Focus Areas';
+      :INITIATIVE := 'Initiatives';
+      :PROJECT := 'Projects';
+
+  execution: 
+    sequence: 1
+    point: Before Header
+
+  subscription: 
+    version-number: 1
+

@@ -1,0 +1,1995 @@
+---
+# ====== Page: Limo Product Assignment Form ==================
+id: 363
+identification: 
+  name: Limo Product Assignment Form
+  alias: LIMO-PRODUCT-ASSIGNMENT-FORM
+  title: استمارة تعين توزيعة - نموذج 363
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Limo Product Assignment Form ================
+  id: 270182342372398593
+  identification: 
+    name: Limo Product Assignment Form
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_PRODUCT_ASSIGNMENTS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 270193498231398619
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: Driver File Selection =======================
+  id: 270245743159186752
+  identification: 
+    name: Driver File Selection
+    title: بيانات السائق والتوزيعة
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Limo Product Assignment Form # 270182342372398593
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Financial Info ==============================
+  id: 270245859884186753
+  identification: 
+    name: Financial Info
+    title: التفاصيل المالية
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: Limo Product Assignment Form # 270182342372398593
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Info ===================================
+  id: 270245927751186754
+  identification: 
+    name: Trip Info
+    title: تفاصيل الرحلة
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Limo Product Assignment Form # 270182342372398593
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P363_ORDER_ID ============================
+  id: 215500131836922389
+  identification: 
+    name: P363_ORDER_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Trip Info # 270245927751186754
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select ORDER_ITEM_ID from sublevel_limo_res where sub_res_id = :P363_PRODUCT_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_ASSIGNED_REGISTERED_CAR_ID ==========
+  id: 230532339991461301
+  identification: 
+    name: P363_ASSIGNED_REGISTERED_CAR_ID
+    type: Text Field
+
+  label: 
+    label: Assigned Registered Car Id
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Limo Product Assignment Form # 270182342372398593
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 20
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: ASSIGNED_REGISTERED_CAR_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P363_NOTES ===============================
+  id: 230532395569461302
+  identification: 
+    name: P363_NOTES
+    type: Textarea
+
+  label: 
+    label: ملاحظات عن التوزيعة
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: true
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 40
+    region: Financial Info # 270245859884186753
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 300
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_ASSIGNMENT_ID =======================
+  id: 270182605354398595
+  identification: 
+    name: P363_ASSIGNMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Limo Product Assignment Form # 270182342372398593
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: ASSIGNMENT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_PRODUCT_ID ==========================
+  id: 270183084853398598
+  identification: 
+    name: P363_PRODUCT_ID
+    type: Display Only
+
+  label: 
+    label: كود الرحلة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Trip Info # 270245927751186754
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: PRODUCT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_RESERVATION_ID ======================
+  id: 270183459124398600
+  identification: 
+    name: P363_RESERVATION_ID
+    type: Display Only
+
+  label: 
+    label: كود الطلب
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Trip Info # 270245927751186754
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_RESERVATIONS.CLIENT_ID # 270183567791398601
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: RESERVATION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select main_res_id from sublevel_limo_res where sub_res_id = :P363_Product_ID;'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_DRIVER_ID ===========================
+  id: 270184168830398610
+  identification: 
+    name: P363_DRIVER_ID
+    type: Select One
+
+  label: 
+    label: السائق
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 20
+    region: Driver File Selection # 270245743159186752
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-id-card
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT 
+          i.full_name  AS display_value,
+          u.user_id    AS return_value
+      FROM iam_users u
+      JOIN iam_identities i
+          ON i.identity_id = u.identity_id
+      JOIN iam_user_security_groups ug
+          ON ug.user_id = u.user_id
+      JOIN iam_security_groups g
+          ON g.group_id = ug.group_id
+      WHERE g.group_code = :P363_ASSIGNMENT_TYPE
+      AND ug.is_active_yn = 'Y'
+      AND u.status = 'ACTIVE'
+      ORDER BY display_value;
+      
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P363_ASSIGNMENT_TYPE
+    items-to-submit: 
+    - P363_ASSIGNMENT_TYPE
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: DRIVER_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_ASSIGNMENT_TYPE =====================
+  id: 270184575790398610
+  identification: 
+    name: P363_ASSIGNMENT_TYPE
+    type: Radio Group
+
+  label: 
+    label: نوع التوزيعة
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: Driver File Selection # 270245743159186752
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_ASSIGNMENT_TYPES.ASSIGNMENT_TYPE_NAME_EN # 270184615033398610
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: ASSIGNMENT_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_DRIVER_SHARE_TYPE ===================
+  id: 270188442844398614
+  identification: 
+    name: P363_DRIVER_SHARE_TYPE
+    type: Radio Group
+
+  label: 
+    label: <i class="fa6-solid fa6-money-check-dollar"></i> طريقة حساب السائق
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: Financial Info # 270245859884186753
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--large
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: DRIVER_SHARE_TYPES.LABEL_EN # 270188573552398614
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: DRIVER_SHARE_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_DRIVER_SHARE_VALUE ==================
+  id: 270189176990398615
+  identification: 
+    name: P363_DRIVER_SHARE_VALUE
+    type: Number Field
+
+  label: 
+    label: <label class="share-label">المبلغ</label>
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 10
+    region: Financial Info # 270245859884186753
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-check-dollar
+    format-mask: 999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: DRIVER_SHARE_VALUE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_CURRENCY ============================
+  id: 270245039088186745
+  identification: 
+    name: P363_CURRENCY
+    type: Display Only
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Financial Info # 270245859884186753
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: EGP
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_EXCHANGE_RATE =======================
+  id: 270245126217186746
+  identification: 
+    name: P363_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 30
+    region: Financial Info # 270245859884186753
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990D00
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT EXCHANGE_RATE_VALUE
+      FROM V_CURRENCY_DETAILS
+      WHERE CURRENCY_CODE = :P363_CURRENCY
+      
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P363_DRIVER_STATUS =======================
+  id: 271285259344106949
+  identification: 
+    name: P363_DRIVER_STATUS
+    type: Select One
+
+  label: 
+    label: حالة السائق
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 40
+    region: Driver File Selection # 270245743159186752
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 20
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:CURRENT;CURRENT,PREVIOUS;PREVIOUS'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: DRIVER_STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P363_CREATED_BY ==========================
+  id: 275898865162729843
+  identification: 
+    name: P363_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Limo Product Assignment Form # 270182342372398593
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P363_UPDATED_BY ==========================
+  id: 275898947532729844
+  identification: 
+    name: P363_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Limo Product Assignment Form # 270182342372398593
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P363_CREATED =============================
+  id: 275899047965729845
+  identification: 
+    name: P363_CREATED
+    type: Text Field
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Limo Product Assignment Form # 270182342372398593
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P363_UPDATED =============================
+  id: 275899172017729846
+  identification: 
+    name: P363_UPDATED
+    type: Text Field
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Limo Product Assignment Form # 270182342372398593
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P363_DIRECT_COLLECT_BY_DRIVER_YN =========
+  id: 275899211713729847
+  identification: 
+    name: P363_DIRECT_COLLECT_BY_DRIVER_YN
+    type: Switch
+
+  label: 
+    label: تحصيل مباشر من السائق بعد انتهاء الرحلة
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Driver File Selection # 270245743159186752
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Assignment Form # 270182342372398593
+    column: DIRECT_COLLECT_BY_DRIVER_YN
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: Y
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 270193814586398619
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 270193498231398619
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 270195259468398623
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 270193498231398619
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P363_ASSIGNMENT_ID is not null and :P363_PRODUCT_ID is not null'
+
+- # ====== Button: SAVE ========================================
+  id: 270195680409398624
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 270193498231398619
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P363_ASSIGNMENT_ID is not null and :P363_PRODUCT_ID is not null'
+
+- # ====== Button: CREATE ======================================
+  id: 270196077589398624
+  identification: 
+    button-name: CREATE
+    label: توزيغ
+
+  layout: 
+    sequence: 40
+    region: Buttons # 270193498231398619
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P363_ASSIGNMENT_ID is null or :P363_PRODUCT_ID is null'
+
+dynamic-actions: 
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 270193909122398619
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 270193814586398619
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 270194776476398622
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 270193909122398619
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show and Hide DriverID Field ========
+  id: 270243740645186732
+  identification: 
+    name: Show and Hide DriverID Field
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P363_ASSIGNMENT_TYPE
+
+  client-side-condition: 
+    type: Item is null
+    item: P363_ASSIGNMENT_TYPE
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 270243851920186733
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_DRIVER_ID
+
+    execution: 
+      sequence: 10
+      event: Show and Hide DriverID Field # 270243740645186732
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Show ========================================
+    id: 270243989438186734
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_DRIVER_ID
+
+    execution: 
+      sequence: 10
+      event: Show and Hide DriverID Field # 270243740645186732
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show and Hide Values Field ==========
+  id: 270244049670186735
+  identification: 
+    name: Show and Hide Values Field
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P363_DRIVER_SHARE_TYPE
+
+  client-side-condition: 
+    type: Item is null
+    item: P363_DRIVER_SHARE_TYPE
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 270244176949186736
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_DRIVER_SHARE_VALUE
+
+    execution: 
+      sequence: 10
+      event: Show and Hide Values Field # 270244049670186735
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 270244276200186737
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_DRIVER_SHARE_VALUE
+
+    execution: 
+      sequence: 10
+      event: Show and Hide Values Field # 270244049670186735
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Change Driver Share Value Field Label
+  id: 270244365000186738
+  identification: 
+    name: Change Driver Share Value Field Label
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P363_DRIVER_SHARE_TYPE
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 270244493541186739
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        // Update label and input field config based on share type
+        var selectedValue = $v('P363_DRIVER_SHARE_TYPE');
+        
+        if (selectedValue === 'FIXED') {
+            $('.share-label').text('المبلغ');
+        
+            $('#P363_DRIVER_SHARE_VALUE')
+                .attr('type', 'text') // use text for more flexible formatting
+                .removeAttr('max')
+                .attr('step', '0.01')
+                .val('')
+                .off('input') // remove previous input handler
+                .on('input', function () {
+                    let v = this.value.replace(/[^\d.]/g, ''); // allow digits and dot
+                    let parts = v.split('.');
+                    // restrict to 2 decimals
+                    if (parts.length > 1) {
+                        parts[1] = parts[1].substring(0, 2);
+                        v = parts[0] + '.' + parts[1];
+                    }
+                    this.value = v;
+                });
+        }
+        else if (selectedValue === 'PERCENT') {
+            $('.share-label').text('النسبة');
+        
+            $('#P363_DRIVER_SHARE_VALUE')
+                .attr('type', 'text')
+                .attr('step', '0.1')
+                .val('')
+                .off('input')
+                .on('input', function () {
+                    let v = this.value.replace(/[^\d.]/g, ''); // allow digits and dot
+                    let parts = v.split('.');
+                    // restrict to 1 decimal for percent
+                    if (parts.length > 1) {
+                        parts[1] = parts[1].substring(0, 1);
+                        v = parts[0] + '.' + parts[1];
+                    }
+        
+                    let percent = parseFloat(v);
+                    if (!isNaN(percent) && percent > 100) {
+                        percent = 100;
+                    }
+        
+                    this.value = isNaN(percent) ? '' : percent;
+                });
+        }
+        
+
+    execution: 
+      sequence: 10
+      event: Change Driver Share Value Field Label # 270244365000186738
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Show Exchange Rates =================
+  id: 270245296921186747
+  identification: 
+    name: Show Exchange Rates
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P363_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P363_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 270245316871186748
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: Show Exchange Rates # 270245296921186747
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 270245453571186749
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: Show Exchange Rates # 270245296921186747
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: SetCurrency Rates ===================
+  id: 270245557810186750
+  identification: 
+    name: SetCurrency Rates
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P363_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 270245656524186751
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P363_CURRENCY
+        
+      items-to-submit: 
+      - P363_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: SetCurrency Rates # 270245557810186750
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: SetShareType ========================
+  id: 275899337663729848
+  identification: 
+    name: SetShareType
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P363_ASSIGNMENT_TYPE
+
+  client-side-condition: 
+    type: Item = Value
+    item: P363_ASSIGNMENT_TYPE
+    value: INSOURCE
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 275899435507729849
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      value: PERCENT
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_DRIVER_SHARE_TYPE
+
+    execution: 
+      sequence: 10
+      event: SetShareType # 275899337663729848
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 275899593013729850
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      value: FIXED
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P363_DRIVER_SHARE_TYPE
+
+    execution: 
+      sequence: 10
+      event: SetShareType # 275899337663729848
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P363_ASSIGNMENT_TYPE
+      value: OUTSOURCE
+
+processes: 
+- # ====== Process: Change Order Status ========================
+  id: 215499673886922384
+  identification: 
+    name: Change Order Status
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: UTILITY_FULFILLMENT
+    procedure-or-function: SET_ITEM_STATUS
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 270196077589398624
+
+  parameters: 
+  - # ====== Parameter: p_order_item_id ==========================
+    id: 215499707442922385
+    identification: 
+      name: p_order_item_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P363_ORDER_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_new_status =============================
+    id: 215499874735922386
+    identification: 
+      name: p_new_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Static Value
+      static-value: ASSIGNED
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_changed_by =============================
+    id: 215499978331922387
+    identification: 
+      name: p_changed_by
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: APP_USER_ID
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_notes ==================================
+    id: 215500082910922388
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P363_NOTES
+
+    advanced: 
+      display-sequence: 40
+
+- # ====== Process: Initialize form Limo Product Assignment Form
+  id: 270196449892398625
+  identification: 
+    name: Initialize form Limo Product Assignment Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Limo Product Assignment Form # 270182342372398593
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Limo Product Assignment Form ==
+  id: 270196866228398625
+  identification: 
+    name: Process form Limo Product Assignment Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Limo Product Assignment Form # 270182342372398593
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 270197221397398626
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

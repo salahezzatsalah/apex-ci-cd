@@ -1,0 +1,3340 @@
+---
+# ====== Page: Limo Product Reservation Form =================
+id: 359
+identification: 
+  name: Limo Product Reservation Form
+  alias: LIMO-PRODUCT-RESERVATION-FORM
+  title: 'حجز سيارة - كود الطلب: &P359_RESERVATION_ID. - نموذج 359'
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: true
+  list: Do not show Navigation Menu List
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    // لو عندك form بتبعت البيانات للباك اند
+    const limoData = {
+      main_res_id: mainResId,
+      customer_id: customerId,
+      car_type_id: carTypeId,
+      trip_type: tripType,
+      trip_time: tripTime,
+      from_location: fromLocation,
+      to_location: toLocation,
+      trip_date_from: tripDateFrom,
+      trip_date_to: tripDateTo,
+      price: price,
+      currency: currency,
+      exchange_rate: exchangeRate,
+      classification_type: classificationType,
+      ticket_number: ticketNumber,
+      signage_details: signageDetails,
+      notes: notes,
+      status: status
+    };
+    
+    // debug في الكونسول قبل الإرسال
+    console.log('--- DEBUG CREATE LIMO PRODUCT ---');
+    console.log('price =', limoData.price);
+    console.log('exchange_rate =', limoData.exchange_rate);
+    console.log('trip_time =', limoData.trip_time);
+    console.log('trip_date_from =', limoData.trip_date_from);
+    console.log('trip_date_to =', limoData.trip_date_to);
+    console.log('currency =', limoData.currency);
+    
+    // إرسال البيانات للباك اند
+    fetch('/api/create-limo-product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(limoData)
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Response from server:', data);
+    })
+    .catch(err => console.error('Error:', err));
+    
+  execute-when-page-loads: |
+    // لو عندك form بتبعت البيانات للباك اند
+    const limoData = {
+      main_res_id: mainResId,
+      customer_id: customerId,
+      car_type_id: carTypeId,
+      trip_type: tripType,
+      trip_time: tripTime,
+      from_location: fromLocation,
+      to_location: toLocation,
+      trip_date_from: tripDateFrom,
+      trip_date_to: tripDateTo,
+      price: price,
+      currency: currency,
+      exchange_rate: exchangeRate,
+      classification_type: classificationType,
+      ticket_number: ticketNumber,
+      signage_details: signageDetails,
+      notes: notes,
+      status: status
+    };
+    
+    // debug في الكونسول قبل الإرسال
+    console.log('--- DEBUG CREATE LIMO PRODUCT ---');
+    console.log('price =', limoData.price);
+    console.log('exchange_rate =', limoData.exchange_rate);
+    console.log('trip_time =', limoData.trip_time);
+    console.log('trip_date_from =', limoData.trip_date_from);
+    console.log('trip_date_to =', limoData.trip_date_to);
+    console.log('currency =', limoData.currency);
+    
+    // إرسال البيانات للباك اند
+    fetch('/api/create-limo-product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(limoData)
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Response from server:', data);
+    })
+    .catch(err => console.error('Error:', err));
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Important Classification ====================
+  id: 269056911146390045
+  identification: 
+    name: Important Classification
+    title: 'بينات تصنيف الرحلة '
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Service Details =============================
+  id: 269057054083390046
+  identification: 
+    name: Service Details
+    title: تفاصيل الخدمة
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Limo Product Reservation Form ===============
+  id: 298506334240700041
+  identification: 
+    name: Limo Product Reservation Form
+    title: 'حجز سيارة - كود الطلب: &P359_RESERVATION_ID. - نموذج 359'
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_PRODUCTS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 298518189100700063
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P359_CUSTOMER_ID =========================
+  id: 196006208332942180
+  identification: 
+    name: P359_CUSTOMER_ID
+    type: Display Only
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_PRODUCT_ID ==========================
+  id: 267100146969293667
+  identification: 
+    name: P359_PRODUCT_ID
+    type: Display Only
+
+  label: 
+    label: كود الرحلة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: PRODUCT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_RESERVATION_ID ======================
+  id: 267100235109293668
+  identification: 
+    name: P359_RESERVATION_ID
+    type: Display Only
+
+  label: 
+    label: كود طلب الحجز
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Important Classification # 269056911146390045
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: RESERVATION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_CAR_TYPE_ID =========================
+  id: 267100375660293669
+  identification: 
+    name: P359_CAR_TYPE_ID
+    type: Select One
+
+  label: 
+    label: نوع السيارة المطلوبة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 20
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-bus
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CAR TYPES NAMES # 266880751448522438
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: CAR_TYPE_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_TRIP_TYPE ===========================
+  id: 267100478277293670
+  identification: 
+    name: P359_TRIP_TYPE
+    type: Select One
+
+  label: 
+    label: نوع الرحلة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 30
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-road
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 20
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMOPRODUCTS TRIP TYPES # 267647733503170392
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TRIP_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_TRIP_DATE_FROM ======================
+  id: 267100532379293671
+  identification: 
+    name: P359_TRIP_DATE_FROM
+    type: Date Picker
+
+  label: 
+    label: من تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TRIP_DATE_FROM
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select FROM_DATE from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_TRIP_DATE_TO ========================
+  id: 267100679344293672
+  identification: 
+    name: P359_TRIP_DATE_TO
+    type: Date Picker
+
+  label: 
+    label: الي تاريخ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 60
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TRIP_DATE_TO
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select TO_DATE from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_TRIP_TIME ===========================
+  id: 267100788826293673
+  identification: 
+    name: P359_TRIP_TIME
+    type: ClockPicker
+
+  label: 
+    label: ساعة الوصول الى العميل
+    alignment: Left
+
+  settings: 
+    placement: Bottom
+    align: Left
+    autoclose: True
+    12h-mode: False
+    done-button-text: Done
+    show-clock-button: No
+    suppress-mobile-keyboards: No
+    logging: False
+
+  layout: 
+    sequence: 50
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: '99:99'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 5
+
+  advanced: 
+    custom-attributes: 
+    - type="time"
+    - 'min="00:00"'
+    - 'max="23:59"'
+    - step="60"
+    - class="apex-item-text"
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TRIP_TIME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select TIME_TRIP from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_FROM_LOCATION =======================
+  id: 267100841180293674
+  identification: 
+    name: P359_FROM_LOCATION
+    type: Text Field with autocomplete
+
+  label: 
+    label: من موقع
+    alignment: Left
+
+  settings: 
+    fetch-on-type: true
+    use-cache: true
+    maximum-values-in-list: 7
+
+  search: 
+    match-type: Contains & Ignore Case
+    minimum-characters: 2
+
+  layout: 
+    sequence: 100
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-map-location-dot
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 400
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT LOCATION
+        FROM (
+          SELECT DISTINCT FROM_LOCATION AS LOCATION
+            FROM LIMO_PRODUCTS
+           WHERE FROM_LOCATION IS NOT NULL
+          UNION
+          SELECT DISTINCT TO_LOCATION AS LOCATION
+            FROM LIMO_PRODUCTS
+           WHERE TO_LOCATION IS NOT NULL
+        )
+       ORDER BY LOCATION
+      
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: FROM_LOCATION
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_TO_LOCATION =========================
+  id: 267100916664293675
+  identification: 
+    name: P359_TO_LOCATION
+    type: Text Field with autocomplete
+
+  label: 
+    label: الى موقع
+    alignment: Left
+
+  settings: 
+    fetch-on-type: true
+    use-cache: true
+    maximum-values-in-list: 7
+
+  search: 
+    match-type: Contains & Ignore Case
+    minimum-characters: 2
+
+  layout: 
+    sequence: 110
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-map-location-dot
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 400
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT LOCATION
+        FROM (
+          SELECT DISTINCT FROM_LOCATION AS LOCATION
+            FROM LIMO_PRODUCTS
+           WHERE FROM_LOCATION IS NOT NULL
+          UNION
+          SELECT DISTINCT TO_LOCATION AS LOCATION
+            FROM LIMO_PRODUCTS
+           WHERE TO_LOCATION IS NOT NULL
+        )
+       ORDER BY LOCATION
+      
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TO_LOCATION
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_PRICE ===============================
+  id: 267101050419293676
+  identification: 
+    name: P359_PRICE
+    type: Number Field
+
+  label: 
+    label: سعر الرحلة
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 70
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: PRICE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_AMOUNT_EGP ==========================
+  id: 267101118516293677
+  identification: 
+    name: P359_AMOUNT_EGP
+    type: Number Field
+
+  label: 
+    label: Amount Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 200
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: AMOUNT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_NOD =================================
+  id: 267101239846293678
+  identification: 
+    name: P359_NOD
+    type: Number Field
+
+  label: 
+    label: Nod
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 210
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: NOD
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_STATUS ==============================
+  id: 267101334790293679
+  identification: 
+    name: P359_STATUS
+    type: Select One
+
+  label: 
+    label: حالة الرحلة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 140
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-check-to-slot
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO TRIPS STATUSES # 268044888112141093
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: STATUS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: ACTIVE
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P359_PRODUCT_ID
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_NOTES ===============================
+  id: 267688462879224530
+  identification: 
+    name: P359_NOTES
+    type: Textarea
+
+  label: 
+    label: <i class="fa6-solid fa6-note-sticky"></i> ملاحظات علي الخدمة
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 120
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 1000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: NOTES
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: true
+    label-1: 'اضافة ملاحظات الطلب الرئيسية '
+    value-1: '&P359_NOTES_MAIN_RESERVATION.'
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_CREATED =============================
+  id: 267688589125224531
+  identification: 
+    name: P359_CREATED
+    type: Text Field
+
+  label: 
+    label: Created
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 220
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: CREATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_UPDATED =============================
+  id: 267688648234224532
+  identification: 
+    name: P359_UPDATED
+    type: Text Field
+
+  label: 
+    label: Updated
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 230
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: UPDATED
+    data-type: TIMESTAMP WITH TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_CLASSIFICATION_TYPE =================
+  id: 269056611764390042
+  identification: 
+    name: P359_CLASSIFICATION_TYPE
+    type: Radio Group
+
+  label: 
+    label: تصنيف الرحلة
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 20
+    region: Important Classification # 269056911146390045
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+    - t-Form-fieldContainer--slimPadding
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO RESERVATION REQUEST CLASSIFICATIONS # 267073320409618852
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - attention-effect
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: CLASSIFICATION_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select CLASSIFICATION_TYPE from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_TICKET_NUMBER =======================
+  id: 269056727528390043
+  identification: 
+    name: P359_TICKET_NUMBER
+    type: Text Field
+
+  label: 
+    label: رقم التذكرة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: Upper
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Important Classification # 269056911146390045
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-ticket
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 50
+
+  advanced: 
+    css-classes: 
+    - attention-effect
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TICKET_NUMBER
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select TICKET_NUMBER from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_SIGNAGE_DETAILS =====================
+  id: 269056824955390044
+  identification: 
+    name: P359_SIGNAGE_DETAILS
+    type: Text Field
+
+  label: 
+    label: بيانات اللافتة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Important Classification # 269056911146390045
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-sign
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 70
+
+  advanced: 
+    css-classes: 
+    - attention-effect
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: SIGNAGE_DETAILS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select SIGNAGE_DETAILS from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_NOTES_MAIN_RESERVATION ==============
+  id: 269059039337390066
+  identification: 
+    name: P359_NOTES_MAIN_RESERVATION
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 130
+    region: Service Details # 269057054083390046
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select NOTEs from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_CURRENCY ============================
+  id: 298510375591700072
+  identification: 
+    name: P359_CURRENCY
+    type: Select One
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 80
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill-wave
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select CURRENCY from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_EXCHANGE_RATE =======================
+  id: 298510798462700073
+  identification: 
+    name: P359_EXCHANGE_RATE
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 90
+    region: Service Details # 269057054083390046
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: EXCHANGE_RATE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return multiple values)
+    sql-query-(return-multiple-values): 'select EXCHANGE_RATE from Limo_Reservations where reservation_id = :P359_RESERVATION_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P359_CREATED_BY ==========================
+  id: 298511556662700073
+  identification: 
+    name: P359_CREATED_BY
+    type: Text Field
+
+  label: 
+    label: Created By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 170
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_TOTAL_PRICE =========================
+  id: 298511997842700074
+  identification: 
+    name: P359_TOTAL_PRICE
+    type: Number Field
+
+  label: 
+    label: Total Price
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 180
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: TOTAL_PRICE
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_UPDATED_BY ==========================
+  id: 298513221494700074
+  identification: 
+    name: P359_UPDATED_BY
+    type: Text Field
+
+  label: 
+    label: Updated By
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 190
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 100
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Product Reservation Form # 298506334240700041
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_DEFPRICE ============================
+  id: 303722953950381501
+  identification: 
+    name: P359_DEFPRICE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 240
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_DEFCURRENCY =========================
+  id: 303723187851381503
+  identification: 
+    name: P359_DEFCURRENCY
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 260
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P359_ORGININAL_PRICE =====================
+  id: 303723440278381506
+  identification: 
+    name: P359_ORGININAL_PRICE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 250
+    region: Limo Product Reservation Form # 298506334240700041
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 267678458102222774
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 298518189100700063
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 267678827755222774
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 298518189100700063
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P359_PRODUCT_ID is not null and :P359_RESERVATION_ID is not null'
+
+- # ====== Button: SAVE ========================================
+  id: 267679218981222774
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 298518189100700063
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P359_PRODUCT_ID is not null and :P359_RESERVATION_ID is not null'
+
+- # ====== Button: CREATE ======================================
+  id: 267679655118222775
+  identification: 
+    button-name: CREATE
+    label: اضافة حجز السيارة
+
+  layout: 
+    sequence: 40
+    region: Buttons # 298518189100700063
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P359_PRODUCT_ID is null or :P359_RESERVATION_ID is null'
+
+dynamic-actions: 
+- # ====== Dynamic Action: Refresh =============================
+  id: 267397533782331171
+  identification: 
+    name: Refresh
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Limo Product Reservation Form # 298506334240700041
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 267397698899331172
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: JavaScript Expression
+      javascript-expression: window
+
+    execution: 
+      sequence: 10
+      event: Refresh # 267397533782331171
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 267681028429222782
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 267678458102222774
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 267681487246222783
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 267681028429222782
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: ShowRates ===========================
+  id: 267681844177222784
+  identification: 
+    name: ShowRates
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P359_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 267682330208222784
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 267681844177222784
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 267682837739222784
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 267681844177222784
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: RefreshCols =========================
+  id: 267683209067222784
+  identification: 
+    name: RefreshCols
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Minimum Amount in Currency ==============
+    id: 267683747760222785
+    identification: 
+      name: Set Minimum Amount in Currency
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |
+        CASE 
+          WHEN :P359_CURRENCY != :P359_DEFCURRENCY 
+          THEN ROUND(:P359_DEFPRICE / :P359_EXCHANGE_RATE, 2)
+          ELSE :P359_ORGININAL_PRICE
+        END
+        
+      items-to-submit: 
+      - P359_EXCHANGE_RATE
+      - P359_DEFPRICE
+      - P359_CURRENCY
+      - P359_DEFCURRENCY
+      - P359_ORGININAL_PRICE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_CUSTOM_PRICE_PER_NIGHT
+
+    execution: 
+      sequence: 40
+      event: RefreshCols # 267683209067222784
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 267684208508222785
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P359_CURRENCY
+        
+      items-to-submit: 
+      - P359_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_EXCHANGE_RATE
+
+    execution: 
+      sequence: 30
+      event: RefreshCols # 267683209067222784
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: SetNightsCount ======================
+  id: 267684694920222786
+  identification: 
+    name: SetNightsCount
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_DATE_FROM
+    - P359_DATE_TO
+
+  actions: 
+  - # ====== Action: CalculateNights =============================
+    id: 267685127732222786
+    identification: 
+      name: CalculateNights
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: |
+        TRUNC(TO_DATE(:P359_DATE_TO, 'DD-MM-YYYY')) - TRUNC(TO_DATE(:P359_DATE_FROM, 'DD-MM-YYYY'))
+        
+      items-to-submit: 
+      - P359_DATE_FROM
+      - P359_DATE_TO
+      escape-special-characters: true
+      suppress-change-event: true
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_NIGHT_COUNT
+
+    execution: 
+      sequence: 10
+      event: SetNightsCount # 267684694920222786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: ChangeDefaultPrice ==================
+  id: 267685530747222786
+  identification: 
+    name: ChangeDefaultPrice
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_ROOM_TYPE_ID
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 267686078484222786
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_PRICE_EGP from VW_ALL_ROOM_TYPES where id = :P359_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P359_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_DEFPRICE
+
+    execution: 
+      sequence: 40
+      event: ChangeDefaultPrice # 267685530747222786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 267686580372222787
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_PRICE_NUMERIC from VW_ALL_ROOM_TYPES where id = :P359_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P359_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_CUSTOM_PRICE_PER_NIGHT
+
+    execution: 
+      sequence: 30
+      event: ChangeDefaultPrice # 267685530747222786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 267687094024222787
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_CURRENCY from VW_ALL_ROOM_TYPES where id = :P359_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P359_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_CURRENCY
+
+    execution: 
+      sequence: 10
+      event: ChangeDefaultPrice # 267685530747222786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 267687550647222787
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_PRICE_NUMERIC from VW_ALL_ROOM_TYPES where id = :P359_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P359_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_ORGININAL_PRICE
+
+    execution: 
+      sequence: 50
+      event: ChangeDefaultPrice # 267685530747222786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 267688098689222787
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select CURRENT_CURRENCY from VW_ALL_ROOM_TYPES where id = :P359_ROOM_TYPE_ID'
+      items-to-submit: 
+      - P359_ROOM_TYPE_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_DEFCURRENCY
+
+    execution: 
+      sequence: 20
+      event: ChangeDefaultPrice # 267685530747222786
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Show Product ID =====================
+  id: 267688716316224533
+  identification: 
+    name: Show Product ID
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  client-side-condition: 
+    type: Item is null
+    item: P359_PRODUCT_ID
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 267688860216224534
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_PRODUCT_ID
+
+    execution: 
+      sequence: 10
+      event: Show Product ID # 267688716316224533
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 267688995140224535
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_PRODUCT_ID
+
+    execution: 
+      sequence: 10
+      event: Show Product ID # 267688716316224533
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Show Welcome Fields =================
+  id: 269057194327390047
+  identification: 
+    name: Show Welcome Fields
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_CLASSIFICATION_TYPE
+
+  client-side-condition: 
+    type: Item = Value
+    item: P359_CLASSIFICATION_TYPE
+    value: WELCOME
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 269057253759390048
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_TICKET_NUMBER
+      - P359_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Show Welcome Fields # 269057194327390047
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 269057331846390049
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_TICKET_NUMBER
+      - P359_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Show Welcome Fields # 269057194327390047
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect ================
+  id: 269057463635390050
+  identification: 
+    name: Add Attention Effect
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_CLASSIFICATION_TYPE
+
+  client-side-condition: 
+    type: Item is null
+    item: P359_CLASSIFICATION_TYPE
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 269057582082390051
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_CLASSIFICATION_TYPE
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect # 269057463635390050
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Add Class ===================================
+    id: 269058281349390058
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_CLASSIFICATION_TYPE
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect # 269057463635390050
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect Ticket No. =====
+  id: 269057644182390052
+  identification: 
+    name: Add Attention Effect Ticket No.
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_TICKET_NUMBER
+
+  client-side-condition: 
+    type: Item is null
+    item: P359_TICKET_NUMBER
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 269057717906390053
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Ticket No. # 269057644182390052
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Add Class ===================================
+    id: 269058179386390057
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Ticket No. # 269057644182390052
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Add Attention Effect Signage Details 
+  id: 269057893572390054
+  identification: 
+    name: Add Attention Effect Signage Details
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_SIGNAGE_DETAILS
+
+  client-side-condition: 
+    type: Item is null
+    item: P359_SIGNAGE_DETAILS
+
+  actions: 
+  - # ====== Action: Remove Class ================================
+    id: 269057940580390055
+    identification: 
+      action: Remove Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Signage Details # 269057893572390054
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+  - # ====== Action: Add Class ===================================
+    id: 269058069106390056
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: attention-effect
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: Add Attention Effect Signage Details # 269057893572390054
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: SetValues ===========================
+  id: 269058415266390060
+  identification: 
+    name: SetValues
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P359_CLASSIFICATION_TYPE
+
+  client-side-condition: 
+    type: Item = Value
+    item: P359_CLASSIFICATION_TYPE
+    value: WELCOME
+
+  actions: 
+  - # ====== Action: Ticket No ===================================
+    id: 269058533795390061
+    identification: 
+      name: Ticket No
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'SELECT TICKET_NUMBER FROM LIMO_RESERVATIONS WHERE RESERVATION_ID = :P359_RESERVATION_ID'
+      items-to-submit: 
+      - P359_RESERVATION_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_TICKET_NUMBER
+
+    execution: 
+      sequence: 10
+      event: SetValues # 269058415266390060
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Signage =====================================
+    id: 269058649139390062
+    identification: 
+      name: Signage
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'SELECT SIGNAGE_DETAILS FROM LIMO_RESERVATIONS WHERE RESERVATION_ID = :P359_RESERVATION_ID'
+      items-to-submit: 
+      - P359_RESERVATION_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 20
+      event: SetValues # 269058415266390060
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Ticket No ===================================
+    id: 269058815209390064
+    identification: 
+      name: Ticket No
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_TICKET_NUMBER
+
+    execution: 
+      sequence: 20
+      event: SetValues # 269058415266390060
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Signage =====================================
+    id: 269058948301390065
+    identification: 
+      name: Signage
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P359_SIGNAGE_DETAILS
+
+    execution: 
+      sequence: 10
+      event: SetValues # 269058415266390060
+      fire-when-event-result-is: False
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+processes: 
+- # ====== Process: create limo ================================
+  id: 196004226073942160
+  identification: 
+    name: create limo
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: LIMO_PRODUCT_PKG
+    procedure-or-function: CREATE_LIMO_PRODUCT
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 267679655118222775
+
+  parameters: 
+  - # ====== Parameter: p_main_res_id ============================
+    id: 201239355089305475
+    identification: 
+      name: p_main_res_id
+
+    parameter: 
+      direction: In/Out
+      data-type: VARCHAR2
+      ignore-output: false
+
+    value: 
+      item: P359_RESERVATION_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_customer_id ============================
+    id: 201239459474305476
+    identification: 
+      name: p_customer_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_CUSTOMER_ID
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_car_type_id ============================
+    id: 201239568070305477
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_trip_type ==============================
+    id: 201239645535305478
+    identification: 
+      name: p_trip_type
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_TRIP_TYPE
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_trip_time ==============================
+    id: 201239735579305479
+    identification: 
+      name: p_trip_time
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_TRIP_TIME
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_from_location ==========================
+    id: 201239841914305480
+    identification: 
+      name: p_from_location
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_FROM_LOCATION
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_to_location ============================
+    id: 201239899619305481
+    identification: 
+      name: p_to_location
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_TO_LOCATION
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_trip_date_from =========================
+    id: 201240016342305482
+    identification: 
+      name: p_trip_date_from
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_TRIP_DATE_FROM
+
+    advanced: 
+      display-sequence: 80
+
+  - # ====== Parameter: p_trip_date_to ===========================
+    id: 201240166292305483
+    identification: 
+      name: p_trip_date_to
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_TRIP_DATE_TO
+
+    advanced: 
+      display-sequence: 90
+
+  - # ====== Parameter: p_price ==================================
+    id: 201240234985305484
+    identification: 
+      name: p_price
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_PRICE
+
+    advanced: 
+      display-sequence: 100
+
+  - # ====== Parameter: p_currency ===============================
+    id: 201240303517305485
+    identification: 
+      name: p_currency
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_CURRENCY
+
+    advanced: 
+      display-sequence: 110
+
+  - # ====== Parameter: p_exchange_rate ==========================
+    id: 201240446040305486
+    identification: 
+      name: p_exchange_rate
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_EXCHANGE_RATE
+
+    advanced: 
+      display-sequence: 120
+
+  - # ====== Parameter: p_classification_type ====================
+    id: 201240555282305487
+    identification: 
+      name: p_classification_type
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_CLASSIFICATION_TYPE
+
+    advanced: 
+      display-sequence: 130
+
+  - # ====== Parameter: p_ticket_number ==========================
+    id: 201240617510305488
+    identification: 
+      name: p_ticket_number
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_TICKET_NUMBER
+
+    advanced: 
+      display-sequence: 140
+
+  - # ====== Parameter: p_signage_details ========================
+    id: 201240747327305489
+    identification: 
+      name: p_signage_details
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_SIGNAGE_DETAILS
+
+    advanced: 
+      display-sequence: 150
+
+  - # ====== Parameter: p_notes ==================================
+    id: 201240866601305490
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_NOTES
+
+    advanced: 
+      display-sequence: 160
+
+  - # ====== Parameter: p_status =================================
+    id: 201240902227305491
+    identification: 
+      name: p_status
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P359_STATUS
+
+    advanced: 
+      display-sequence: 170
+
+  - # ====== Parameter: o_result =================================
+    id: 201241033441305492
+    identification: 
+      name: o_result
+
+    parameter: 
+      direction: Out
+      data-type: Custom
+      data-type-name: limo_product_pkg.t_result
+
+    advanced: 
+      display-sequence: 180
+
+- # ====== Process: Initialize form Hotel Room Reservation Form 
+  id: 267677327726222772
+  identification: 
+    name: Initialize form Hotel Room Reservation Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Limo Product Reservation Form # 298506334240700041
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Limo Product Reservation Form =
+  id: 267677778730222773
+  identification: 
+    name: Process form Limo Product Reservation Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Limo Product Reservation Form # 298506334240700041
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Process: Close Dialog ===============================
+  id: 267680637833222781
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

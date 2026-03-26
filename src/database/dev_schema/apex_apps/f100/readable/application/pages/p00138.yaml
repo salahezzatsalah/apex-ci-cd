@@ -1,0 +1,112 @@
+---
+# ====== Page: My Hotel Reservations =========================
+id: 138
+identification: 
+  name: My Hotel Reservations
+  alias: MY-HOTEL-RESERVATIONS-HOME-PAGE
+  title: حجوزاتي
+  page-group: Activities # 11921708294661895156
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: About =======================================
+  id: 23349229687400344214
+  identification: 
+    name: About
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      declare
+          l_clob clob;
+      begin
+          l_clob := '
+      <p>
+      الوحدة دي بتعرض الحجوزات. اللي انت ليك علاقة بيها، سواء كنت صاحب الطلب أو ليك دور تاني في تنفيذ الحجز أو متابعته.
+      </p>
+      <ul>
+          <li><strong>صاحب الحجز</strong>: لو انت اللي قدمت طلب الـ حجز أو مسؤول عنه.</li>
+          <li><strong>مسؤول عمليات</strong>: لو انت متابع تنفيذ الـ حجز أو بتراجع الطلبات مع الفندق أو الموردين.</li>
+          <li><strong>مورد</strong>: لو انت المزود أو جهة التعامل مع الفندق، ومسؤول عن تنفيذ أو توفير الخدمة.</li>
+          <li><strong>عميل</strong>: لو انت صاحب الـ حجز أو الشخص اللي هيستفيد من الخدمة.</li>
+      </ul>
+      <p>
+      القائمة دي بتساعدك تتابع كل الحجوزات. ليك علاقة بيها، وتقدر تراجع منها الملاحظات، المدفوعات، أو أي تحديثات بتتم على الـ حجز بسهولة.
+      </p>
+      <p>
+      الـ حجز المفتوح هو اللي لسه تحت التنفيذ أو في انتظار التأكيد أو السداد، ولسه مخلصش بالكامل.
+      </p>
+      <br />
+      <br />';
+          return l_clob;
+      end;
+      
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+

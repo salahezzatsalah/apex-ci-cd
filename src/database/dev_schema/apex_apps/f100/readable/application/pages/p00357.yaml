@@ -1,0 +1,1558 @@
+---
+# ====== Page: Car Type Price Form ===========================
+id: 357
+identification: 
+  name: Car Type Price Form
+  alias: CAR-TYPE-PRICE-FORM
+  title: استمارة تسعير نوع سيارة - نموذج 357
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Disabled
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Car Type Price Form =========================
+  id: 294511344778685240
+  identification: 
+    name: Car Type Price Form
+    title: استمارة تسعير سيارة - نموذج 153
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Buttons =====================================
+  id: 294519904363685255
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P357_INFO ================================
+  id: 218368074564325168
+  identification: 
+    name: P357_INFO
+    type: Display Only
+
+  label: 
+    label: نوع السيارة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 50
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select CAR_TYPE_NAME || CATEGORY as car_info from limo_car_types where car_type_id = :p357_car_type_id'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_MIN_KM ==============================
+  id: 220985901511987872
+  identification: 
+    name: P357_MIN_KM
+    type: Number Field
+
+  label: 
+    label: Min Km
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 160
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select min_km
+      from limo_car_types
+      where car_type_id = :P357_CAR_TYPE_ID;
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_CAR_TYPE_ID =========================
+  id: 266889163848625046
+  identification: 
+    name: P357_CAR_TYPE_ID
+    type: Display Only
+
+  label: 
+    label: ID
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_PRICE ===============================
+  id: 266889226382625047
+  identification: 
+    name: P357_PRICE
+    type: Number Field
+
+  label: 
+    label: السعر
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 130
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-right-left
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_NOTES ===============================
+  id: 266889546304625050
+  identification: 
+    name: P357_NOTES
+    type: Textarea
+
+  label: 
+    label: ملاحظات
+    alignment: Left
+
+  settings: 
+    resizable: false
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 150
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+    maximum-length: 500
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_PRICINGTYPE =========================
+  id: 294501180262670796
+  identification: 
+    name: P357_PRICINGTYPE
+    type: Radio Group
+
+  label: 
+    label: نوع التسعير
+    alignment: Left
+
+  settings: 
+    number-of-columns: 3
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 60
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:الساعة;HOUR,يوم كامل  - ١٢ س;TRIP,كيلو متر;KM'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_START_DATE ==========================
+  id: 294512915295685255
+  identification: 
+    name: P357_START_DATE
+    type: Date Picker
+
+  label: 
+    label: <i class="fa6-solid fa6-clock"></i> تاريخ التسعيرة
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 90
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_END_DATE ============================
+  id: 294513162871685258
+  identification: 
+    name: P357_END_DATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ انتهاء العرض
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 110
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P357_CURRENCY ============================
+  id: 294514005806685258
+  identification: 
+    name: P357_CURRENCY
+    type: Display Only
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 140
+    region: Car Type Price Form # 294511344778685240
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa6-solid fa6-money-bill-wave
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: EGP
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 266975613672901500
+  identification: 
+    button-name: CANCEL
+    label: الغاء
+
+  layout: 
+    sequence: 10
+    region: Buttons # 294519904363685255
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 266976027225901501
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 294519904363685255
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P357_PRICE_ID is not null and :P357_ROOM_TYPE_ID is not null'
+
+- # ====== Button: SAVE ========================================
+  id: 266976491431901501
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 294519904363685255
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P357_PRICE_ID is not null and :P357_ROOM_TYPE_ID is not null'
+
+- # ====== Button: CREATE ======================================
+  id: 266976838386901501
+  identification: 
+    button-name: CREATE
+    label: تسجيل السعر
+
+  layout: 
+    sequence: 40
+    region: Buttons # 294519904363685255
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Expression
+    language: SQL
+    sql-expression: ':P357_PRICE_ID is null or :P357_ROOM_TYPE_ID is null'
+
+dynamic-actions: 
+- # ====== Dynamic Action: show if trip price ==================
+  id: 218368261059325170
+  identification: 
+    name: show if trip price
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P357_PRICINGTYPE
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 218368389705325171
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_END_DATE
+
+    execution: 
+      sequence: 10
+      event: show if trip price # 218368261059325170
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P357_PRICINGTYPE
+      value: TRIP
+
+  - # ====== Action: Show ========================================
+    id: 218368452519325172
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_HOUR
+
+    execution: 
+      sequence: 30
+      event: show if trip price # 218368261059325170
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item = Value
+      item: P357_PRICINGTYPE
+      value: HOUR
+
+  - # ====== Action: Hide ========================================
+    id: 218368536701325173
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_HOUR
+
+    execution: 
+      sequence: 40
+      event: show if trip price # 218368261059325170
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item != Value
+      item: P357_PRICINGTYPE
+      value: HOUR
+
+  - # ====== Action: Hide ========================================
+    id: 218368673615325174
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_END_DATE
+
+    execution: 
+      sequence: 20
+      event: show if trip price # 218368261059325170
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item != Value
+      item: P357_PRICINGTYPE
+      value: TRIP
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 266977893483901511
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 266975613672901500
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 266978303718901513
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 266977893483901511
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: LimitedOfferSwitch ==================
+  id: 266978786206901513
+  identification: 
+    name: LimitedOfferSwitch
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P357_PRICINGTYPE
+
+  client-side-condition: 
+    type: Item = Value
+    item: P357_PRICINGTYPE
+    value: Y
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 266979235717901513
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_END_DATE
+
+    execution: 
+      sequence: 10
+      event: LimitedOfferSwitch # 266978786206901513
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Hide ========================================
+    id: 266979800437901513
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_END_DATE
+
+    execution: 
+      sequence: 10
+      event: LimitedOfferSwitch # 266978786206901513
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: RefreshCols =========================
+  id: 266980129117901514
+  identification: 
+    name: RefreshCols
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P357_CURRENCY
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 266980654737901514
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_PRICE_PER_NIGHT
+
+    execution: 
+      sequence: 10
+      event: RefreshCols # 266980129117901514
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Value ===================================
+    id: 266981127824901514
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P357_CURRENCY
+        
+      items-to-submit: 
+      - P357_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: true
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_EXCHANGE_RATE
+
+    execution: 
+      sequence: 20
+      event: RefreshCols # 266980129117901514
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: SetEndDate ==========================
+  id: 266981594372901515
+  identification: 
+    name: SetEndDate
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P357_START_DATE
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 266982009249901515
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: ':P357_START_DATE'
+      items-to-submit: 
+      - P357_START_DATE
+      escape-special-characters: false
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_END_DATE
+
+    execution: 
+      sequence: 10
+      event: SetEndDate # 266981594372901515
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: ShowRates ===========================
+  id: 266982405959901515
+  identification: 
+    name: ShowRates
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P357_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P357_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 266982924250901515
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 266982405959901515
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 266983414979901515
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P357_EXCHANGE_RATE
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 266982405959901515
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+processes: 
+- # ====== Process: Set KM Price ===============================
+  id: 217375736793158396
+  identification: 
+    name: Set KM Price
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: LIMO_CATALOG_PKG
+    procedure-or-function: SET_KM_PRICE
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 266976838386901501
+    type: Item = Value
+    item: P357_PRICINGTYPE
+    value: KM
+
+  parameters: 
+  - # ====== Parameter: p_car_type_id ============================
+    id: 217375837427158397
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_price_km ===============================
+    id: 217375893201158398
+    identification: 
+      name: p_price_km
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_PRICE
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_currency ===============================
+    id: 217376039873158399
+    identification: 
+      name: p_currency
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CURRENCY
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_from_date ==============================
+    id: 218366287365325150
+    identification: 
+      name: p_from_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_START_DATE
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_notes ==================================
+    id: 218366298029325151
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P357_NOTES
+
+    advanced: 
+      display-sequence: 50
+
+- # ====== Process: Set Trip Price =============================
+  id: 218366432035325152
+  identification: 
+    name: Set Trip Price
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: LIMO_CATALOG_PKG
+    procedure-or-function: SET_TRIP_PRICE
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 266976838386901501
+    type: Item = Value
+    item: P357_PRICINGTYPE
+    value: TRIP
+
+  parameters: 
+  - # ====== Parameter: p_car_type_id ============================
+    id: 218366566457325153
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_currency ===============================
+    id: 218366719536325155
+    identification: 
+      name: p_currency
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CURRENCY
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_from_date ==============================
+    id: 218366792095325156
+    identification: 
+      name: p_from_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_START_DATE
+
+    advanced: 
+      display-sequence: 40
+
+  - # ====== Parameter: p_notes ==================================
+    id: 218366972805325157
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P357_NOTES
+
+    advanced: 
+      display-sequence: 60
+
+  - # ====== Parameter: p_price ==================================
+    id: 218367064494325158
+    identification: 
+      name: p_price
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_PRICE
+
+    advanced: 
+      display-sequence: 70
+
+  - # ====== Parameter: p_to_date ================================
+    id: 218367174920325159
+    identification: 
+      name: p_to_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: true
+
+    value: 
+      type: API Default
+
+    advanced: 
+      display-sequence: 50
+
+- # ====== Process: Set Hour Price =============================
+  id: 218367206778325160
+  identification: 
+    name: Set Hour Price
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: LIMO_CATALOG_PKG
+    procedure-or-function: SET_HOUR_PRICE
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 266976838386901501
+    type: Item = Value
+    item: P357_PRICINGTYPE
+    value: HOUR
+
+  parameters: 
+  - # ====== Parameter: p_car_type_id ============================
+    id: 218367327685325161
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_currency ===============================
+    id: 218367455663325162
+    identification: 
+      name: p_currency
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CURRENCY
+
+    advanced: 
+      display-sequence: 20
+
+  - # ====== Parameter: p_from_date ==============================
+    id: 218367535236325163
+    identification: 
+      name: p_from_date
+
+    parameter: 
+      direction: In
+      data-type: DATE
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_START_DATE
+
+    advanced: 
+      display-sequence: 30
+
+  - # ====== Parameter: p_notes ==================================
+    id: 218367742703325165
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P357_NOTES
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_price_hour =============================
+    id: 218369483055325182
+    identification: 
+      name: p_price_hour
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_PRICE
+
+    advanced: 
+      display-sequence: 60
+
+- # ====== Process: Set Minimum KM =============================
+  id: 220986019892987873
+  identification: 
+    name: Set Minimum KM
+    type: Invoke API
+    execution-chain: None
+
+  settings: 
+    type: PL/SQL Package
+    owner: PARSING SCHEMA
+    package: LIMO_CATALOG_PKG
+    procedure-or-function: SET_MIN_KM
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 266976838386901501
+
+  parameters: 
+  - # ====== Parameter: p_car_type_id ============================
+    id: 220986118135987874
+    identification: 
+      name: p_car_type_id
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_CAR_TYPE_ID
+
+    advanced: 
+      display-sequence: 10
+
+  - # ====== Parameter: p_notes ==================================
+    id: 220986489866987878
+    identification: 
+      name: p_notes
+
+    parameter: 
+      direction: In
+      data-type: VARCHAR2
+      has-default: true
+
+    value: 
+      type: Item
+      item: P357_NOTES
+
+    advanced: 
+      display-sequence: 50
+
+  - # ====== Parameter: p_min_km =================================
+    id: 220986663061987879
+    identification: 
+      name: p_min_km
+
+    parameter: 
+      direction: In
+      data-type: NUMBER
+      has-default: false
+
+    value: 
+      type: Item
+      item: P357_MIN_KM
+
+    advanced: 
+      display-sequence: 60
+
+- # ====== Process: Close Dialog ===============================
+  id: 266977436824901511
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

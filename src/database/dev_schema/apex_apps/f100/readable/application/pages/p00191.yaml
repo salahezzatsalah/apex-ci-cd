@@ -1,0 +1,410 @@
+---
+# ====== Page: Location Map ==================================
+id: 191
+identification: 
+  name: Location Map
+  alias: LOCATION-MAP
+  title: Location Map
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: let lSpinner$;
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Control =====================================
+  id: 271669155254053230
+  identification: 
+    name: Control
+    type: Static Content
+
+  source: 
+    html-code: <p>Tap the <strong>Geolocate</strong> button to find your current position. Your browser may ask your permission to provide this information to the page. This app doesn't save that information anywhere.</p>
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 8
+
+  appearance: 
+    template: Content Block
+    template-options: 
+    - '#DEFAULT#'
+    - t-ContentBlock--h1
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: demo1
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Map =========================================
+  id: 271669540785053234
+  identification: 
+    name: Map
+    type: Static Content
+
+  source: 
+    html-code: |
+      <style>
+         #map {
+            height: 100%;
+         }
+         #mymap .t-Region-body {
+            height: 500px !important;
+         }
+      </style>
+      <div id="map"></div>
+      <script>
+         var map;
+         function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), 
+                        {center: {lat: 39.5,lng: -98.35}, zoom: 2});
+         }
+      </script>
+      
+      <script async defer 
+            src="https://maps.googleapis.com/maps/api/js?key=PUT_YOUR_API_KEY_HERE&callback=initMap"> 
+      </script>
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: map
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P191_LATITUDE ============================
+  id: 271669215292053231
+  identification: 
+    name: P191_LATITUDE
+    type: Text Field
+
+  label: 
+    label: Latitude
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Control # 271669155254053230
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P191_LONGITUDE ===========================
+  id: 271669336087053232
+  identification: 
+    name: P191_LONGITUDE
+    type: Text Field
+
+  label: 
+    label: LONGITUDE
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Control # 271669155254053230
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: submit ======================================
+  id: 271669456974053233
+  identification: 
+    button-name: submit
+    label: Submit
+
+  layout: 
+    sequence: 30
+    region: Control # 271669155254053230
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--small
+    - t-Button--gapTop
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: GET_CURRENT_POSITION
+
+dynamic-actions: 
+- # ====== Dynamic Action: onClick GET_CURRENT_POSITION ========
+  id: 271669646378053235
+  identification: 
+    name: onClick GET_CURRENT_POSITION
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: submit # 271669456974053233
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 271669758865053236
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: lSpinner$ = apex.util.showSpinner( $( "#map" ) );
+
+    execution: 
+      sequence: 10
+      event: onClick GET_CURRENT_POSITION # 271669646378053235
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Get Current Postion  ========================
+    id: 271669892100053237
+    identification: 
+      name: 'Get Current Postion '
+      action: Get Current Position
+
+    settings: 
+      return-type: Latitude and Longitude
+      latitude-item: P191_LATITUDE
+      longitude-item: P191_LONGITUDE
+      enable-high-accuracy: true
+
+    execution: 
+      sequence: 20
+      event: onClick GET_CURRENT_POSITION # 271669646378053235
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 271669984975053238
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |2
+         const apiKey = 'PUT_YOUR_API_KEY_HERE';
+                const translateButton = document.getElementById('GET_CURRENT_POSITION');
+                const resultDiv = document.getElementById('result');
+        
+                translateButton.addEventListener('click', async () => {
+                    const latitude = document.getElementById('P191_LATITUDE').value;
+                    const longitude = document.getElementById('P191_LONGITUDE').value;
+        
+                    if (!latitude || !longitude) {
+                        resultDiv.innerHTML = 'Please provide valid latitude and longitude.';
+                        return;
+                    }
+        
+                  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`);
+                  const data = await response.json();
+        
+                    if (data.status === 'OK') {
+                        const address = data.results[0].formatted_address;
+                        var map = new google.maps.Map(document.getElementById('map'), {zoom: 15});
+                        var geocoder = new google.maps.Geocoder();
+                        geocoder.geocode({'address': address}, function(results, status) {
+                           if (status === 'OK') {
+                                map.setCenter(results[0].geometry.location);
+                                var marker = new google.maps.Marker({map: map, position: results[0].geometry.location});
+                                zoom: 15;
+                           } else {
+                                alert('Geocode was not successful for the following reason: ' + status);
+                           }
+                        });
+                    } else {
+                        resultDiv.innerHTML = 'Geocoding failed. Please check your coordinates or API key.';
+                    }
+                
+                });
+        
+        
+        
+
+    execution: 
+      sequence: 30
+      event: onClick GET_CURRENT_POSITION # 271669646378053235
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 271670011097053239
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: lSpinner$.remove();
+
+    execution: 
+      sequence: 40
+      event: onClick GET_CURRENT_POSITION # 271669646378053235
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

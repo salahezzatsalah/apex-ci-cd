@@ -1,0 +1,836 @@
+---
+# ====== Page: Login Page ====================================
+id: 9999
+identification: 
+  name: Login Page
+  alias: LOGIN
+  title: شركة الوجهة الرائدة للسياحة
+  page-group: Login # 18688774448636128278
+
+appearance: 
+  page-mode: Normal
+  page-template: Login
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: First item on page
+  warn-on-unsaved-changes: false
+
+javascript: 
+  execute-when-page-loads: document.documentElement.classList.remove("reactor-preload");
+
+css: 
+  inline: |
+    .t-Login-logo {
+        background-color: transparent;
+    }
+    
+    html.reactor-preload body{
+        visibility:hidden;
+    }
+
+security: 
+  authentication: Page Is Public
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-meta-tags: false
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Gate Body Open Up ===========================
+  id: 183528314503203532
+  identification: 
+    name: Gate Body Open Up
+    type: Static Content
+
+  source: 
+    html-code: |
+      <!-- =========================================
+           B.A.D.R REACTOR SECURITY GATE
+      ========================================= -->
+      
+      <div id="reactorGate" class="reactor-gate">
+      
+        <!-- REACTOR CORE -->
+        <div class="reactor-core">
+      
+          <div class="reactor-glow"></div>
+      
+          <div class="reactor-ring"></div>
+          <div class="reactor-ring small"></div>
+      
+          <img
+            src="r/elwagha50/203/files/static/v364/icons/app-icon-512.png"
+            class="reactor-icon"
+            alt=""
+          >
+      
+        </div>
+      
+        <!-- DOORS -->
+        <div class="reactor-door reactor-left"></div>
+        <div class="reactor-door reactor-right"></div>
+      
+      </div>
+      
+      
+      <style>
+      
+      /* =================================================
+         APEX LOGIN VISIBILITY CONTROL
+      ================================================= */
+      
+      .t-Login-container{
+          position:relative;
+          z-index:1;
+      }
+      
+      body.reactor-active .t-Login-container{
+          opacity:0;
+      }
+      
+      
+      /* =================================================
+         REACTOR GATE
+      ================================================= */
+      
+      .reactor-gate{
+      
+          position:fixed;
+          inset:0;
+      
+          z-index:999999;
+      
+          overflow:hidden;
+          pointer-events:none;
+      
+          background:
+            radial-gradient(circle at center,#041a22,#010409 75%);
+      }
+      
+      
+      /* =================================================
+         REACTOR CORE (HIDDEN UNTIL REVEAL)
+      ================================================= */
+      
+      .reactor-core{
+      
+          position:absolute;
+      
+          top:50%;
+          left:50%;
+      
+          transform:translate(-50%,-50%) scale(.95);
+      
+          width:180px;
+          height:180px;
+      
+          display:flex;
+          align-items:center;
+          justify-content:center;
+      
+          opacity:0;
+      
+          transition:
+              opacity .35s ease,
+              transform .35s ease;
+      
+      }
+      
+      
+      /* reveal core */
+      
+      .gate-reveal .reactor-core{
+      
+          opacity:1;
+          transform:translate(-50%,-50%) scale(1);
+      
+      }
+      
+      
+      /* =================================================
+         PLASMA GLOW
+      ================================================= */
+      
+      .reactor-glow{
+      
+          position:absolute;
+      
+          width:320px;
+          height:320px;
+      
+          border-radius:50%;
+      
+          background:
+            radial-gradient(circle,
+            rgba(0,255,255,.4),
+            rgba(0,255,255,.1),
+            transparent 70%);
+      
+          filter:blur(35px);
+      
+          animation:reactorPulse 2.2s ease-in-out infinite;
+      
+      }
+      
+      
+      /* =================================================
+         REACTOR RINGS
+      ================================================= */
+      
+      .reactor-ring{
+      
+          position:absolute;
+      
+          width:180px;
+          height:180px;
+      
+          border-radius:50%;
+      
+          border:2px solid rgba(0,255,255,.5);
+      
+          box-shadow:
+              0 0 30px rgba(0,255,255,.8),
+              inset 0 0 25px rgba(0,255,255,.4);
+      
+          animation:spin 7s linear infinite;
+      
+      }
+      
+      .reactor-ring.small{
+      
+          width:140px;
+          height:140px;
+      
+          border-color:rgba(0,255,255,.35);
+      
+          animation:spinReverse 10s linear infinite;
+      
+      }
+      
+      
+      /* =================================================
+         ICON
+      ================================================= */
+      
+      .reactor-icon{
+      
+          width:92px;
+          height:92px;
+      
+          display:block;
+      
+          filter:
+              drop-shadow(0 0 18px rgba(0,255,255,1))
+              drop-shadow(0 0 35px rgba(0,255,255,.7));
+      
+      }
+      
+      
+      /* =================================================
+         DOORS
+      ================================================= */
+      
+      .reactor-door{
+      
+          position:absolute;
+      
+          top:0;
+          bottom:0;
+      
+          width:50%;
+      
+          z-index:50;
+      
+          transform:translateX(0);
+      
+          background:
+              linear-gradient(
+                  180deg,
+                  #0f172a,
+                  #020617
+              );
+      
+          transition:transform 1.7s cubic-bezier(.7,0,.2,1);
+      
+      }
+      
+      
+      /* metal texture */
+      
+      .reactor-door:before{
+      
+          content:"";
+      
+          position:absolute;
+          inset:0;
+      
+          background:
+              repeating-linear-gradient(
+                  0deg,
+                  rgba(255,255,255,.03),
+                  rgba(255,255,255,.03) 2px,
+                  transparent 2px,
+                  transparent 70px
+              );
+      
+      }
+      
+      
+      /* =================================================
+         SEAM LIGHT
+      ================================================= */
+      
+      .reactor-left::after,
+      .reactor-right::after{
+      
+          content:"";
+      
+          position:absolute;
+      
+          top:0;
+          bottom:0;
+      
+          width:3px;
+      
+          background:
+              linear-gradient(
+                  to bottom,
+                  transparent,
+                  rgba(0,255,255,1),
+                  transparent
+              );
+      
+          box-shadow:
+              0 0 25px rgba(0,255,255,1),
+              0 0 45px rgba(0,255,255,.6);
+      
+          animation:seamPulse 1.4s infinite;
+      
+      }
+      
+      .reactor-left::after{ right:0; }
+      .reactor-right::after{ left:0; }
+      
+      
+      /* LEFT DOOR */
+      
+      .reactor-left{
+      
+          left:0;
+      
+          box-shadow:
+              inset -100px 0 140px rgba(0,0,0,.9),
+              inset -2px 0 0 rgba(0,255,255,.35);
+      
+      }
+      
+      
+      /* RIGHT DOOR */
+      
+      .reactor-right{
+      
+          right:0;
+      
+          box-shadow:
+              inset 100px 0 140px rgba(0,0,0,.9),
+              inset 2px 0 0 rgba(0,255,255,.35);
+      
+      }
+      
+      
+      /* =================================================
+         OPEN STATE
+      ================================================= */
+      
+      .gate-open .reactor-left{
+          transform:translateX(-100%);
+      }
+      
+      .gate-open .reactor-right{
+          transform:translateX(100%);
+      }
+      
+      
+      /* =================================================
+         ANIMATIONS
+      ================================================= */
+      
+      @keyframes spin{
+          from{ transform:rotate(0deg); }
+          to{ transform:rotate(360deg); }
+      }
+      
+      @keyframes spinReverse{
+          from{ transform:rotate(360deg); }
+          to{ transform:rotate(0deg); }
+      }
+      
+      @keyframes reactorPulse{
+      
+          0%{ transform:scale(.9); opacity:.6; }
+      
+          50%{ transform:scale(1.2); opacity:1; }
+      
+          100%{ transform:scale(.9); opacity:.6; }
+      
+      }
+      
+      @keyframes seamPulse{
+      
+          0%{ opacity:.6; }
+      
+          50%{ opacity:1; }
+      
+          100%{ opacity:.6; }
+      
+      }
+      
+      
+      /* slight camera shake */
+      
+      .gate-open{
+      
+          animation:reactorShake .35s ease-in-out;
+      
+      }
+      
+      @keyframes reactorShake{
+      
+          0%{ transform:translate(0); }
+          25%{ transform:translate(-2px,1px); }
+          50%{ transform:translate(2px,-1px); }
+          75%{ transform:translate(-1px,2px); }
+          100%{ transform:translate(0); }
+      
+      }
+      
+      </style>
+      
+      
+      <script>
+      
+      /* =========================================
+         BADR REACTOR BOOT SEQUENCE
+      ========================================= */
+      
+      document.body.classList.add("reactor-active");
+      
+      const gate  = document.getElementById("reactorGate");
+      const login = document.querySelector(".t-Login-container");
+      
+      window.addEventListener("load", function(){
+      
+          /* reveal reactor core */
+      
+          setTimeout(function(){
+      
+              gate.classList.add("gate-reveal");
+      
+          },400);
+      
+      
+          /* open doors */
+      
+          setTimeout(function(){
+      
+              gate.classList.add("gate-open");
+      
+              document.body.classList.remove("reactor-active");
+      
+              if(login){
+                  login.style.transition="opacity .6s";
+                  login.style.opacity="1";
+              }
+      
+          },1300);
+      
+      
+          /* remove gate and focus username */
+      
+          setTimeout(function(){
+      
+              gate.remove();
+      
+              const username = document.querySelector("#P9999_USERNAME");
+      
+              if(username){
+                  username.focus();
+              }
+      
+          },3000);
+      
+      });
+      
+      </script>
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Below Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: B.A.D.R Login ===============================
+  id: 149832820373498023751
+  identification: 
+    name: B.A.D.R Login
+    title: مفاعل بيانات بليتز أرمادا
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    row-css-classes: 
+    - BADRLOGIN
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    column-css-classes: 
+    - BADRLOGIN
+
+  appearance: 
+    template: Login
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  image: 
+    file-url: '#APP_FILES#icons/app-icon-512.png'
+
+  advanced: 
+    static-id: BADRLOGIN
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P9999_USERNAME ===========================
+  id: 149832820873270023754
+  identification: 
+    name: P9999_USERNAME
+    type: Text Field
+
+  label: 
+    label: اسم المستخدم
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: B.A.D.R Login # 149832820373498023751
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-user
+    width: 30
+    value-placeholder: اسم المستخدم
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P9999_PASSWORD ===========================
+  id: 149832821291471023756
+  identification: 
+    name: P9999_PASSWORD
+    type: Password
+
+  label: 
+    label: كلمة المرور
+    alignment: Left
+
+  settings: 
+    submit-when-enter-pressed: true
+
+  layout: 
+    sequence: 20
+    region: B.A.D.R Login # 149832820373498023751
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-key
+    width: 30
+    value-placeholder: كلمة المرور
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P9999_REMEMBER ===========================
+  id: 149832821609664023757
+  identification: 
+    name: P9999_REMEMBER
+    type: Checkbox
+
+  label: 
+    label: حفظ اسم المستخدم
+    alignment: Left
+
+  settings: 
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: B.A.D.R Login # 149832820373498023751
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: apex_authentication.persistent_cookies_enabled
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: Allowlist for a-Z, 0-9 and space
+
+buttons: 
+- # ====== Button: LOGIN =======================================
+  id: 149832822063728023758
+  identification: 
+    button-name: LOGIN
+    label: تسجيل الدخول
+
+  layout: 
+    sequence: 40
+    region: B.A.D.R Login # 149832820373498023751
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - login_btn
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+processes: 
+- # ====== Process: Login ======================================
+  id: 149832822487150023759
+  identification: 
+    name: Login
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      apex_authentication.login(
+          p_username => :P9999_USERNAME,
+          p_password => :P9999_PASSWORD
+          );
+      
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Set Username Cookie ========================
+  id: 149832822853615023760
+  identification: 
+    name: Set Username Cookie
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      apex_authentication.send_login_username_cookie (
+          p_username => lower(:P9999_USERNAME),
+          p_consent  => :P9999_REMEMBER = 'Y' );
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Get Username Cookie ========================
+  id: 149832823274202023761
+  identification: 
+    name: Get Username Cookie
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      :P9999_USERNAME := apex_authentication.get_login_username_cookie;
+      :P9999_REMEMBER := case when :P9999_USERNAME is not null then 'Y' end;
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Clear Page(s) Cache ========================
+  id: 149832823621399023761
+  identification: 
+    name: Clear Page(s) Cache
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear all Items on the Current Page
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+

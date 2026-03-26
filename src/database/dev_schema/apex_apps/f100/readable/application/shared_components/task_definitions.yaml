@@ -1,0 +1,390 @@
+---
+- # ====== Task Definition: Wait for Check-Out =================
+  id: 187744750407958687
+  identification: 
+    name: Wait for Check-Out
+
+  settings: 
+    subject: Wait until employee checks out
+    task-type: Approval Task
+    initiator-can-complete: Y
+    priority: 3-Medium
+    details-page: 
+      url: 'f?p=&APP_ID.:221:&SESSION.::&DEBUG.:RP,221:P221_TASK_ID:&TASK_ID.'
+      page: 221
+      clear-cache: RP,221
+      values: 
+        p221_task_id: '&TASK_ID.'
+
+  deadline: 
+    due-on-type: None
+
+  source: 
+    table-owner: Parsing Schema
+
+  advanced: 
+    static-id: WAIT_FOR_CHECK_OUT
+
+  parameters: 
+  - # ====== Parameter: User Id ==================================
+    id: 187745975956944657
+    identification: 
+      static-id: USER_ID
+
+    label: 
+      label: User Id
+
+    value: 
+      data-type: String
+      required: true
+
+    advanced: 
+      show-on-task-details: false
+      updatable: false
+
+  - # ====== Parameter: Checkin Disabled =========================
+    id: 187746341944944655
+    identification: 
+      static-id: CHECKIN_DISABLED
+
+    label: 
+      label: Checkin Disabled
+
+    value: 
+      data-type: String
+      required: false
+
+    advanced: 
+      show-on-task-details: false
+      updatable: false
+
+  - # ====== Parameter: Checkout Disabled ========================
+    id: 187746794935944654
+    identification: 
+      static-id: CHECKOUT_DISABLED
+
+    label: 
+      label: Checkout Disabled
+
+    value: 
+      data-type: String
+      required: false
+
+    advanced: 
+      show-on-task-details: false
+      updatable: false
+
+  - # ====== Parameter: ATTEND_IDId ==============================
+    id: 189918783984048635
+    identification: 
+      static-id: ATTEND_ID
+
+    label: 
+      label: ATTEND_IDId
+
+    value: 
+      data-type: String
+      required: true
+
+    advanced: 
+      show-on-task-details: true
+      updatable: false
+
+  actions: 
+  - # ====== Action: when creeat =================================
+    id: 189918508934059839
+    identification: 
+      name: when creeat
+      type: Execute Code
+
+    source: 
+      location: Local Database
+      language: PL/SQL
+      pl/sql-code: |
+        BEGIN
+            UPDATE AS_ATTENDANCE
+               SET TASK_ID = :APEX$TASK_ID  
+             WHERE ATTENDANCE_ID = :ATTEND_ID;
+        
+            COMMIT;
+        END;
+        
+
+    error-handling: 
+      log-message-type: None
+
+    execution: 
+      on-event: Create
+      sequence: 10
+
+    error: 
+      stop-execution-on-error: true
+
+  participants: 
+  - # ====== Participant: Potential Owner ========================
+    id: 189448215400844643
+    identification: 
+      type: Potential Owner
+
+    value: 
+      type: SQL Query
+      sql-query: 'SELECT UPPER( USERNAME ) FROM BS_EMPLOYEES WHERE  ID=:USER_ID'
+
+  - # ====== Participant: Business Administrator =================
+    id: 190056868165357776
+    identification: 
+      type: Business Administrator
+
+    value: 
+      type: SQL Query
+      sql-query: SELECT UPPER( USERNAME ) FROM BS_EMPLOYEES WHERE dept_leader_yn = 'Y';
+
+- # ====== Task Definition: TEST ===============================
+  id: 187956903236628587
+  identification: 
+    name: TEST
+
+  settings: 
+    subject: NSN
+    task-type: Approval Task
+    initiator-can-complete: Y
+    priority: 3-Medium
+    details-page: 
+      url: 'f?p=&APP_ID.:232:&SESSION.::&DEBUG.:RP,232:P232_TASK_ID:&TASK_ID.'
+      page: 232 # Task Details
+      clear-cache: RP,232
+      values: 
+        p232_task_id: '&TASK_ID.'
+
+  deadline: 
+    due-on-type: None
+
+  source: 
+    table-owner: Parsing Schema
+
+  advanced: 
+    static-id: TEST
+
+  participants: 
+  - # ====== Participant: Business Administrator =================
+    id: 187957301577623577
+    identification: 
+      type: Business Administrator
+
+    value: 
+      type: Static Value
+      static-value: AMR
+
+  - # ====== Participant: Potential Owner ========================
+    id: 187999981454468588
+    identification: 
+      type: Potential Owner
+
+    value: 
+      type: Static Value
+      static-value: AMR
+
+- # ====== Task Definition: إعداد العرض المالي =================
+  id: 264384440448513428
+  identification: 
+    name: إعداد العرض المالي
+
+  settings: 
+    subject: مطلوب تعين مسؤول عمليات على الحجز لاعداد العرض المالي لحجز &RESERVATION_ID.
+    task-type: Action Task
+    initiator-can-complete: N
+    priority: 3-Medium
+    details-page: 
+      url: 'f?p=&APP_ID.:182:&SESSION.::&DEBUG.:RP,182:P182_TASK_ID:&TASK_ID.'
+      page: 182 # Task Details
+      clear-cache: RP,182
+      values: 
+        p182_task_id: '&TASK_ID.'
+
+  deadline: 
+    due-on-type: None
+
+  source: 
+    table-owner: WKSP_BLITZLAYALI333
+
+  advanced: 
+    static-id: ASSIGNOPERATIONS
+
+  parameters: 
+  - # ====== Parameter: كود الحجز ================================
+    id: 264557052065303759
+    identification: 
+      static-id: RESERVATION_ID
+
+    label: 
+      label: كود الحجز
+
+    value: 
+      data-type: String
+      required: true
+
+    advanced: 
+      show-on-task-details: true
+      updatable: false
+
+  - # ====== Parameter: مسؤول المبيعات ===========================
+    id: 264595278070836322
+    identification: 
+      static-id: SALES_USER
+
+    label: 
+      label: مسؤول المبيعات
+
+    value: 
+      data-type: String
+      required: true
+
+    advanced: 
+      show-on-task-details: true
+      updatable: false
+
+  - # ====== Parameter: مسؤول العمليات ===========================
+    id: 264603636704919114
+    identification: 
+      static-id: OPS_USER
+
+    label: 
+      label: مسؤول العمليات
+
+    value: 
+      data-type: String
+      required: true
+
+    advanced: 
+      show-on-task-details: true
+      updatable: true
+
+  actions: 
+  - # ====== Action: قبول المهمة =================================
+    id: 264556728888301366
+    identification: 
+      name: قبول المهمة
+      type: Execute Code
+
+    source: 
+      location: Local Database
+      language: PL/SQL
+      pl/sql-code: |
+        BEGIN
+          UPDATE HOTEL_RESERVATIONS
+          SET OPS_REP_ID = TO_NUMBER(:APP_USER_ID),
+              UPDATED = SYSTIMESTAMP,
+              UPDATED_BY = :APP_USER_ID,
+              STATUS = 'PENDINGOFFER'
+          WHERE RESERVATION_ID = :RESERVATION_ID;
+        END;
+        
+
+    error-handling: 
+      log-message-type: None
+
+    execution: 
+      on-event: Claim
+      sequence: 10
+
+    success-message: 
+      success-message: تم اضافتك كمسؤول عمليات على الحجز
+
+    error: 
+      stop-execution-on-error: true
+
+  - # ====== Action: تم تعين مسؤول عمليات ========================
+    id: 264594942054829078
+    identification: 
+      name: تم تعين مسؤول عمليات
+      type: Send Push Notification
+
+    settings: 
+      to: '&SALES_USER.'
+      title: تم تعين مسؤول العمليات &RESERVATION_ID.
+      body: المسؤول الحالي هو &OPS_USER.
+      link-target: 
+        url: 'f?p=&APP_ID.:HOTEL-RESERVATION-DETAILS:&SESSION.::&DEBUG.::P3_RESERVATION_ID:&RESERVATION_ID.'
+        page: HOTEL-RESERVATION-DETAILS
+        values: 
+          p3_reservation_id: '&RESERVATION_ID.'
+
+    error-handling: 
+      log-message-type: Success
+
+    execution: 
+      on-event: Claim
+      sequence: 20
+
+    success-message: 
+      success-message: تم ارسال اشعار الي مسؤول المبيعات
+
+    error: 
+      stop-execution-on-error: true
+
+  - # ====== Action: اتمام مهمة اعداد العرض المالي ===============
+    id: 264607801235371514
+    identification: 
+      name: اتمام مهمة اعداد العرض المالي
+      type: Send Push Notification
+
+    settings: 
+      to: '&SALES_USER.'
+      title: تم إعداد العرض المالي &RESERVATION_ID.
+      body: لقد تم إعداد العرض المالي الخاص بالعميل ويمكن الان ارسالة
+      link-target: 
+        url: 'f?p=&APP_ID.:HOTEL-RESERVATION-DETAILS:&SESSION.::&DEBUG.::P3_RESERVATION_ID:&RESERVATION_ID.#DOCUMENTS'
+        page: HOTEL-RESERVATION-DETAILS
+        values: 
+          p3_reservation_id: '&RESERVATION_ID.#DOCUMENTS'
+
+    error-handling: 
+      log-message-type: None
+
+    execution: 
+      on-event: Complete
+      sequence: 30
+
+    error: 
+      stop-execution-on-error: true
+
+  - # ====== Action: Push Notifiaction ===========================
+    id: 264615439843574384
+    identification: 
+      name: Push Notifiaction
+      type: Execute Code
+
+    source: 
+      location: Local Database
+      language: PL/SQL
+      pl/sql-code: apex_pwa.push_queue;
+
+    error-handling: 
+      log-message-type: None
+
+    execution: 
+      on-event: Claim
+      sequence: 40
+
+    error: 
+      stop-execution-on-error: true
+
+  participants: 
+  - # ====== Participant: Potential Owner ========================
+    id: 264461206340530684
+    identification: 
+      type: Potential Owner
+
+    value: 
+      type: SQL Query
+      sql-query: select upper(username) from bs_employees where department_id = 4
+
+  - # ====== Participant: Business Administrator =================
+    id: 264461636577530685
+    identification: 
+      type: Business Administrator
+
+    value: 
+      type: Static Value
+      static-value: AMR
+

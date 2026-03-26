@@ -1,0 +1,1414 @@
+---
+# ====== Page: Trip Detail View ==============================
+id: 252
+identification: 
+  name: Trip Detail View
+  alias: TRIP-DETAIL-VIEW
+  title: Trip Detail View
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  file-urls: 
+  - function updateFinanceItems() {
+  - '    let invoice = document.getElementById("edit_invoice")?.value || 0;'
+  - '    let expenses = document.getElementById("edit_expenses")?.value || 0;'
+  - null
+  - '    $s("P252_EDIT_INVOICE", invoice);'
+  - '    $s("P252_EDIT_EXPENSES", expenses);'
+  - '}'
+  - null
+
+css: 
+  file-urls: 
+  - null
+  - null
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Disabled
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Trip Detail =================================
+  id: 191323838028545451
+  identification: 
+    name: Trip Detail
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html CLOB := '';
+          l_trip_id VARCHAR2(50) := :P252_TRIP_ID;
+      
+          -- Trip fields  
+          v_date DATE;
+          v_car VARCHAR2(200);
+          v_driver VARCHAR2(200);
+          v_currency VARCHAR2(10);
+          v_invoice_amount NUMBER;
+          v_exp_egp NUMBER;
+          v_driver_payout NUMBER;
+      BEGIN
+          /* ===========================================
+             1. Load trip data
+             =========================================== */
+          SELECT 
+              t.EXECUTED_DATE,
+              c.car_name || ' - ' || c.license_plate AS car_display,
+              COALESCE(d.driver_name, s.supplier_name, '—') AS driver_name,
+              t.TRIP_CURRENCY,
+              t.TOTAL_INVOICE_CURRENCY,
+              t.TRIP_EXPENSES_EGP,
+              t.TOTAL_DRIVER_PAYOUT_EGP
+          INTO 
+              v_date, v_car, v_driver, v_currency,
+              v_invoice_amount, v_exp_egp, v_driver_payout
+          FROM LIMO_TRIPS_TRACKER_V2 t
+          LEFT JOIN COMPANY_REGISTERED_CARS c 
+              ON c.id = t.used_car_id
+          LEFT JOIN COMPANY_DRIVERS d 
+              ON d.driver_id = t.driver_id
+          LEFT JOIN suppliers s 
+              ON TO_CHAR(s.supplier_id)=t.driver_id
+          WHERE t.trip_id = l_trip_id;
+      
+          /* ===========================================
+             2. Start HTML
+             =========================================== */
+          l_html :=
+          '<div class="p-5 bg-white rounded-xl shadow text-sm space-y-4">
+      
+              <h2 class="text-lg font-bold text-gray-800">📄 تفاصيل الرحلة</h2>
+      
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+                  <div>
+                      <div class="label">📆 التاريخ</div>
+                      <div class="value">'||TO_CHAR(v_date, 'DD Mon YYYY')||'</div>
+                  </div>
+      
+                  <div>
+                      <div class="label">🚗 السيارة</div>
+                      <div class="value">'||v_car||'</div>
+                  </div>
+      
+                  <div>
+                      <div class="label">🧑‍✈️ السائق</div>
+                      <div class="value">'||v_driver||'</div>
+                  </div>
+      
+                  <div>
+                      <div class="label">💰 عملة الرحلة</div>
+                      <div class="value">'||v_currency||'</div>
+                  </div>
+      
+              </div>
+      
+              <hr>
+      
+              <h3 class="text-md font-semibold">✏️ تعديل البيانات المالية</h3>
+      
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+                  <div>
+                      <label class="font-medium">🎯 قيمة الرحلة</label>
+                      <input type="number" id="edit_invoice"
+                             value="'||v_invoice_amount||'"
+                             class="apex-item-text p-2 w-full border rounded">
+                  </div>
+      
+                  <div>
+                      <label class="font-medium">🔻 مصروفات الرحلة (EGP)</label>
+                      <input type="number" id="edit_expenses"
+                             value="'||v_exp_egp||'"
+                             class="apex-item-text p-2 w-full border rounded">
+                  </div>
+      
+              </div>
+      
+              <hr>
+      
+              <h3 class="text-md font-semibold">🪙 تحصيلات الرحلة</h3>
+              <div">';
+      
+          /* ===========================================
+             3. Collections grouped by currency
+             =========================================== */
+          FOR c IN (
+              SELECT currency, SUM(amount_collected) AS total_amount
+              FROM limo_trip_collections
+              WHERE trip_id = l_trip_id
+              GROUP BY currency
+          ) LOOP
+              l_html := l_html ||
+              '<div class="p-2 bg-gray-50 rounded border">
+                  <b>'||c.currency||'</b> : '||TO_CHAR(c.total_amount, 'FM999G999D00')||'
+              </div>';
+          END LOOP;
+      
+          /* ===========================================
+             4. Driver payout and net
+             =========================================== */
+          l_html := l_html ||
+              '<hr>
+      
+               <h3 class="text-md font-semibold">💼 المستحقات</h3>
+      
+               <div class="space-y-2">
+      
+                  <div class="p-2 bg-blue-50 border rounded">
+                      <b>إجمالي مستحقات السائق:</b> '
+                      ||TO_CHAR(v_driver_payout, 'FM999G999D00')||' EGP
+                  </div>
+      
+                  <div class="p-2 bg-green-50 border rounded">
+                      <b>الصافي (رحلة - مصروفات):</b> '
+                      ||TO_CHAR(v_invoice_amount - v_exp_egp, 'FM999G999D00')||'
+                  </div>
+      
+               </div>
+      
+               <hr>
+      
+               <div class="flex gap-3 mt-4">
+      
+                  <!-- Save Button -->
+                  <button class="t-Button t-Button--icon t-Button--hot"
+                          onclick="updateFinanceItems(); apex.event.trigger(document, ''SAVE_TRIP_FINANCE'');">
+                      💾 حفظ التعديلات
+                  </button>
+      
+                  <!-- Close Button -->
+                  <button class="t-Button t-Button--danger"
+                          onclick="apex.event.trigger(document, ''CLOSE_TRIP'')">
+                      ✔ إغلاق الرحلة
+                  </button>
+      
+               </div>
+      
+          </div>';
+      
+          RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Trip Header =================================
+  id: 195904819085899284
+  identification: 
+    name: Trip Header
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html CLOB := '';
+      
+          /* ===== Meta ===== */
+          l_trip_date DATE;
+      
+          /* ===== Trip values ===== */
+          l_trip_price             NUMBER := 0;
+          l_trip_currency          VARCHAR2(10);
+          l_added_services_egp     NUMBER := 0;
+          l_total_invoice_egp      NUMBER := 0;
+          l_total_invoice_currency NUMBER := 0;
+      
+          /* ===== Collections ===== */
+          l_collected_egp           NUMBER := 0;
+          l_collections_by_currency CLOB := '';
+      
+          /* ===== Settlement ===== */
+          l_total_expenses_egp      NUMBER := 0;
+          l_total_driver_payout_egp NUMBER := 0;
+          l_company_due_egp         NUMBER := 0;
+          l_company_pay_driver_egp  NUMBER := 0;
+          l_egp_available           NUMBER := 0;
+      
+          /* ===== Alert ===== */
+          l_invoice_not_fully_collected BOOLEAN := FALSE;
+      
+      BEGIN
+          /* =====================================================
+             1. Trip core values
+             ===================================================== */
+          SELECT
+              EXECUTED_DATE
+              -- NVL(TRIP_PRICE,0)
+              -- TRIP_CURRENCY
+              -- NVL(ADDED_SERVICES_EGP,0)
+              -- NVL(TOTAL_INVOICE_EGP,0)
+              -- NVL(TOTAL_INVOICE_CURRENCY,0)
+              -- NVL(TRIP_EXPENSES_EGP,0)
+              -- NVL(TOTAL_DRIVER_PAYOUT_EGP,0)
+          INTO
+              l_trip_date
+              -- l_trip_price,
+              -- l_trip_currency,
+              -- l_added_services_egp,
+              -- l_total_invoice_egp,
+              -- l_total_invoice_currency,
+              -- l_total_expenses_egp,
+              -- l_total_driver_payout_egp
+          FROM LIMO_TRIPS_TRACKER_V2
+          WHERE TRIP_ID = :P252_TRIP_ID;
+      
+          /* =====================================================
+             2. Collections (ONE scan only)
+             ===================================================== */
+      /* =====================================================
+         2. Collections (optimized & correct)
+         ===================================================== */
+          SELECT
+              NVL(SUM(total_egp),0),
+              LISTAGG(
+                  '<span class="currency-line">'||
+                  TO_CHAR(total_amount,'FM999G999G999D00')||
+                  ' '||currency||'</span>',
+                  ''
+              ) WITHIN GROUP (ORDER BY currency)
+          INTO
+              l_collected_egp,
+              l_collections_by_currency
+          FROM (
+              SELECT
+                  CURRENCY,
+                  SUM(AMOUNT_COLLECTED) AS total_amount,
+                  SUM(AMOUNT_EGP)       AS total_egp
+              FROM LIMO_TRIP_COLLECTIONS
+              WHERE TRIP_ID = :P252_TRIP_ID
+              GROUP BY CURRENCY
+          );
+      
+      
+          /* =====================================================
+             3. Invoice completion check
+             ===================================================== */
+          IF l_collected_egp < l_total_invoice_egp THEN
+              l_invoice_not_fully_collected := TRUE;
+          END IF;
+      
+          /* =====================================================
+             4. Settlement logic
+             ===================================================== */
+          l_egp_available :=
+                l_collected_egp
+              - l_total_driver_payout_egp
+              - l_total_expenses_egp;
+      
+          IF l_egp_available >= 0 THEN
+              l_company_due_egp        := l_egp_available;
+              l_company_pay_driver_egp := 0;
+          ELSE
+              l_company_due_egp        := 0;
+              l_company_pay_driver_egp := ABS(l_egp_available);
+          END IF;
+      
+          /* =====================================================
+             5. Render HTML
+             ===================================================== */
+          l_html := '
+          <div class="settlement-box">
+      
+              <div class="settlement-title">
+                  ملخص تسوية الرحلة
+              </div>
+      
+              <div class="settlement-sub">
+                  كود الرحلة: <b>'||:P252_TRIP_ID||'</b><br>
+                  تاريخ التنفيذ: '||TO_CHAR(l_trip_date,'DD Mon YYYY')||'
+              </div>';
+      
+          IF l_invoice_not_fully_collected THEN
+              l_html := l_html || '
+              <div class="settle-warning" style="margin-bottom:12px;">
+                  ⚠️ لم يتم تحصيل كامل قيمة فاتورة الرحلة.<br>
+                  إجمالي الفاتورة: <b>'||
+                      TO_CHAR(l_total_invoice_egp,'FM999G999G999D00')||' EGP</b><br>
+                  إجمالي المحصل: <b>'||
+                      TO_CHAR(l_collected_egp,'FM999G999G999D00')||' EGP</b>
+              </div>';
+          END IF;
+      
+          l_html := l_html || '
+              <table class="settlement-table">
+      
+                  <tr>
+                      <td class="label">سعر الرحلة الأساسي</td>
+                      <td class="value">'||
+                          TO_CHAR(l_trip_price,'FM999G999G999D00')||' '||l_trip_currency||'
+                      </td>
+                  </tr>
+      
+                  <tr>
+                      <td class="label">الخدمات الإضافية</td>
+                      <td class="value">'||
+                          TO_CHAR(l_added_services_egp,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>
+      
+                  <tr class="total-row">
+                      <td class="label">إجمالي فاتورة الرحلة</td>
+                      <td class="value">'||
+                          TO_CHAR(l_total_invoice_currency,'FM999G999G999D00')||
+                          ' '||l_trip_currency||'
+                      </td>
+                  </tr>
+      
+                  <tr>
+                      <td class="label">إجمالي التحصيلات</td>
+                      <td class="value">'||NVL(l_collections_by_currency,'—')||'</td>
+                  </tr>
+      
+                  <tr>
+                      <td class="label">مصروفات التشغيل (تُعاد للسائق)</td>
+                      <td class="value negative">'||
+                          TO_CHAR(l_total_expenses_egp,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>
+      
+                  <tr>
+                      <td class="label">مستحق السائق</td>
+                      <td class="value">'||
+                          TO_CHAR(l_total_driver_payout_egp,'FM999G999G999D00')||' EGP
+                      </td>
+                  </tr>
+      
+                  <tr class="total-row">
+                      <td class="label">نتيجة التسوية النهائية</td>
+                      <td class="value '||
+                      CASE WHEN l_company_pay_driver_egp > 0 THEN 'negative' ELSE 'positive' END||'">'||
+                      CASE
+                          WHEN l_company_pay_driver_egp > 0 THEN
+                              'على الشركة دفع '||
+                              TO_CHAR(l_company_pay_driver_egp,'FM999G999G999D00')||' EGP للسائق'
+                          ELSE
+                              'على السائق تسليم '||
+                              TO_CHAR(l_company_due_egp,'FM999G999G999D00')||' EGP للشركة'
+                      END||'</td>
+                  </tr>
+      
+              </table>
+      
+              <div class="note">
+                  * المقارنة الخاصة باكتمال التحصيل تتم بالـ EGP لأغراض محاسبية فقط.
+              </div>
+      
+          </div>';
+      
+          RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: true
+
+- # ====== Region: EditActions =================================
+  id: 195904900343899285
+  identification: 
+    name: EditActions
+    title: اعدادات التحكم
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--stickToBottom
+    - t-Form--standardPadding
+    - t-Form--stretchInputs
+    - margin-right-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Expenses Report ========================
+  id: 195905311475899289
+  identification: 
+    name: Trip Expenses Report
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+          l_html            CLOB := '';
+          l_grand_total_egp NUMBER := 0;
+      BEGIN
+          /* =====================================================
+             HTML + CSS
+             ===================================================== */
+          l_html := '
+          <style>
+              .settlement-box {
+                  max-width: 760px;
+                  margin: auto;
+                  background: #ffffff;
+                  border: 1px solid #e5e7eb;
+                  border-radius: 12px;
+                  padding: 20px;
+                  direction: rtl;
+                  font-family: Tahoma, Arial;
+              }
+              .settlement-title {
+                  font-size: 16px;
+                  font-weight: 800;
+                  margin-bottom: 14px;
+              }
+              table.settlement-table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-size: 13px;
+              }
+              table.settlement-table th {
+                  background: #f9fafb;
+                  color: #374151;
+                  font-weight: 700;
+                  text-align: right;
+                  padding: 8px;
+                  border-bottom: 1px solid #e5e7eb;
+              }
+              table.settlement-table td {
+                  padding: 8px;
+                  border-bottom: 1px solid #e5e7eb;
+                  vertical-align: top;
+              }
+              table.settlement-table td.amount {
+                  text-align: left;
+                  font-weight: 700;
+                  color: #b91c1c;
+                  white-space: nowrap;
+              }
+              table.settlement-table td.breakdown {
+                  font-size: 12px;
+                  color: #374151;
+                  line-height: 1.6;
+              }
+              tr.total-row td {
+                  border-top: 2px solid #111827;
+                  font-weight: 800;
+                  background: #f9fafb;
+              }
+          </style>
+      
+          <div class="settlement-box">
+              <div class="settlement-title"> 🔻 تفصيل مصروفات الرحلة </div>
+      
+              <table class="settlement-table">
+                  <thead>
+                      <tr>
+                          <th style="width:140px;">📆 تاريخ التشغيل</th>
+                          <th>تفصيل المصروفات</th>
+                          <th style="width:160px;text-align:left;">إجمالي اليوم (EGP)</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+          ';
+      
+          /* =====================================================
+             Expenses grouped by day (OPTIMIZED – single query)
+             ===================================================== */
+          FOR r IN (
+              SELECT
+                  TRUNC(e.EXPENSE_DATE) AS EXPENSE_DAY,
+                  SUM(e.AMOUNT * NVL(e.EXCHANGE_RATE,1)) AS TOTAL_EXPENSE_EGP,
+                  LISTAGG(
+                      '• ' || et.EXPENSE_TYPE_NAME || ': ' ||
+                      TO_CHAR(e.AMOUNT,'FM999G999G999D00') || ' ' || e.CURRENCY,
+                      '<br>'
+                  ) WITHIN GROUP (
+                      ORDER BY NVL(et.SORTNO,999), et.EXPENSE_TYPE_NAME
+                  ) AS EXPENSE_BREAKDOWN
+              FROM LIMO_TRIP_EXPENSES e
+              LEFT JOIN LIMO_EXPENSE_TYPES et
+                  ON et.EXPENSE_TYPE_CODE = e.EXPENSE_TYPE
+              WHERE e.TRIP_ID = :P252_TRIP_ID
+                AND e.EXPENSE_DATE IS NOT NULL
+                AND e.AMOUNT > 0
+              GROUP BY TRUNC(e.EXPENSE_DATE)
+              ORDER BY EXPENSE_DAY
+          ) LOOP
+      
+              l_grand_total_egp := l_grand_total_egp + NVL(r.TOTAL_EXPENSE_EGP,0);
+      
+              l_html := l_html || '
+                  <tr>
+                      <td>'|| TO_CHAR(r.EXPENSE_DAY,'DD Mon YYYY') ||'</td>
+                      <td class="breakdown">'|| NVL(r.EXPENSE_BREAKDOWN,'—') ||'</td>
+                      <td class="amount">'||
+                          TO_CHAR(r.TOTAL_EXPENSE_EGP,'FM999G999G999D00') ||' EGP
+                      </td>
+                  </tr>';
+          END LOOP;
+      
+          /* =====================================================
+             Grand total
+             ===================================================== */
+          l_html := l_html || '
+                  <tr class="total-row">
+                      <td colspan="2">إجمالي المصروفات</td>
+                      <td class="amount">'||
+                          TO_CHAR(l_grand_total_egp,'FM999G999G999D00') ||' EGP
+                      </td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>';
+      
+          RETURN l_html;
+      END;
+      
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: true
+
+- # ====== Region: Trip AddServices Report =====================
+  id: 195905759792899293
+  identification: 
+    name: Trip AddServices Report
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE 
+          l_html CLOB := ''; 
+          l_grand_total_egp NUMBER := 0; 
+          l_totals_by_curr CLOB := ''; 
+      BEGIN 
+          /* ===================================================== Guard clause ===================================================== */ 
+          IF :P252_TRIP_ID IS NULL THEN 
+              RETURN ' <div class="settle-warning"> ⚠️ لا يوجد رقم رحلة محدد لعرض الخدمات الإضافية. </div>'; 
+          END IF; 
+      
+          /* ===================================================== Totals by currency (original currencies) ===================================================== */ 
+          BEGIN 
+              SELECT LISTAGG(
+                         '<span class="currency-pill">' || TO_CHAR(SUM(s.TOTAL_AMOUNT), 'FM999G999G999D00') || ' ' || s.CURRENCY || '</span>', ' '
+                     ) WITHIN GROUP (ORDER BY s.CURRENCY)
+              INTO l_totals_by_curr
+              FROM (
+                  SELECT s.CURRENCY,
+                         NVL(s.AMOUNT, NVL(s.QUANTITY,1)*NVL(s.RATE_PER_UNIT,0)) AS TOTAL_AMOUNT
+                  FROM LIMO_ADD_SERVICES s
+                  WHERE s.TRIP_ID = :P252_TRIP_ID
+                    AND NVL(s.AMOUNT, NVL(s.QUANTITY,1)*NVL(s.RATE_PER_UNIT,0)) > 0
+              ) s
+              GROUP BY s.CURRENCY; 
+          EXCEPTION 
+              WHEN NO_DATA_FOUND THEN 
+                  l_totals_by_curr := '—'; 
+          END; 
+      
+          /* ===================================================== HTML + CSS (Settlement Table Style) ===================================================== */ 
+          l_html := ' 
+          <style> 
+              .settlement-box { max-width: 760px; margin: auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; direction: rtl; font-family: Tahoma, Arial; } 
+              .settlement-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; } 
+              .settlement-sub { font-size: 12px; color: #6b7280; margin-bottom: 14px; line-height: 1.6; } 
+              .currency-pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; border: 1px solid #e5e7eb; background: #f9fafb; color: #111827; margin-left: 6px; white-space: nowrap; } 
+              table.settlement-table { width: 100%; border-collapse: collapse; font-size: 13px; } 
+              table.settlement-table th { background: #f9fafb; color: #374151; font-weight: 800; text-align: right; padding: 8px; border-bottom: 1px solid #e5e7eb; } 
+              table.settlement-table td { padding: 8px; border-bottom: 1px solid #e5e7eb; vertical-align: top; } 
+              table.settlement-table td.amount { text-align: left; font-weight: 800; color: #1f2937; white-space: nowrap; } 
+              table.settlement-table td.total-egp { text-align: left; font-weight: 900; color: #065f46; white-space: nowrap; } 
+              table.settlement-table td.breakdown { font-size: 12px; color: #374151; line-height: 1.7; } 
+              tr.total-row td { border-top: 2px solid #111827; font-weight: 900; background: #f9fafb; } 
+              .muted { color: #6b7280; font-size: 11px; } 
+              .settle-warning { padding: 16px; border-radius: 12px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; direction: rtl; font-family: Tahoma, Arial; } 
+          </style> 
+          <div class="settlement-box"> 
+              <div class="settlement-title">➕ تفصيل الخدمات الإضافية للرحلة</div> 
+              <div class="settlement-sub"> 
+                  <div class="muted">إجمالي الخدمات حسب العملة الأصلية: '||NVL(l_totals_by_curr,'—')||'</div> 
+              </div> 
+              <table class="settlement-table"> 
+                  <thead> 
+                      <tr> 
+                          <th style="width:140px;">📆 التاريخ</th> 
+                          <th>تفصيل الخدمات</th> 
+                          <th style="width:170px;text-align:left;">إجمالي اليوم (EGP)</th> 
+                      </tr> 
+                  </thead> 
+                  <tbody> 
+          '; 
+      
+          /* ===================================================== Loop – services grouped by working day ===================================================== */ 
+          FOR r IN (
+              SELECT s.SERVICE_DAY,
+                     SUM(s.TOTAL_EGP) AS TOTAL_DAY_EGP,
+                     LISTAGG(
+                         '• ' || NVL(st.SERVICE_TYPE_NAME, s.SERVICE_TYPE_CODE) ||
+                         CASE WHEN NVL(s.QUANTITY,0) > 0 OR NVL(s.RATE_PER_UNIT,0) > 0
+                              THEN ' — ' || TO_CHAR(NVL(s.QUANTITY,1),'FM999G999G999D00') || ' ' || NVL(s.UNIT_TYPE, st.UNIT_TYPE) || ' × ' || TO_CHAR(NVL(s.RATE_PER_UNIT,0),'FM999G999G999D00') || ' ' || s.CURRENCY
+                              ELSE ''
+                         END ||
+                         CASE WHEN s.SERVICE_DETAILS IS NOT NULL THEN ' <span class="muted">('||s.SERVICE_DETAILS||')</span>' ELSE '' END ||
+                         ' — <b>'|| TO_CHAR(s.TOTAL_AMOUNT,'FM999G999G999D00')||' '||s.CURRENCY||'</b>',
+                         '<br>'
+                     ) WITHIN GROUP (ORDER BY NVL(st.DISPLAY_ORDER,999), NVL(st.SERVICE_TYPE_NAME, s.SERVICE_TYPE_CODE)) AS SERVICES_BREAKDOWN
+              FROM (
+                  SELECT s.TRIP_ID,
+                         s.SERVICE_TYPE_CODE,
+                         s.SERVICE_DATE,
+                         s.CREATED,
+                         s.SERVICE_DETAILS,
+                         s.QUANTITY,
+                         s.RATE_PER_UNIT,
+                         s.CURRENCY,
+                         NVL(s.AMOUNT, NVL(s.QUANTITY,1)*NVL(s.RATE_PER_UNIT,0)) AS TOTAL_AMOUNT,
+                         NVL(s.AMOUNT_EGP, NVL(s.AMOUNT, NVL(s.QUANTITY,1)*NVL(s.RATE_PER_UNIT,0)) * NVL(s.EXCHANGE_RATE,1)) AS TOTAL_EGP,
+                         TRUNC(CAST(NVL(s.SERVICE_DATE, s.CREATED) AS DATE)) AS SERVICE_DAY,
+                         s.UNIT_TYPE
+                  FROM LIMO_ADD_SERVICES s
+                  WHERE s.TRIP_ID = :P252_TRIP_ID
+                    AND NVL(s.AMOUNT, NVL(s.QUANTITY,1)*NVL(s.RATE_PER_UNIT,0)) > 0
+              ) s
+              LEFT JOIN LIMO_ADDITIONAL_SERVICE_TYPES st ON st.SERVICE_TYPE_CODE = s.SERVICE_TYPE_CODE
+              GROUP BY s.SERVICE_DAY
+              ORDER BY s.SERVICE_DAY
+          ) LOOP
+              l_grand_total_egp := l_grand_total_egp + NVL(r.TOTAL_DAY_EGP,0); 
+              l_html := l_html || '
+                  <tr>
+                      <td>'||TO_CHAR(r.SERVICE_DAY,'DD Mon YYYY')||'</td>
+                      <td class="breakdown">'||NVL(r.SERVICES_BREAKDOWN,'—')||'</td>
+                      <td class="total-egp">'|| TO_CHAR(r.TOTAL_DAY_EGP,'FM999G999G999D00')||' EGP </td>
+                  </tr>';
+          END LOOP; 
+      
+          /* ===================================================== Grand total row ===================================================== */ 
+          l_html := l_html || '
+              <tr class="total-row">
+                  <td colspan="2">إجمالي الخدمات الإضافية (EGP)</td>
+                  <td class="total-egp">'|| TO_CHAR(l_grand_total_egp,'FM999G999G999D00')||' EGP </td>
+              </tr>
+              </tbody>
+          </table>
+          </div>';
+      
+          RETURN l_html; 
+      END;
+      
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: true
+
+- # ====== Region: Trip Collections Report =====================
+  id: 195905882516899294
+  identification: 
+    name: Trip Collections Report
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE 
+          l_html CLOB := ''; 
+          l_grand_total_egp NUMBER := 0; 
+          l_totals_by_currency CLOB := ''; 
+      BEGIN 
+          /* ===================================================== Guard clause ===================================================== */ 
+          IF :P252_TRIP_ID IS NULL THEN 
+              RETURN ' <div class="settle-warning"> ⚠️ لا يوجد رقم رحلة محدد لعرض التحصيلات. </div>'; 
+          END IF; 
+      
+          /* ===================================================== Totals by original currency ===================================================== */ 
+          BEGIN 
+              SELECT LISTAGG( 
+                         '<span class="currency-pill">' || TO_CHAR(SUM(c.AMOUNT_COLLECTED),'FM999G999G999D00') || ' ' || c.CURRENCY || '</span>', ' ' 
+                     ) WITHIN GROUP (ORDER BY c.CURRENCY) 
+              INTO l_totals_by_currency 
+              FROM LIMO_TRIP_COLLECTIONS c 
+              WHERE c.TRIP_ID = :P252_TRIP_ID 
+              GROUP BY c.CURRENCY; 
+          EXCEPTION 
+              WHEN NO_DATA_FOUND THEN 
+                  l_totals_by_currency := '—'; 
+          END; 
+      
+          /* ===================================================== HTML + CSS ===================================================== */ 
+          l_html := ' 
+          <style> 
+              .settlement-box { max-width: 760px; margin: auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; direction: rtl; font-family: Tahoma, Arial; } 
+              .settlement-title { font-size: 16px; font-weight: 800; margin-bottom: 8px; } 
+              .settlement-sub { font-size: 12px; color: #6b7280; margin-bottom: 14px; } 
+              .currency-pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; border: 1px solid #e5e7eb; background: #f9fafb; margin-left: 6px; white-space: nowrap; } 
+              table.settlement-table { width: 100%; border-collapse: collapse; font-size: 13px; } 
+              table.settlement-table th { background: #f9fafb; font-weight: 800; padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; } 
+              table.settlement-table td { padding: 8px; border-bottom: 1px solid #e5e7eb; vertical-align: top; } 
+              td.amount { text-align: left; font-weight: 800; white-space: nowrap; } 
+              td.total-egp { text-align: left; font-weight: 900; color: #065f46; white-space: nowrap; } 
+              td.breakdown { font-size: 12px; line-height: 1.7; } 
+              .pill-driver { background: #ecfeff; color: #0369a1; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; } 
+              .pill-office { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 800; } 
+              .muted { font-size: 11px; color: #6b7280; } 
+              tr.total-row td { border-top: 2px solid #111827; font-weight: 900; background: #f9fafb; } 
+              .settle-warning { padding: 16px; border-radius: 12px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; direction: rtl; font-family: Tahoma, Arial; } 
+          </style> 
+          <div class="settlement-box"> 
+              <div class="settlement-title">🪙 تفصيل التحصيلات للرحلة</div> 
+              <div class="settlement-sub"> إجمالي التحصيلات حسب العملة: '||NVL(l_totals_by_currency,'—')||' </div> 
+              <table class="settlement-table"> 
+                  <thead> 
+                      <tr> 
+                          <th style="width:140px;">📆 التاريخ</th> 
+                          <th>تفصيل التحصيل</th> 
+                          <th style="width:170px;text-align:left;">إجمالي اليوم (EGP)</th> 
+                      </tr> 
+                  </thead> 
+                  <tbody> 
+          '; 
+      
+          /* ===================================================== Loop – collections grouped by day ===================================================== */ 
+          FOR r IN ( 
+              SELECT TRUNC(CAST(c.COLLECTION_DATETIME AS DATE)) AS COLLECTION_DAY, 
+                     SUM(NVL(c.AMOUNT_EGP, c.AMOUNT_COLLECTED * NVL(c.EXCHANGE_RATE_USED,1) )) AS TOTAL_DAY_EGP, 
+                     LISTAGG( 
+                         '• <b>'||TO_CHAR(c.AMOUNT_COLLECTED,'FM999G999G999D00')|| ' '||c.CURRENCY||'</b>'|| 
+                         ' <span class="'|| CASE c.COLLECTED_BY_TYPE WHEN 'DRIVER' THEN 'pill-driver' ELSE 'pill-office' END ||'">'|| 
+                         CASE c.COLLECTED_BY_TYPE WHEN 'DRIVER' THEN 'السائق' ELSE 'المكتب' END ||'</span>'|| 
+                         CASE WHEN m.METHOD_NAME IS NOT NULL THEN ' — '||m.METHOD_NAME ELSE '' END|| 
+                         CASE WHEN c.RECEIPT_NOTE IS NOT NULL THEN ' <span class="muted">('||c.RECEIPT_NOTE||')</span>' ELSE '' END, 
+                         '<br>' 
+                     ) WITHIN GROUP (ORDER BY c.COLLECTION_DATETIME) AS COLLECTION_BREAKDOWN 
+              FROM LIMO_TRIP_COLLECTIONS c 
+              LEFT JOIN LIMO_COLLECTION_METHODS m ON m.METHOD_ID = c.COLLECTION_METHOD 
+              WHERE c.TRIP_ID = :P252_TRIP_ID 
+              GROUP BY TRUNC(CAST(c.COLLECTION_DATETIME AS DATE)) 
+              ORDER BY COLLECTION_DAY 
+          ) LOOP 
+              l_grand_total_egp := l_grand_total_egp + NVL(r.TOTAL_DAY_EGP,0); 
+              l_html := l_html || ' 
+                  <tr> 
+                      <td>'||TO_CHAR(r.COLLECTION_DAY,'DD Mon YYYY')||'</td> 
+                      <td class="breakdown">'||NVL(r.COLLECTION_BREAKDOWN,'—')||'</td> 
+                      <td class="total-egp">'|| TO_CHAR(r.TOTAL_DAY_EGP,'FM999G999G999D00')||' EGP </td> 
+                  </tr>'; 
+          END LOOP; 
+      
+          /* ===================================================== Grand total ===================================================== */ 
+          l_html := l_html || ' 
+              <tr class="total-row"> 
+                  <td colspan="2">إجمالي التحصيلات (EGP)</td> 
+                  <td class="total-egp">'|| TO_CHAR(l_grand_total_egp,'FM999G999G999D00')||' EGP </td> 
+              </tr> 
+              </tbody> 
+          </table> 
+          <div class="muted" style="margin-top:10px;"> * تم تحويل جميع التحصيلات إلى EGP باستخدام سعر الصرف المسجل لكل عملية. </div> 
+          </div>'; 
+      
+          RETURN l_html; 
+      END;
+      
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: true
+
+- # ====== Region: Breadcrumb ==================================
+  id: 195932132994074959
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+page-items: 
+- # ====== Page Item: P252_EDIT_INVOICE ========================
+  id: 191323970583545452
+  identification: 
+    name: P252_EDIT_INVOICE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: REGION_POSITION_01
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P252_EDIT_EXPENSES =======================
+  id: 191324004379545453
+  identification: 
+    name: P252_EDIT_EXPENSES
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: No Parent
+    slot: REGION_POSITION_01
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P252_TRIP_ID =============================
+  id: 195904705424899283
+  identification: 
+    name: P252_TRIP_ID
+    type: Text Field
+
+  label: 
+    label: Trip Id
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: REGION_POSITION_01
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: ِEditTripPrice ==============================
+  id: 195904999750899286
+  identification: 
+    button-name: ِEditTripPrice
+    label: تعديل سعر الرحلة
+
+  layout: 
+    sequence: 50
+    region: EditActions # 195904900343899285
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:250:&SESSION.::&DEBUG.::P250_TRIP_ID:&P252_TRIP_ID.'
+      page: 250 # Trip Price Edit Form
+      values: 
+        p250_trip_id: '&P252_TRIP_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: AddService ==================================
+  id: 195905166391899287
+  identification: 
+    button-name: AddService
+    label: اضافة خدمات إضافية
+
+  layout: 
+    sequence: 30
+    region: EditActions # 195904900343899285
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:6004:&SESSION.::&DEBUG.::P6004_TRIP_ID:&P252_TRIP_ID.'
+      page: 6004 # Limo Add Service Form
+      values: 
+        p6004_trip_id: '&P252_TRIP_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: ChangeCar ===================================
+  id: 195905239341899288
+  identification: 
+    button-name: ChangeCar
+    label: تغير ملف السيارة
+
+  layout: 
+    sequence: 60
+    region: EditActions # 195904900343899285
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:253:&SESSION.::&DEBUG.::P253_TRIP_ID:&P252_TRIP_ID.'
+      page: 253 # Trip Used Car Edit Form
+      values: 
+        p253_trip_id: '&P252_TRIP_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: AddExpenses =================================
+  id: 195905428368899290
+  identification: 
+    button-name: AddExpenses
+    label: اضافة مصروف
+
+  layout: 
+    sequence: 10
+    region: EditActions # 195904900343899285
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:6003:&SESSION.::&DEBUG.::P6003_TRIP_ID:&P252_TRIP_ID.'
+      page: 6003 # Trip Expenses Form
+      values: 
+        p6003_trip_id: '&P252_TRIP_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: AddCollection ===============================
+  id: 195905939488899295
+  identification: 
+    button-name: AddCollection
+    label: اضافة تحصيل
+
+  layout: 
+    sequence: 20
+    region: EditActions # 195904900343899285
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:6005:&SESSION.::&DEBUG.::P6005_TRIP_ID:&P252_TRIP_ID.'
+      page: 6005 # Limo Collection Form
+      values: 
+        p6005_trip_id: '&P252_TRIP_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: SAVE_TRIP_FINANCE ===================
+  id: 191324141750545454
+  identification: 
+    name: SAVE_TRIP_FINANCE
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Custom
+    custom-event: SAVE_TRIP_FINANCE
+    selection-type: JavaScript Expression
+    javascript-expression: |
+      document
+      
+
+  actions: 
+  - # ====== Action: SAVE_TRIP_FINANCE ===========================
+    id: 191324270116545455
+    identification: 
+      name: SAVE_TRIP_FINANCE
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        UPDATE limo_trips_tracker_v2
+        SET total_invoice_currency = :P252_EDIT_INVOICE,
+            trip_expenses_egp = :P252_EDIT_EXPENSES
+        WHERE trip_id = :P252_TRIP_ID;
+        
+      items-to-submit: 
+      - P252_TRIP_ID
+      - P252_EDIT_INVOICE
+      - P252_EDIT_EXPENSES
+
+    execution: 
+      sequence: 10
+      event: SAVE_TRIP_FINANCE # 191324141750545454
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: success message =============================
+    id: 191324572105545458
+    identification: 
+      name: success message
+      action: Confirm
+
+    settings: 
+      message: success
+      style: Default
+
+    execution: 
+      sequence: 20
+      event: SAVE_TRIP_FINANCE # 191324141750545454
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

@@ -1,0 +1,84 @@
+---
+- # ====== Application Computation: G_LANG =====================
+  id: 276890536757807674
+  identification: 
+    item-name: G_LANG
+
+  execution: 
+    sequence: 10
+    point: AFTER_LOGIN
+
+  computation: 
+    type: Static Value
+    static-value: AR-EG
+
+  subscription: 
+    version-number: 44940659007573
+
+- # ====== Application Computation: APP_USER_ID ================
+  id: 22376272540163154526
+  identification: 
+    item-name: APP_USER_ID
+
+  execution: 
+    sequence: 10
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: 'select id from bs_employees t where t.username = lower(:APP_USER)'
+
+  server-side-condition: 
+    type: Item is NULL
+    item: APP_USER_ID
+
+  subscription: 
+    version-number: 46300704846318
+
+- # ====== Application Computation: APP_USER_FIRST_LAST_NAME ===
+  id: 23825823099483169199
+  identification: 
+    item-name: APP_USER_FIRST_LAST_NAME
+
+  execution: 
+    sequence: 20
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select first_name||' '||last_name 
+        from bs_employees 
+       where id = :APP_USER_ID
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :APP_USER_ID is not null and
+      :APP_USER_FIRST_LAST_NAME is null
+
+  subscription: 
+    version-number: 44666345370374
+
+- # ====== Application Computation: IS_ADMIN ===================
+  id: 28693883177745474816
+  identification: 
+    item-name: IS_ADMIN
+
+  execution: 
+    sequence: 10
+    point: AFTER_LOGIN
+
+  computation: 
+    type: Function Body
+    language: PL/SQL
+    pl/sql-function-body: |
+      if APEX_AUTHORIZATION.IS_AUTHORIZED (p_authorization_name => 'Administration Rights') then
+         return 'Y';
+      else return 'N';
+      end if;
+
+  subscription: 
+    version-number: 42076116550825
+

@@ -1,0 +1,442 @@
+---
+# ====== Page: Group Members =================================
+id: 10
+identification: 
+  name: Group Members
+  alias: GROUP-MEMBERS
+  title: اعضاء المجموعة
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Members List ================================
+  id: 183528614480203535
+  identification: 
+    name: Members List
+    title: اعضاء المجموعة
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: IAM_USER_SECURITY_GROUPS
+    include-rowid-column: false
+    where-clause: 'GROUP_ID = :P10_GROUP_ID '
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    break-formatting: 
+      report-sum-label: عدد المستخدمين
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: USER_ID =====================================
+    id: 183528729665203536
+    identification: 
+      column-name: USER_ID
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: كود الهوية
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: SQL Query
+      sql-query: 'select  username as display, user_id as return from iam_users '
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GROUP_ID ====================================
+    id: 183528814510203637
+    identification: 
+      column-name: GROUP_ID
+      type: Plain Text
+
+    heading: 
+      heading: Group Id
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: ROLE_IN_GROUP ===============================
+    id: 183528851008203638
+    identification: 
+      column-name: ROLE_IN_GROUP
+      type: Plain Text
+
+    heading: 
+      heading: صلاحية المستخدم
+      alignment: center
+
+    layout: 
+      sequence: 20
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IS_ACTIVE_YN ================================
+    id: 183528980016203639
+    identification: 
+      column-name: IS_ACTIVE_YN
+      type: Plain Text
+
+    heading: 
+      heading: Is Active Yn
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: ASSIGNED_AT =================================
+    id: 183529122555203640
+    identification: 
+      column-name: ASSIGNED_AT
+      type: Plain Text
+
+    heading: 
+      heading: تاريخ التعيين
+      alignment: center
+
+    layout: 
+      sequence: 30
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ASSIGNED_BY =================================
+    id: 183529209425203641
+    identification: 
+      column-name: ASSIGNED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Assigned By
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 183529376665203643
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 50
+      column-alignment: center
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:12:&SESSION.::&DEBUG.::P12_GROUP_ID,P12_USER_ID:#GROUP_ID#,#USER_ID#'
+        page: 12 # Edit User Group
+        values: 
+          p12_group_id: '#GROUP_ID#'
+          p12_user_id: '#USER_ID#'
+
+      link-text: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P10_GROUP_ID =============================
+  id: 183528345450203533
+  identification: 
+    name: P10_GROUP_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+dynamic-actions: 
+- # ====== Dynamic Action: refresh region ======================
+  id: 183529438520203644
+  identification: 
+    name: refresh region
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Members List # 183528614480203535
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 183529572794203645
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Members List # 183528614480203535
+
+    execution: 
+      sequence: 10
+      event: refresh region # 183529438520203644
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

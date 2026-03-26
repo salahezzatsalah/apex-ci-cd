@@ -1,0 +1,1895 @@
+---
+# ====== Page: Settlement Reports ============================
+id: 258
+identification: 
+  name: Settlement Reports
+  alias: SETTLEMENT-REPORTS
+  title: Settlement Reports
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    /* Scroll Results Only in Side Column */
+    .t-Body-side {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .search-results {
+        flex: 1;
+        overflow: auto;
+    }
+    /* Format Search Region */
+    .search-region {
+        border-bottom: 1px solid rgba(0,0,0,.1);
+        flex-shrink: 0;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: On
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: No - Prevent page from being re-posted
+  reload-on-submit: Always
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 196426136437925503
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Search ======================================
+  id: 196427677891925516
+  identification: 
+    name: Search
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    css-classes: 
+    - search-region
+    - padding-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Master Records ==============================
+  id: 196428442592925522
+  identification: 
+    name: Master Records
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select "SETTLEMENT_ID",
+          null LINK_CLASS,
+          apex_page.get_url(p_items => 'P258_SETTLEMENT_ID', p_values => "SETTLEMENT_ID") LINK,
+          null ICON_CLASS,
+          null LINK_ATTR,
+          null ICON_COLOR_CLASS,
+          case when coalesce(:P258_SETTLEMENT_ID,'0') = "SETTLEMENT_ID"
+            then 'is-active' 
+            else ' '
+          end LIST_CLASS,
+          (substr("DRIVER_ID", 1, 50)||( case when length("DRIVER_ID") > 50 then '...' else '' end )) LIST_TITLE,
+          (substr("CREATED", 1, 50)||( case when length("CREATED") > 50 then '...' else '' end )) LIST_TEXT,
+          null LIST_BADGE
+      from "LIMO_TRIP_SETTLEMENTS" x
+      where (:P258_SEARCH is null
+              or upper(x."DRIVER_ID") like '%'||upper(:P258_SEARCH)||'%'
+              or upper(x."CREATED") like '%'||upper(:P258_SEARCH)||'%'
+          )
+      order by "DRIVER_ID"
+    page-items-to-submit: 
+    - P258_SEARCH
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - search-results
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 1000
+
+    appearance: 
+      template-type: Theme
+      template: Media List
+      template-options: 
+      - t-MediaList--showDesc
+      - t-MediaList--stack
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: <div class="u-tC">No data found.</div>
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: SETTLEMENT_ID ===============================
+    id: 196429181913925534
+    identification: 
+      column-name: SETTLEMENT_ID
+      type: Plain Text
+
+    heading: 
+      heading: SETTLEMENT_ID
+      alignment: center
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LINK_CLASS ==================================
+    id: 196429473666925537
+    identification: 
+      column-name: LINK_CLASS
+      type: Plain Text
+
+    heading: 
+      heading: LINK_CLASS
+      alignment: center
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LINK ========================================
+    id: 196429868399925538
+    identification: 
+      column-name: LINK
+      type: Plain Text
+
+    heading: 
+      heading: LINK
+      alignment: center
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ICON_CLASS ==================================
+    id: 196430260810925539
+    identification: 
+      column-name: ICON_CLASS
+      type: Plain Text
+
+    heading: 
+      heading: ICON_CLASS
+      alignment: center
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LINK_ATTR ===================================
+    id: 196430656455925540
+    identification: 
+      column-name: LINK_ATTR
+      type: Plain Text
+
+    heading: 
+      heading: LINK_ATTR
+      alignment: center
+
+    layout: 
+      sequence: 5
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ICON_COLOR_CLASS ============================
+    id: 196431054854925541
+    identification: 
+      column-name: ICON_COLOR_CLASS
+      type: Plain Text
+
+    heading: 
+      heading: ICON_COLOR_CLASS
+      alignment: center
+
+    layout: 
+      sequence: 6
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LIST_CLASS ==================================
+    id: 196431431886925543
+    identification: 
+      column-name: LIST_CLASS
+      type: Plain Text
+
+    heading: 
+      heading: LIST_CLASS
+      alignment: center
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LIST_TITLE ==================================
+    id: 196431817793925544
+    identification: 
+      column-name: LIST_TITLE
+      type: Plain Text
+
+    heading: 
+      heading: LIST_TITLE
+      alignment: center
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LIST_TEXT ===================================
+    id: 196432252422925545
+    identification: 
+      column-name: LIST_TEXT
+      type: Plain Text
+
+    heading: 
+      heading: LIST_TEXT
+      alignment: center
+
+    layout: 
+      sequence: 9
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: LIST_BADGE ==================================
+    id: 196432657224925546
+    identification: 
+      column-name: LIST_BADGE
+      type: Plain Text
+
+    heading: 
+      heading: LIST_BADGE
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Limo Trip Settlements =======================
+  id: 196433077116926170
+  identification: 
+    name: Limo Trip Settlements
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_TRIP_SETTLEMENTS
+    include-rowid-column: false
+    where-clause: '"SETTLEMENT_ID" = :P258_SETTLEMENT_ID'
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--scrollBody
+    css-classes: 
+    - js-master-region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P258_SETTLEMENT_ID
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Value Attribute Pairs - Column
+      template-options: 
+      - '#DEFAULT#'
+      - t-AVPList--leftAligned
+
+    pagination: 
+      type: No Pagination (Show All Rows)
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 500
+
+    messages: 
+      when-no-data-found: No Record Selected
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: SETTLEMENT_ID ===============================
+    id: 196433601872926176
+    identification: 
+      column-name: SETTLEMENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 1
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "SETTLEMENT_ID" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DRIVER_ID ===================================
+    id: 196434067221926177
+    identification: 
+      column-name: DRIVER_ID
+      type: Plain Text
+
+    heading: 
+      heading: Driver Id
+      alignment: start
+
+    layout: 
+      sequence: 2
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "DRIVER_ID" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CAR_ID ======================================
+    id: 196434466583926178
+    identification: 
+      column-name: CAR_ID
+      type: Plain Text
+
+    heading: 
+      heading: Car Id
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "CAR_ID" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TRIP_COUNT ==================================
+    id: 196434858493926179
+    identification: 
+      column-name: TRIP_COUNT
+      type: Plain Text
+
+    heading: 
+      heading: Trip Count
+      alignment: start
+
+    layout: 
+      sequence: 4
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "TRIP_COUNT" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: WORKING_DAYS ================================
+    id: 196435208049926180
+    identification: 
+      column-name: WORKING_DAYS
+      type: Plain Text
+
+    heading: 
+      heading: Working Days
+      alignment: start
+
+    layout: 
+      sequence: 5
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "WORKING_DAYS" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PERIOD_START ================================
+    id: 196435644789926181
+    identification: 
+      column-name: PERIOD_START
+      type: Plain Text
+
+    heading: 
+      heading: Period Start
+      alignment: start
+
+    layout: 
+      sequence: 6
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "PERIOD_START" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PERIOD_END ==================================
+    id: 196436023461926182
+    identification: 
+      column-name: PERIOD_END
+      type: Plain Text
+
+    heading: 
+      heading: Period End
+      alignment: start
+
+    layout: 
+      sequence: 7
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "PERIOD_END" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_EXPENSES_EGP ==========================
+    id: 196436402112926183
+    identification: 
+      column-name: TOTAL_EXPENSES_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Total Expenses Egp
+      alignment: start
+
+    layout: 
+      sequence: 8
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "TOTAL_EXPENSES_EGP" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_DRIVER_PAYOUT_EGP =====================
+    id: 196436803414926184
+    identification: 
+      column-name: TOTAL_DRIVER_PAYOUT_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Total Driver Payout Egp
+      alignment: start
+
+    layout: 
+      sequence: 9
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "TOTAL_DRIVER_PAYOUT_EGP" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TOTAL_COLLECTED_EGP =========================
+    id: 196437219749926185
+    identification: 
+      column-name: TOTAL_COLLECTED_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Total Collected Egp
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "TOTAL_COLLECTED_EGP" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMPANY_DUE_EGP =============================
+    id: 196437619036926186
+    identification: 
+      column-name: COMPANY_DUE_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Company Due Egp
+      alignment: start
+
+    layout: 
+      sequence: 11
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "COMPANY_DUE_EGP" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COMPANY_PAY_DRIVER_EGP ======================
+    id: 196438019636926187
+    identification: 
+      column-name: COMPANY_PAY_DRIVER_EGP
+      type: Plain Text
+
+    heading: 
+      heading: Company Pay Driver Egp
+      alignment: start
+
+    layout: 
+      sequence: 12
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "COMPANY_PAY_DRIVER_EGP" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FOREIGN_CURRENCIES_SUMMARY ==================
+    id: 196438439331926188
+    identification: 
+      column-name: FOREIGN_CURRENCIES_SUMMARY
+      type: Plain Text
+
+    heading: 
+      heading: Foreign Currencies Summary
+      alignment: start
+
+    layout: 
+      sequence: 13
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "FOREIGN_CURRENCIES_SUMMARY" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED =====================================
+    id: 196438793840926190
+    identification: 
+      column-name: CREATED
+      type: Plain Text
+
+    heading: 
+      heading: Created
+      alignment: start
+
+    layout: 
+      sequence: 14
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "CREATED" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 196439264207926191
+    identification: 
+      column-name: CREATED_BY
+      type: Plain Text
+
+    heading: 
+      heading: Created By
+      alignment: start
+
+    layout: 
+      sequence: 15
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Rows returned
+      sql-query: |
+        select 1 from "LIMO_TRIP_SETTLEMENTS"
+        where "CREATED_BY" is not null
+        and "SETTLEMENT_ID" = :P258_SETTLEMENT_ID
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Region Display Selector =====================
+  id: 196449294933926232
+  identification: 
+    name: Region Display Selector
+    type: Region Display Selector
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-md
+    css-classes: 
+    - js-detail-rds
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P258_SETTLEMENT_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      mode: View Single Region
+      display-region-icons: false
+      include-'show-all': true
+      remember-selection: N
+
+- # ====== Region: Limo Trip Settlement Items ==================
+  id: 196449694414926235
+  identification: 
+    name: Limo Trip Settlement Items
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_TRIP_SETTLEMENT_ITEMS
+    include-rowid-column: true
+    where-clause: '"SETTLEMENT_ID" = :P258_SETTLEMENT_ID'
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--noPadding
+    - t-Region--scrollBody
+    css-classes: 
+    - js-detail-region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P258_SETTLEMENT_ID
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 100
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - t-Report--stretch
+      - '#DEFAULT#'
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--inline
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 5000
+
+    messages: 
+      when-no-data-found: No data found.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: true
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ROWID =======================================
+    id: 196450418937926555
+    identification: 
+      column-name: ROWID
+      type: Link
+
+    heading: 
+      heading: <span class="u-VisuallyHidden">Edit</span>
+      alignment: start
+
+    layout: 
+      sequence: 1
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:260:&APP_SESSION.::&DEBUG.:RP:P260_ROWID:#ROWID#'
+        page: 260 # Limo Trip Settlement Items
+        clear-cache: RP
+        values: 
+          p260_rowid: '#ROWID#'
+
+      link-text: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 32
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SETTLEMENT_ID ===============================
+    id: 196450812148926556
+    identification: 
+      column-name: SETTLEMENT_ID
+      type: Hidden
+
+    layout: 
+      sequence: 2
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TRIP_ID =====================================
+    id: 196451285990926558
+    identification: 
+      column-name: TRIP_ID
+      type: Plain Text
+
+    heading: 
+      heading: Trip Id
+      alignment: start
+
+    layout: 
+      sequence: 3
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: No Record Selected ==========================
+  id: 196462342051926608
+  identification: 
+    name: No Record Selected
+    type: Static Content
+
+  source: 
+    html-code: No Record Selected
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P258_SETTLEMENT_ID
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P258_SEARCH ==============================
+  id: 196428157450925521
+  identification: 
+    name: P258_SEARCH
+    type: Text Field
+
+  label: 
+    label: Search
+    alignment: Right
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Search # 196427677891925516
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--large
+    - t-Form-fieldContainer--postTextBlock
+    icon: fa-search
+    width: 30
+    value-placeholder: Search...
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P258_SETTLEMENT_ID =======================
+  id: 196449020937926231
+  identification: 
+    name: P258_SETTLEMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Limo Trip Settlements # 196433077116926170
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: RESET =======================================
+  id: 196426906773925514
+  identification: 
+    button-name: RESET
+    label: Reset
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 196426136437925503
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    - t-Button--gapRight
+    icon: fa-undo-alt
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:258:&APP_SESSION.:RESET:&DEBUG.:RP,258::'
+      page: 258 # Settlement Reports
+      request: RESET
+      clear-cache: RP,258
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CREATE ======================================
+  id: 196427333825925516
+  identification: 
+    button-name: CREATE
+    label: Create
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 196426136437925503
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:259:&APP_SESSION.::&DEBUG.:RP,259::'
+      page: 259 # Limo Trip Settlements
+      clear-cache: RP,259
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: POP_LIMO_TRIP_SETTLEMENT_ITEMS ==============
+  id: 196453204424926566
+  identification: 
+    button-name: POP_LIMO_TRIP_SETTLEMENT_ITEMS
+    label: Add Limo Trip Settlement Items
+
+  layout: 
+    sequence: 10
+    region: Limo Trip Settlement Items # 196449694414926235
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-plus
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:260:&APP_SESSION.::&DEBUG.:RP,260:P260_SETTLEMENT_ID:&P258_SETTLEMENT_ID.'
+      page: 260 # Limo Trip Settlement Items
+      clear-cache: RP,260
+      values: 
+        p260_settlement_id: '&P258_SETTLEMENT_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: EDIT ========================================
+  id: 196462812261926610
+  identification: 
+    button-name: EDIT
+    label: Edit
+
+  layout: 
+    sequence: 20
+    region: Limo Trip Settlements # 196433077116926170
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    - t-Button--iconLeft
+    icon: fa-pencil-square-o
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:259:&APP_SESSION.::&DEBUG.:RP,259:P259_SETTLEMENT_ID:&P258_SETTLEMENT_ID.'
+      page: 259 # Limo Trip Settlements
+      clear-cache: RP,259
+      values: 
+        p259_settlement_id: '&P258_SETTLEMENT_ID.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  advanced: 
+    static-id: edit_master_btn
+
+dynamic-actions: 
+- # ====== Dynamic Action: Dialog Closed =======================
+  id: 196449864941926237
+  identification: 
+    name: Dialog Closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Limo Trip Settlement Items # 196449694414926235
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 196453926738926571
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Limo Trip Settlement Items # 196449694414926235
+
+    execution: 
+      sequence: 10
+      event: Dialog Closed # 196449864941926237
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 196454416717926573
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Limo Trip Settlement Items row(s) updated.');
+
+    execution: 
+      sequence: 20
+      event: Dialog Closed # 196449864941926237
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Dialog Closed =======================
+  id: 196463119529926611
+  identification: 
+    name: Dialog Closed
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Limo Trip Settlements # 196433077116926170
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 196463735059926612
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Limo Trip Settlements # 196433077116926170
+
+    execution: 
+      sequence: 20
+      event: Dialog Closed # 196463119529926611
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 196464193422926613
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.message.showPageSuccess('Limo Trip Settlements row(s) updated.');
+
+    execution: 
+      sequence: 30
+      event: Dialog Closed # 196463119529926611
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Perform Search ======================
+  id: 196463227981926611
+  identification: 
+    name: Perform Search
+
+  execution: 
+    sequence: 150
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Key Press
+    selection-type: Item(s)
+    item(s): 
+    - P258_SEARCH
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === apex.jQuery.ui.keyCode.ENTER
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 196465076444926616
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Master Records # 196428442592925522
+
+    execution: 
+      sequence: 10
+      event: Perform Search # 196463227981926611
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Cancel Event ================================
+    id: 196465512957926618
+    identification: 
+      action: Cancel Event
+
+    execution: 
+      sequence: 30
+      event: Perform Search # 196463227981926611
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+

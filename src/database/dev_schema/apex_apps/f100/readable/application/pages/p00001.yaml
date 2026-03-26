@@ -1,0 +1,2526 @@
+---
+# ====== Page: home ==========================================
+id: 1
+identification: 
+  name: home
+  alias: HOME
+  title: بليتز الوجهة الرائدة
+  page-group: Home # 18677563246010402822
+
+appearance: 
+  page-mode: Normal
+  page-template: Standard
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+javascript: 
+  file-urls: 
+  - 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCHHyMsTG-SA9k9A4WKo_jGMd3e7uR5zxU&libraries=places&loading=async'
+  execute-when-page-loads: |
+    (async function () {
+      async function waitForGoogle() {
+        for (let i = 0; i < 60; i++) {
+          if (window.google && google.maps && google.maps.importLibrary) return;
+          await new Promise(r => setTimeout(r, 200));
+        }
+        throw new Error("Google Maps JS not ready");
+      }
+    
+      async function mountPAC(slotId, textItem, placeIdItem, placeholder, cfg) {
+        const slot = document.getElementById(slotId);
+        if (!slot) {
+          console.warn("Slot not found:", slotId);
+          return;
+        }
+    
+        await waitForGoogle();
+        const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+    
+        slot.innerHTML = "";
+    
+        // ✅ أنشئ الويدجت
+        const pac = new PlaceAutocompleteElement();
+    
+        // ✅ إعدادات حسب المطلوب
+        if (cfg?.includedPrimaryTypes) pac.includedPrimaryTypes = cfg.includedPrimaryTypes;
+        if (cfg?.includedRegionCodes)  pac.includedRegionCodes  = cfg.includedRegionCodes;
+    
+        pac.placeholder = placeholder || "";
+        pac.style.width = "100%";
+        slot.appendChild(pac);
+    
+        pac.addEventListener("gmp-select", async (e) => {
+          const pred = e.placePrediction;
+          if (!pred) return;
+    
+          const place = pred.toPlace();
+          await place.fetchFields({ fields: ["formattedAddress", "displayName"] });
+    
+          const label = place.formattedAddress || place.displayName || "";
+          const pid   = place.id || pred.placeId || "";
+    
+          // ✅ عبّي الـ items القديمة (زي ما انتي عايزة)
+          apex.item(textItem).setValue(label);
+          apex.item(placeIdItem).setValue(pid);
+        });
+      }
+    
+      apex.jQuery(async function () {
+        // ✅ FROM: مطارات داخل مصر فقط
+        await mountPAC(
+          "PAC_FROM_SLOT",
+          "P1_AIRPORT_FROM",
+          "P1_FROM_PLACE_ID",
+          "من (مطار داخل مصر)",
+          {
+            includedPrimaryTypes: ["airport"],
+            includedRegionCodes: ["eg"]
+          }
+        );
+    
+        // ✅ TO: أي مكان عادي (بدون قيود)
+        await mountPAC(
+          "PAC_TO_SLOT",
+          "P1_AIRPORT_TO",
+          "P1_TO_PLACE_ID",
+          "إلى (أي مكان)",
+          {
+            // لا نمرر أي includedPrimaryTypes ولا includedRegionCodes
+          }
+        );
+    
+        console.log("✅ FROM airports(EG) + TO any place");
+      });
+    })();
+    
+    
+    
+    
+    
+    (async function () {
+      async function waitForGoogle() {
+        for (let i = 0; i < 60; i++) {
+          if (window.google && google.maps && google.maps.importLibrary) return;
+          await new Promise(r => setTimeout(r, 200));
+        }
+        throw new Error("Google Maps JS not ready");
+      }
+    
+      async function mountPAC(slotId, textItem, placeIdItem, placeholder) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+    
+        await waitForGoogle();
+        const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
+    
+        slot.innerHTML = "";
+    
+        const pac = new PlaceAutocompleteElement();
+        pac.placeholder = placeholder || "";
+        pac.style.width = "100%";
+        slot.appendChild(pac);
+    
+        pac.addEventListener("gmp-select", async (e) => {
+          const pred = e.placePrediction;
+          if (!pred) return;
+    
+          const place = pred.toPlace();
+          await place.fetchFields({ fields: ["formattedAddress", "displayName"] });
+    
+          const label = place.formattedAddress || place.displayName || "";
+          const pid   = place.id || pred.placeId || "";
+    
+          apex.item(textItem).setValue(label);
+          apex.item(placeIdItem).setValue(pid);
+        });
+      }
+    
+      // ✅ مهم جدًا في التابات: نركّب الويدجت لما التاب تتفتح كمان
+      let mounted = false;
+    
+      async function initCityPAC() {
+        if (mounted) return;
+        if (!document.getElementById("PAC_CITY_FROM_SLOT")) return;
+    
+        await mountPAC("PAC_CITY_FROM_SLOT", "P1_FROM_TEXT", "P1_FROM_ID", "من (أي مكان)");
+        await mountPAC("PAC_CITY_TO_SLOT",   "P1_TO_TEXT",   "P1_TO_ID",   "إلى (أي مكان)");
+        mounted = true;
+    
+        console.log("✅ City PAC mounted");
+      }
+    
+      apex.jQuery(async function () {
+        // أول تحميل
+        await initCityPAC();
+    
+        // لو التاب بتتغير بعد التحميل (UT Tabs)
+        apex.jQuery(document).on("apexafterrefresh", function () {
+          initCityPAC();
+        });
+    
+        // لو بتستخدمي Tabs (Universal Theme) — ده بيساعد جدًا
+        apex.jQuery(document).on("click", "a.t-Tabs-link", function () {
+          setTimeout(initCityPAC, 50);
+        });
+      });
+    })();
+    
+
+css: 
+  inline: |
+    
+    .sp-tag {
+        padding: 2px 4px;
+        display: inline-block;
+        vertical-align: text-bottom;
+        border-radius: 3px;
+        background-color: rgba(0,0,0,.1);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .sp-tags-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: flex-start;
+    }
+    
+    .resize-region {
+      resize: vertical;
+      overflow: auto;
+    }
+    
+    .a-CardView-iconWrap,
+    .a-CardView-badge { align-self: flex-start; }
+    
+    
+    /* container */
+    .airport-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    
+    /* كل فيلد */
+    .airport-field {
+      background: #ffffff;
+      color: #000;       /* أسود أنيق */
+      border-radius: 12px;
+      padding: 14px 16px;
+      position: relative;
+      box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    }
+    
+    /* الليبل */
+    .airport-label {
+      display: block;
+      font-size: 13px;
+      color: #cfcfcf;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    
+    /* عنصر Google نفسه */
+    .airport-field gmp-place-autocomplete,
+    .airport-field input {
+      width: 100%;
+      background: transparent !important;
+      border: none !important;
+      color: #fff !important;
+      font-size: 15px;
+      outline: none;
+    }
+    
+    /* placeholder */
+    .airport-field ::placeholder {
+      color: #9a9a9a;
+    }
+    
+    /* hover / focus */
+    .airport-field:focus-within {
+      box-shadow: 0 0 0 2px #caa24d; /* دهبي خفيف */
+    }
+    .airport-field.from {
+      border-right: 4px solid #4caf50; /* أخضر */
+    }
+    
+    .airport-field.to {
+      border-right: 4px solid #2196f3; /* أزرق */
+    }
+    
+    
+    /* أيقونة البحث */
+    .airport-field::after {
+      content: "🔍";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: .6;
+    }
+    
+    /* padding بسبب الأيقونة */
+    .airport-field gmp-place-autocomplete {
+      padding-left: 26px;
+    }
+    
+    /* موبايل */
+    @media (max-width: 768px) {
+      .airport-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Enabled
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+comments: 
+  comments: home
+
+regions: 
+- # ====== Region: New =========================================
+  id: 169096329999639015
+  identification: 
+    name: New
+    type: Static Content
+
+  source: 
+    html-code: |
+      <!-- <section class="relative min-h-screen bg-gradient-to-br from-[#071826] via-[#0b2336] to-[#04101a] overflow-hidden text-white">
+      
+        <div class="relative max-w-7xl mx-auto px-6 lg:px-12 py-24 flex flex-col lg:flex-row items-center justify-between gap-16">
+      
+          <!-- LEFT CONTENT -->
+          <div class="max-w-xl">
+      
+            <p class="text-slate-300 text-sm tracking-wide mb-3">
+              Some build systems.<br>
+              Some build weapons.
+            </p>
+      
+            <p class="text-sky-400 italic mb-4 text-lg">
+              For your consideration…
+            </p>
+      
+            <h1 class="text-6xl md:text-7xl font-extrabold tracking-widest mb-6 bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+              JERICHO
+            </h1>
+      
+            <h2 class="text-3xl md:text-4xl font-semibold leading-tight mb-6">
+              Launch Your Enterprise<br>
+              Into <span class="text-sky-400">Intelligent Growth</span>
+            </h2>
+      
+            <p class="text-slate-300 mb-8 leading-relaxed">
+              JERICHO is a unified ERP platform designed to centralize operations,
+              optimize performance, and empower executive decision-making
+              across your entire organization.
+            </p>
+      
+            <a href="#contact"
+               class="inline-block px-8 py-4 bg-sky-500 hover:bg-cyan-400 text-[#071826] font-semibold rounded-lg shadow-lg transition duration-300 transform hover:-translate-y-1">
+              Contact Us
+            </a>
+      
+          </div>
+      
+          <!-- RIGHT SIDE -->
+          <div class="relative flex justify-center items-center">
+      
+            <div class="absolute w-64 h-64 bg-cyan-500 blur-3xl opacity-20 rounded-full"></div>
+      
+            <img src="YOUR_ROCKET_IMAGE_URL_HERE"
+                 class="w-80 md:w-96 drop-shadow-2xl">
+          </div>
+      
+        </div>
+      
+      </section> -->
+      
+
+  layout: 
+    sequence: 10
+    parent-region: Search # 267395778516331153
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: System Departments Portal ===================
+  id: 185546089738262345
+  identification: 
+    name: System Departments Portal
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html      CLOB;
+        l_url       VARCHAR2(4000);
+        l_image_url VARCHAR2(4000);
+      BEGIN
+        l_html := '<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-5 p-4 text-right">';
+      
+        FOR r IN (
+          SELECT
+            MENU_ID,
+            MENU_LABEL,
+            MENU_PAGE_ID,
+            MENU_ICON,
+            MENU_IMAGE_URL
+          FROM APP_MENU_HOME
+          WHERE PARENT_MENU_ID IS NULL
+            AND IS_ACTIVE = 'Y'
+          ORDER BY DISPLAY_ORDER
+        )
+        LOOP
+          l_url := APEX_UTIL.PREPARE_URL(
+            p_url => 'f?p=' || V('APP_ID') || ':' || r.MENU_PAGE_ID || ':' || V('APP_SESSION'),
+            p_checksum_type => 'SESSION'
+          );
+      
+          l_html := l_html ||
+            '<a href="' || l_url || '" ' ||
+            'class="menu-tile group block rounded-2xl shadow-md border border-gray-200 hover:shadow-xl transition transform hover:scale-[1.03] active:scale-100 bg-white p-4 text-center overflow-hidden">';
+      
+          IF r.MENU_IMAGE_URL IS NOT NULL THEN
+            l_image_url := REPLACE(r.MENU_IMAGE_URL, '#APP_FILES#', APEX_APPLICATION.G_IMAGE_PREFIX);
+      
+            l_html := l_html ||
+              '<div class="flex items-center justify-center mb-3">' ||
+                '<span class="flex items-center justify-center rounded-full h-16 w-16 bg-gradient-to-tr from-yellow-100 via-white to-yellow-50 shadow-sm border border-yellow-200 group-hover:scale-110 transition overflow-hidden">' ||
+                  '<img src="' || l_image_url || '" ' ||
+                       'alt="' || apex_escape.html(r.MENU_LABEL) || '" ' ||
+                       'class="h-9 w-9 object-contain" ' ||
+                       'onerror="this.style.display=''none''; this.parentNode.innerHTML=''<' || 'i class=&quot;' || r.MENU_ICON || ' text-3xl text-yellow-500&quot;></i>'';" />' ||
+                '</span>' ||
+              '</div>';
+          ELSE
+            l_html := l_html ||
+              '<div class="flex items-center justify-center mb-3">' ||
+                '<span class="flex items-center justify-center rounded-full h-16 w-16 bg-gradient-to-tr from-yellow-100 via-white to-yellow-50 shadow-sm border border-yellow-200 group-hover:scale-110 transition">' ||
+                  '<i class="' || r.MENU_ICON || ' text-3xl text-yellow-500"></i>' ||
+                '</span>' ||
+              '</div>';
+          END IF;
+      
+          l_html := l_html ||
+            '<div class="text-sm sm:text-base font-bold text-gray-800 tracking-tight group-hover:text-yellow-600 transition leading-tight">' ||
+            apex_escape.html(r.MENU_LABEL) ||
+            '</div>';
+      
+          l_html := l_html || '</a>';
+        END LOOP;
+      
+        l_html := l_html || '</div>';
+      
+        RETURN l_html;
+      END;
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Dashboard Filters ===========================
+  id: 220214620120152151
+  identification: 
+    name: Dashboard Filters
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: New # 169096329999639015
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-TabsRegion-mod--simple
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Dashboard ===================================
+  id: 220215200350152157
+  identification: 
+    name: Dashboard
+    type: Dynamic Content
+
+  source: 
+    language: PL/SQL
+    pl/sql-function-body-returning-a-clob: |
+      DECLARE
+        l_html CLOB := '';
+      
+        n_new    NUMBER;
+        n_assign NUMBER;
+        n_prog   NUMBER;
+        n_done   NUMBER;
+        n_bad    NUMBER;
+      
+        FUNCTION esc(p_txt VARCHAR2) RETURN VARCHAR2 IS
+        BEGIN
+          RETURN apex_escape.html(NVL(p_txt,''));
+        END;
+      
+      BEGIN
+      
+      /* =====================================================
+         KPI
+      ===================================================== */
+      
+        SELECT
+          SUM(CASE WHEN status_code IN ('NEW','PENDING_OPS') THEN 1 ELSE 0 END),
+          SUM(CASE WHEN status_code = 'ASSIGNED' THEN 1 ELSE 0 END),
+          SUM(CASE WHEN status_code = 'IN_PROGRESS' THEN 1 ELSE 0 END),
+          SUM(CASE WHEN status_code = 'COMPLETED' THEN 1 ELSE 0 END),
+          SUM(CASE WHEN status_code IN ('FAILED','CANCELLED') THEN 1 ELSE 0 END)
+        INTO
+          n_new, n_assign, n_prog, n_done, n_bad
+        FROM ops_orders_current
+        WHERE is_active = 'Y';
+      
+      
+      /* =====================================================
+         CSS + JS
+      ===================================================== */
+      
+      l_html := l_html || q'[
+      <style>
+      
+      .ops-wrap{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        direction:rtl;
+      }
+      
+      /* KPI */
+      
+      .kpi-row{display:flex;gap:10px;flex-wrap:wrap}
+      
+      .kpi{
+        flex:1;
+        min-width:130px;
+        background:#fff;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        padding:12px;
+        text-align:center;
+        cursor:pointer;
+        font-weight:900;
+      }
+      
+      .kpi:hover{background:#f8fafc}
+      .kpi .v{font-size:22px;margin-top:4px}
+      
+      
+      /* Search */
+      
+      .search-box{
+        background:#fff;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        padding:10px;
+        display:flex;
+        gap:8px;
+      }
+      
+      .search-box input{
+        flex:1;
+        border:none;
+        outline:none;
+        font-size:13px;
+        font-weight:700;
+      }
+      
+      
+      /* Desktop Table */
+      
+      .tbl{
+        width:100%;
+        border-collapse:separate;
+        border-spacing:0 6px;
+        display:table;
+      }
+      
+      .tbl th{
+        font-size:11px;
+        font-weight:900;
+        color:#475569;
+        padding:6px;
+      }
+      
+      .tbl td{
+        background:#fff;
+        padding:8px 10px;
+        font-size:11px;
+        font-weight:800;
+        border-top:1px solid #e2e8f0;
+        border-bottom:1px solid #e2e8f0;
+      }
+      
+      
+      /* Service */
+      
+      .svc-title{font-weight:900}
+      .svc-sub{font-size:10px;color:#64748b}
+      
+      
+      /* Status */
+      
+      .badge{
+        padding:3px 8px;
+        border-radius:999px;
+        font-size:10px;
+        font-weight:900;
+      }
+      
+      .b-new{background:#fffbeb;color:#92400e}
+      .b-prog{background:#eff6ff;color:#1d4ed8}
+      .b-done{background:#ecfdf5;color:#065f46}
+      .b-bad{background:#fff1f2;color:#9f1239}
+      
+      
+      /* Dropdown */
+      
+      .dd{position:relative;display:inline-block}
+      
+      .dd-btn{
+        font-size:10px;
+        padding:5px 8px;
+        border-radius:8px;
+        border:1px solid #cbd5e1;
+        background:#fff;
+        cursor:pointer;
+      }
+      
+      .dd-menu{
+        display:none;
+        position:absolute;
+        left:0;
+        top:110%;
+        background:#fff;
+        border:1px solid #e2e8f0;
+        border-radius:10px;
+        min-width:160px;
+        z-index:50;
+      }
+      
+      .dd-menu a{
+        display:block;
+        padding:7px 10px;
+        font-size:11px;
+        font-weight:800;
+        text-decoration:none;
+      }
+      
+      .dd-menu a:hover{background:#f1f5f9}
+      
+      .dd.open .dd-menu{display:block}
+      
+      
+      /* Mobile Cards */
+      
+      .mob-list{
+        display:none;
+        flex-direction:column;
+        gap:10px;
+      }
+      
+      .mob-card{
+        background:#fff;
+        border:1px solid #e2e8f0;
+        border-radius:14px;
+        padding:12px;
+      }
+      
+      
+      /* Switch */
+      
+      @media(max-width:768px){
+      
+        .tbl{display:none !important}
+        .mob-list{display:flex}
+      
+      }
+      
+      </style>
+      
+      
+      <script>
+      
+      function refreshOps(){
+        apex.region("OPS_DASH").refresh();
+      }
+      
+      
+      function setKpi(v){
+        $s("P1_KPI_STATUS",v);
+        refreshOps();
+      }
+      
+      
+      function doSearch(){
+        refreshOps();
+      }
+      
+      
+      function go(url){
+        if(url){ apex.navigation.redirect(url); }
+      }
+      
+      
+      function toggleDD(id){
+      
+        document.querySelectorAll(".dd")
+          .forEach(d=>d.classList.remove("open"));
+      
+        var el=document.getElementById(id);
+      
+        if(el){ el.classList.toggle("open"); }
+      }
+      
+      
+      document.addEventListener("click",e=>{
+        if(!e.target.closest(".dd")){
+          document.querySelectorAll(".dd")
+            .forEach(d=>d.classList.remove("open"));
+        }
+      });
+      
+      
+      /* Pull to refresh */
+      
+      let y0=0;
+      
+      document.addEventListener("touchstart",e=>{
+        if(window.scrollY===0){
+          y0=e.touches[0].clientY;
+        }
+      });
+      
+      document.addEventListener("touchend",e=>{
+      
+        let y1=e.changedTouches[0].clientY;
+      
+        if(y1-y0>90){
+          refreshOps();
+        }
+      
+      });
+      
+      </script>
+      ]';
+      
+      
+      /* =====================================================
+         CONTAINER
+      ===================================================== */
+      
+      l_html := l_html || '<div class="ops-wrap">';
+      
+      
+      /* =====================================================
+         KPI
+      ===================================================== */
+      
+      l_html := l_html || '
+      
+      <div class="kpi-row">
+      
+      <div class="kpi" onclick="setKpi(''NEW'')">🟡 جديد<div class="v">'||n_new||'</div></div>
+      <div class="kpi" onclick="setKpi(''ASSIGNED'')">👤 موزع<div class="v">'||n_assign||'</div></div>
+      <div class="kpi" onclick="setKpi(''IN_PROGRESS'')">⚙️ جاري<div class="v">'||n_prog||'</div></div>
+      <div class="kpi" onclick="setKpi(''COMPLETED'')">✅ مكتمل<div class="v">'||n_done||'</div></div>
+      <div class="kpi" onclick="setKpi(''FAILED'')">❌ مشكلة<div class="v">'||n_bad||'</div></div>
+      
+      </div>
+      ';
+      
+      
+      /* =====================================================
+         SEARCH
+      ===================================================== */
+      
+      l_html := l_html || '
+      
+      <div class="search-box">
+      
+      <input type="text"
+       value="'||esc(:P1_SEARCH)||'"
+       placeholder="بحث..."
+       onkeyup="apex.item(''P1_SEARCH'').setValue(this.value);doSearch();">
+      
+      </div>
+      ';
+      
+      
+      /* =====================================================
+         MOBILE
+      ===================================================== */
+      
+      l_html := l_html || '<div class="mob-list">';
+      
+      
+      /* =====================================================
+         TABLE
+      ===================================================== */
+      
+      l_html := l_html || '
+      
+      <table class="tbl">
+      
+      <thead>
+      <tr>
+      <th>الخدمة</th><th>الطلب</th><th>العميل</th>
+      <th>الحالة</th><th>المسؤول</th><th>التاريخ</th>
+      <th>المبلغ</th><th>إجراء</th>
+      </tr>
+      </thead>
+      
+      <tbody>
+      ';
+      
+      
+      /* =====================================================
+         DATA LOOP
+      ===================================================== */
+      
+      FOR r IN (
+      
+        SELECT *
+        FROM ops_orders_current
+        WHERE is_active='Y'
+      
+        AND (
+             :P1_KPI_STATUS IS NULL
+          OR status_code=:P1_KPI_STATUS
+        )
+      
+        AND (
+             :P1_SEARCH IS NULL
+          OR order_item_id LIKE '%'||:P1_SEARCH||'%'
+          OR client_code LIKE '%'||:P1_SEARCH||'%'
+        )
+      
+        ORDER BY priority_score DESC
+        FETCH FIRST 100 ROWS ONLY
+      
+      )
+      LOOP
+      
+        DECLARE
+          v_cls VARCHAR2(20);
+          v_url VARCHAR2(4000);
+          v_dd  VARCHAR2(40);
+        BEGIN
+      
+          IF r.status_code IN ('NEW','PENDING_OPS') THEN
+            v_cls:='b-new';
+          ELSIF r.status_code IN ('ASSIGNED','IN_PROGRESS') THEN
+            v_cls:='b-prog';
+          ELSIF r.status_code='COMPLETED' THEN
+            v_cls:='b-done';
+          ELSE
+            v_cls:='b-bad';
+          END IF;
+      
+          v_url := order_router_util.details_url(r.ref_table,r.ref_id);
+          v_dd  := 'dd_'||r.order_item_id;
+      
+      
+      /* MOBILE */
+      
+      l_html := l_html || '
+      
+      <div class="mob-card">
+      
+      <div>
+      <span class="badge '||v_cls||'">'||esc(r.status_code)||'</span>
+      </div>
+      
+      <div class="mob-title">'||esc(r.service_title_ar)||'</div>
+      <div class="mob-sub">'||esc(r.service_subtitle_ar)||'</div>
+      
+      <div class="mob-row">#'||esc(r.order_item_id)||' | '||esc(r.client_code)||'</div>
+      
+      <div class="mob-row">💰 '||esc(r.amount_egp)||' EGP</div>
+      
+      </div>
+      ';
+      
+      
+      /* DESKTOP */
+      
+      l_html := l_html || '
+      
+      <tr>
+      
+      <td>
+      <div class="svc-title">'||esc(r.service_title_ar)||'</div>
+      <div class="svc-sub">'||esc(r.service_subtitle_ar)||'</div>
+      </td>
+      
+      <td>'||esc(r.order_item_id)||'<br>'||esc(r.main_res_id)||'</td>
+      
+      <td>'||esc(r.client_code)||'<br>'||esc(r.client_phone)||'</td>
+      
+      <td><span class="badge '||v_cls||'">'||esc(r.status_code)||'</span></td>
+      
+      <td>'||esc(r.assigned_to_name)||'</td>
+      
+      <td>'||esc(TO_CHAR(r.created_at,'DD/MM HH24:MI'))||'</td>
+      
+      <td>'||esc(r.amount_egp)||'</td>
+      
+      <td>
+      
+      <div class="dd" id="'||v_dd||'">
+      
+      <div class="dd-btn" onclick="toggleDD('''||v_dd||''')">⋮</div>
+      
+      <div class="dd-menu">
+      <a href="javascript:go('''||v_url||''')">👁 التفاصيل</a>
+      </div>
+      
+      </div>
+      
+      </td>
+      
+      </tr>
+      ';
+      
+        END;
+      
+      END LOOP;
+      
+      
+      /* =====================================================
+         CLOSE
+      ===================================================== */
+      
+      l_html := l_html || '
+      
+      </div> <!-- mobile -->
+      
+      </tbody>
+      </table>
+      
+      </div>
+      ';
+      
+      
+      RETURN l_html;
+      
+      END;
+      
+
+  layout: 
+    sequence: 10
+    parent-region: New # 169096329999639015
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-TabsRegion-mod--simple
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: ops_dash
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    performance: 
+      lazy-loading: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 13735331578264668951
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 75
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 14599674933297683769
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 13735331578264668951
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+  actions: 
+  - # ====== Action: Actions =====================================
+    id: 14599675233876683772
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: الانشطة الشخصية  ==============================
+      id: 11846914797216270999
+      identification: 
+        type: Menu Entry
+        label: 'الانشطة الشخصية '
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 100
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:102:&SESSION.::&DEBUG.:RP,102:P102_PERSON:&APP_USER_FIRST_LAST_NAME.'
+          page: 102
+          clear-cache: RP,102
+          values: 
+            p102_person: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-badge-check
+
+      configuration: 
+        build-option: Activity Planning # 24793266618951063217
+
+    - # ====== Menu: Separator =====================================
+      id: 11846915149823271002
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 140
+
+    - # ====== Menu: عرض المتابعات =================================
+      id: 12602211755340983731
+      identification: 
+        type: Menu Entry
+        label: عرض المتابعات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:113:&SESSION.::&DEBUG.:RP,::'
+          page: 113
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-package
+
+    - # ====== Menu: test ==========================================
+      id: 12602212628472983740
+      identification: 
+        type: Menu Entry
+        label: test
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP,:P23_FAVORITE:Yes'
+          page: 23
+          clear-cache: RP
+          values: 
+            p23_favorite: Yes
+
+      appearance: 
+        icon: fa-heart-o
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Separator =====================================
+      id: 12617920552590306938
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 130
+
+      configuration: 
+        build-option: Releases # 14854353056805192289
+
+    - # ====== Menu: Separator =====================================
+      id: 13211275958330523831
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+    - # ====== Menu: تحديث البيانات ================================
+      id: 14599675939783683779
+      identification: 
+        type: Menu Entry
+        label: تحديث البيانات
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 150
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP,1::'
+          page: 1 # home
+          clear-cache: RP,1
+
+      appearance: 
+        icon: fa-refresh
+
+    - # ====== Menu: مهامي =========================================
+      id: 20511672765067919803
+      identification: 
+        type: Menu Entry
+        label: مهامي
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 90
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:RP,500:P500_ASSIGNED_TO:&APP_USER_FIRST_LAST_NAME.'
+          page: 500 # Tasks
+          clear-cache: RP,500
+          values: 
+            p500_assigned_to: '&APP_USER_FIRST_LAST_NAME.'
+
+      appearance: 
+        icon: fa-clipboard-list
+
+    - # ====== Menu: اضافة نشاط ====================================
+      id: 22858233071820320422
+      identification: 
+        type: Menu Entry
+        label: اضافة نشاط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 120
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:101:&SESSION.::&DEBUG.:RP,101::'
+          page: 101
+          clear-cache: RP,101
+
+      appearance: 
+        icon: fa-plus
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+      configuration: 
+        build-option: Activity Planning # 24793266618951063217
+
+  - # ====== Action: مفضل ========================================
+    id: 19851014737546963524
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: مفضل
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP,:P23_FAVORITE:نعم'
+        page: 23
+        clear-cache: RP
+        values: 
+          p23_favorite: نعم
+
+    appearance: 
+      display-type: Icon
+      icon: fa-heart
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+  - # ====== Action: عرض الانشطة القادمة =========================
+    id: 22858232952584320421
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: عرض الانشطة القادمة
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP,::'
+        page: 23
+        clear-cache: RP
+
+    appearance: 
+      display-type: Text
+      hot: true
+      show-as-disabled: false
+
+- # ====== Region: Blitz Search ================================
+  id: 22611699610544514920
+  identification: 
+    name: Blitz Search
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-md
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P1_STATUS ================================
+  id: 220214731333152152
+  identification: 
+    name: P1_STATUS
+    type: Select List
+
+  label: 
+    label: حالة الحجز
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Dashboard Filters # 220214620120152151
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: select FULFILLMENT_STATUS as a, FULFILLMENT_STATUS as b from order_items
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_SERVICE ===============================
+  id: 220214837860152153
+  identification: 
+    name: P1_SERVICE
+    type: Select List
+
+  label: 
+    label: نوع الخدمة
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: Dashboard Filters # 220214620120152151
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: select distinct ref_table as a, ref_table as b from order_items
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_FROM_DATE =============================
+  id: 220214958297152154
+  identification: 
+    name: P1_FROM_DATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ التنفيذ
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 30
+    region: Dashboard Filters # 220214620120152151
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_TO_DATE ===============================
+  id: 220215027243152155
+  identification: 
+    name: P1_TO_DATE
+    type: Date Picker
+
+  label: 
+    label: تاريخ الانهاء
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Popup
+    minimum-date: None
+    maximum-date: None
+    multiple-months: No
+    use-defaults: true
+
+  layout: 
+    sequence: 40
+    region: Dashboard Filters # 220214620120152151
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_SEARCH ================================
+  id: 220215188816152156
+  identification: 
+    name: P1_SEARCH
+    type: Text Field
+
+  label: 
+    label: بحث
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Dashboard Filters # 220214620120152151
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_CLIENTS ===============================
+  id: 251763537599496339
+  identification: 
+    name: P1_CLIENTS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_HOTELS ================================
+  id: 254008602920316164
+  identification: 
+    name: P1_HOTELS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_SUPPLIERS =============================
+  id: 255572450997025562
+  identification: 
+    name: P1_SUPPLIERS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_PROJECT_GROUPS ========================
+  id: 17161381204091189919
+  identification: 
+    name: P1_PROJECT_GROUPS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_AREAS =================================
+  id: 22858751413682909927
+  identification: 
+    name: P1_AREAS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_INITIATIVES ===========================
+  id: 22858751590078909928
+  identification: 
+    name: P1_INITIATIVES
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_ACTIVITIES ============================
+  id: 22858751689013909929
+  identification: 
+    name: P1_ACTIVITIES
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_PROJECTS ==============================
+  id: 22858751719097909930
+  identification: 
+    name: P1_PROJECTS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_RELEASES ==============================
+  id: 22858751824899909931
+  identification: 
+    name: P1_RELEASES
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_EMPLOYEES =============================
+  id: 22858751990668909932
+  identification: 
+    name: P1_EMPLOYEES
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1_DEPARTMENTS ===========================
+  id: 23940768595097978498
+  identification: 
+    name: P1_DEPARTMENTS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: New # 169096329999639015
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: SEARCH ======================================
+  id: 269056048745390036
+  identification: 
+    button-name: SEARCH
+    label: بحث في النظام
+
+  layout: 
+    sequence: 20
+    region: Blitz Search # 22611699610544514920
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    - t-Button--simple
+    - t-Button--iconLeft
+    - t-Button--stretch
+    - t-Button--gapTop
+    - t-Button--padBottom
+    css-classes: 
+    - margin-top-md
+    - u-textStart
+    - null
+    icon: fa-search
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: SEARCH
+
+dynamic-actions: 
+- # ====== Dynamic Action: New_1 ===============================
+  id: 219767234426501263
+  identification: 
+    name: New_1
+
+  execution: 
+    sequence: 130
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 219767387763501264
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1_RETURN_DATE
+
+    execution: 
+      sequence: 10
+      event: New_1 # 219767234426501263
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: New =================================
+  id: 219767605981501267
+  identification: 
+    name: New
+
+  execution: 
+    sequence: 140
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1_IS_RETURN
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 219767754135501268
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var v = apex.item("P1_IS_RETURN").getValue();
+        if (v === "Y") {
+          apex.jQuery("#P1_RETURN_DATE_CONTAINER").show();
+        } else {
+          apex.jQuery("#P1_RETURN_DATE_CONTAINER").hide();
+          apex.item("P1_RETURN_DATE").setValue("");
+        }
+        
+
+    execution: 
+      sequence: 10
+      event: New # 219767605981501267
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Open Search Region ==================
+  id: 269056173093390037
+  identification: 
+    name: Open Search Region
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: SEARCH # 269056048745390036
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 269056219478390038
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.actions.invoke( 'open-search' );
+
+    execution: 
+      sequence: 10
+      event: Open Search Region # 269056173093390037
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog close =============
+  id: 11928116899561995215
+  identification: 
+    name: refresh on dialog close
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 13735331578264668951
+
+- # ====== Dynamic Action: toggle favorite =====================
+  id: 13395664170522438044
+  identification: 
+    name: toggle favorite
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1_PROJECT_TO_FAVORITE
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 13395664262559438045
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        sp_favorite_toggle(
+            p_project_id => :P1_PROJECT_TO_FAVORITE, 
+            p_app_user_id => :APP_USER_ID
+            );
+      items-to-submit: 
+      - P1_PROJECT_TO_FAVORITE
+
+    execution: 
+      sequence: 10
+      event: toggle favorite # 13395664170522438044
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 13430963861580513996
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var favButton$ = $(".js-project-to-favorite");
+        var favButtonIcon$ = favButton$.find(".t-Icon");
+        
+        // we use the class to get the active element, can be cleared now
+        favButton$.removeClass("js-project-to-favorite"); 
+        
+        if ( favButtonIcon$.hasClass("fa-heart") ) {
+            favButtonIcon$.removeClass("fa-heart u-danger-text").addClass("fa-heart-o");
+            // hide success message, no API to do this so done with classes
+            $( "#APEX_SUCCESS_MESSAGE" ).removeClass("u-visible").addClass("u-hidden"); 
+        } else if ( favButtonIcon$.hasClass("fa-heart-o") ) {
+            favButtonIcon$.removeClass("fa-heart-o").addClass("fa-heart u-danger-text");
+            apex.message.showPageSuccess('Project favorited!');
+        }
+        apex.items.P1_PROJECT_TO_FAVORITE.setValue('',undefined,true); //third parameter used to suppress change event
+
+    execution: 
+      sequence: 20
+      event: toggle favorite # 13395664170522438044
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: dismiss notif =======================
+  id: 14300972978689178830
+  identification: 
+    name: dismiss notif
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1_NOTIF_TO_DISMISS
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 14300973069890178831
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        update sp_team_member_notifications
+           set dismissed_yn = 'Y'
+         where id = :P1_NOTIF_TO_DISMISS
+           and team_member_id =  :APP_USER_ID;
+      items-to-submit: 
+      - P1_NOTIF_TO_DISMISS
+
+    execution: 
+      sequence: 10
+      event: dismiss notif # 14300972978689178830
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 14300973185179178832
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.items.P1_NOTIF_TO_DISMISS.setValue('',undefined,true);
+
+    execution: 
+      sequence: 20
+      event: dismiss notif # 14300972978689178830
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: AIRPORT_AUTOCOMPLETE_EG ====================
+  id: 217328560138165255
+  identification: 
+    name: AIRPORT_AUTOCOMPLETE_EG
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_input VARCHAR2(4000) := NVL(apex_application.g_x01, '');
+        l_key   VARCHAR2(4000) := apex_app_setting.get_value('GOOGLE_PLACES_KEY'); -- حطيه في App Settings
+        l_url   VARCHAR2(4000) := 'https://places.googleapis.com/v1/places:autocomplete';
+        l_body  CLOB;
+        l_resp  CLOB;
+      BEGIN
+        IF LENGTH(TRIM(l_input)) < 2 THEN
+          owa_util.mime_header('application/json', FALSE);
+          htp.p('{"suggestions": []}');
+          RETURN;
+        END IF;
+      
+        -- Request body: Airports فقط + مصر فقط
+        l_body :=
+          '{'||
+          '  "input": "'|| apex_escape.json(l_input) ||'",'||
+          '  "includedPrimaryTypes": ["airport"],'||
+          '  "includedRegionCodes": ["EG"],'||
+          '  "languageCode": "ar"'||
+          '}';
+      
+        apex_web_service.g_request_headers.delete;
+        apex_web_service.g_request_headers(1).name  := 'Content-Type';
+        apex_web_service.g_request_headers(1).value := 'application/json';
+      
+        apex_web_service.g_request_headers(2).name  := 'X-Goog-Api-Key';
+        apex_web_service.g_request_headers(2).value := l_key;
+      
+        -- FieldMask مطلوب في Places API (New)
+        apex_web_service.g_request_headers(3).name  := 'X-Goog-FieldMask';
+        apex_web_service.g_request_headers(3).value := 'suggestions.placePrediction.placeId,suggestions.placePrediction.text';
+      
+        l_resp := apex_web_service.make_rest_request(
+          p_url         => l_url,
+          p_http_method => 'POST',
+          p_body        => l_body
+        );
+      
+        owa_util.mime_header('application/json', FALSE);
+        htp.p(l_resp);
+      
+      EXCEPTION
+        WHEN OTHERS THEN
+          owa_util.mime_header('application/json', FALSE);
+          htp.p('{"error":true,"message":"' || apex_escape.json(SQLERRM) || '"}');
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: airport_calc ===============================
+  id: 217328644370165256
+  identification: 
+    name: airport_calc
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_km  NUMBER;
+        l_min NUMBER;
+        l_raw CLOB;
+      BEGIN
+        maps_pkg.compute_route_by_place_id(
+          p_from_place_id => :P1_FROM_PLACE_ID,
+          p_to_place_id   => :P1_TO_PLACE_ID,
+          o_distance_km   => l_km,
+          o_duration_min  => l_min,
+          o_raw_json      => l_raw
+        );
+      
+        :P1_DISTANCE_KM  := l_km;
+        :P1_DURATION_MIN := l_min;
+      
+      END;
+      
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: New ========================================
+  id: 219767859956501269
+  identification: 
+    name: New
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+        l_km  NUMBER;
+        l_min NUMBER;
+        l_raw CLOB;
+      BEGIN
+        maps_pkg.compute_route_by_place_id(
+          p_from_place_id => :P1_FROM_ID,
+          p_to_place_id   => :P1_TO_ID,
+          o_distance_km   => l_km,
+          o_duration_min  => l_min,
+          o_raw_json      => l_raw
+        );
+      
+        :P1_DS_KM     := l_km;
+        :P1_DURATION  := l_min;
+      
+      EXCEPTION
+        WHEN OTHERS THEN
+          apex_error.add_error(
+            p_message          => 'فشل حساب المسار: '||SQLERRM,
+            p_display_location => apex_error.c_inline_in_notification
+          );
+      END;
+      
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Calculate counts ===========================
+  id: 12234030325217943634
+  identification: 
+    name: Calculate counts
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      for c1 in (select count(*) c from bs_employees) loop
+          :P1_EMPLOYEES := to_char(c1.c,'FM999G999G990'); 
+      end loop;
+      
+      for c1 in (select count(*) c from bs_departments) loop
+          :P1_DEPARTMENTS := to_char(c1.c,'FM999G999G990'); 
+      end loop;
+      
+      for c1 in (select count(*) c from suppliers) loop
+          :P1_SUPPLIERS := to_char(c1.c,'FM999G999G990'); 
+      end loop;
+      
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+branches: 
+- # ====== Branch: search projects =============================
+  id: 22611700174037514925
+  identification: 
+    name: search projects
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:23:&SESSION.::&DEBUG.:RP,23:P23_SEARCH:&P1_SEARCH.&success_msg=#SUCCESS_MSG#'
+      page: 23
+      clear-cache: RP,23
+      values: 
+        p23_search: '&P1_SEARCH.'
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+

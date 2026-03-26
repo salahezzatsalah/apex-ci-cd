@@ -1,0 +1,2004 @@
+---
+# ====== Page: Suppliers Accounts ============================
+id: 157
+identification: 
+  name: Suppliers Accounts
+  alias: SUPPLIERS-ACCOUNTS
+  title: إدارة حسابات الموردين
+
+appearance: 
+  page-mode: Normal
+  page-template: Left Side Column
+  template-options: 
+  - '#DEFAULT#'
+  - t-PageBody--noContentPadding
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+
+css: 
+  inline: |
+    .no-item-ui {
+      --a-field-input-border-width: 0px;
+      --a-field-input-background-color: transparent;
+    }
+    
+    
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: filters =====================================
+  id: 17852199014875382531
+  identification: 
+    name: filters
+    type: Static Content
+
+  source: 
+    html-code: <div id="active_facets"></div>
+
+  layout: 
+    sequence: 3
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    - t-ButtonRegion--noUI
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 19577036831124019012
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 149832519333146023401
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+      css-classes: 
+      - has-header-actions
+
+- # ====== Region: Menubar =====================================
+  id: 20441380186157033830
+  identification: 
+    name: Menubar
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 1 as actions from dual
+
+  order-by: 
+    type: None
+
+  layout: 
+    sequence: 10
+    parent-region: Breadcrumb # 19577036831124019012
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: None
+    render-components: Above Content
+
+  advanced: 
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Single (Partial)
+      css-classes: 
+      - header-actions
+
+    settings: 
+      display-avatar: false
+      display-badge: false
+
+    performance: 
+      lazy-loading: false
+
+  columns: 
+  - # ====== Column: ACTIONS =====================================
+    id: 20441381419663033842
+    identification: 
+      name: ACTIONS
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ACTIONS
+      data-type: NUMBER
+      primary-key: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: انشاء ملف مورد ==============================
+    id: 16552908008954776454
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Button # 362316605839802174
+      label: انشاء ملف مورد
+
+    layout: 
+      sequence: 10
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:159:&SESSION.::&DEBUG.:RP,159:P159_SUPPLIER_ID:'
+        page: 159 # Suppliers Account Form
+        clear-cache: RP,159
+        values: 
+
+    appearance: 
+      display-type: Text with Icon
+      icon: fa-plus
+      hot: true
+      show-as-disabled: false
+
+  - # ====== Action: Actions =====================================
+    id: 20441380486736033833
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+
+    menus: 
+    - # ====== Menu: عرض سجل الاعضاء ===============================
+      id: 14656365135872098603
+      identification: 
+        type: Menu Entry
+        label: عرض سجل الاعضاء
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 40
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:99:&SESSION.::&DEBUG.:RP,::'
+          page: 99 # Employees Register Report 
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+    - # ====== Menu: Separator =====================================
+      id: 14656366822596098620
+      identification: 
+        type: Separator
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 60
+
+    - # ====== Menu: Add Multiple &NOMENCLATURE_USERS. (admin) =====
+      id: 16268152798135139561
+      identification: 
+        type: Menu Entry
+        label: Add Multiple &NOMENCLATURE_USERS. (admin)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:54:&SESSION.::&DEBUG.:RP,54::'
+          page: 54
+          clear-cache: RP,54
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: اعدة ظبط ======================================
+      id: 17672701215763131099
+      identification: 
+        type: Menu Entry
+        label: اعدة ظبط
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 80
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:157:&SESSION.::&DEBUG.:RP,74::'
+          page: 157 # Suppliers Accounts
+          clear-cache: RP,74
+
+      appearance: 
+        icon: fa-undo-alt
+
+    - # ====== Menu: عن &NOMENCLATURE_USER. ========================
+      id: 17672701406915131100
+      identification: 
+        type: Menu Entry
+        label: عن &NOMENCLATURE_USER.
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 50
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:109:&SESSION.::&DEBUG.:RP,::'
+          page: 109
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-info
+
+      server-side-condition: 
+        type: Never
+
+    - # ====== Menu: Manage Groups =================================
+      id: 19287886382707342106
+      identification: 
+        type: Menu Entry
+        label: Manage Groups
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:103:&SESSION.::&DEBUG.:RP,::'
+          page: 103
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-users
+
+      server-side-condition: 
+        type: Never
+
+      security: 
+        authorization-scheme: Contribution Rights # 149832818544438023719
+
+    - # ====== Menu: تحديث =========================================
+      id: 20441381192643033840
+      identification: 
+        type: Menu Entry
+        label: تحديث
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 70
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:157:&SESSION.::&DEBUG.:RP,::'
+          page: 157 # Suppliers Accounts
+          clear-cache: RP
+
+      appearance: 
+        icon: fa-refresh
+
+- # ====== Region: Suppliers Accounts  =========================
+  id: 20894967304620098347
+  identification: 
+    name: 'Suppliers Accounts '
+    type: Content Row
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT 
+         s.SUPPLIER_ID AS id,
+         s.SUPPLIER_NAME,
+         s.IS_COMPANY,
+         s.NATIONAL_ID,
+         s.COMPANY_REG_NO,
+         s.PHONE,
+         s.EMAIL,
+         --
+         SUBSTR(s.EMAIL, INSTR(s.EMAIL, '@') + 1) AS email_domain,
+         --
+         s.CITY,
+         (
+           SELECT COUNTRY_NAME || ' (' || REGION || ')' 
+           FROM SP_COUNTRIES c 
+           WHERE c.ID = s.COUNTRY_ID
+         ) AS country,
+         s.ADDRESS,
+         s.STATUS,
+         s.HAS_PORTAL_ACCESS,
+         s.USERNAME,
+         s.CREATED,
+         s.CREATED_BY,
+         s.UPDATED,
+         s.UPDATED_BY,
+         s.NOTES,
+         s.PHOTO_URL,
+      
+         --
+         CASE 
+           WHEN s.PHOTO_URL IS NOT NULL AND DBMS_LOB.GETLENGTH(s.PROFILE_PHOTO) > 0 THEN 'نعم'
+           ELSE 'لا'
+         END AS has_profile_photo,
+         --
+         s.supplier_type_id,
+         --
+         (SELECT COUNT(*) 
+            FROM SUPPLIERS_DOCUMENTS a 
+           WHERE a.SUPPLIER_ID = s.SUPPLIER_ID
+         ) AS attachments_count,
+         --
+         (
+           SELECT u.ROLE_IDS
+           FROM APEX_APPL_ACL_USERS u
+           WHERE u.APPLICATION_ID = :APP_ID
+             AND LOWER(u.USER_NAME) = LOWER(s.USERNAME)
+           FETCH FIRST 1 ROWS ONLY
+         ) AS app_role
+      FROM SUPPLIERS s;
+      
+
+  order-by: 
+    type: Item
+    item: 
+      item-name: P157_ORDER_BY
+      order-bys: 
+      - key: SUPPLIER_NAME
+        clause: SUPPLIER_NAME
+
+      - key: EMAIL
+        clause: email
+
+  layout: 
+    sequence: 33
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes (No Grid)
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Region
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      display: Multiple (Report)
+
+    settings: 
+      title: '&SUPPLIER_NAME!HTML.'
+      description: |
+        &PHONE. - &EMAIL!HTML.
+        {if SUPPLIER_TYPE_ID/}<br>تصنيف الملف: &SUPPLIER_TYPE_ID.{endif/}
+        {if NOTES/}<br>ملاحظات: &NOTES.{endif/}
+        
+      miscellaneous: 'عدد مرفقات: <strong>&ATTACHMENTS_COUNT.</strong><br>'
+      display-avatar: true
+      display-badge: false
+
+    avatar: 
+      type: Image
+      image: 
+        url: '&PHOTO_URL.'
+
+      shape: Rounded
+      size: Default
+
+    appearance: 
+      apply-theme-colors: true
+      style: Default
+      hide-borders: false
+      remove-padding: false
+
+    row-selection: 
+      type: None
+
+    performance: 
+      lazy-loading: false
+
+    pagination: 
+      type: Page
+      entities-per-page: 15
+      show-total-count: false
+
+  columns: 
+  - # ====== Column: PHOTO_URL ===================================
+    id: 176417852705661018
+    identification: 
+      name: PHOTO_URL
+
+    layout: 
+      sequence: 570
+
+    source: 
+      type: Database Column
+      database-column: PHOTO_URL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NATIONAL_ID =================================
+    id: 254224140494902765
+    identification: 
+      name: NATIONAL_ID
+
+    layout: 
+      sequence: 340
+
+    source: 
+      type: Database Column
+      database-column: NATIONAL_ID
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: PHONE =======================================
+    id: 254224329006902767
+    identification: 
+      name: PHONE
+
+    layout: 
+      sequence: 360
+
+    source: 
+      type: Database Column
+      database-column: PHONE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CITY ========================================
+    id: 254224486679902768
+    identification: 
+      name: CITY
+
+    layout: 
+      sequence: 370
+
+    source: 
+      type: Database Column
+      database-column: CITY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COUNTRY =====================================
+    id: 254224542089902769
+    identification: 
+      name: COUNTRY
+
+    layout: 
+      sequence: 380
+
+    source: 
+      type: Database Column
+      database-column: COUNTRY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ADDRESS =====================================
+    id: 254224629144902770
+    identification: 
+      name: ADDRESS
+
+    layout: 
+      sequence: 390
+
+    source: 
+      type: Database Column
+      database-column: ADDRESS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: STATUS ======================================
+    id: 254224714335902771
+    identification: 
+      name: STATUS
+
+    layout: 
+      sequence: 400
+
+    source: 
+      type: Database Column
+      database-column: STATUS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: NOTES =======================================
+    id: 254224899366902772
+    identification: 
+      name: NOTES
+
+    layout: 
+      sequence: 410
+
+    source: 
+      type: Database Column
+      database-column: NOTES
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED_BY ==================================
+    id: 254224992911902773
+    identification: 
+      name: CREATED_BY
+
+    layout: 
+      sequence: 420
+
+    source: 
+      type: Database Column
+      database-column: CREATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED_BY ==================================
+    id: 254225050656902774
+    identification: 
+      name: UPDATED_BY
+
+    layout: 
+      sequence: 430
+
+    source: 
+      type: Database Column
+      database-column: UPDATED_BY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: ATTACHMENTS_COUNT ===========================
+    id: 254225416819902778
+    identification: 
+      name: ATTACHMENTS_COUNT
+
+    layout: 
+      sequence: 470
+
+    source: 
+      type: Database Column
+      database-column: ATTACHMENTS_COUNT
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SUPPLIER_NAME ===============================
+    id: 255569278233025530
+    identification: 
+      name: SUPPLIER_NAME
+
+    layout: 
+      sequence: 490
+
+    source: 
+      type: Database Column
+      database-column: SUPPLIER_NAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: IS_COMPANY ==================================
+    id: 255569309376025531
+    identification: 
+      name: IS_COMPANY
+
+    layout: 
+      sequence: 500
+
+    source: 
+      type: Database Column
+      database-column: IS_COMPANY
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: COMPANY_REG_NO ==============================
+    id: 255569495397025532
+    identification: 
+      name: COMPANY_REG_NO
+
+    layout: 
+      sequence: 510
+
+    source: 
+      type: Database Column
+      database-column: COMPANY_REG_NO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: HAS_PORTAL_ACCESS ===========================
+    id: 255569522921025533
+    identification: 
+      name: HAS_PORTAL_ACCESS
+
+    layout: 
+      sequence: 520
+
+    source: 
+      type: Database Column
+      database-column: HAS_PORTAL_ACCESS
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: USERNAME ====================================
+    id: 255569685899025534
+    identification: 
+      name: USERNAME
+
+    layout: 
+      sequence: 530
+
+    source: 
+      type: Database Column
+      database-column: USERNAME
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: APP_ROLE ====================================
+    id: 255569739561025535
+    identification: 
+      name: APP_ROLE
+
+    layout: 
+      sequence: 540
+
+    source: 
+      type: Database Column
+      database-column: APP_ROLE
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: EMAIL_DOMAIN ================================
+    id: 255569888329025536
+    identification: 
+      name: EMAIL_DOMAIN
+
+    layout: 
+      sequence: 550
+
+    source: 
+      type: Database Column
+      database-column: EMAIL_DOMAIN
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: SUPPLIER_TYPE_ID ============================
+    id: 255570186623025539
+    identification: 
+      name: SUPPLIER_TYPE_ID
+
+    layout: 
+      sequence: 560
+
+    source: 
+      type: Database Column
+      database-column: SUPPLIER_TYPE_ID
+      data-type: NUMBER
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: SUPPLIERS TYPES LIST # 255579230348063661
+      display-extra-values: false
+
+  - # ====== Column: ID ==========================================
+    id: 14930886436586928793
+    identification: 
+      name: ID
+
+    layout: 
+      sequence: 10
+
+    source: 
+      type: Database Column
+      database-column: ID
+      data-type: VARCHAR2
+      primary-key: true
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: EMAIL =======================================
+    id: 14930886809223928796
+    identification: 
+      name: EMAIL
+
+    layout: 
+      sequence: 40
+
+    source: 
+      type: Database Column
+      database-column: EMAIL
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: UPDATED =====================================
+    id: 14930887081138928799
+    identification: 
+      name: UPDATED
+
+    layout: 
+      sequence: 70
+
+    source: 
+      type: Database Column
+      database-column: UPDATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: HAS_PROFILE_PHOTO ===========================
+    id: 14930889047086928819
+    identification: 
+      name: HAS_PROFILE_PHOTO
+
+    layout: 
+      sequence: 270
+
+    source: 
+      type: Database Column
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  - # ====== Column: CREATED =====================================
+    id: 15362195218497588728
+    identification: 
+      name: CREATED
+
+    layout: 
+      sequence: 310
+
+    source: 
+      type: Database Column
+      database-column: CREATED
+      data-type: TIMESTAMP WITH TIME ZONE
+      primary-key: false
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      group: false
+
+  actions: 
+  - # ====== Action: Full Row Link ===============================
+    id: 262535440144796648
+    identification: 
+      position: Full Row Link # 349402277895478545
+
+    layout: 
+      sequence: 30
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:RP,166:P166_ID:&ID.'
+        page: 166 # Supplier Details Full Page
+        clear-cache: RP,166
+        values: 
+          p166_id: '&ID.'
+
+  - # ====== Action: Actions =====================================
+    id: 14656365154617098604
+    identification: 
+      position: Primary Actions # 362316004162771045
+      template: Menu # 362317865359806322
+      label: Actions
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      display-type: Icon
+      icon: fa-ellipsis-v
+      hot: false
+      show-as-disabled: false
+      css-classes: 
+      - t-Button--noUI
+
+    menus: 
+    - # ====== Menu: تفاصيل الحساب =================================
+      id: 14656365425317098606
+      identification: 
+        type: Menu Entry
+        label: تفاصيل الحساب
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 30
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:RP,166:P166_ID:&ID.'
+          page: 166 # Supplier Details Full Page
+          clear-cache: RP,166
+          values: 
+            p166_id: '&ID.'
+
+      appearance: 
+        icon: fa-user
+
+    - # ====== Menu: تعديل (ADMIN) =================================
+      id: 14656365477797098607
+      identification: 
+        type: Menu Entry
+        label: تعديل (ADMIN)
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 10
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:159:&SESSION.::&DEBUG.:RP,159:P159_SUPPLIER_ID:&ID.'
+          page: 159 # Suppliers Account Form
+          clear-cache: RP,159
+          values: 
+            p159_supplier_id: '&ID.'
+
+      appearance: 
+        icon: fa-edit
+
+      security: 
+        authorization-scheme: Administration Rights # 149832818388153023719
+
+    - # ====== Menu: نظرة سريعة ====================================
+      id: 14656365577530098608
+      identification: 
+        type: Menu Entry
+        label: نظرة سريعة
+        parent-menu: No Parent
+
+      layout: 
+        sequence: 20
+
+      link: 
+        type: Redirect to Page in this Application
+        target: 
+          url: 'f?p=&APP_ID.:158:&SESSION.::&DEBUG.:RP,158:P158_SUPPLIER_ID:&ID.'
+          page: 158 # Supplier Quick Look
+          clear-cache: RP,158
+          values: 
+            p158_supplier_id: '&ID.'
+
+      appearance: 
+        icon: fa-user
+
+  - # ====== Action: Title Link ==================================
+    id: 14656366443710098617
+    identification: 
+      position: Title Link # 348722977165395441
+
+    layout: 
+      sequence: 20
+
+    link: 
+      type: Redirect to Page in this Application
+      target: 
+        url: 'f?p=&APP_ID.:158:&SESSION.::&DEBUG.:RP,158:P158_SUPPLIER_ID:&ID.'
+        page: 158 # Supplier Quick Look
+        clear-cache: RP,158
+        values: 
+          p158_supplier_id: '&ID.'
+
+- # ====== Region: Faceted Search ==============================
+  id: 21690710926405758117
+  identification: 
+    name: Faceted Search
+    title: ادوات البحث
+    type: Faceted Search
+
+  source: 
+    filtered-region: 'Suppliers Accounts ' # 20894967304620098347
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: REGION_POSITION_02
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      batch-facet-changes: false
+      compact-numbers-threshold: 10000
+      show-current-facets: Selector
+      current-facets-selector: '#active_facets'
+      show-total-row-count: No
+      show-charts: Dialog
+      display-chart-for-top-n-values: 20
+
+  facets: 
+  - # ====== Facet: P157_STATUS ==================================
+    id: 255569983661025537
+    identification: 
+      name: P157_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الحساب
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 40
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: SUPPLIER_STATUSES.STATUS_NAME # 255591319970110892
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P157_HAS_PORTAL_ACCESS =======================
+    id: 255570031143025538
+    identification: 
+      name: P157_HAS_PORTAL_ACCESS
+      type: Checkbox Group
+
+    label: 
+      label: لديه صلاحية وصول الى النظام
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 70
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P157_HAS_PROFILE_PHOTO =======================
+    id: 19020035644802961129
+    identification: 
+      name: P157_HAS_PROFILE_PHOTO
+      type: Checkbox Group
+
+    label: 
+      label: يوجد له صورة ملف
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 60
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P157_SUPPLIER_TYPE ===========================
+    id: 21053611331565973692
+    identification: 
+      name: P157_SUPPLIER_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: تصنيف الحساب
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 30
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: SUPPLIERS TYPES LIST # 255579230348063661
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 7
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: SUPPLIER_TYPE_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P157_SEARCH ==================================
+    id: 21690757987198758291
+    identification: 
+      name: P157_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      input-field: Top of Faceted Search Region
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    source: 
+      database-column(s): SUPPLIER_NAME,PHONE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Facet: P157_EMAIL_DOMAIN ============================
+    id: 21690758441015758296
+    identification: 
+      name: P157_EMAIL_DOMAIN
+      type: Checkbox Group
+
+    label: 
+      label: نطاق البريد الالكتروني
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 50
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: EMAIL_DOMAIN
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Facet: P157_APP_ROLE ================================
+    id: 24140864013620776713
+    identification: 
+      name: P157_APP_ROLE
+      type: Checkbox Group
+
+    label: 
+      label: صلاحيات المستخدم
+      show-label-for-current-facet: true
+
+    layout: 
+      sequence: 20
+
+    appearance: 
+      display: Inline
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: ACCESS_ROLES # 149832840835224023850
+      include-null-option: true
+      null-display-value: بدون صلاحية
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      maximum-displayed-entries: 5
+      display-filter-initially: false
+
+    actions-menu: 
+      filter: true
+      chart: true
+
+    advanced: 
+      show-chart-initially: false
+      collapsible: false
+
+    source: 
+      database-column: APP_ROLE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+  filters: 
+  - # ====== Filter: P157_STATUS =================================
+    id: 255569983661025537
+    identification: 
+      name: P157_STATUS
+      type: Checkbox Group
+
+    label: 
+      label: حالة الحساب
+
+    layout: 
+      sequence: 40
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: SUPPLIER_STATUSES.STATUS_NAME # 255591319970110892
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: STATUS
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P157_HAS_PORTAL_ACCESS ======================
+    id: 255570031143025538
+    identification: 
+      name: P157_HAS_PORTAL_ACCESS
+      type: Checkbox Group
+
+    label: 
+      label: لديه صلاحية وصول الى النظام
+
+    layout: 
+      sequence: 70
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P157_HAS_PROFILE_PHOTO ======================
+    id: 19020035644802961129
+    identification: 
+      name: P157_HAS_PROFILE_PHOTO
+      type: Checkbox Group
+
+    label: 
+      label: يوجد له صورة ملف
+
+    layout: 
+      sequence: 60
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: HAS_PROFILE_PHOTO
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P157_SUPPLIER_TYPE ==========================
+    id: 21053611331565973692
+    identification: 
+      name: P157_SUPPLIER_TYPE
+      type: Checkbox Group
+
+    label: 
+      label: تصنيف الحساب
+
+    layout: 
+      sequence: 30
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: SUPPLIERS TYPES LIST # 255579230348063661
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: SUPPLIER_TYPE_ID
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P157_SEARCH =================================
+    id: 21690757987198758291
+    identification: 
+      name: P157_SEARCH
+      type: Search
+
+    label: 
+      label: بحث
+
+    settings: 
+      search-type: Row Search
+      collapsed-search-field: false
+
+    layout: 
+      sequence: 10
+
+    appearance: 
+      value-placeholder: بحث
+
+    source: 
+      database-column(s): SUPPLIER_NAME,PHONE
+
+    security: 
+      store-value-encrypted-in-session-state: true
+
+  - # ====== Filter: P157_EMAIL_DOMAIN ===========================
+    id: 21690758441015758296
+    identification: 
+      name: P157_EMAIL_DOMAIN
+      type: Checkbox Group
+
+    label: 
+      label: نطاق البريد الالكتروني
+
+    layout: 
+      sequence: 50
+
+    list-of-values: 
+      type: Distinct Values
+      sort-direction: Ascending
+      include-null-option: false
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: EMAIL_DOMAIN
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+  - # ====== Filter: P157_APP_ROLE ===============================
+    id: 24140864013620776713
+    identification: 
+      name: P157_APP_ROLE
+      type: Checkbox Group
+
+    label: 
+      label: صلاحيات المستخدم
+
+    layout: 
+      sequence: 20
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: ACCESS_ROLES # 149832840835224023850
+      include-null-option: true
+      null-display-value: بدون صلاحية
+
+    list-entries: 
+      compute-counts: true
+      show-counts: true
+      zero-count-entries: Hide
+      sort-by-top-counts: true
+      show-selected-first: false
+      client-side-filtering: false
+
+    suggestions: 
+      type: None
+
+    source: 
+      database-column: APP_ROLE
+      data-type: VARCHAR2
+
+    multiple-values: 
+      type: No
+
+    security: 
+      store-value-encrypted-in-session-state: true
+      escape-special-characters: true
+
+    configuration: 
+      build-option: Commented Out # 253764608978089549
+
+page-items: 
+- # ====== Page Item: P157_ORDER_BY ============================
+  id: 14656384478707098669
+  identification: 
+    name: P157_ORDER_BY
+    type: Select List
+
+  label: 
+    label: Order By
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: filters # 17852199014875382531
+    slot: NEXT
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Hidden
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-sort-amount-asc
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC2:الاسم;SUPPLIER_NAME,البريد الالكتروني;EMAIL'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    css-classes: 
+    - w200
+    - no-item-ui
+    warn-on-unsaved-changes: Ignore
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: SUPPLIER_NAME
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: UP ==========================================
+  id: 255543960267856462
+  identification: 
+    button-name: UP
+    label: Navigate Up
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 19577036831124019012
+    slot: UP
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--noUI
+    icon: fa-arrow-left
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP,::'
+      page: 1 # home
+      clear-cache: RP
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DC ==================================
+  id: 255550363473856472
+  identification: 
+    name: DC
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: 'Suppliers Accounts ' # 20894967304620098347
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 255550857191856473
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: 'Suppliers Accounts ' # 20894967304620098347
+
+    execution: 
+      sequence: 10
+      event: DC # 255550363473856472
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 255551305629856474
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21690710926405758117
+
+    execution: 
+      sequence: 20
+      event: DC # 255550363473856472
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: refresh on dialog closed ============
+  id: 255551708893856474
+  identification: 
+    name: refresh on dialog closed
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: Region
+    region: Breadcrumb # 19577036831124019012
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 255552246761856474
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: 'Suppliers Accounts ' # 20894967304620098347
+
+    execution: 
+      sequence: 10
+      event: refresh on dialog closed # 255551708893856474
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 255552755041856475
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Faceted Search # 21690710926405758117
+
+    execution: 
+      sequence: 20
+      event: refresh on dialog closed # 255551708893856474
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: sync roles =================================
+  id: 255549922607856471
+  identification: 
+    name: sync roles
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      sp_strategic_proj_util.sync_team_members_app_role (
+          p_app_id => :APP_ID);
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Never
+

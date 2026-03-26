@@ -1,0 +1,1044 @@
+---
+- # ====== Breadcrumb: Breadcrumb ==============================
+  id: 149832519333146023401
+  identification: 
+    name: Breadcrumb
+
+  entries: 
+  - # ====== Entry: IAM_USERS ====================================
+    id: 177293488633469676
+    identification: 
+      name: IAM_USERS
+      page-number: 6
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6:&APP_SESSION.::&DEBUG.:::'
+        page: 6 # IAM_USERS
+
+  - # ====== Entry: إدارة الهويات ================================
+    id: 180311801297181230
+    identification: 
+      name: إدارة الهويات
+      page-number: 4
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: الصفحة الرئيسية # 149832519499356023401
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4:&SESSION.::&DEBUG.:::'
+        page: 4 # Identities Department
+
+  - # ====== Entry: ملف الحجز ====================================
+    id: 182994614459590979
+    identification: 
+      name: ملف الحجز
+      page-number: 804
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:804:&SESSION.::&DEBUG.:::'
+        page: 804 # PropReservationDetails
+
+  - # ====== Entry: &P2_IDENTITY_NAME. ===========================
+    id: 183506713586105384
+    identification: 
+      name: '&P2_IDENTITY_NAME.'
+      page-number: 2
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: إدارة الهويات # 180311801297181230
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:2:&SESSION.::&DEBUG.:::'
+        page: 2 # Identity Profile
+
+  - # ====== Entry: الطلب الرئيسي ================================
+    id: 192728094060804994
+    identification: 
+      name: الطلب الرئيسي
+      page-number: 1499
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1499:&SESSION.::&DEBUG.:::'
+        page: 1499 # Main Reservation Details Form
+
+  - # ====== Entry: قائمة سرائر النوم ============================
+    id: 193939521254292298
+    identification: 
+      name: قائمة سرائر النوم
+      page-number: 223
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:223:&SESSION.::&DEBUG.:::'
+        page: 223 # HOTEL_BEDS_TYPES
+
+  - # ====== Entry: Fast Track Profile Service ===================
+    id: 194049842543070128
+    identification: 
+      name: Fast Track Profile Service
+      page-number: 1600
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1600:&APP_SESSION.::&DEBUG.:::'
+        page: 1600 # Fast Track Profile Service
+
+  - # ====== Entry: نظام تسويات السائقين =========================
+    id: 195763893605364317
+    identification: 
+      name: نظام تسويات السائقين
+      page-number: 248
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: نظام التسوية - الاصدار الاول # 196392676761287873
+      long-name: نظام إنشاء فواتير التسوية - الاصدار الاول
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:248:&SESSION.::&DEBUG.:::'
+        page: 248 # نظام التسوية - الاصدار الاول
+
+  - # ====== Entry: Trip Detail View =============================
+    id: 195932658701074970
+    identification: 
+      name: Trip Detail View
+      page-number: 252
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: نظام تسويات السائقين # 195763893605364317
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:252:&APP_SESSION.::&DEBUG.:::'
+        page: 252 # Trip Detail View
+
+  - # ====== Entry: نظام التسوية - الاصدار الاول =================
+    id: 196392676761287873
+    identification: 
+      name: نظام التسوية - الاصدار الاول
+      page-number: 251
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:251:&SESSION.::&DEBUG.:::'
+        page: 251 # نظام التسوية - الاصدار الاول
+
+  - # ====== Entry: Settlement Reports ===========================
+    id: 196426625715925512
+    identification: 
+      name: Settlement Reports
+      page-number: 258
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: نظام التسوية - الاصدار الاول # 196392676761287873
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:258:&APP_SESSION.::&DEBUG.:::'
+        page: 258 # Settlement Reports
+
+  - # ====== Entry: سجل طلبات المسار السريع ======================
+    id: 230017828705649723
+    identification: 
+      name: سجل طلبات المسار السريع
+      page-number: 454
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:454:&APP_SESSION.::&DEBUG.:::'
+        page: 454 # Fast Track Reservations Requests
+
+  - # ====== Entry: ملف حساب سائق - &P6008_ACCOUNT_NAME. =========
+    id: 231772050875962923
+    identification: 
+      name: ملف حساب سائق - &P6008_ACCOUNT_NAME.
+      page-number: 6008
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6008:&SESSION.::&DEBUG.:::'
+        page: 6008 # Financial Department - Driver Account Page
+
+  - # ====== Entry: سجل العملاء ==================================
+    id: 251713304087329569
+    identification: 
+      name: سجل العملاء
+      page-number: 112
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:112:&SESSION.::&DEBUG.:::'
+        page: 112 # Clients
+
+  - # ====== Entry: &P98_NAME. - ملف عميل ========================
+    id: 253679821107545904
+    identification: 
+      name: '&P98_NAME. - ملف عميل'
+      page-number: 98
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:98:&SESSION.::&DEBUG.:::'
+        page: 98 # Client Details Full Page
+
+  - # ====== Entry: سجل الاعضاء ==================================
+    id: 253790231278448427
+    identification: 
+      name: سجل الاعضاء
+      page-number: 99
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:99:&SESSION.::&DEBUG.:::'
+        page: 99 # Employees Register Report 
+
+  - # ====== Entry: تصنيفات الموردين =============================
+    id: 255207907552776641
+    identification: 
+      name: تصنيفات الموردين
+      page-number: 125
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:125:&SESSION.::&DEBUG.:::'
+        page: 125 # Suppliers Type
+
+  - # ====== Entry: إدارة الموردين ===============================
+    id: 255549671163856470
+    identification: 
+      name: إدارة الموردين
+      page-number: 157
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:157:&APP_SESSION.::&DEBUG.:::'
+        page: 157 # Suppliers Accounts
+
+  - # ====== Entry: ملف مورد - &P166_NAME. =======================
+    id: 255753555833107795
+    identification: 
+      name: ملف مورد - &P166_NAME.
+      page-number: 166
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:166:&SESSION.::&DEBUG.:::'
+        page: 166 # Supplier Details Full Page
+
+  - # ====== Entry: سجل حسابات الموردين ==========================
+    id: 255891237533927955
+    identification: 
+      name: سجل حسابات الموردين
+      page-number: 168
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:168:&APP_SESSION.::&DEBUG.:::'
+        page: 168 # Suppliers Register Report 
+
+  - # ====== Entry: قائمة العملات واسعار الصرف ===================
+    id: 256811533287824721
+    identification: 
+      name: قائمة العملات واسعار الصرف
+      page-number: 148
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:148:&APP_SESSION.::&DEBUG.:::'
+        page: 148 # Currencies List
+
+  - # ====== Entry: سجل حجوزات الفنادق ===========================
+    id: 259122535934923056
+    identification: 
+      name: سجل حجوزات الفنادق
+      page-number: 170
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:170:&SESSION.::&DEBUG.:::'
+        page: 170 # Hotels Reservations Interactive Report
+
+  - # ====== Entry: تفاصيل مستند - &P167_FILE_NAME. ==============
+    id: 264098995302584802
+    identification: 
+      name: تفاصيل مستند - &P167_FILE_NAME.
+      page-number: 167
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: ملف مورد - &P166_NAME. # 255753555833107795
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:167:&SESSION.::&DEBUG.:::'
+        page: 167 # Supplier Document Details
+
+  - # ====== Entry: معرض الصور - ملف مورد ========================
+    id: 264125570518299922
+    identification: 
+      name: معرض الصور - ملف مورد
+      page-number: 176
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: ملف مورد - &P166_NAME. # 255753555833107795
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:176:&APP_SESSION.::&DEBUG.:::'
+        page: 176 # Supplier Images Gallery
+
+  - # ====== Entry: WF - Dashboard Console =======================
+    id: 264304598684221944
+    identification: 
+      name: WF - Dashboard Console
+      page-number: 180
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:180:&APP_SESSION.::&DEBUG.:::'
+        page: 180 # WF - Dashboard Console
+
+  - # ====== Entry: My Tasks =====================================
+    id: 264343734025674766
+    identification: 
+      name: My Tasks
+      page-number: 181
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:181:&APP_SESSION.::&DEBUG.:::'
+        page: 181 # My Tasks
+
+  - # ====== Entry: My Requests ==================================
+    id: 264529013344195409
+    identification: 
+      name: My Requests
+      page-number: 186
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:186:&APP_SESSION.::&DEBUG.:::'
+        page: 186 # My Requests
+
+  - # ====== Entry: إدارة طلابات الليموزين =======================
+    id: 266553728037125921
+    identification: 
+      name: إدارة طلابات الليموزين
+      page-number: 350
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:350:&SESSION.::&DEBUG.:::'
+        page: 350 # Limousine Department Home
+
+  - # ====== Entry: كتالوج السيارات ==============================
+    id: 266595546237995010
+    identification: 
+      name: كتالوج السيارات
+      page-number: 351
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: إدارة طلابات الليموزين # 266553728037125921
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:351:&APP_SESSION.::&DEBUG.:::'
+        page: 351 # Limo Cars Catalog
+
+  - # ====== Entry: &P354_NAME. ==================================
+    id: 266806281910319725
+    identification: 
+      name: '&P354_NAME.'
+      page-number: 354
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: كتالوج السيارات # 266595546237995010
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:354:&SESSION.::&DEBUG.:::'
+        page: 354 # Car Type Profile Page
+
+  - # ====== Entry: معرض الصور ===================================
+    id: 266905407375641543
+    identification: 
+      name: معرض الصور
+      page-number: 355
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: '&P354_NAME.' # 266806281910319725
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:355:&APP_SESSION.::&DEBUG.:::'
+        page: 355 # Car Type Images Gallery
+
+  - # ====== Entry: تفاصيل مستند =================================
+    id: 266939174570772023
+    identification: 
+      name: تفاصيل مستند
+      page-number: 356
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: '&P354_NAME.' # 266806281910319725
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:356:&APP_SESSION.::&DEBUG.:::'
+        page: 356 # Car Type Document Details
+
+  - # ====== Entry: ملف طلب حجز: &P360_RESERVATION_ID. ===========
+    id: 268498606623771426
+    identification: 
+      name: 'ملف طلب حجز: &P360_RESERVATION_ID.'
+      page-number: 360
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: إدارة طلابات الليموزين # 266553728037125921
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:360:&SESSION.::&DEBUG.:::'
+        page: 360 # Limo Reservation Request Details
+
+  - # ====== Entry: سجل خدمات الليموزين ==========================
+    id: 269495675376527575
+    identification: 
+      name: سجل خدمات الليموزين
+      page-number: 361
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: إدارة طلابات الليموزين # 266553728037125921
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:361:&SESSION.::&DEBUG.:::'
+        page: 361 # Limo Reservations Interactive Report
+
+  - # ====== Entry: سجل طلبات الليموزين ==========================
+    id: 269562788576666180
+    identification: 
+      name: سجل طلبات الليموزين
+      page-number: 362
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:362:&SESSION.::&DEBUG.:::'
+        page: 362 # Limo Reservations Requests
+
+  - # ====== Entry: الصفحة الرئيسية - الكباتن ====================
+    id: 270475490323553327
+    identification: 
+      name: الصفحة الرئيسية - الكباتن
+      page-number: 6000
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6000:&SESSION.::&DEBUG.:::'
+        page: 6000 # Driver's Application Home Page
+
+  - # ====== Entry: تفاصيل خدمة - &P6001_PRODUCT_ID. =============
+    id: 270593408429699347
+    identification: 
+      name: تفاصيل خدمة - &P6001_PRODUCT_ID.
+      page-number: 6001
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6001:&SESSION.::&DEBUG.:::'
+        page: 6001 # Trip Request Details
+
+  - # ====== Entry: سجل كباتن الشركة =============================
+    id: 274421340205614702
+    identification: 
+      name: سجل كباتن الشركة
+      page-number: 364
+
+    execution: 
+      sequence: 10
+
+    appearance: 
+      parent-entry: إدارة طلابات الليموزين # 266553728037125921
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:364:&APP_SESSION.::&DEBUG.:::'
+        page: 364 # Drivers Accounts
+
+  - # ====== Entry: سجل التحصيلات والتسوية =======================
+    id: 278813493105365157
+    identification: 
+      name: سجل التحصيلات والتسوية
+      page-number: 190
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:190:&SESSION.::&DEBUG.:::'
+        page: 190 # Limo Assignments Balance Sheet Driver/Company
+
+  - # ====== Entry: ملف حساب &P366_DRIVER_NAME. - سائق داخلي =====
+    id: 279072744639218182
+    identification: 
+      name: ملف حساب &P366_DRIVER_NAME. - سائق داخلي
+      page-number: 366
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:366:&SESSION.::&DEBUG.:::'
+        page: 366 # Company Driver Profile Page
+
+  - # ====== Entry: سجل سيارات الشركة ============================
+    id: 280900844288153102
+    identification: 
+      name: سجل سيارات الشركة
+      page-number: 367
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:367:&APP_SESSION.::&DEBUG.:::'
+        page: 367 # Company Registered Cars
+
+  - # ====== Entry: إدارة المسار السريع ==========================
+    id: 280986647583411323
+    identification: 
+      name: إدارة المسار السريع
+      page-number: 450
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:450:&APP_SESSION.::&DEBUG.:::'
+        page: 450 # FastTrack Department Home
+
+  - # ====== Entry: إدارة العقارات ===============================
+    id: 281051448875842917
+    identification: 
+      name: إدارة العقارات
+      page-number: 550
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:550:&APP_SESSION.::&DEBUG.:::'
+        page: 550 # Apartments Department Home
+
+  - # ====== Entry: إدارة خدمات الطيران ==========================
+    id: 281061403502850394
+    identification: 
+      name: إدارة خدمات الطيران
+      page-number: 650
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:650:&APP_SESSION.::&DEBUG.:::'
+        page: 650 # Airport Services Department Home
+
+  - # ====== Entry: الإدارة المالية ==============================
+    id: 281071216248858378
+    identification: 
+      name: الإدارة المالية
+      page-number: 750
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:750:&APP_SESSION.::&DEBUG.:::'
+        page: 750 # Finance Department Home
+
+  - # ====== Entry: كتالوج خدمات المسار السريع ===================
+    id: 281114436027893866
+    identification: 
+      name: كتالوج خدمات المسار السريع
+      page-number: 452
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:452:&APP_SESSION.::&DEBUG.:::'
+        page: 452 # Fast Track Services Catalog
+
+  - # ====== Entry: نظام طباعة تقرير المسار ======================
+    id: 281172733317175287
+    identification: 
+      name: نظام طباعة تقرير المسار
+      page-number: 199
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:199:&SESSION.::&DEBUG.:::'
+        page: 199 # FastTrack Report Generator
+
+  - # ====== Entry: نظام طباعة تقارير الليموزين ==================
+    id: 281177810715224847
+    identification: 
+      name: نظام طباعة تقارير الليموزين
+      page-number: 183
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:183:&SESSION.::&DEBUG.:::'
+        page: 183 # LIMO-REPORT-GENERATOR
+
+  - # ====== Entry: الحسابات =====================================
+    id: 281328760795843902
+    identification: 
+      name: الحسابات
+      page-number: 751
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:751:&SESSION.::&DEBUG.:::'
+        page: 751 # Finance Department Accounts Page
+
+  - # ====== Entry: العملات و اسعار الصرف ========================
+    id: 281570983627450793
+    identification: 
+      name: العملات و اسعار الصرف
+      page-number: 755
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:755:&SESSION.::&DEBUG.:::'
+        page: 755 # Finance Department Currencies
+
+  - # ====== Entry: اسم الحساب / &P754_ACCOUNT_NAME. =============
+    id: 281578638499615437
+    identification: 
+      name: اسم الحساب / &P754_ACCOUNT_NAME.
+      page-number: 754
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:754:&SESSION.::&DEBUG.:::'
+        page: 754 # Financial Department - Account Page
+
+  - # ====== Entry: Resource Type Usage ==========================
+    id: 13898560950263345222
+    identification: 
+      name: Resource Type Usage
+      page-number: 10601
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10601:&APP_SESSION.::&DEBUG.:::'
+        page: 10601 # Resource Type Usage
+
+  - # ====== Entry: &NOMENCLATURE_INITIATIVE. Focus Areas ========
+    id: 13903072200292070163
+    identification: 
+      name: '&NOMENCLATURE_INITIATIVE. Focus Areas'
+      page-number: 10150
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10150:&SESSION.::&DEBUG.:::'
+        page: 10150 # Initiative Focus Areas
+
+  - # ====== Entry: Page Views ===================================
+    id: 14042927281359329101
+    identification: 
+      name: Page Views
+      page-number: 39
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:39:&APP_SESSION.::&DEBUG.:::'
+        page: 39 # Page Views
+
+  - # ====== Entry: Users ========================================
+    id: 14833030984759778948
+    identification: 
+      name: Users
+      page-number: 10011
+
+    execution: 
+      sequence: 10011
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10011:&SESSION.::&DEBUG.:::'
+        page: 10011 # Users
+
+  - # ====== Entry: Project Completeness Scales ==================
+    id: 15899970395026808215
+    identification: 
+      name: Project Completeness Scales
+      page-number: 10200
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10200:&SESSION.::&DEBUG.:::'
+        page: 10200 # Project Completeness Scales
+
+  - # ====== Entry: Application Log ==============================
+    id: 15974600368484837460
+    identification: 
+      name: Application Log
+      page-number: 10050
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10050:&APP_SESSION.::&DEBUG.:::'
+        page: 10050 # Application Log
+
+  - # ====== Entry: Project Size =================================
+    id: 16174664090402773146
+    identification: 
+      name: Project Size
+      page-number: 10100
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10100:&APP_SESSION.::&DEBUG.:::'
+        page: 10100 # Project Size
+
+  - # ====== Entry: Feedback =====================================
+    id: 18702940485711066419
+    identification: 
+      name: Feedback
+      page-number: 12123
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:12123:&SESSION.::&DEBUG.:::'
+        page: 12123 # Manage Feedback
+
+  - # ====== Entry: Workflow Console =============================
+    id: 19866353799863765689
+    identification: 
+      name: Workflow Console
+      page-number: 4000
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4000:&APP_SESSION.::&DEBUG.:::'
+        page: 4000
+
+  - # ====== Entry: My Tasks =====================================
+    id: 19867174442045810554
+    identification: 
+      name: My Tasks
+      page-number: 5000
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:5000:&APP_SESSION.::&DEBUG.:::'
+        page: 5000
+
+  - # ====== Entry: Countries ====================================
+    id: 21340909465552527579
+    identification: 
+      name: Countries
+      page-number: 43
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:43:&APP_SESSION.::&DEBUG.:::'
+        page: 43 # Countries
+
+  - # ====== Entry: Job Reporting ================================
+    id: 21605241705762312181
+    identification: 
+      name: Job Reporting
+      page-number: 16010
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:16010:&SESSION.::&DEBUG.:::'
+        page: 16010 # Job Reporting
+
+  - # ====== Entry: Email Reporting ==============================
+    id: 22383826289117390404
+    identification: 
+      name: Email Reporting
+      page-number: 16020
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:16020:&SESSION.::&DEBUG.:::'
+        page: 16020 # Email Reporting
+
+  - # ====== Entry: &P502_TASK. ==================================
+    id: 28639059935892291221
+    identification: 
+      name: '&P502_TASK.'
+      page-number: 502
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:502:&SESSION.::&DEBUG.:::'
+        page: 502 # Task Details
+
+  - # ====== Entry: تفاصيل مستند مهمة ============================
+    id: 28670388334285869224
+    identification: 
+      name: تفاصيل مستند مهمة
+      page-number: 505
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:505:&SESSION.::&DEBUG.:::'
+        page: 505 # Task Document Details
+
+  - # ====== Entry: قائمة حالات المهمات ==========================
+    id: 28744964193073522268
+    identification: 
+      name: قائمة حالات المهمات
+      page-number: 10061
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10061:&SESSION.::&DEBUG.:::'
+        page: 10061 # Task Statuses
+
+  - # ====== Entry: Task Status ==================================
+    id: 28751538054426564560
+    identification: 
+      name: Task Status
+      page-number: 10062
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10062:&APP_SESSION.::&DEBUG.:::'
+        page: 10062 # Task Status
+
+  - # ====== Entry: قائمة انواع المهام ===========================
+    id: 28754772183882770537
+    identification: 
+      name: قائمة انواع المهام
+      page-number: 10064
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10064:&SESSION.::&DEBUG.:::'
+        page: 10064 # Task Types
+
+  - # ====== Entry: مهام ادارة الفنادق ===========================
+    id: 29285303510593389865
+    identification: 
+      name: مهام ادارة الفنادق
+      page-number: 500
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:500:&SESSION.::&DEBUG.:::'
+        page: 500 # Tasks
+
+  - # ====== Entry: الصفحة الرئيسية ==============================
+    id: 149832519499356023401
+    identification: 
+      name: الصفحة الرئيسية
+      page-number: 1
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:::'
+        page: 1 # home
+

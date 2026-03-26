@@ -1,0 +1,1854 @@
+---
+# ====== Page: Limo Collection Form ==========================
+id: 6005
+identification: 
+  name: Limo Collection Form
+  alias: LIMO-COLLECTION-FORM
+  title: استمارة تحصيل رحلة ليموزين - نموذج 6005
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Drawer
+  template-options: 
+  - '#DEFAULT#'
+  - js-dialog-class-t-Drawer--pullOutEnd
+
+dialog: 
+  chained: true
+  resizable: true
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Amount & Currency ===========================
+  id: 326177213055478320
+  identification: 
+    name: Amount & Currency
+    title: المبلغ الذي تم تحصيلة
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Limo Collection Form # 326413775631952072
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Trip Details ================================
+  id: 326177243909478321
+  identification: 
+    name: Trip Details
+    title: بيانات الرحلة
+    type: Static Content
+
+  layout: 
+    sequence: 60
+    parent-region: Limo Collection Form # 326413775631952072
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - is-collapsed
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Collector Details ===========================
+  id: 326177349177478322
+  identification: 
+    name: Collector Details
+    title: بيانات القائم بالتحصيل
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: Limo Collection Form # 326413775631952072
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Notes & Additional Documents ================
+  id: 326177436154478323
+  identification: 
+    name: Notes & Additional Documents
+    title: ملاحظات ومستندات اضافية
+    type: Static Content
+
+  layout: 
+    sequence: 30
+    parent-region: Limo Collection Form # 326413775631952072
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Collapsible
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - is-expanded
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Limo Collection Form ========================
+  id: 326413775631952072
+  identification: 
+    name: Limo Collection Form
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: LIMO_TRIP_COLLECTIONS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 326425363760952091
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P6005_PRODUCT_ID =========================
+  id: 326176627688478315
+  identification: 
+    name: P6005_PRODUCT_ID
+    type: Display Only
+
+  label: 
+    label: كود حجز الرحلة
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Trip Details # 326177243909478321
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: PRODUCT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select product_id from limo_trips_tracker_v2 where trip_id = :P6005_TRIP_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_RECEIPT_PHOTO_BLOB =================
+  id: 326176772205478316
+  identification: 
+    name: P6005_RECEIPT_PHOTO_BLOB
+    type: File Upload
+
+  label: 
+    label: رفع مرفق
+    alignment: Left
+
+  display: 
+    display-as: Inline File Browse
+    display-download-link: true
+    content-disposition: Attachment
+    capture-using: NONE
+
+  storage:: 
+    type: BLOB column specified in Item Source attribute
+    mime-type-column: RECEIPT_PHOTO_MIMETYPE
+    filename-column: RECEIPT_PHOTO_FILENAME
+    blob-last-updated-column: RECEIPT_PHOTO_UPLOADED
+
+  layout: 
+    sequence: 10
+    region: Notes & Additional Documents # 326177436154478323
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: RECEIPT_PHOTO_BLOB
+    data-type: BLOB
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_RECEIPT_PHOTO_MIMETYPE =============
+  id: 326176906405478317
+  identification: 
+    name: P6005_RECEIPT_PHOTO_MIMETYPE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: RECEIPT_PHOTO_MIMETYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_RECEIPT_PHOTO_FILENAME =============
+  id: 326176982918478318
+  identification: 
+    name: P6005_RECEIPT_PHOTO_FILENAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 100
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: RECEIPT_PHOTO_FILENAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_RECEIPT_PHOTO_UPLOADED =============
+  id: 326177073657478319
+  identification: 
+    name: P6005_RECEIPT_PHOTO_UPLOADED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: RECEIPT_PHOTO_UPLOADED
+    data-type: TIMESTAMP
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_COLLECTION_ID ======================
+  id: 326414071391952074
+  identification: 
+    name: P6005_COLLECTION_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: COLLECTION_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_TRIP_ID ============================
+  id: 326414513100952079
+  identification: 
+    name: P6005_TRIP_ID
+    type: Display Only
+
+  label: 
+    label: كود رحلة السائق
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Trip Details # 326177243909478321
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LIMO_TRIPS_TRACKER.PRODUCT_ID # 271462263082835038
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: TRIP_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_AMOUNT_COLLECTED ===================
+  id: 326415323240952083
+  identification: 
+    name: P6005_AMOUNT_COLLECTED
+    type: Number Field
+
+  label: 
+    label: المبلغ المحصل
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 10
+    region: Amount & Currency # 326177213055478320
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: true
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: AMOUNT_COLLECTED
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select OUTSTANDING_AMOUNT_ORIG_CURR from LIMO_TRIPS_TRACKER_V2 where TRIP_ID = :P6005_TRIP_ID'
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_CURRENCY ===========================
+  id: 326415716175952083
+  identification: 
+    name: P6005_CURRENCY
+    type: Select List
+
+  label: 
+    label: العملة
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: Amount & Currency # 326177213055478320
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: CURRENCIESLIST # 256545237650959739
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: CURRENCY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT currency
+      FROM limo_products
+      WHERE product_id = (
+          SELECT product_id
+          FROM limo_trips_tracker_v2
+          WHERE trip_id = :P6005_TRIP_ID
+      );
+      
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_EXCHANGE_RATE_USED =================
+  id: 326416117371952083
+  identification: 
+    name: P6005_EXCHANGE_RATE_USED
+    type: Number Field
+
+  label: 
+    label: سعر الصرف
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 30
+    region: Amount & Currency # 326177213055478320
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: FML999G999G999G999G990D00
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 255
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: EXCHANGE_RATE_USED
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_COLLECTED_BY_TYPE ==================
+  id: 326416481517952084
+  identification: 
+    name: P6005_COLLECTED_BY_TYPE
+    type: Radio Group
+
+  label: 
+    label: تحصيل من خلال
+    alignment: Left
+
+  settings: 
+    number-of-columns: 2
+    page-action-on-selection: None
+
+  layout: 
+    sequence: 10
+    region: Collector Details # 326177349177478322
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form-fieldContainer--stretchInputs
+    - t-Form-fieldContainer--radioButtonGroup
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Static Values
+    static-values: 'STATIC:السائق;DRIVER,الشركة;EMPLOYEE'
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: COLLECTED_BY_TYPE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :USER_TYPE
+      
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  read-only: 
+    type: Item = Value
+    item: USER_TYPE
+    value: DRIVER
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_COLLECTED_BY_ID ====================
+  id: 326416849226952084
+  identification: 
+    name: P6005_COLLECTED_BY_ID
+    type: Select One
+
+  label: 
+    label: القائم بالتحصيل
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 30
+    region: Collector Details # 326177349177478322
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: P6005_COLLECTED_BY_ID # 276371775389227518
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P6005_COLLECTED_BY_TYPE
+    - P6005_PRODUCT_ID
+    items-to-submit: 
+    - P6005_COLLECTED_BY_TYPE
+    - P6005_PRODUCT_ID
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: COLLECTED_BY_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':APP_USER_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  read-only: 
+    type: Item = Value
+    item: USER_TYPE
+    value: DRIVER
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_COLLECTOR_NAME =====================
+  id: 326417280657952084
+  identification: 
+    name: P6005_COLLECTOR_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: Collector Details # 326177349177478322
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: COLLECTOR_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select "NAME" from VW_PORTAL_USER_LOV where return_value = :P6005_COLLECTED_BY_ID'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_COLLECTION_DATETIME ================
+  id: 326417684591952085
+  identification: 
+    name: P6005_COLLECTION_DATETIME
+    type: Display Only
+
+  label: 
+    label: تاريخ التحصيل
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 50
+    region: Amount & Currency # 326177213055478320
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: COLLECTION_DATETIME
+    data-type: TIMESTAMP
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): |
+      SELECT executed_date from limo_trips_tracker_v2 where trip_id = :P6005_TRIP_ID
+      
+      
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_COLLECTION_METHOD ==================
+  id: 326418428173952086
+  identification: 
+    name: P6005_COLLECTION_METHOD
+    type: Select One
+
+  label: 
+    label: طريقة التحصيل
+    alignment: Left
+
+  settings: 
+    fetch-on-search: false
+
+  search: 
+    match-type: Contains
+    case-sensitive: false
+    minimum-characters: 0
+
+  layout: 
+    sequence: 60
+    region: Amount & Currency # 326177213055478320
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 32
+
+  validation: 
+    value-required: false
+    maximum-length: 30
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      SELECT METHOD_ICON || ' ' || METHOD_NAME AS display_value,
+             METHOD_ID AS return_value
+      FROM LIMO_COLLECTION_METHODS
+      WHERE IS_ACTIVE = 'Y'
+      ORDER BY DISPLAY_ORDER;
+      
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: COLLECTION_METHOD
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: CASH
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_RECEIPT_NOTE =======================
+  id: 326418828266952086
+  identification: 
+    name: P6005_RECEIPT_NOTE
+    type: Textarea
+
+  label: 
+    label: ملاحظات استلام
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 20
+    region: Notes & Additional Documents # 326177436154478323
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+    height: 4
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: RECEIPT_NOTE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6005_CREATED ============================
+  id: 326419641396952086
+  identification: 
+    name: P6005_CREATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: CREATED
+    data-type: TIMESTAMP
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P6005_CREATED_BY =========================
+  id: 326420427992952087
+  identification: 
+    name: P6005_CREATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P6005_AMOUNT_EGP =========================
+  id: 329335125512612731
+  identification: 
+    name: P6005_AMOUNT_EGP
+    type: Number Field
+
+  label: 
+    label: Amount Egp
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 120
+    region: Limo Collection Form # 326413775631952072
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: AMOUNT_EGP
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+  configuration: 
+    build-option: Commented Out # 253764608978089549
+
+- # ====== Page Item: P6005_ASSIGNMENT_ID ======================
+  id: 329335306993612732
+  identification: 
+    name: P6005_ASSIGNMENT_ID
+    type: Text Field
+
+  label: 
+    label: كود التوزيعة
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 30
+    region: Trip Details # 326177243909478321
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Limo Collection Form # 326413775631952072
+    column: ASSIGNMENT_ID
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: SQL Query (return single value)
+    sql-query-(return-single-value): 'select assignment_id from limo_trips_tracker_v2 where trip_id = :P6005_TRIP_ID '
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CANCEL ======================================
+  id: 326425738892952091
+  identification: 
+    button-name: CANCEL
+    label: تجاهل
+
+  layout: 
+    sequence: 10
+    region: Buttons # 326425363760952091
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 326427131304952094
+  identification: 
+    button-name: DELETE
+    label: حذف
+
+  layout: 
+    sequence: 20
+    region: Buttons # 326425363760952091
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&APP_TEXT$DELETE_MSG!RAW.'
+    style: Danger
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P6005_COLLECTION_ID
+
+- # ====== Button: SAVE ========================================
+  id: 326427541606952094
+  identification: 
+    button-name: SAVE
+    label: تنفيذ التعديلات
+
+  layout: 
+    sequence: 30
+    region: Buttons # 326425363760952091
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P6005_COLLECTION_ID
+
+- # ====== Button: CREATE ======================================
+  id: 326427926673952094
+  identification: 
+    button-name: CREATE
+    label: اضافة البيان
+
+  layout: 
+    sequence: 40
+    region: Buttons # 326425363760952091
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P6005_COLLECTION_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Update Amount =======================
+  id: 231787945307304126
+  identification: 
+    name: Update Amount
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6005_CURRENCY
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 231788053390304127
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            v_egp_outstanding NUMBER;
+            v_target_curr     VARCHAR2(10);
+            v_rate            NUMBER := 1;
+            v_equiv_amount    NUMBER;
+        BEGIN
+            -- Load outstanding amount in EGP (the reference value)
+            SELECT OUTSTANDING_AMOUNT_EGP
+              INTO v_egp_outstanding
+              FROM VW_LIMO_TRIP_TRACKING
+             WHERE TRIP_ID = :P6005_TRIP_ID;
+        
+            v_target_curr := :P6005_CURRENCY;
+        
+            -- If EGP, keep as is, else convert
+            IF v_target_curr = 'EGP' THEN
+                v_equiv_amount := v_egp_outstanding;
+            ELSE
+                SELECT EXCHANGE_RATE INTO v_rate
+                  FROM V_LATEST_CURRENCY_RATES
+                 WHERE CURRENCY_CODE = v_target_curr;
+        
+                IF v_rate IS NULL OR v_rate = 0 THEN
+                    v_equiv_amount := NULL;
+                ELSE
+                    v_equiv_amount := ROUND(v_egp_outstanding / v_rate, 2);
+                END IF;
+            END IF;
+        
+            -- Assign back to the page item
+            :P6005_AMOUNT_COLLECTED := v_equiv_amount;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                :P6005_AMOUNT_COLLECTED := NULL;
+            WHEN OTHERS THEN
+                :P6005_AMOUNT_COLLECTED := NULL;
+        END;
+        
+      items-to-submit: 
+      - P6005_TRIP_ID
+      - P6005_CURRENCY
+      items-to-return: 
+      - P6005_AMOUNT_COLLECTED
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Update Amount # 231787945307304126
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: set collect name and assignment id ==
+  id: 326179598218478344
+  identification: 
+    name: set collect name and assignment id
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6005_COLLECTED_BY_ID
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 326179634712478345
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: 'select "NAME" from VW_PORTAL_USER_LOV where return_value = :P6005_COLLECTED_BY_ID'
+      items-to-submit: 
+      - P6005_COLLECTED_BY_ID
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P6005_COLLECTOR_NAME
+
+    execution: 
+      sequence: 10
+      event: set collect name and assignment id # 326179598218478344
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 326425872359952091
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 326425738892952091
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 326426650401952093
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 326425872359952091
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: ShowRates ===========================
+  id: 326456237593534405
+  identification: 
+    name: ShowRates
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6005_CURRENCY
+
+  client-side-condition: 
+    type: Item = Value
+    item: P6005_CURRENCY
+    value: EGP
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 326456627172534412
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P6005_EXCHANGE_RATE_USED
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 326456237593534405
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 326457167751534412
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P6005_EXCHANGE_RATE_USED
+
+    execution: 
+      sequence: 10
+      event: ShowRates # 326456237593534405
+      fire-when-event-result-is: False
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: RefreshCols =========================
+  id: 326457573185536257
+  identification: 
+    name: RefreshCols
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P6005_CURRENCY
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 326458020192536258
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT EXCHANGE_RATE_VALUE
+        FROM V_CURRENCY_DETAILS
+        WHERE CURRENCY_CODE = :P6005_CURRENCY
+        
+      items-to-submit: 
+      - P6005_CURRENCY
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P6005_EXCHANGE_RATE_USED
+
+    execution: 
+      sequence: 10
+      event: RefreshCols # 326457573185536257
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+validations: 
+- # ====== Validation: P6005_COLLECTION_DATETIME must be timesta
+  id: 326418208093952085
+  identification: 
+    name: P6005_COLLECTION_DATETIME must be timestamp
+
+  execution: 
+    sequence: 90
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P6005_COLLECTION_DATETIME
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P6005_COLLECTION_DATETIME # 326417684591952085
+
+- # ====== Validation: P6005_CREATED must be timestamp =========
+  id: 326420179622952087
+  identification: 
+    name: P6005_CREATED must be timestamp
+
+  execution: 
+    sequence: 130
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P6005_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P6005_CREATED # 326419641396952086
+
+processes: 
+- # ====== Process: Initialize form Limo Collection Form =======
+  id: 326428327220952095
+  identification: 
+    name: Initialize form Limo Collection Form
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Limo Collection Form # 326413775631952072
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Limo Collection Form ==========
+  id: 326428762051952096
+  identification: 
+    name: Process form Limo Collection Form
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Limo Collection Form # 326413775631952072
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 326429161241952096
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
